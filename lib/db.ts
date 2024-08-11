@@ -1,33 +1,21 @@
-import { MongoClient } from "mongodb";
+import mongoose from 'mongoose';
 
-let cachedClient: MongoClient | null = null;
-let cachedDb: any = null;
+let cachedClient: mongoose.Mongoose | null = null;
 
 export const connectToDatabase = async () => {
-  if (cachedClient && cachedDb) {
-    return { client: cachedClient, db: cachedDb };
+  if (cachedClient) {
+    return cachedClient;
   }
 
-  const client = new MongoClient(process.env.DB_URI!);
-  await client.connect();
+  try {
+    process.env.NODE_ENV === 'development'
+      ? cachedClient = await mongoose.connect(process.env.DB_DEV!)
+      : process.env.NODE_ENV === 'test'
+        ? cachedClient = await mongoose.connect(process.env.DB_TEST!)
+        : await mongoose.connect(process.env.DB_PROD!)
 
-  let dbName: string = "";
-  switch (process.env.NODE_ENV) {
-    case "development":
-      dbName = process.env.DB_DEV!;
-      break;
-    case "test":
-      dbName = process.env.DB_TEST!;
-      break;
-    case "production":
-      dbName = process.env.DB_PROD!;
-      break;
-    default:
-      dbName = process.env.DB_DEV!;
+    return cachedClient;
+  } catch (error) {
+    throw error;
   }
-
-  const db = client.db(dbName);
-  cachedClient = client;
-  cachedDb = db;
-  return { client, db };
 };
