@@ -1,4 +1,4 @@
-import { AuthService } from "../enums/auth_service"
+import { AuthService } from "../enums/authService"
 
 export interface IUser {
   username: String,

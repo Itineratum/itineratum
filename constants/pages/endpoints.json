@@ -1,0 +1,26 @@
+{
+  "home": {
+    "name": "Itineratum",
+    "link": "/"
+  },
+  "aboutUs": {
+    "name": "About Us",
+    "link": "/about-us"
+  },
+  "account": {
+    "name": "Account",
+    "link": "/account"
+  },
+  "contactUs": {
+    "name": "Contact Us",
+    "link": "/contact-us"
+  },
+  "savedTrips": {
+    "name": "Saved Trips",
+    "link": "/saved-trips"
+  },
+  "login": {
+    "name": "Login",
+    "link": "/login"
+  }
+}

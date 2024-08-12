@@ -1,9 +1,9 @@
 import mongoose, { model } from 'mongoose';
 const { Schema } = mongoose;
-import { AuthService } from '@/constants/enums/auth_service';
+import { AuthService } from '@/constants/enums/authService';
 import { Country } from '@/constants/enums/country';
 import { IUser } from '@/constants/types/user';
-import * as constDbCollections from '@/constants/db_collections.json';
+import * as constDbCollections from '@/constants/dbCollections.json';
 
 const userSchema = new Schema<IUser>({
   username: { type: String, required: true },

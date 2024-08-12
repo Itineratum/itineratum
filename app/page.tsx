@@ -1,12 +1,12 @@
 import { Metadata } from 'next';
-import * as constTexts from '@/constants/pages/text.json';
+import constText from '@/constants/pages/texts.json';
 import Link from 'next/link';
  
 export const metadata: Metadata = {
-  title: constTexts.pageTitle,
+  title: constText.pageTitle,
 }
  
-export default function Home() {
+const Home = () => {
   return (
     <div>
       <h1>Home</h1>
@@ -16,3 +16,5 @@ export default function Home() {
     </div>
   );
 }
+
+export default Home;

@@ -1,5 +1,5 @@
 import { connectToDatabase } from 'lib/db';
-import { AuthService } from '@/constants/enums/auth_service';
+import { AuthService } from '@/constants/enums/authService';
 import { NextRequest, NextResponse } from 'next/server';
 import User from '@/models/User';
 
