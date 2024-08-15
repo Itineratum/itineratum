@@ -1,12 +1,9 @@
-import { connectToDatabase } from 'lib/db';
-import { AuthService } from '@/constants/enums/authService';
-import { NextRequest, NextResponse } from 'next/server';
-import User from '@/models/User';
+import { connectToDatabase } from "lib/db";
+import { AuthService } from "@/constants/enums/authService";
+import { NextRequest, NextResponse } from "next/server";
+import User from "@/models/User";
 
-export async function GET(
-  req: NextRequest,
-  res: NextResponse
-) {
+export async function GET(req: NextRequest, res: NextResponse) {
   try {
     await connectToDatabase();
 
@@ -23,10 +20,7 @@ export async function GET(
   }
 }
 
-export async function POST(
-  req: NextRequest,
-  res: NextResponse
-) {
+export async function POST(req: NextRequest, res: NextResponse) {
   try {
     await connectToDatabase();
     const data = await req.json();
@@ -40,18 +34,12 @@ export async function POST(
       country: country,
       phone_number: 12345678,
       email: email,
-      auth_service: AuthService.Google
+      auth_service: AuthService.Google,
     });
 
-    return NextResponse.json(
-      { user },
-      { status: 200 }
-    );
+    return NextResponse.json({ user }, { status: 200 });
   } catch (error) {
     console.error(error);
-    return NextResponse.json(
-      { error: "An error occured!" },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: "An error occured!" }, { status: 500 });
   }
 }

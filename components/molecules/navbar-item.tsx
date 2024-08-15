@@ -7,31 +7,27 @@ import Link from "next/link";
 const NavbarItem = ({
   name,
   linkToPage,
-  icon
+  icon,
 }: {
-  name: string
-  linkToPage: string,
-  icon: ReactNode
+  name: string;
+  linkToPage: string;
+  icon: ReactNode;
 }) => {
   return (
     <Link href={linkToPage}>
       <Button
         key={name}
-        sx={{ 
-          mx: 1.5, 
+        sx={{
+          mx: 1.5,
         }}
-        color='secondary'
+        color="secondary"
       >
         {icon}
         <Box sx={{ mx: 0.5 }} />
-        <Text 
-          text={name}
-          variant={TypographyVariant.h4}
-          bold={true}
-        />
+        <Text text={name} variant={TypographyVariant.h4} bold={true} />
       </Button>
     </Link>
   );
-}
+};
 
 export default NavbarItem;
