@@ -1,109 +1,50 @@
-// 'use client'
-
-// const NavbarItem = ({
-//   name,
-//   linkToPage
-// }) => {
-//   return (
-    
-//   );
-// }
-
-// export default NavbarItem;
-
-'use client'
-
-import * as React from 'react';
-import AppBar from '@mui/material/AppBar';
-import Box from '@mui/material/Box';
-import Toolbar from '@mui/material/Toolbar';
-import IconButton from '@mui/material/IconButton';
-import Typography from '@mui/material/Typography';
-import Menu from '@mui/material/Menu';
-import MenuIcon from '@mui/icons-material/Menu';
-import Container from '@mui/material/Container';
-import Avatar from '@mui/material/Avatar';
-import Button from '@mui/material/Button';
-import Tooltip from '@mui/material/Tooltip';
-import MenuItem from '@mui/material/MenuItem';
-import AdbIcon from '@mui/icons-material/Adb';
-import ItineratumLogo from '../atoms/itineratum-logo';
-import NavbarItem from '../atoms/navbar-item';
-
-const pages = ['Products', 'Pricing', 'Blog'];
-const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
+'use client';
 
 import endpointsConst from "@/constants/pages/endpoints.json";
+import FavoriteBorderOutlinedIcon from '@mui/icons-material/FavoriteBorderOutlined';
+import PeopleAltOutlinedIcon from '@mui/icons-material/PeopleAltOutlined';
+import PhoneInTalkOutlinedIcon from '@mui/icons-material/PhoneInTalkOutlined';
+import AppBar from '@mui/material/AppBar';
+import Box from '@mui/material/Box';
+import Container from '@mui/material/Container';
+import Toolbar from '@mui/material/Toolbar';
+import ItineratumLogo from '../molecules/itineratum-logo';
+import NavbarItem from '../molecules/navbar-item';
 
-function Navbar() {
-  const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(null);
-  const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(null);
-
-  const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
-    setAnchorElNav(event.currentTarget);
-  };
-  const handleOpenUserMenu = (event: React.MouseEvent<HTMLElement>) => {
-    setAnchorElUser(event.currentTarget);
-  };
-
-  const handleCloseNavMenu = () => {
-    setAnchorElNav(null);
-  };
-
-  const handleCloseUserMenu = () => {
-    setAnchorElUser(null);
-  };
-
+const Navbar = () => {
   return (
-    <AppBar position="static">
+    <AppBar 
+      position="static" 
+      color="primary"
+      elevation={0}
+    >
       <Container maxWidth="xl">
         <Toolbar disableGutters>
+          <Box sx={{ mx: 5 }} />
           <ItineratumLogo />
-
-          <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
+          <Box sx={{ 
+            display: { xs: 'none', md: 'flex' },
+          }}>
+            <Box sx={{ mx: 2 }} />
             <NavbarItem 
-              name={endpointsConst.savedTrips.name} linkToPage={endpointsConst.savedTrips.link} 
+              name={endpointsConst.savedTrips.name} linkToPage={endpointsConst.savedTrips.link}
+              icon={<FavoriteBorderOutlinedIcon />}
             />
             <NavbarItem 
-              name={endpointsConst.aboutUs.name} linkToPage={endpointsConst.aboutUs.link} 
+              name={endpointsConst.aboutUs.name} 
+              linkToPage={endpointsConst.aboutUs.link}
+              icon={<PeopleAltOutlinedIcon />}
             />
             <NavbarItem 
-              name={endpointsConst.contactUs.name} linkToPage={endpointsConst.contactUs.link} 
+              name={endpointsConst.contactUs.name} 
+              linkToPage={endpointsConst.contactUs.link}
+              icon={<PhoneInTalkOutlinedIcon />}
             />
-          </Box>
-
-          <Box sx={{ flexGrow: 0 }}>
-            <Tooltip title="Open settings">
-              <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />
-              </IconButton>
-            </Tooltip>
-            <Menu
-              sx={{ mt: '45px' }}
-              id="menu-appbar"
-              anchorEl={anchorElUser}
-              anchorOrigin={{
-                vertical: 'top',
-                horizontal: 'right',
-              }}
-              keepMounted
-              transformOrigin={{
-                vertical: 'top',
-                horizontal: 'right',
-              }}
-              open={Boolean(anchorElUser)}
-              onClose={handleCloseUserMenu}
-            >
-              {settings.map((setting) => (
-                <MenuItem key={setting} onClick={handleCloseUserMenu}>
-                  <Typography textAlign="center">{setting}</Typography>
-                </MenuItem>
-              ))}
-            </Menu>
           </Box>
         </Toolbar>
       </Container>
     </AppBar>
   );
 }
+
 export default Navbar;

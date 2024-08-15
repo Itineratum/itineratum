@@ -11,7 +11,6 @@ const HomeLayout = ({
   return (
     <html lang="en">
       <body>
-        {/* Layout UI */}
         <AppRouterCacheProvider>
           <ThemeProvider theme={theme}>
             <Navbar />
