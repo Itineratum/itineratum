@@ -1,26 +1,26 @@
 {
   "home": {
     "name": "Itineratum",
-    "link": "/en"
+    "endpoint": ""
   },
   "aboutUs": {
     "name": "About Us",
-    "link": "/about-us"
+    "endpoint": "about-us"
   },
   "account": {
     "name": "Account",
-    "link": "/account"
+    "endpoint": "account"
   },
   "contactUs": {
     "name": "Contact Us",
-    "link": "/contact-us"
+    "endpoint": "contact-us"
   },
   "savedTrips": {
     "name": "Saved Trips",
-    "link": "/saved-trips"
+    "endpoint": "saved-trips"
   },
   "login": {
     "name": "Login",
-    "link": "/login"
+    "endpoint": "login"
   }
 }

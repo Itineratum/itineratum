@@ -2,12 +2,13 @@ import Text from "@/components/atoms/text";
 import { TypographyVariant } from "@/constants/enums/theme";
 import constEndpoints from "@/constants/pages/endpoints.json";
 import constTexts from "@/constants/pages/texts.json";
+import { buildLocaleEndpoint } from "@/utils/buildLocaleEndpoint";
 import { Button } from "@mui/material";
 import Link from "next/link";
 
-const ItineratumLogo = () => {
+const ItineratumLogo = ({ params: { locale } }: { params: { locale: string } }) => {
   return (
-    <Link href={constEndpoints.home.link}>
+    <Link href={buildLocaleEndpoint(locale, constEndpoints.home.endpoint)}>
       <Button key={constEndpoints.home.name} color="secondary">
         <Text
           text={constTexts.pageTitle}

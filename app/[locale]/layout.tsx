@@ -25,7 +25,11 @@ const HomeLayout = ({
         <body>
           <AppRouterCacheProvider>
             <ThemeProvider theme={theme}>
-              <Navbar />
+              <Navbar
+                params={{
+                  locale: locale,
+                }}
+              />
               {children}
             </ThemeProvider>
           </AppRouterCacheProvider>

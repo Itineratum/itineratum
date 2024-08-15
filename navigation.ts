@@ -2,6 +2,7 @@ import { createSharedPathnamesNavigation } from "next-intl/navigation";
 
 export const languages = {
   en: "English",
+  ar: "عربي",
   de: "Deutsch",
   es: "Español",
   fr: "Français",
