@@ -6,7 +6,11 @@ import { buildLocaleEndpoint } from "@/utils/buildLocaleEndpoint";
 import { Button } from "@mui/material";
 import Link from "next/link";
 
-const ItineratumLogo = ({ params: { locale } }: { params: { locale: string } }) => {
+const ItineratumLogo = ({
+  params: { locale },
+}: {
+  params: { locale: string };
+}) => {
   return (
     <Link href={buildLocaleEndpoint(locale, constEndpoints.home.endpoint)}>
       <Button key={constEndpoints.home.name} color="secondary">

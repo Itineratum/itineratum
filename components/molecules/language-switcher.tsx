@@ -1,11 +1,10 @@
 "use client";
 
-import { TypographyVariant } from "@/constants/enums/theme";
 import { languages, usePathname, useRouter } from "@/navigation";
 import LanguageOutlinedIcon from "@mui/icons-material/LanguageOutlined";
-import { Box, Button, Menu, MenuItem } from "@mui/material";
+import { Button, Menu, MenuItem } from "@mui/material";
 import { useState } from "react";
-import Text from "../atoms/text";
+import NavbarIconText from "./navbar-icon-text";
 
 const LanguageSwitcher = ({ locale }: { locale: string }) => {
   const router = useRouter();
@@ -36,12 +35,9 @@ const LanguageSwitcher = ({ locale }: { locale: string }) => {
         onClick={handleClick}
         sx={{ color: "black" }}
       >
-        <LanguageOutlinedIcon />
-        <Box sx={{ mx: 0.5 }} />
-        <Text
+        <NavbarIconText
+          icon={<LanguageOutlinedIcon />}
           text={locale.toUpperCase()}
-          variant={TypographyVariant.h4}
-          bold={true}
         />
       </Button>
       <Menu
