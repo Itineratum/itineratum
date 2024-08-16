@@ -1,7 +1,7 @@
 import { TypographyVariant } from "@/constants/enums/theme";
 import { Box } from "@mui/material";
 import { ReactNode } from "react";
-import Text from "../atoms/text";
+import Text from "./text";
 
 const NavbarIconText = ({ icon, text }: { icon: ReactNode; text: string }) => {
   return (

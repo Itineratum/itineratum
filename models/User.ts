@@ -1,9 +1,11 @@
-import mongoose, { model } from "mongoose";
-const { Schema } = mongoose;
+import * as constDbCollections from "@/constants/dbCollections.json";
 import { AuthService } from "@/constants/enums/authService";
 import { Country } from "@/constants/enums/country";
+import { Currency } from "@/constants/enums/currency";
+import { Language } from "@/constants/enums/language";
 import { IUser } from "@/constants/types/user";
-import * as constDbCollections from "@/constants/dbCollections.json";
+import mongoose, { model } from "mongoose";
+const { Schema } = mongoose;
 
 const userSchema = new Schema<IUser>(
   {
@@ -15,6 +17,8 @@ const userSchema = new Schema<IUser>(
     email: { type: String, required: true, unique: true },
     profile_picture: String,
     auth_service: { type: String, enum: AuthService, required: true },
+    language: { type: String, enum: Language, default: Language.en },
+    currency: { type: String, enum: Currency, default: Currency.sgd },
   },
   { collection: constDbCollections.users }
 );

@@ -13,11 +13,11 @@ const HomeLayout = ({
   children: React.ReactNode;
   params: { locale: string };
 }) => {
+  const messages = useMessages();
+
   if (!locales.includes(locale)) {
     notFound();
   }
-
-  const messages = useMessages();
 
   return (
     <html lang={locale}>
@@ -25,11 +25,7 @@ const HomeLayout = ({
         <body>
           <AppRouterCacheProvider>
             <ThemeProvider theme={theme}>
-              <Navbar
-                params={{
-                  locale: locale,
-                }}
-              />
+              <Navbar locale={locale} />
               {children}
             </ThemeProvider>
           </AppRouterCacheProvider>

@@ -1,7 +1,7 @@
 import { Button } from "@mui/material";
 import Link from "next/link";
 import { ReactNode } from "react";
-import NavbarIconText from "./navbar-icon-text";
+import NavbarIconText from "../atoms/navbar-icon-text";
 
 const NavbarItem = ({
   name,

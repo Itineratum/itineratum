@@ -1,19 +1,7 @@
 import { createSharedPathnamesNavigation } from "next-intl/navigation";
+import { Language } from "./constants/enums/language";
 
-export const languages = {
-  en: "English",
-  ar: "عربي",
-  de: "Deutsch",
-  es: "Español",
-  fr: "Français",
-  ja: "日本語",
-  ko: "한국인",
-  ms: "Melayu",
-  ta: "தமிழ்",
-  zh: "中文",
-};
-
-export const locales = Object.keys(languages);
+export const locales = Object.keys(Language);
 export const localePrefix = "as-needed";
 
 export const { Link, redirect, usePathname, useRouter } =

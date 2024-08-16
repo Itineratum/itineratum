@@ -1,5 +1,6 @@
 "use client";
 
+import { TypographyVariant } from "@/constants/enums/theme";
 import endpointsConst from "@/constants/pages/endpoints.json";
 import { buildLocaleEndpoint } from "@/utils/buildLocaleEndpoint";
 import FavoriteBorderOutlinedIcon from "@mui/icons-material/FavoriteBorderOutlined";
@@ -9,11 +10,13 @@ import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
 import Container from "@mui/material/Container";
 import Toolbar from "@mui/material/Toolbar";
+import Text from "../atoms/text";
+import CurrencySwitcher from "../molecules/currency-switcher";
 import ItineratumLogo from "../molecules/itineratum-logo";
 import LanguageSwitcher from "../molecules/language-switcher";
 import NavbarItem from "../molecules/navbar-item";
 
-const Navbar = ({ params: { locale } }: { params: { locale: string } }) => {
+const Navbar = ({ locale }: { locale: string }) => {
   const savedTrips = () => {
     return (
       <NavbarItem
@@ -26,7 +29,6 @@ const Navbar = ({ params: { locale } }: { params: { locale: string } }) => {
       />
     );
   };
-
   const aboutUs = () => {
     return (
       <NavbarItem
@@ -39,7 +41,6 @@ const Navbar = ({ params: { locale } }: { params: { locale: string } }) => {
       />
     );
   };
-
   const contactUs = () => {
     return (
       <NavbarItem
@@ -50,6 +51,13 @@ const Navbar = ({ params: { locale } }: { params: { locale: string } }) => {
         )}
         icon={<PhoneInTalkOutlinedIcon />}
       />
+    );
+  };
+  const dash = () => {
+    return (
+      <Box sx={{ ml: 1.5 }}>
+        <Text text={"-"} variant={TypographyVariant.h4} bold={true} />
+      </Box>
     );
   };
 
@@ -75,8 +83,10 @@ const Navbar = ({ params: { locale } }: { params: { locale: string } }) => {
             {aboutUs()}
             {contactUs()}
           </Box>
-          <Box sx={{ ml: "auto" }}>
+          <Box sx={{ display: "flex", alignItems: "center" }}>
             <LanguageSwitcher locale={locale} />
+            {dash()}
+            <CurrencySwitcher />
           </Box>
         </Toolbar>
       </Container>
