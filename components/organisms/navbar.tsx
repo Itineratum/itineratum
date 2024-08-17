@@ -8,7 +8,6 @@ import PeopleAltOutlinedIcon from "@mui/icons-material/PeopleAltOutlined";
 import PhoneInTalkOutlinedIcon from "@mui/icons-material/PhoneInTalkOutlined";
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
-import Container from "@mui/material/Container";
 import Toolbar from "@mui/material/Toolbar";
 import Text from "../atoms/text";
 import CurrencySwitcher from "../molecules/currency-switcher";
@@ -17,6 +16,8 @@ import LanguageSwitcher from "../molecules/language-switcher";
 import NavbarItem from "../molecules/navbar-item";
 
 const Navbar = ({ locale }: { locale: string }) => {
+  const navBarWidth: string = "90%";
+
   const savedTrips = () => {
     return (
       <NavbarItem
@@ -63,33 +64,36 @@ const Navbar = ({ locale }: { locale: string }) => {
 
   return (
     <AppBar position="static" color="primary" elevation={0}>
-      <Container maxWidth="xl">
-        <Toolbar
-          disableGutters
-          sx={{ justifyContent: "space-between", position: "relative" }}
+      <Toolbar
+        disableGutters
+        sx={{
+          justifyContent: "space-between",
+          position: "relative",
+          width: navBarWidth,
+          margin: "0 auto",
+        }}
+      >
+        <Box sx={{ display: "flex", alignItems: "center" }}>
+          <ItineratumLogo params={{ locale }} />
+        </Box>
+        <Box
+          sx={{
+            position: "absolute",
+            left: "50%",
+            transform: "translateX(-50%)",
+            display: { xs: "none", md: "flex" },
+          }}
         >
-          <Box sx={{ display: "flex", alignItems: "center" }}>
-            <ItineratumLogo params={{ locale }} />
-          </Box>
-          <Box
-            sx={{
-              position: "absolute",
-              left: "50%",
-              transform: "translateX(-50%)",
-              display: { xs: "none", md: "flex" },
-            }}
-          >
-            {savedTrips()}
-            {aboutUs()}
-            {contactUs()}
-          </Box>
-          <Box sx={{ display: "flex", alignItems: "center" }}>
-            <LanguageSwitcher locale={locale} />
-            {dash()}
-            <CurrencySwitcher />
-          </Box>
-        </Toolbar>
-      </Container>
+          {savedTrips()}
+          {aboutUs()}
+          {contactUs()}
+        </Box>
+        <Box sx={{ display: "flex", alignItems: "center" }}>
+          <LanguageSwitcher locale={locale} />
+          {dash()}
+          <CurrencySwitcher />
+        </Box>
+      </Toolbar>
     </AppBar>
   );
 };

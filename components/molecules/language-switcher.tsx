@@ -10,7 +10,7 @@ const LanguageSwitcher = ({ locale }: { locale: string }) => {
   const languages = Object(Language);
   const router = useRouter();
   const pathname = usePathname();
-  
+
   const handleLanguageChange = (language: string) => {
     router.push(pathname, { locale: language });
   };

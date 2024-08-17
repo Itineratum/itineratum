@@ -13,7 +13,10 @@ export enum Currency {
 
 const createCurrencyMap = (): Record<string, string> => {
   return Object.fromEntries(
-    Object.entries(Currency).map(([key]) => [key, key.toUpperCase()])
+    Object.entries(Currency).map(([key, value]) => [
+      key,
+      `${key.toUpperCase()} (${value})`,
+    ])
   );
 };
 
