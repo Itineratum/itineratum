@@ -1,1 +1,1 @@
-{"home":{"header":"이제 편안하게 여행할 시간입니다."},"navbar":{"aboutUs":"회사 소개","account":{"account":"계정","signIn":"로그인","signOut":"로그아웃"},"contactUs":"문의하기","savedTrips":"저장된 여행"}}
+{"home":{"header":"이제 편안하게 여행할 시간입니다."},"account":{"welcome":"환영합니다, {name}"},"navbar":{"aboutUs":"회사 소개","account":{"account":"계정","signIn":"로그인","signOut":"로그아웃"},"contactUs":"문의하기","savedTrips":"저장된 여행"}}

@@ -1,1 +1,1 @@
-{"home":{"header":"Il est temps de voyager en toute simplicité."},"navbar":{"aboutUs":"À propos de nous","account":{"account":"Compte","signIn":"Se connecter","signOut":"Se déconnecter"},"contactUs":"Contactez-nous","savedTrips":"Voyages enregistrés"}}
+{"home":{"header":"Il est temps de voyager en toute simplicité."},"account":{"welcome":"Bienvenue, {name}"},"navbar":{"aboutUs":"À propos de nous","account":{"account":"Compte","signIn":"Se connecter","signOut":"Se déconnecter"},"contactUs":"Contactez-nous","savedTrips":"Voyages enregistrés"}}
