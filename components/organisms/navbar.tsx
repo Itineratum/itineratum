@@ -9,23 +9,28 @@ import PhoneInTalkOutlinedIcon from "@mui/icons-material/PhoneInTalkOutlined";
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
 import Toolbar from "@mui/material/Toolbar";
+import { useSession } from "next-auth/react";
+import { useTranslations } from "next-intl";
 import Text from "../atoms/text";
 import CurrencySwitcher from "../molecules/currency-switcher";
 import ItineratumLogo from "../molecules/itineratum-logo";
 import LanguageSwitcher from "../molecules/language-switcher";
 import NavbarItem from "../molecules/navbar-item";
 import ProfileIcon from "../molecules/profile-icon";
+import SignInButton from "../molecules/sign-in-button";
 
 const Navbar = ({ locale }: { locale: string }) => {
   const navBarWidth: string = "90%";
+  const { data: session } = useSession();
+  const t = useTranslations();
 
   const savedTrips = () => {
     return (
       <NavbarItem
-        name={endpointsConst.savedTrips.name}
+        name={t("navbar.savedTrips")}
         linkToPage={buildLocaleEndpoint(
           locale,
-          endpointsConst.savedTrips.endpoint,
+          endpointsConst.savedTrips.endpoint
         )}
         icon={<FavoriteBorderOutlinedIcon />}
       />
@@ -34,10 +39,10 @@ const Navbar = ({ locale }: { locale: string }) => {
   const aboutUs = () => {
     return (
       <NavbarItem
-        name={endpointsConst.aboutUs.name}
+        name={t("navbar.aboutUs")}
         linkToPage={buildLocaleEndpoint(
           locale,
-          endpointsConst.aboutUs.endpoint,
+          endpointsConst.aboutUs.endpoint
         )}
         icon={<PeopleAltOutlinedIcon />}
       />
@@ -46,10 +51,10 @@ const Navbar = ({ locale }: { locale: string }) => {
   const contactUs = () => {
     return (
       <NavbarItem
-        name={endpointsConst.contactUs.name}
+        name={t("navbar.contactUs")}
         linkToPage={buildLocaleEndpoint(
           locale,
-          endpointsConst.contactUs.endpoint,
+          endpointsConst.contactUs.endpoint
         )}
         icon={<PhoneInTalkOutlinedIcon />}
       />
@@ -60,6 +65,13 @@ const Navbar = ({ locale }: { locale: string }) => {
       <Box sx={{ ml: 1.5 }}>
         <Text text={"-"} variant={TypographyVariant.h4} bold={true} />
       </Box>
+    );
+  };
+  const account = () => {
+    return session?.user?.name ? (
+      <ProfileIcon locale={locale} />
+    ) : (
+      <SignInButton />
     );
   };
 
@@ -93,7 +105,7 @@ const Navbar = ({ locale }: { locale: string }) => {
           <LanguageSwitcher locale={locale} />
           {dash()}
           <CurrencySwitcher />
-          <ProfileIcon locale={locale} />
+          {account()}
         </Box>
       </Toolbar>
     </AppBar>
