@@ -6,11 +6,11 @@ import NavbarIconText from "../atoms/navbar-icon-text";
 const NavbarItem = ({
   name,
   linkToPage,
-  icon,
+  icon = <></>,
 }: {
   name: string;
   linkToPage: string;
-  icon: ReactNode;
+  icon?: ReactNode;
 }) => {
   return (
     <Link href={linkToPage}>

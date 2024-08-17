@@ -14,6 +14,7 @@ import CurrencySwitcher from "../molecules/currency-switcher";
 import ItineratumLogo from "../molecules/itineratum-logo";
 import LanguageSwitcher from "../molecules/language-switcher";
 import NavbarItem from "../molecules/navbar-item";
+import ProfileIcon from "../molecules/profile-icon";
 
 const Navbar = ({ locale }: { locale: string }) => {
   const navBarWidth: string = "90%";
@@ -92,6 +93,7 @@ const Navbar = ({ locale }: { locale: string }) => {
           <LanguageSwitcher locale={locale} />
           {dash()}
           <CurrencySwitcher />
+          <ProfileIcon locale={locale} />
         </Box>
       </Toolbar>
     </AppBar>

@@ -7,10 +7,6 @@
     "name": "About Us",
     "endpoint": "about-us"
   },
-  "account": {
-    "name": "Account",
-    "endpoint": "account"
-  },
   "contactUs": {
     "name": "Contact Us",
     "endpoint": "contact-us"
@@ -22,5 +18,17 @@
   "login": {
     "name": "Login",
     "endpoint": "login"
+  },
+  "profileIcon": {
+    "actions": [
+      {
+        "name": "Account",
+        "endpoint": "account"
+      },
+      {
+        "name": "Logout",
+        "endpoint": "logout"
+      }
+    ]
   }
 }

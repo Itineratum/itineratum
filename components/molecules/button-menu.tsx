@@ -1,22 +1,20 @@
 import { TypographyVariant } from "@/constants/enums/theme";
+import { ButtonMenuProps } from "@/constants/types/buttonMenu";
 import { Button, Menu, MenuItem } from "@mui/material";
-import { ReactNode, useState } from "react";
+import { useState } from "react";
+import LinkMenuItem from "../atoms/link-menu-item";
 import NavbarIconText from "../atoms/navbar-icon-text";
 import Text from "../atoms/text";
 
 const ButtonMenu = ({
   id,
-  text,
+  text = "",
   icon,
-  menuValues,
+  menuItems,
+  useLink,
+  locale,
   itemChangeHandler,
-}: {
-  id: string;
-  text: string;
-  icon?: ReactNode | undefined;
-  menuValues: Object;
-  itemChangeHandler: (_: string) => void;
-}) => {
+}: ButtonMenuProps) => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
   const button: string = `${id}-button`;
@@ -29,9 +27,29 @@ const ButtonMenu = ({
     setAnchorEl(null);
   };
   const handleMenuItemClick = (item: string) => {
-    itemChangeHandler(item);
+    if (!useLink) itemChangeHandler(item);
     setAnchorEl(null);
   };
+
+  const buttonElement = icon ? (
+    <NavbarIconText icon={icon} text={text} />
+  ) : (
+    <Text text={text} variant={TypographyVariant.h4} bold={true} />
+  );
+  const menuElement = Object.keys(menuItems).map((item) =>
+    useLink ? (
+      <LinkMenuItem
+        item={item}
+        text={menuItems[item]}
+        locale={locale}
+        handleClose={handleClose}
+      />
+    ) : (
+      <MenuItem key={item} onClick={() => handleMenuItemClick(item)}>
+        {menuItems[item]}
+      </MenuItem>
+    )
+  );
 
   return (
     <div>
@@ -43,11 +61,7 @@ const ButtonMenu = ({
         onClick={handleClick}
         sx={{ color: "black", mx: 0.5 }}
       >
-        {icon ? (
-          <NavbarIconText icon={icon} text={text} />
-        ) : (
-          <Text text={text} variant={TypographyVariant.h4} bold={true} />
-        )}
+        {buttonElement}
       </Button>
       <Menu
         id={menu}
@@ -64,12 +78,7 @@ const ButtonMenu = ({
           horizontal: "left",
         }}
       >
-        {Object.keys(menuValues).map((item) => (
-          <MenuItem key={item} onClick={() => handleMenuItemClick(item)}>
-            {/* @ts-expect-error */}
-            {menuValues[item]}
-          </MenuItem>
-        ))}
+        {menuElement}
       </Menu>
     </div>
   );

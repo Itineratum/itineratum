@@ -23,7 +23,8 @@ const CurrencySwitcher = () => {
     <ButtonMenu
       id={id}
       text={currency.toUpperCase()}
-      menuValues={currencyMap}
+      menuItems={currencyMap}
+      useLink={false}
       itemChangeHandler={handleCurrencyChange}
     />
   );

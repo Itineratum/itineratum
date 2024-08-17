@@ -11,8 +11,8 @@ const LanguageSwitcher = ({ locale }: { locale: string }) => {
   const router = useRouter();
   const pathname = usePathname();
 
-  const handleLanguageChange = (language: string) => {
-    router.push(pathname, { locale: language });
+  const handleLanguageChange = (newLanguage: string) => {
+    router.push(pathname, { locale: newLanguage });
   };
 
   return (
@@ -20,7 +20,8 @@ const LanguageSwitcher = ({ locale }: { locale: string }) => {
       id={id}
       text={locale.toUpperCase()}
       icon={<LanguageOutlinedIcon />}
-      menuValues={languages}
+      menuItems={languages}
+      useLink={false}
       itemChangeHandler={handleLanguageChange}
     />
   );
