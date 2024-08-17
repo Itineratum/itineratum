@@ -1,5 +1,5 @@
 import { TypographyVariant } from "@/constants/enums/theme";
-import { usePathname, useRouter } from "@/navigation";
+import { useRouter } from "@/navigation";
 import { buildLocaleEndpoint } from "@/utils/buildLocaleEndpoint";
 import { Box, Link, MenuItem } from "@mui/material";
 import Text from "../atoms/text";
@@ -21,9 +21,7 @@ const LinkMenuItem = ({
     event.preventDefault();
     handleClose();
     const newPath =
-      locale === "en"
-        ? buildLocaleEndpoint(locale, item)
-        : `/${item}`;
+      locale === "en" ? buildLocaleEndpoint(locale, item) : `/${item}`;
     router.push(newPath);
   };
 

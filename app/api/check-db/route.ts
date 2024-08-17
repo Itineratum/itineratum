@@ -9,13 +9,13 @@ export async function GET(req: NextRequest, res: NextResponse) {
 
     return NextResponse.json(
       { message: "Database connected successfully!" },
-      { status: 200 }
+      { status: 200 },
     );
   } catch (error) {
     console.error(error);
     return NextResponse.json(
       { error: "An error occured while conencting to the database!" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

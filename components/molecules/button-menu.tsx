@@ -48,7 +48,7 @@ const ButtonMenu = ({
       <MenuItem key={item} onClick={() => handleMenuItemClick(item)}>
         {menuItems[item]}
       </MenuItem>
-    )
+    ),
   );
 
   return (

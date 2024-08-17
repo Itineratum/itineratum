@@ -16,7 +16,7 @@ const createCurrencyMap = (): Record<string, string> => {
     Object.entries(Currency).map(([key, value]) => [
       key,
       `${key.toUpperCase()} (${value})`,
-    ])
+    ]),
   );
 };
 

@@ -20,7 +20,7 @@ const userSchema = new Schema<IUser>(
     language: { type: String, enum: Language, default: Language.en },
     currency: { type: String, enum: Currency, default: Currency.sgd },
   },
-  { collection: constDbCollections.users }
+  { collection: constDbCollections.users },
 );
 
 const User = model("User", userSchema);
