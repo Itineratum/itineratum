@@ -1,4 +1,5 @@
 import { TypographyVariant } from "@/constants/enums/theme";
+import { useRouter } from "@/navigation";
 import { buildLocaleEndpoint } from "@/utils/buildLocaleEndpoint";
 import { Box, Link, MenuItem } from "@mui/material";
 import Text from "../atoms/text";
@@ -14,10 +15,16 @@ const LinkMenuItem = ({
   locale: string;
   handleClose: () => void;
 }) => {
-  console.log(`result: ${buildLocaleEndpoint(locale, item)}`);
+  const router = useRouter();
+
+  const handleClick = (event: React.MouseEvent<HTMLElement>) => {
+    event.preventDefault();
+    handleClose();
+    router.push(buildLocaleEndpoint(locale, item));
+  };
 
   return (
-    <MenuItem key={item} onClick={handleClose}>
+    <MenuItem key={item} onClick={handleClick}>
       <Link href={buildLocaleEndpoint(locale, item)}>
         <Box color="black">
           <Text text={text} variant={TypographyVariant.h4} bold={false} />
