@@ -1,1 +1,14 @@
-{"home":{"header":"It's time to travel with EASE."},"account":{"welcome":"Welcome, {name}"},"navbar":{"aboutUs":"About Us","account":{"account":"Account","signIn":"Sign In","signOut":"Sign Out"},"contactUs":"Contact Us","savedTrips":"Saved Trips"}}
+{
+  "home": { "header": "It's time to travel with EASE." },
+  "account": { "welcome": "Welcome, {name}" },
+  "navbar": {
+    "aboutUs": "About Us",
+    "account": {
+      "account": "Account",
+      "signIn": "Sign In",
+      "signOut": "Sign Out"
+    },
+    "contactUs": "Contact Us",
+    "savedTrips": "Saved Trips"
+  }
+}

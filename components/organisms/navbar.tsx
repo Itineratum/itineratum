@@ -30,7 +30,7 @@ const Navbar = ({ locale }: { locale: string }) => {
         name={t("navbar.savedTrips")}
         linkToPage={buildLocaleEndpoint(
           locale,
-          endpointsConst.savedTrips.endpoint
+          endpointsConst.savedTrips.endpoint,
         )}
         icon={<FavoriteBorderOutlinedIcon />}
       />
@@ -42,7 +42,7 @@ const Navbar = ({ locale }: { locale: string }) => {
         name={t("navbar.aboutUs")}
         linkToPage={buildLocaleEndpoint(
           locale,
-          endpointsConst.aboutUs.endpoint
+          endpointsConst.aboutUs.endpoint,
         )}
         icon={<PeopleAltOutlinedIcon />}
       />
@@ -54,7 +54,7 @@ const Navbar = ({ locale }: { locale: string }) => {
         name={t("navbar.contactUs")}
         linkToPage={buildLocaleEndpoint(
           locale,
-          endpointsConst.contactUs.endpoint
+          endpointsConst.contactUs.endpoint,
         )}
         icon={<PhoneInTalkOutlinedIcon />}
       />

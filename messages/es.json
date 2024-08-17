@@ -1,1 +1,14 @@
-{"home":{"header":"Es hora de viajar con FACILIDAD."},"account":{"welcome":"Bienvenido, {name}"},"navbar":{"aboutUs":"Sobre nosotros","account":{"account":"Cuenta","signIn":"Iniciar sesión","signOut":"Desconectar"},"contactUs":"Contáctenos","savedTrips":"Viajes guardados"}}
+{
+  "home": { "header": "Es hora de viajar con FACILIDAD." },
+  "account": { "welcome": "Bienvenido, {name}" },
+  "navbar": {
+    "aboutUs": "Sobre nosotros",
+    "account": {
+      "account": "Cuenta",
+      "signIn": "Iniciar sesión",
+      "signOut": "Desconectar"
+    },
+    "contactUs": "Contáctenos",
+    "savedTrips": "Viajes guardados"
+  }
+}

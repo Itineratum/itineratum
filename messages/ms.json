@@ -1,1 +1,14 @@
-{"home":{"header":"Sudah tiba masanya untuk mengembara dengan EASE."},"account":{"welcome":"Selamat datang, {name}"},"navbar":{"aboutUs":"Tentang Kami","account":{"account":"Akaun","signIn":"Log Masuk","signOut":"Log Keluar"},"contactUs":"Hubungi Kami","savedTrips":"Perjalanan Disimpan"}}
+{
+  "home": { "header": "Sudah tiba masanya untuk mengembara dengan EASE." },
+  "account": { "welcome": "Selamat datang, {name}" },
+  "navbar": {
+    "aboutUs": "Tentang Kami",
+    "account": {
+      "account": "Akaun",
+      "signIn": "Log Masuk",
+      "signOut": "Log Keluar"
+    },
+    "contactUs": "Hubungi Kami",
+    "savedTrips": "Perjalanan Disimpan"
+  }
+}

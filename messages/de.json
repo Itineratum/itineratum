@@ -1,1 +1,14 @@
-{"home":{"header":"Es ist Zeit, mit LEICHTIGKEIT zu reisen."},"account":{"welcome":"Willkommen, {name}"},"navbar":{"aboutUs":"Über uns","account":{"account":"Konto","signIn":"Anmelden","signOut":"Abmelden"},"contactUs":"Kontaktieren Sie uns","savedTrips":"Gespeicherte Reisen"}}
+{
+  "home": { "header": "Es ist Zeit, mit LEICHTIGKEIT zu reisen." },
+  "account": { "welcome": "Willkommen, {name}" },
+  "navbar": {
+    "aboutUs": "Über uns",
+    "account": {
+      "account": "Konto",
+      "signIn": "Anmelden",
+      "signOut": "Abmelden"
+    },
+    "contactUs": "Kontaktieren Sie uns",
+    "savedTrips": "Gespeicherte Reisen"
+  }
+}
