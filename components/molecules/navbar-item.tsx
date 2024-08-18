@@ -18,8 +18,8 @@ const NavbarItem = ({
         key={name}
         sx={{
           mx: 2.5,
+          color: "text.primary",
         }}
-        color="secondary"
       >
         <NavbarIconText icon={icon} text={name} />
       </Button>

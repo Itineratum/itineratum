@@ -1,11 +1,21 @@
 {
+  "login": {
+    "loginForm": {
+      "country": "البلد/المنطقة",
+      "number": "رقم التليفون",
+      "privacyPolicy": "سياسة الخصوصية",
+      "signUp": "اشتراك"
+    },
+    "loginOrSignup": "تسجيل الدخول أو التسجيل",
+    "welcome": "مرحباً بالمسافر!"
+  },
   "home": { "header": "حان الوقت للسفر بكل سهولة." },
   "account": { "welcome": "مرحباً {name}" },
   "navbar": {
     "aboutUs": "معلومات عنا",
     "account": {
       "account": "حساب",
-      "signIn": "تسجيل الدخول",
+      "login": "تسجيل الدخول",
       "signOut": "تسجيل الخروج"
     },
     "contactUs": "اتصل بنا",

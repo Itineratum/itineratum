@@ -17,7 +17,7 @@ import ItineratumLogo from "../molecules/itineratum-logo";
 import LanguageSwitcher from "../molecules/language-switcher";
 import NavbarItem from "../molecules/navbar-item";
 import ProfileIcon from "../molecules/profile-icon";
-import SignInButton from "../molecules/sign-in-button";
+import LoginButton from "../molecules/login-button";
 
 const Navbar = () => {
   const navBarWidth: string = "90%";
@@ -69,11 +69,11 @@ const Navbar = () => {
     );
   };
   const account = () => {
-    return session?.user?.name ? <ProfileIcon /> : <SignInButton />;
+    return session?.user?.name ? <ProfileIcon /> : <LoginButton />;
   };
 
   return (
-    <AppBar position="static" color="primary" elevation={0}>
+    <AppBar position="static" color="transparent" elevation={0}>
       <Toolbar
         disableGutters
         sx={{

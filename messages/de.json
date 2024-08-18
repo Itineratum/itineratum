@@ -1,13 +1,19 @@
 {
+  "login": {
+    "loginForm": {
+      "country": "Land/Region",
+      "number": "Telefonnummer",
+      "privacyPolicy": "Datenschutzrichtlinie",
+      "signUp": "Melden Sie sich an"
+    },
+    "loginOrSignup": "Anmelden oder Registrieren",
+    "welcome": "Willkommen, Reisender!"
+  },
   "home": { "header": "Es ist Zeit, mit LEICHTIGKEIT zu reisen." },
   "account": { "welcome": "Willkommen, {name}" },
   "navbar": {
     "aboutUs": "Über uns",
-    "account": {
-      "account": "Konto",
-      "signIn": "Anmelden",
-      "signOut": "Abmelden"
-    },
+    "account": { "account": "Konto", "login": "Login", "signOut": "Abmelden" },
     "contactUs": "Kontaktieren Sie uns",
     "savedTrips": "Gespeicherte Reisen"
   }

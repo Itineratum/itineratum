@@ -12,7 +12,7 @@ const ItineratumLogo = ({}: {}) => {
 
   return (
     <Link href={buildLocaleEndpoint(locale, constEndpoints.home.endpoint)}>
-      <Button key={constEndpoints.home.name} color="secondary">
+      <Button key={constEndpoints.home.name} sx={{ color: "text.primary" }}>
         <Text
           text={constTexts.pageTitle}
           variant={TypographyVariant.h2}

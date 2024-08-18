@@ -1,5 +1,5 @@
 import Navbar from "@/components/organisms/navbar";
-import SessionProvider from "@/components/SessionProvider";
+import SessionProvider from "@/app/providers/SessionProvider";
 import { locales } from "@/navigation";
 import theme from "@/styles/theme";
 import { ThemeProvider } from "@mui/material";
@@ -31,7 +31,7 @@ const HomeLayout = ({
             <body>
               <ThemeProvider theme={theme}>
                 <Navbar />
-                {children}
+                <main>{children}</main>
               </ThemeProvider>
             </body>
           </AppRouterCacheProvider>

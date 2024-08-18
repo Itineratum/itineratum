@@ -46,13 +46,11 @@ const ProfileIcon = () => {
   const signOutMenuItem = () => {
     return (
       <MenuItem onClick={() => signOut()}>
-        <Box color="black">
-          <Text
-            text={t("navbar.account.signOut")}
-            variant={TypographyVariant.h4}
-            bold={false}
-          />
-        </Box>
+        <Text
+          text={t("navbar.account.signOut")}
+          variant={TypographyVariant.h4}
+          bold={false}
+        />
       </MenuItem>
     );
   };
@@ -65,7 +63,7 @@ const ProfileIcon = () => {
         aria-haspopup="true"
         aria-expanded={open ? "true" : undefined}
         onClick={handleClick}
-        sx={{ color: "black", mx: 0.5 }}
+        sx={{ color: "text.primary", mx: 0.5 }}
       >
         <PersonOutlineOutlinedIcon />
       </Button>

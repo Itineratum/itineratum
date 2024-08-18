@@ -1,11 +1,21 @@
 {
+  "login": {
+    "loginForm": {
+      "country": "国/地域",
+      "number": "電話番号",
+      "privacyPolicy": "プライバシーポリシー",
+      "signUp": "サインアップ"
+    },
+    "loginOrSignup": "ログインまたはサインアップ",
+    "welcome": "旅行者様、ようこそ！"
+  },
   "home": { "header": "楽に旅行する時間です。" },
   "account": { "welcome": "ようこそ、 {name}" },
   "navbar": {
     "aboutUs": "私たちについて",
     "account": {
       "account": "アカウント",
-      "signIn": "サインイン",
+      "login": "ログイン",
       "signOut": "サインアウト"
     },
     "contactUs": "お問い合わせ",

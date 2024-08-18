@@ -1,11 +1,21 @@
 {
+  "login": {
+    "loginForm": {
+      "country": "Pays/Région",
+      "number": "Numéro de téléphone",
+      "privacyPolicy": "politique de confidentialité",
+      "signUp": "S'inscrire"
+    },
+    "loginOrSignup": "Connectez-vous ou inscrivez-vous",
+    "welcome": "Bienvenue voyageur !"
+  },
   "home": { "header": "Il est temps de voyager en toute simplicité." },
   "account": { "welcome": "Bienvenue, {name}" },
   "navbar": {
     "aboutUs": "À propos de nous",
     "account": {
       "account": "Compte",
-      "signIn": "Se connecter",
+      "login": "Se connecter",
       "signOut": "Se déconnecter"
     },
     "contactUs": "Contactez-nous",

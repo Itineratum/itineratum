@@ -1,0 +1,24 @@
+{
+  "palette": {
+    "primary": {
+      "main": "#173F55"
+    },
+    "secondary": {
+      "main": "#FF8161"
+    },
+    "text": {
+      "primary": "#000000",
+      "secondary": "#ffffff"
+    }
+  },
+  "components": {
+    "loginButton": {
+      "color": "#ffffff",
+      "backgroundColor": "#173F55",
+      "hoverBackgroundColor": "#FF8161"
+    },
+    "textField": {
+      "backgroundColor": "#E7E2E2"
+    }
+  }
+}

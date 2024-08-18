@@ -57,7 +57,7 @@ const ButtonMenu = ({
         aria-haspopup="true"
         aria-expanded={open ? "true" : undefined}
         onClick={handleClick}
-        sx={{ color: "black", mx: 0.5 }}
+        sx={{ color: "text.primary", mx: 0.5 }}
       >
         {buttonElement}
       </Button>

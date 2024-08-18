@@ -1,11 +1,21 @@
 {
+  "login": {
+    "loginForm": {
+      "country": "Negara/Wilayah",
+      "number": "Nombor Telefon",
+      "privacyPolicy": "Dasar Privasi",
+      "signUp": "Daftar"
+    },
+    "loginOrSignup": "Log masuk atau Daftar",
+    "welcome": "Selamat Datang Pengembara!"
+  },
   "home": { "header": "Sudah tiba masanya untuk mengembara dengan EASE." },
   "account": { "welcome": "Selamat datang, {name}" },
   "navbar": {
     "aboutUs": "Tentang Kami",
     "account": {
       "account": "Akaun",
-      "signIn": "Log Masuk",
+      "login": "Log masuk",
       "signOut": "Log Keluar"
     },
     "contactUs": "Hubungi Kami",

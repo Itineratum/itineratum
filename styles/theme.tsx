@@ -2,6 +2,7 @@
 import { getFontFamily } from "@/utils/getFontFamily";
 import { createTheme } from "@mui/material/styles";
 import { Roboto, Roboto_Mono } from "next/font/google";
+import colorsConst from "@/constants/pages/colors.json";
 
 export const roboto = Roboto({
   weight: ["300", "400", "500", "700"],
@@ -19,13 +20,16 @@ const defaultFontFamily = getFontFamily(robotoMono);
 
 const theme = createTheme({
   palette: {
+    mode: "light",
     primary: {
-      main: "#ffffff",
-      contrastText: "#000000",
+      main: colorsConst.palette.primary.main,
     },
     secondary: {
-      main: "#000000",
-      contrastText: "#ffffff",
+      main: colorsConst.palette.secondary.main,
+    },
+    text: {
+      primary: colorsConst.palette.text.primary,
+      secondary: colorsConst.palette.text.secondary,
     },
   },
   typography: {
