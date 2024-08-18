@@ -9,7 +9,7 @@ export const signIn = async ({
   account,
 }: {
   user: AuthUser;
-  account: Account;
+  account?: Account | null;
 }) => {
   try {
     await connectToDatabase();
@@ -19,7 +19,7 @@ export const signIn = async ({
     if (!isExistingUser) {
       const name: string = user.name!;
       const profilePicture: string = user.image!;
-      const authService: AuthService = getAuthService(account.provider);
+      const authService: AuthService = getAuthService(account?.provider!);
       await User.create(
         initialUser(name, email, profilePicture, authService),
       ).then((result) => {
