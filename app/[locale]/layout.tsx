@@ -27,14 +27,14 @@ const HomeLayout = ({
     <html lang={locale}>
       <SessionProvider session={session}>
         <NextIntlClientProvider locale={locale} messages={messages}>
-          <body>
-            <AppRouterCacheProvider>
+          <AppRouterCacheProvider>
+            <body>
               <ThemeProvider theme={theme}>
                 <Navbar />
                 {children}
               </ThemeProvider>
-            </AppRouterCacheProvider>
-          </body>
+            </body>
+          </AppRouterCacheProvider>
         </NextIntlClientProvider>
       </SessionProvider>
     </html>

@@ -4,7 +4,7 @@ import { Country } from "@/constants/enums/country";
 import { Currency } from "@/constants/enums/currency";
 import { Language } from "@/constants/enums/language";
 import { IUser } from "@/constants/types/user";
-import mongoose, { model } from "mongoose";
+import mongoose, { Model, model, models } from "mongoose";
 const { Schema } = mongoose;
 
 const userSchema = new Schema<IUser>(
@@ -47,5 +47,4 @@ export const initialUser = (
   };
 };
 
-const User = model("User", userSchema);
-export default User;
+export default models.User || mongoose.model("User", userSchema);
