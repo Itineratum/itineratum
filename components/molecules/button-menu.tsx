@@ -12,7 +12,6 @@ const ButtonMenu = ({
   icon,
   menuItems,
   useLink,
-  locale,
   itemChangeHandler,
 }: ButtonMenuProps) => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
@@ -41,7 +40,6 @@ const ButtonMenu = ({
       <LinkMenuItem
         item={item}
         text={menuItems[item]}
-        locale={locale}
         handleClose={handleClose}
       />
     ) : (

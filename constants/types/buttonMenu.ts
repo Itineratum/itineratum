@@ -6,7 +6,6 @@ type ButtonMenuPropsWithLink = {
   icon?: ReactNode;
   menuItems: Record<string, string>;
   useLink: true;
-  locale: string;
   itemChangeHandler?: (_: string) => void;
 };
 
@@ -16,7 +15,6 @@ type ButtonMenuPropsWithoutLink = {
   icon?: ReactNode;
   menuItems: Record<string, string>;
   useLink: false;
-  locale?: string;
   itemChangeHandler: (_: string) => void;
 };
 

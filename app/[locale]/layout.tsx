@@ -30,7 +30,7 @@ const HomeLayout = ({
           <body>
             <AppRouterCacheProvider>
               <ThemeProvider theme={theme}>
-                <Navbar locale={locale} />
+                <Navbar />
                 {children}
               </ThemeProvider>
             </AppRouterCacheProvider>

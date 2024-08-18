@@ -3,19 +3,19 @@ import { useRouter } from "@/navigation";
 import { buildLocaleEndpoint } from "@/utils/buildLocaleEndpoint";
 import { Box, Link, MenuItem } from "@mui/material";
 import Text from "../atoms/text";
+import { useLocale } from "next-intl";
 
 const LinkMenuItem = ({
   item,
   text,
-  locale,
   handleClose,
 }: {
   item: string;
   text: string;
-  locale: string;
   handleClose: () => void;
 }) => {
   const router = useRouter();
+  const locale: string = useLocale();
 
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {
     event.preventDefault();

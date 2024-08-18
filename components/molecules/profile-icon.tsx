@@ -8,7 +8,7 @@ import { useEffect, useState } from "react";
 import LinkMenuItem from "../atoms/link-menu-item";
 import Text from "../atoms/text";
 
-const ProfileIcon = ({ locale }: { locale: string }) => {
+const ProfileIcon = () => {
   const id: string = "profile-icon";
   const button: string = `${id}-button`;
   const menu: string = `${id}-menu`;
@@ -39,7 +39,6 @@ const ProfileIcon = ({ locale }: { locale: string }) => {
       <LinkMenuItem
         item={"account"}
         text={t("navbar.account.account")}
-        locale={locale}
         handleClose={handleClose}
       />
     );

@@ -4,13 +4,12 @@ import constEndpoints from "@/constants/pages/endpoints.json";
 import constTexts from "@/constants/pages/texts.json";
 import { buildLocaleEndpoint } from "@/utils/buildLocaleEndpoint";
 import { Button } from "@mui/material";
+import { useLocale } from "next-intl";
 import Link from "next/link";
 
-const ItineratumLogo = ({
-  params: { locale },
-}: {
-  params: { locale: string };
-}) => {
+const ItineratumLogo = ({}: {}) => {
+  const locale = useLocale();
+
   return (
     <Link href={buildLocaleEndpoint(locale, constEndpoints.home.endpoint)}>
       <Button key={constEndpoints.home.name} color="secondary">

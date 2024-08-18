@@ -10,7 +10,7 @@ import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
 import Toolbar from "@mui/material/Toolbar";
 import { useSession } from "next-auth/react";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import Text from "../atoms/text";
 import CurrencySwitcher from "../molecules/currency-switcher";
 import ItineratumLogo from "../molecules/itineratum-logo";
@@ -19,10 +19,11 @@ import NavbarItem from "../molecules/navbar-item";
 import ProfileIcon from "../molecules/profile-icon";
 import SignInButton from "../molecules/sign-in-button";
 
-const Navbar = ({ locale }: { locale: string }) => {
+const Navbar = () => {
   const navBarWidth: string = "90%";
   const { data: session } = useSession();
   const t = useTranslations();
+  const locale = useLocale();
 
   const savedTrips = () => {
     return (
@@ -68,11 +69,7 @@ const Navbar = ({ locale }: { locale: string }) => {
     );
   };
   const account = () => {
-    return session?.user?.name ? (
-      <ProfileIcon locale={locale} />
-    ) : (
-      <SignInButton />
-    );
+    return session?.user?.name ? <ProfileIcon /> : <SignInButton />;
   };
 
   return (
@@ -87,7 +84,7 @@ const Navbar = ({ locale }: { locale: string }) => {
         }}
       >
         <Box sx={{ display: "flex", alignItems: "center" }}>
-          <ItineratumLogo params={{ locale }} />
+          <ItineratumLogo />
         </Box>
         <Box
           sx={{
