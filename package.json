@@ -19,6 +19,7 @@
     "@mui/material-nextjs": "^5.16.6",
     "cookies-next": "^4.2.1",
     "countries-list": "^3.1.1",
+    "jwt-decode": "^4.0.0",
     "mongodb": "^6.8.0",
     "mongoose": "^8.5.2",
     "next": "14.2.5",

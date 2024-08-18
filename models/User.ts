@@ -9,19 +9,43 @@ const { Schema } = mongoose;
 
 const userSchema = new Schema<IUser>(
   {
-    username: { type: String, required: true },
-    first_name: { type: String, required: true },
-    last_name: { type: String, required: true },
-    country: { type: String, enum: Country, required: true },
-    phone_number: { type: Number, required: true },
+    name: { type: String, required: false },
+    country: { type: String, enum: Country, required: false },
+    phone_number: { type: Number, required: false },
     email: { type: String, required: true, unique: true },
-    profile_picture: String,
+    profile_picture: { type: String, required: false },
     auth_service: { type: String, enum: AuthService, required: true },
-    language: { type: String, enum: Language, default: Language.en },
-    currency: { type: String, enum: Currency, default: Currency.sgd },
+    language: {
+      type: String,
+      enum: Language,
+      default: Language.en,
+      required: true,
+    },
+    currency: {
+      type: String,
+      enum: Currency,
+      default: Currency.sgd,
+      required: true,
+    },
+    account_created: { type: Date, required: true },
   },
   { collection: constDbCollections.users },
 );
+
+export const initialUser = (
+  name: string,
+  email: string,
+  profile_picture: string,
+  auth_service: AuthService,
+) => {
+  return {
+    name,
+    email,
+    profile_picture,
+    auth_service,
+    account_created: Date.now(),
+  };
+};
 
 const User = model("User", userSchema);
 export default User;

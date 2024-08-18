@@ -14,8 +14,23 @@ export const connectToDatabase = async () => {
         ? (cachedClient = await mongoose.connect(process.env.DB_TEST!))
         : await mongoose.connect(process.env.DB_PROD!);
 
+    console.log("Connected to MongoDB!");
     return cachedClient;
   } catch (error) {
     throw error;
+  }
+};
+
+export const disconnectFromDatabase = async () => {
+  if (cachedClient) {
+    try {
+      await mongoose.disconnect();
+      cachedClient = null;
+      console.log("Disconnected from MongoDB!");
+    } catch (error) {
+      console.error(error);
+    }
+  } else {
+    console.log("No MongoDB connection to disconnect!");
   }
 };
