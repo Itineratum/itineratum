@@ -3,6 +3,7 @@
     "loginForm": {
       "country": "Land/Region",
       "number": "Telefonnummer",
+      "numberError": "Ungültige Telefonnummer!",
       "privacyPolicy": "Datenschutzrichtlinie",
       "signUp": "Melden Sie sich an"
     },

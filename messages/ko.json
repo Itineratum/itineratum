@@ -3,6 +3,7 @@
     "loginForm": {
       "country": "국가/지역",
       "number": "전화 번호",
+      "numberError": "잘못된 전화번호입니다!",
       "privacyPolicy": "개인정보 보호정책",
       "signUp": "가입하기"
     },

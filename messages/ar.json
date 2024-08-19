@@ -3,6 +3,7 @@
     "loginForm": {
       "country": "البلد/المنطقة",
       "number": "رقم التليفون",
+      "numberError": "رقم الهاتف غير صالح!",
       "privacyPolicy": "سياسة الخصوصية",
       "signUp": "اشتراك"
     },

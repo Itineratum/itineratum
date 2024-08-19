@@ -18,6 +18,7 @@
       "hoverBackgroundColor": "#FF8161"
     },
     "textField": {
+      "color": "#000000",
       "backgroundColor": "#E7E2E2"
     }
   }

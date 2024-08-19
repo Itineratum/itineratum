@@ -3,6 +3,7 @@
     "loginForm": {
       "country": "Negara/Wilayah",
       "number": "Nombor Telefon",
+      "numberError": "Nombor telefon tidak sah!",
       "privacyPolicy": "Dasar Privasi",
       "signUp": "Daftar"
     },

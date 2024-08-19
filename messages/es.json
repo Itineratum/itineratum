@@ -3,6 +3,7 @@
     "loginForm": {
       "country": "País/Región",
       "number": "Número de teléfono",
+      "numberError": "¡Número de teléfono inválido!",
       "privacyPolicy": "política de privacidad",
       "signUp": "Inscribirse"
     },

@@ -20,6 +20,7 @@
     "cookies-next": "^4.2.1",
     "countries-list": "^3.1.1",
     "jwt-decode": "^4.0.0",
+    "libphonenumber-js": "^1.11.7",
     "lodash": "^4.17.21",
     "mongodb": "^6.8.0",
     "mongoose": "^8.5.2",
