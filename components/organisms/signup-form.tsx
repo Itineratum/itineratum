@@ -9,7 +9,7 @@ import { Box, Button, Divider, Grid, MenuItem, TextField } from "@mui/material";
 import { CountryCode, isValidPhoneNumber } from "libphonenumber-js";
 import { useTranslations } from "next-intl";
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 const SignUpForm = () => {
   const t = useTranslations();
@@ -25,20 +25,21 @@ const SignUpForm = () => {
     backgroundColor: color.backgroundColor,
     borderRadius: formFieldBorderRadius,
     "& .MuiFilledInput-root": {
-      borderRadius: formFieldBorderRadius, // ensure the filled area is rounded
+      borderRadius: formFieldBorderRadius,
       "&:before, &:after": {
-        borderBottom: "none", // remove the underline when the text field is being clicked on
+        borderBottom: "none",
       },
     },
     "& .MuiInputBase-input": {
-      borderRadius: formFieldBorderRadius, // ensure the input text area is rounded
+      borderRadius: formFieldBorderRadius,
     },
   };
+
   const [country, setCountry] = useState<string>("");
+  const [countryIso2, setCountryIso2] = useState<string>("");
   const [countryCode, setCountryCode] = useState<string>("");
   const [phoneNumber, setPhoneNumber] = useState<string>("");
 
-  // TODO
   const handleSubmit = () => {};
 
   const countryField = () => {
@@ -47,14 +48,17 @@ const SignUpForm = () => {
     const handleCountryChange = (
       event: React.ChangeEvent<HTMLInputElement>,
     ) => {
-      const country = event.target.value;
-      setCountry(country);
+      const selectedCountry = event.target.value;
+      setCountry(selectedCountry);
 
       try {
-        const callingCode = countryInfoList[country as CountryCode].callingCode;
-        setCountryCode(`${callingCode}`);
+        const callingCode =
+          countryInfoList[selectedCountry as CountryCode].callingCode;
+        setCountryCode(callingCode);
+        setCountryIso2(selectedCountry);
       } catch (error) {
         setCountryCode("");
+        setCountryIso2("");
       }
     };
 
@@ -87,9 +91,44 @@ const SignUpForm = () => {
       </TextField>
     );
   };
+
   const phoneNumberSection = () => {
     const countryCodeWidth: number = 4;
     const numberWidth: number = 12 - countryCodeWidth;
+    const [error, setError] = useState<boolean>(false);
+    const [helperText, setHelperText] = useState<string>("");
+
+    useEffect(() => {
+      if (countryCode) {
+        validatePhoneNumber(phoneNumber);
+      }
+    }, [countryCode]);
+
+    const validatePhoneNumber = (number: string) => {
+      const onError = () => {
+        setError(true);
+        setHelperText(t("login.loginForm.numberError"));
+      };
+
+      try {
+        if (!isValidPhoneNumber(number, countryIso2 as CountryCode)) {
+          onError();
+        } else {
+          setError(false);
+          setHelperText("");
+        }
+      } catch (error) {
+        onError();
+      }
+    };
+
+    const handlePhoneNumberChange = (
+      event: React.ChangeEvent<HTMLInputElement>,
+    ) => {
+      const inputPhoneNumber = event.target.value;
+      setPhoneNumber(inputPhoneNumber);
+      validatePhoneNumber(inputPhoneNumber);
+    };
 
     const countryCodeField = () => {
       return (
@@ -107,33 +146,8 @@ const SignUpForm = () => {
         />
       );
     };
+
     const numberField = () => {
-      const [error, setError] = useState<boolean>(false);
-      const [helperText, setHelperText] = useState<string>("");
-
-      const handlePhoneNumberChange = (
-        event: React.ChangeEvent<HTMLInputElement>,
-      ) => {
-        const inputPhoneNumber = event.target.value;
-        setPhoneNumber(inputPhoneNumber);
-
-        const onError = () => {
-          setError(true);
-          setHelperText(t("login.loginForm.numberError"));
-        };
-
-        try {
-          if (!isValidPhoneNumber(inputPhoneNumber, country as CountryCode)) {
-            onError();
-          } else {
-            setError(false);
-            setHelperText("");
-          }
-        } catch (error) {
-          onError();
-        }
-      };
-
       return (
         <TextField
           required
@@ -163,6 +177,7 @@ const SignUpForm = () => {
       </Grid>
     );
   };
+
   const privacyPolicyLink = () => {
     return (
       <Box sx={{ textAlign: "left", width: "100%" }}>
@@ -180,6 +195,7 @@ const SignUpForm = () => {
       </Box>
     );
   };
+
   const signUpButton = () => {
     const buttonWidth: string = "40%";
 
@@ -203,18 +219,6 @@ const SignUpForm = () => {
     const gapBetweenLines: number = 4;
     const lineThickness: number = 3;
 
-    const line = () => {
-      return (
-        <Divider
-          sx={{
-            flexGrow: 1,
-            borderBottomWidth: lineThickness,
-            borderBottomColor: "text.primary",
-          }}
-        />
-      );
-    };
-
     return (
       <Box
         sx={{
@@ -224,10 +228,18 @@ const SignUpForm = () => {
           my: formMargin,
         }}
       >
-        {line()}
+        <Divider
+          sx={{
+            flexGrow: 1,
+            borderBottomWidth: lineThickness,
+            borderBottomColor: "text.primary",
+          }}
+        />
         <Box
           sx={{
             mx: gapBetweenLines,
+            color: "text.primary",
+            fontWeight: "bold",
           }}
         >
           <Text
@@ -236,7 +248,13 @@ const SignUpForm = () => {
             bold={true}
           />
         </Box>
-        {line()}
+        <Divider
+          sx={{
+            flexGrow: 1,
+            borderBottomWidth: lineThickness,
+            borderBottomColor: "text.primary",
+          }}
+        />
       </Box>
     );
   };
