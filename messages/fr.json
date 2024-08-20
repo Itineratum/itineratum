@@ -2,8 +2,10 @@
   "login": {
     "loginForm": {
       "country": "Pays/Région",
+      "countryCode": "Code du pays",
       "number": "Numéro de téléphone",
       "numberError": "Numéro de téléphone invalide !",
+      "or": "ou",
       "privacyPolicy": "politique de confidentialité",
       "signUp": "S'inscrire"
     },

@@ -2,8 +2,10 @@
   "login": {
     "loginForm": {
       "country": "国/地域",
+      "countryCode": "国コード",
       "number": "電話番号",
       "numberError": "電話番号が無効です。",
+      "or": "または",
       "privacyPolicy": "プライバシーポリシー",
       "signUp": "サインアップ"
     },

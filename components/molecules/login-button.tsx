@@ -1,11 +1,11 @@
 import { TypographyVariant } from "@/constants/enums/theme";
+import colorsConst from "@/constants/pages/colors.json";
 import endpointConst from "@/constants/pages/endpoints.json";
 import { buildLocaleEndpoint } from "@/utils/buildLocaleEndpoint";
 import { Button } from "@mui/material";
 import { useLocale, useTranslations } from "next-intl";
 import Link from "next/link";
 import Text from "../atoms/text";
-import colorsConst from "@/constants/pages/colors.json";
 
 const LoginButton = () => {
   const t = useTranslations();

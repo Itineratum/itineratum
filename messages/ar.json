@@ -2,8 +2,10 @@
   "login": {
     "loginForm": {
       "country": "البلد/المنطقة",
+      "countryCode": "رمز الدولة",
       "number": "رقم التليفون",
       "numberError": "رقم الهاتف غير صالح!",
+      "or": "أو",
       "privacyPolicy": "سياسة الخصوصية",
       "signUp": "اشتراك"
     },

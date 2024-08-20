@@ -2,8 +2,10 @@
   "login": {
     "loginForm": {
       "country": "国家/地区",
+      "countryCode": "国家代码",
       "number": "电话号码",
       "numberError": "无效的电话号码！",
+      "or": "或者",
       "privacyPolicy": "隐私政策",
       "signUp": "报名"
     },

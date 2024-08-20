@@ -2,8 +2,10 @@
   "login": {
     "loginForm": {
       "country": "Land/Region",
+      "countryCode": "Landesvorwahl",
       "number": "Telefonnummer",
       "numberError": "Ungültige Telefonnummer!",
+      "or": "oder",
       "privacyPolicy": "Datenschutzrichtlinie",
       "signUp": "Melden Sie sich an"
     },

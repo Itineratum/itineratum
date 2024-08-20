@@ -2,8 +2,10 @@
   "login": {
     "loginForm": {
       "country": "Negara/Wilayah",
+      "countryCode": "Kod Negara",
       "number": "Nombor Telefon",
       "numberError": "Nombor telefon tidak sah!",
+      "or": "atau",
       "privacyPolicy": "Dasar Privasi",
       "signUp": "Daftar"
     },

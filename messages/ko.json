@@ -2,8 +2,10 @@
   "login": {
     "loginForm": {
       "country": "국가/지역",
+      "countryCode": "국가 코드",
       "number": "전화 번호",
       "numberError": "잘못된 전화번호입니다!",
+      "or": "또는",
       "privacyPolicy": "개인정보 보호정책",
       "signUp": "가입하기"
     },
