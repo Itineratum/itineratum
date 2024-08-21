@@ -1,6 +1,21 @@
 {
-  "login": {
-    "loginForm": {
+  "login": { "login": "Login", "welcome": "Welcome Traveller!" },
+  "home": { "header": "It's time to travel with EASE." },
+  "account": { "welcome": "Welcome, {name}" },
+  "navbar": {
+    "aboutUs": "About Us",
+    "account": {
+      "account": "Account",
+      "login": "Login",
+      "signOut": "Sign Out",
+      "signUp": "Sign Up"
+    },
+    "contactUs": "Contact Us",
+    "savedTrips": "Saved Trips"
+  },
+  "signUp": {
+    "signUp": "Sign Up",
+    "signUpForm": {
       "country": "Country/Region",
       "countryCode": "Country Code",
       "number": "Phone Number",
@@ -9,19 +24,6 @@
       "privacyPolicy": "Privacy Policy",
       "signUp": "Sign Up"
     },
-    "loginOrSignup": "Login or Sign Up",
     "welcome": "Welcome Traveller!"
-  },
-  "home": { "header": "It's time to travel with EASE." },
-  "account": { "welcome": "Welcome, {name}" },
-  "navbar": {
-    "aboutUs": "About Us",
-    "account": {
-      "account": "Account",
-      "login": "Login",
-      "signOut": "Sign Out"
-    },
-    "contactUs": "Contact Us",
-    "savedTrips": "Saved Trips"
   }
 }

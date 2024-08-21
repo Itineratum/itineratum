@@ -19,6 +19,10 @@
     "name": "Login",
     "endpoint": "login"
   },
+  "signup": {
+    "name": "Sign Up",
+    "endpoint": "sign-up"
+  },
   "profileIcon": {
     "actions": [
       {

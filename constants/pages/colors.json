@@ -12,11 +12,6 @@
     }
   },
   "components": {
-    "loginButton": {
-      "color": "#ffffff",
-      "backgroundColor": "#173F55",
-      "hoverBackgroundColor": "#FF8161"
-    },
     "textField": {
       "color": "#000000",
       "backgroundColor": "#E7E2E2"

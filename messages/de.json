@@ -1,6 +1,21 @@
 {
-  "login": {
-    "loginForm": {
+  "login": { "login": "Login", "welcome": "Willkommen, Reisender!" },
+  "home": { "header": "Es ist Zeit, mit LEICHTIGKEIT zu reisen." },
+  "account": { "welcome": "Willkommen, {name}" },
+  "navbar": {
+    "aboutUs": "Über uns",
+    "account": {
+      "account": "Konto",
+      "login": "Login",
+      "signOut": "Abmelden",
+      "signUp": "Melden Sie sich an"
+    },
+    "contactUs": "Kontaktieren Sie uns",
+    "savedTrips": "Gespeicherte Reisen"
+  },
+  "signUp": {
+    "signUp": "Melden Sie sich an",
+    "signUpForm": {
       "country": "Land/Region",
       "countryCode": "Landesvorwahl",
       "number": "Telefonnummer",
@@ -9,15 +24,6 @@
       "privacyPolicy": "Datenschutzrichtlinie",
       "signUp": "Melden Sie sich an"
     },
-    "loginOrSignup": "Anmelden oder Registrieren",
     "welcome": "Willkommen, Reisender!"
-  },
-  "home": { "header": "Es ist Zeit, mit LEICHTIGKEIT zu reisen." },
-  "account": { "welcome": "Willkommen, {name}" },
-  "navbar": {
-    "aboutUs": "Über uns",
-    "account": { "account": "Konto", "login": "Login", "signOut": "Abmelden" },
-    "contactUs": "Kontaktieren Sie uns",
-    "savedTrips": "Gespeicherte Reisen"
   }
 }

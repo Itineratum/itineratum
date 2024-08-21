@@ -17,7 +17,7 @@ import ItineratumLogo from "../molecules/itineratum-logo";
 import LanguageSwitcher from "../molecules/language-switcher";
 import NavbarItem from "../molecules/navbar-item";
 import ProfileIcon from "../molecules/profile-icon";
-import LoginButton from "../molecules/login-button";
+import SignupLoginButtons from "../molecules/signup-login-buttons";
 
 const Navbar = () => {
   const navBarWidth: string = "90%";
@@ -63,13 +63,17 @@ const Navbar = () => {
   };
   const dash = () => {
     return (
-      <Box sx={{ ml: 1.5 }}>
+      <Box sx={{ ml: 1 }}>
         <Text text={"-"} variant={TypographyVariant.h4} bold={true} />
       </Box>
     );
   };
   const account = () => {
-    return session?.user?.name ? <ProfileIcon /> : <LoginButton />;
+    return (
+      <Box sx={{ mx: 3 }}>
+        {session?.user?.name ? <ProfileIcon /> : <SignupLoginButtons />}
+      </Box>
+    );
   };
 
   return (

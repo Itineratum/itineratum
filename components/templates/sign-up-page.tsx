@@ -5,15 +5,16 @@ import { TypographyVariant } from "@/constants/enums/theme";
 import Box from "@mui/material/Box";
 import Container from "@mui/material/Container";
 import { useTranslations } from "next-intl";
+import SignUpForm from "../organisms/signup-form";
 
-const LoginPage = () => {
+const SignUpPage = () => {
   const t = useTranslations();
 
-  const loginText = () => {
+  const signUpText = () => {
     return (
       <Box marginBottom={5}>
         <Text
-          text={t("login.login")}
+          text={t("signUp.signUp")}
           variant={TypographyVariant.h3}
           bold={true}
         />
@@ -24,7 +25,7 @@ const LoginPage = () => {
     return (
       <Box sx={{ textAlign: "left", width: "100%" }}>
         <Text
-          text={t("login.welcome")}
+          text={t("signUp.welcome")}
           variant={TypographyVariant.h3}
           bold={true}
         />
@@ -42,11 +43,12 @@ const LoginPage = () => {
           alignItems: "center",
         }}
       >
-        {loginText()}
+        {signUpText()}
         {welcomeTravellerText()}
       </Box>
+      <SignUpForm />
     </Container>
   );
 };
 
-export default LoginPage;
+export default SignUpPage;

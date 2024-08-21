@@ -1,6 +1,21 @@
 {
-  "login": {
-    "loginForm": {
+  "login": { "login": "Log masuk", "welcome": "Selamat Datang Pengembara!" },
+  "home": { "header": "Sudah tiba masanya untuk mengembara dengan EASE." },
+  "account": { "welcome": "Selamat datang, {name}" },
+  "navbar": {
+    "aboutUs": "Tentang Kami",
+    "account": {
+      "account": "Akaun",
+      "login": "Log masuk",
+      "signOut": "Log Keluar",
+      "signUp": "Daftar"
+    },
+    "contactUs": "Hubungi Kami",
+    "savedTrips": "Perjalanan Disimpan"
+  },
+  "signUp": {
+    "signUp": "Daftar",
+    "signUpForm": {
       "country": "Negara/Wilayah",
       "countryCode": "Kod Negara",
       "number": "Nombor Telefon",
@@ -9,19 +24,6 @@
       "privacyPolicy": "Dasar Privasi",
       "signUp": "Daftar"
     },
-    "loginOrSignup": "Log masuk atau Daftar",
     "welcome": "Selamat Datang Pengembara!"
-  },
-  "home": { "header": "Sudah tiba masanya untuk mengembara dengan EASE." },
-  "account": { "welcome": "Selamat datang, {name}" },
-  "navbar": {
-    "aboutUs": "Tentang Kami",
-    "account": {
-      "account": "Akaun",
-      "login": "Log masuk",
-      "signOut": "Log Keluar"
-    },
-    "contactUs": "Hubungi Kami",
-    "savedTrips": "Perjalanan Disimpan"
   }
 }

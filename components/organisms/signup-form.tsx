@@ -71,7 +71,7 @@ const SignUpForm = () => {
         variant="filled"
         sx={formFieldStyling}
         margin={formFieldMargin}
-        label={t("login.loginForm.country")}
+        label={t("signUp.signUpForm.country")}
         value={country}
         onChange={handleCountryChange}
         InputLabelProps={{ sx: { color: "text.primary" } }}
@@ -107,7 +107,7 @@ const SignUpForm = () => {
     const validatePhoneNumber = (number: string) => {
       const onError = () => {
         setError(true);
-        setHelperText(t("login.loginForm.numberError"));
+        setHelperText(t("signUp.signUpForm.numberError"));
       };
 
       try {
@@ -139,7 +139,7 @@ const SignUpForm = () => {
           variant="filled"
           sx={formFieldStyling}
           margin={formFieldMargin}
-          label={t("login.loginForm.countryCode")}
+          label={t("signUp.signUpForm.countryCode")}
           value={countryCode}
           InputProps={{ readOnly: true }}
           InputLabelProps={{ sx: { color: "text.primary" } }}
@@ -156,7 +156,7 @@ const SignUpForm = () => {
           variant="filled"
           sx={formFieldStyling}
           margin={formFieldMargin}
-          label={t("login.loginForm.number")}
+          label={t("signUp.signUpForm.number")}
           value={phoneNumber}
           InputLabelProps={{ sx: { color: "text.primary" } }}
           onChange={handlePhoneNumberChange}
@@ -187,7 +187,7 @@ const SignUpForm = () => {
           target="_blank"
         >
           <Text
-            text={t("login.loginForm.privacyPolicy")}
+            text={t("signUp.signUpForm.privacyPolicy")}
             variant={TypographyVariant.h5}
             bold={false}
           />
@@ -207,7 +207,7 @@ const SignUpForm = () => {
         sx={{ mt: formMargin, mb: formMargin, maxWidth: buttonWidth }}
       >
         <Text
-          text={t("login.loginForm.signUp")}
+          text={t("signUp.signUpForm.signUp")}
           variant={TypographyVariant.h4}
           bold={false}
         />
@@ -243,7 +243,7 @@ const SignUpForm = () => {
           }}
         >
           <Text
-            text={t("login.loginForm.or")}
+            text={t("signUp.signUpForm.or")}
             variant={TypographyVariant.h3}
             bold={true}
           />

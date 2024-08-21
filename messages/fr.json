@@ -1,6 +1,21 @@
 {
-  "login": {
-    "loginForm": {
+  "login": { "login": "Se connecter", "welcome": "Bienvenue voyageur !" },
+  "home": { "header": "Il est temps de voyager en toute simplicité." },
+  "account": { "welcome": "Bienvenue, {name}" },
+  "navbar": {
+    "aboutUs": "À propos de nous",
+    "account": {
+      "account": "Compte",
+      "login": "Se connecter",
+      "signOut": "Se déconnecter",
+      "signUp": "S'inscrire"
+    },
+    "contactUs": "Contactez-nous",
+    "savedTrips": "Voyages enregistrés"
+  },
+  "signUp": {
+    "signUp": "S'inscrire",
+    "signUpForm": {
       "country": "Pays/Région",
       "countryCode": "Code du pays",
       "number": "Numéro de téléphone",
@@ -9,19 +24,6 @@
       "privacyPolicy": "politique de confidentialité",
       "signUp": "S'inscrire"
     },
-    "loginOrSignup": "Connectez-vous ou inscrivez-vous",
     "welcome": "Bienvenue voyageur !"
-  },
-  "home": { "header": "Il est temps de voyager en toute simplicité." },
-  "account": { "welcome": "Bienvenue, {name}" },
-  "navbar": {
-    "aboutUs": "À propos de nous",
-    "account": {
-      "account": "Compte",
-      "login": "Se connecter",
-      "signOut": "Se déconnecter"
-    },
-    "contactUs": "Contactez-nous",
-    "savedTrips": "Voyages enregistrés"
   }
 }

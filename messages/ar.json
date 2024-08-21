@@ -1,6 +1,21 @@
 {
-  "login": {
-    "loginForm": {
+  "login": { "login": "تسجيل الدخول", "welcome": "مرحباً بالمسافر!" },
+  "home": { "header": "حان الوقت للسفر بكل سهولة." },
+  "account": { "welcome": "مرحباً {name}" },
+  "navbar": {
+    "aboutUs": "معلومات عنا",
+    "account": {
+      "account": "حساب",
+      "login": "تسجيل الدخول",
+      "signOut": "تسجيل الخروج",
+      "signUp": "اشتراك"
+    },
+    "contactUs": "اتصل بنا",
+    "savedTrips": "الرحلات المحفوظة"
+  },
+  "signUp": {
+    "signUp": "اشتراك",
+    "signUpForm": {
       "country": "البلد/المنطقة",
       "countryCode": "رمز الدولة",
       "number": "رقم التليفون",
@@ -9,19 +24,6 @@
       "privacyPolicy": "سياسة الخصوصية",
       "signUp": "اشتراك"
     },
-    "loginOrSignup": "تسجيل الدخول أو التسجيل",
     "welcome": "مرحباً بالمسافر!"
-  },
-  "home": { "header": "حان الوقت للسفر بكل سهولة." },
-  "account": { "welcome": "مرحباً {name}" },
-  "navbar": {
-    "aboutUs": "معلومات عنا",
-    "account": {
-      "account": "حساب",
-      "login": "تسجيل الدخول",
-      "signOut": "تسجيل الخروج"
-    },
-    "contactUs": "اتصل بنا",
-    "savedTrips": "الرحلات المحفوظة"
   }
 }
