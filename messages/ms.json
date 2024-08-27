@@ -1,5 +1,5 @@
 {
-  "login": { "login": "Log masuk", "welcome": "Selamat Datang Pengembara!" },
+  "login": { "login": "Log masuk", "welcome": "Selamat Datang Travellor!" },
   "home": { "header": "Sudah tiba masanya untuk mengembara dengan EASE." },
   "account": { "welcome": "Selamat datang, {name}" },
   "navbar": {
@@ -18,12 +18,14 @@
     "signUpForm": {
       "country": "Negara/Wilayah",
       "countryCode": "Kod Negara",
+      "email": "E-mel",
+      "emailError": "Alamat e-mel tidak sah!",
+      "next": "Seterusnya",
       "number": "Nombor Telefon",
       "numberError": "Nombor telefon tidak sah!",
       "or": "atau",
-      "privacyPolicy": "Dasar Privasi",
-      "signUp": "Daftar"
+      "privacyPolicy": "Dasar Privasi"
     },
-    "welcome": "Selamat Datang Pengembara!"
+    "welcome": "Selamat Datang Travellor!"
   }
 }

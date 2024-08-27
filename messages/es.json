@@ -18,11 +18,13 @@
     "signUpForm": {
       "country": "País/Región",
       "countryCode": "Código del país",
+      "email": "Correo electrónico",
+      "emailError": "¡Dirección de correo electrónico no válida!",
+      "next": "Próximo",
       "number": "Número de teléfono",
       "numberError": "¡Número de teléfono inválido!",
       "or": "o",
-      "privacyPolicy": "política de privacidad",
-      "signUp": "Inscribirse"
+      "privacyPolicy": "política de privacidad"
     },
     "welcome": "¡Bienvenido viajero!"
   }

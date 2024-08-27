@@ -1,5 +1,8 @@
 {
-  "login": { "login": "로그인", "welcome": "여행자 여러분, 환영합니다!" },
+  "login": {
+    "login": "로그인",
+    "welcome": "Travellor에 오신 것을 환영합니다!"
+  },
   "home": { "header": "이제 편안하게 여행할 시간입니다." },
   "account": { "welcome": "환영합니다, {name}" },
   "navbar": {
@@ -18,12 +21,14 @@
     "signUpForm": {
       "country": "국가/지역",
       "countryCode": "국가 코드",
+      "email": "이메일",
+      "emailError": "잘못된 이메일 주소입니다!",
+      "next": "다음",
       "number": "전화 번호",
       "numberError": "잘못된 전화번호입니다!",
       "or": "또는",
-      "privacyPolicy": "개인정보 보호정책",
-      "signUp": "가입하기"
+      "privacyPolicy": "개인정보 보호정책"
     },
-    "welcome": "여행자 여러분, 환영합니다!"
+    "welcome": "Travellor에 오신 것을 환영합니다!"
   }
 }

@@ -1,5 +1,5 @@
 {
-  "login": { "login": "Login", "welcome": "Welcome Traveller!" },
+  "login": { "login": "Login", "welcome": "Welcome Travellor!" },
   "home": { "header": "It's time to travel with EASE." },
   "account": { "welcome": "Welcome, {name}" },
   "navbar": {
@@ -18,12 +18,14 @@
     "signUpForm": {
       "country": "Country/Region",
       "countryCode": "Country Code",
+      "email": "Email",
+      "emailError": "Invalid email address!",
+      "next": "Next",
       "number": "Phone Number",
       "numberError": "Invalid phone number!",
       "or": "or",
-      "privacyPolicy": "Privacy Policy",
-      "signUp": "Sign Up"
+      "privacyPolicy": "Privacy Policy"
     },
-    "welcome": "Welcome Traveller!"
+    "welcome": "Welcome Travellor!"
   }
 }

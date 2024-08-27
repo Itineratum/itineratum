@@ -1,5 +1,5 @@
 {
-  "login": { "login": "ログイン", "welcome": "旅行者様、ようこそ！" },
+  "login": { "login": "ログイン", "welcome": "ようこそ旅行者へ！" },
   "home": { "header": "楽に旅行する時間です。" },
   "account": { "welcome": "ようこそ、 {name}" },
   "navbar": {
@@ -18,12 +18,14 @@
     "signUpForm": {
       "country": "国/地域",
       "countryCode": "国コード",
+      "email": "メール",
+      "emailError": "メールアドレスが無効です。",
+      "next": "次",
       "number": "電話番号",
       "numberError": "電話番号が無効です。",
       "or": "または",
-      "privacyPolicy": "プライバシーポリシー",
-      "signUp": "サインアップ"
+      "privacyPolicy": "プライバシーポリシー"
     },
-    "welcome": "旅行者様、ようこそ！"
+    "welcome": "ようこそ旅行者へ！"
   }
 }

@@ -1,5 +1,5 @@
 {
-  "login": { "login": "Login", "welcome": "Willkommen, Reisender!" },
+  "login": { "login": "Login", "welcome": "Willkommen, Travellor!" },
   "home": { "header": "Es ist Zeit, mit LEICHTIGKEIT zu reisen." },
   "account": { "welcome": "Willkommen, {name}" },
   "navbar": {
@@ -18,12 +18,14 @@
     "signUpForm": {
       "country": "Land/Region",
       "countryCode": "Landesvorwahl",
+      "email": "E-Mail",
+      "emailError": "Ungültige E-Mail-Adresse!",
+      "next": "Nächste",
       "number": "Telefonnummer",
       "numberError": "Ungültige Telefonnummer!",
       "or": "oder",
-      "privacyPolicy": "Datenschutzrichtlinie",
-      "signUp": "Melden Sie sich an"
+      "privacyPolicy": "Datenschutzrichtlinie"
     },
-    "welcome": "Willkommen, Reisender!"
+    "welcome": "Willkommen, Travellor!"
   }
 }

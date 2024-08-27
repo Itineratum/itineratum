@@ -1,5 +1,5 @@
 {
-  "login": { "login": "Se connecter", "welcome": "Bienvenue voyageur !" },
+  "login": { "login": "Se connecter", "welcome": "Bienvenue Travellor !" },
   "home": { "header": "Il est temps de voyager en toute simplicité." },
   "account": { "welcome": "Bienvenue, {name}" },
   "navbar": {
@@ -18,12 +18,14 @@
     "signUpForm": {
       "country": "Pays/Région",
       "countryCode": "Code du pays",
+      "email": "E-mail",
+      "emailError": "Adresse email invalide!",
+      "next": "Suivant",
       "number": "Numéro de téléphone",
       "numberError": "Numéro de téléphone invalide !",
       "or": "ou",
-      "privacyPolicy": "politique de confidentialité",
-      "signUp": "S'inscrire"
+      "privacyPolicy": "politique de confidentialité"
     },
-    "welcome": "Bienvenue voyageur !"
+    "welcome": "Bienvenue Travellor !"
   }
 }
