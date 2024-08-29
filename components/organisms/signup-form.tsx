@@ -23,6 +23,7 @@ import {
   useForm,
 } from "react-hook-form";
 import Text from "../atoms/text";
+import { isValidEmail } from "@/utils/signUpFormValidation";
 
 const SignUpForm = () => {
   const t = useTranslations();
@@ -58,10 +59,17 @@ const SignUpForm = () => {
   const countryId = "country";
   const countryCodeId = "countryCode";
   const numberId = "number";
+  const emailId = "email";
+  const passwordId = "password";
+  const reEnterPasswordId = "reEnterPassword";
 
   const country = watch(countryId);
   const number = watch(numberId);
+  const email = watch(emailId);
+  const password = watch(passwordId);
+  const reEnterPassword = watch(reEnterPasswordId);
 
+  // immediately trigger the number validation whenever the countryField changes
   useEffect(() => {
     if (country) {
       trigger(numberId);
@@ -102,6 +110,7 @@ const SignUpForm = () => {
           const callingCode =
             countryInfoList[inputCountry as CountryCode].callingCode;
           setValue(countryCodeId, callingCode);
+          trigger(countryId);
           trigger(numberId);
         } catch (error) {
           setValue(countryCodeId, "");
@@ -125,6 +134,10 @@ const SignUpForm = () => {
               margin={formFieldMargin}
               label={t("signUp.signUpForm.country")}
               value={country}
+              error={!!errors.country}
+              helperText={
+                errors.country ? (errors.country.message as string) : ""
+              }
               onChange={(event) => handleCountryChange(event, field)}
               InputLabelProps={{ sx: { color: "text.primary" } }}
               SelectProps={{
@@ -180,9 +193,17 @@ const SignUpForm = () => {
       };
 
       const numberField = () => {
-        const phoneNumberValidation = (value: string) => {
-          const isValid = isValidPhoneNumber(value, country);
+        const numberValidation = (number: string) => {
+          const isValid = isValidPhoneNumber(number, country);
           return isValid ? true : t("signUp.signUpForm.numberError");
+        };
+
+        const handleNumberChange = (
+          event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+          field: ControllerRenderProps<FieldValues, "number">,
+        ) => {
+          field.onChange(event.target.value);
+          trigger(numberId);
         };
 
         return (
@@ -191,7 +212,8 @@ const SignUpForm = () => {
             control={control}
             defaultValue=""
             rules={{
-              validate: phoneNumberValidation,
+              validate: numberValidation,
+              required: t("signUp.signUpForm.numberError"),
             }}
             render={({ field }) => (
               <TextField
@@ -202,6 +224,7 @@ const SignUpForm = () => {
                 sx={formFieldStyling}
                 margin={formFieldMargin}
                 label={t("signUp.signUpForm.number")}
+                value={number}
                 InputLabelProps={{
                   sx: { color: "text.primary" },
                 }}
@@ -209,10 +232,7 @@ const SignUpForm = () => {
                 helperText={
                   errors.number ? (errors.number.message as string) : ""
                 }
-                onChange={(event) => {
-                  field.onChange(event.target.value);
-                  trigger(numberId);
-                }}
+                onChange={(event) => handleNumberChange(event, field)}
               />
             )}
           />
@@ -243,7 +263,7 @@ const SignUpForm = () => {
 
       return (
         <Button
-          type="submit"
+          type="button"
           fullWidth
           variant="contained"
           sx={{ my: formMargin, maxWidth: buttonWidth, ml: "auto" }}
@@ -275,7 +295,156 @@ const SignUpForm = () => {
   };
 
   const page2 = () => {
-    return <Box></Box>;
+    const emailField = () => {
+      const emailValidation = (email: string) => {
+        const isValid = isValidEmail(email);
+        return isValid ? true : t("signUp.signUpForm.emailError");
+      };
+
+      const handleEmailChange = (
+        event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+        field: ControllerRenderProps<FieldValues, "email">,
+      ) => {
+        field.onChange(event.target.value);
+        trigger(emailId);
+      };
+
+      return (
+        <Controller
+          name={emailId}
+          control={control}
+          defaultValue=""
+          rules={{
+            validate: emailValidation,
+            required: t("signUp.signUpForm.emailError"),
+          }}
+          render={({ field }) => (
+            <TextField
+              {...field}
+              required
+              fullWidth
+              variant="filled"
+              sx={formFieldStyling}
+              margin={formFieldMargin}
+              label={t("signUp.signUpForm.email")}
+              value={email}
+              InputLabelProps={{
+                sx: { color: "text.primary" },
+              }}
+              error={!!errors.email}
+              helperText={errors.email ? (errors.email.message as string) : ""}
+              onChange={(event) => handleEmailChange(event, field)}
+            />
+          )}
+        />
+      );
+    };
+
+    const passwordField = () => {
+      const passwordValidation = (email: string) => {
+        // TODO:
+        const isValid = isValidEmail(email);
+        return isValid ? true : t("signUp.signUpForm.passwordError");
+      };
+
+      const handlePasswordChange = (
+        event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+        field: ControllerRenderProps<FieldValues, "password">,
+      ) => {
+        field.onChange(event.target.value);
+        trigger(passwordId);
+      };
+
+      return (
+        <Controller
+          name={passwordId}
+          control={control}
+          defaultValue=""
+          rules={{
+            validate: passwordValidation,
+            required: t("signUp.signUpForm.passwordError"),
+          }}
+          render={({ field }) => (
+            <TextField
+              {...field}
+              required
+              fullWidth
+              variant="filled"
+              sx={formFieldStyling}
+              margin={formFieldMargin}
+              label={t("signUp.signUpForm.password")}
+              value={password}
+              InputLabelProps={{
+                sx: { color: "text.primary" },
+              }}
+              error={!!errors.password}
+              helperText={
+                errors.password ? (errors.password.message as string) : ""
+              }
+              onChange={(event) => handlePasswordChange(event, field)}
+            />
+          )}
+        />
+      );
+    };
+
+    const reEnterPasswordField = () => {
+      const reEnterPasswordValidation = (email: string) => {
+        // TODO:
+        const isValid = isValidEmail(email);
+        return isValid ? true : t("signUp.signUpForm.reEnterPasswordError");
+      };
+
+      const handleReEnterPasswordChange = (
+        event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+        field: ControllerRenderProps<FieldValues, "reEnterPassword">,
+      ) => {
+        field.onChange(event.target.value);
+        trigger(reEnterPasswordId);
+      };
+
+      return (
+        <Controller
+          name={reEnterPasswordId}
+          control={control}
+          defaultValue=""
+          rules={{
+            validate: reEnterPasswordValidation,
+            required: t("signUp.signUpForm.reEnterPasswordError"),
+          }}
+          render={({ field }) => (
+            <TextField
+              {...field}
+              required
+              fullWidth
+              variant="filled"
+              sx={formFieldStyling}
+              margin={formFieldMargin}
+              label={t("signUp.signUpForm.reEnterPassword")}
+              value={reEnterPassword}
+              InputLabelProps={{
+                sx: { color: "text.primary" },
+              }}
+              error={!!errors.reEnterPassword}
+              helperText={
+                errors.reEnterPassword
+                  ? (errors.reEnterPassword.message as string)
+                  : ""
+              }
+              onChange={(event) => handleReEnterPasswordChange(event, field)}
+            />
+          )}
+        />
+      );
+    };
+
+    return (
+      <Box>
+        {emailField()}
+        {passwordField()}
+        {reEnterPasswordField()}
+      </Box>
+    );
   };
 
   const divider = () => {
