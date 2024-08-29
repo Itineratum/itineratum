@@ -18,6 +18,7 @@
     "signUpForm": {
       "country": "Land/Region",
       "countryCode": "Landesvorwahl",
+      "countryError": "Kein Land ausgewählt!",
       "email": "E-Mail",
       "emailError": "Ungültige E-Mail-Adresse!",
       "next": "Nächste",

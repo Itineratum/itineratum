@@ -18,6 +18,7 @@
     "signUpForm": {
       "country": "国/地域",
       "countryCode": "国コード",
+      "countryError": "国が選択されていません。",
       "email": "メール",
       "emailError": "メールアドレスが無効です。",
       "next": "次",

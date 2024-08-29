@@ -1,31 +1,6 @@
-import { CountryCode, isValidPhoneNumber } from "libphonenumber-js";
 import { SetStateAction } from "react";
 
-export const validatePhoneNumber = (
-  number: string,
-  countryIso2: CountryCode,
-  setPhoneNumberError: (value: SetStateAction<boolean>) => void,
-  setPhoneNumberHelperText: (value: SetStateAction<string>) => void,
-  phoneNumberHelperText: string,
-) => {
-  const onError = () => {
-    setPhoneNumberError(true);
-    setPhoneNumberHelperText(phoneNumberHelperText);
-  };
-
-  try {
-    if (!isValidPhoneNumber(number, countryIso2)) {
-      onError();
-    } else {
-      setPhoneNumberError(false);
-      setPhoneNumberHelperText("");
-    }
-  } catch (error) {
-    onError();
-  }
-};
-
-export const validateEmail = (
+export const isValidEmail = (
   email: string,
   setEmailError: (value: SetStateAction<boolean>) => void,
   setEmailHelperText: (value: SetStateAction<string>) => void,

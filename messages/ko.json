@@ -21,6 +21,7 @@
     "signUpForm": {
       "country": "국가/지역",
       "countryCode": "국가 코드",
+      "countryError": "국가를 선택하지 않았습니다!",
       "email": "이메일",
       "emailError": "잘못된 이메일 주소입니다!",
       "next": "다음",

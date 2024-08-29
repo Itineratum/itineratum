@@ -18,6 +18,7 @@
     "signUpForm": {
       "country": "国家/地区",
       "countryCode": "国家代码",
+      "countryError": "未選擇國家！",
       "email": "电子邮件",
       "emailError": "電子郵件地址無效！",
       "next": "下一个",

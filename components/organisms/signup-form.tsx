@@ -1,29 +1,42 @@
 "use client";
 
-import Text from "@/components/atoms/text";
 import { countryInfoList } from "@/constants/enums/country";
 import { TypographyVariant } from "@/constants/enums/theme";
 import colorsConst from "@/constants/pages/colors.json";
 import urlConst from "@/constants/urls.json";
 import {
-  validateEmail,
-  validatePhoneNumber,
-} from "@/utils/signUpFormValidation";
-import { Box, Button, Divider, Grid, MenuItem, TextField } from "@mui/material";
-import { CountryCode } from "libphonenumber-js";
+  Box,
+  Button,
+  Divider,
+  Grid,
+  Link,
+  MenuItem,
+  TextField,
+} from "@mui/material";
+import { CountryCode, isValidPhoneNumber } from "libphonenumber-js";
 import { useTranslations } from "next-intl";
-import Link from "next/link";
-import { useEffect, useState } from "react";
+import { ChangeEvent, useEffect, useState } from "react";
+import {
+  Controller,
+  ControllerRenderProps,
+  FieldValues,
+  useForm,
+} from "react-hook-form";
+import Text from "../atoms/text";
 
 const SignUpForm = () => {
   const t = useTranslations();
-  const countryFieldId: string = "country-field";
-  const countryCodeFieldId: string = "country-code-field";
-  const numberFieldId: string = "number-field";
-  const emailFieldId: string = "email-field";
-  const passwordFieldId: string = "password-field";
-  const reEnterPasswordFieldId: string = "reenter-password-field";
+  const {
+    control,
+    handleSubmit,
+    formState: { errors },
+    setValue,
+    getValues,
+    watch,
+    trigger,
+  } = useForm();
 
+  const [pageNumber, setPageNumber] = useState<number>(1);
   const color = colorsConst.components.textField;
   const formMargin: number = 2;
   const formFieldMargin: "dense" | "normal" | "none" | undefined = "normal";
@@ -42,35 +55,18 @@ const SignUpForm = () => {
     },
   };
 
-  const [pageNumber, setPageNumber] = useState<number>(1);
-  const [country, setCountry] = useState<string>("");
-  const [countryIso2, setCountryIso2] = useState<string>("");
-  const [countryCode, setCountryCode] = useState<string>("");
-  const [phoneNumber, setPhoneNumber] = useState<string>("");
-  const [phoneNumberError, setPhoneNumberError] = useState<boolean>(false);
-  const [phoneNumberhelperText, setPhoneNumberHelperText] =
-    useState<string>("");
-  const [email, setEmail] = useState<string>("");
-  const [emailError, setEmailError] = useState<boolean>(false);
-  const [emailHelperText, setEmailHelperText] = useState<string>("");
+  const countryId = "country";
+  const countryCodeId = "countryCode";
+  const numberId = "number";
 
-  const executeValidatePhoneNumber = (phoneNumber: string) => {
-    validatePhoneNumber(
-      phoneNumber,
-      countryIso2 as CountryCode,
-      setPhoneNumberError,
-      setPhoneNumberHelperText,
-      t("signUp.signUpForm.numberError"),
-    );
-  };
+  const country = watch(countryId);
+  const number = watch(numberId);
 
   useEffect(() => {
-    if (countryCode) {
-      executeValidatePhoneNumber(phoneNumber);
+    if (country) {
+      trigger(numberId);
     }
-  }, [countryCode]);
-
-  const handleSubmit = () => {};
+  }, [country, trigger, numberId]);
 
   const privacyPolicyLink = () => {
     return (
@@ -95,49 +91,58 @@ const SignUpForm = () => {
       const dropdownHeight: number = 200;
 
       const handleCountryChange = (
-        event: React.ChangeEvent<HTMLInputElement>,
+        event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+        field: ControllerRenderProps<FieldValues, "country">,
       ) => {
-        const selectedCountry = event.target.value;
-        setCountry(selectedCountry);
+        field.onChange(event);
+        const inputCountry = event.target.value;
+        setValue(countryId, inputCountry);
 
         try {
           const callingCode =
-            countryInfoList[selectedCountry as CountryCode].callingCode;
-          setCountryCode(callingCode);
-          setCountryIso2(selectedCountry);
+            countryInfoList[inputCountry as CountryCode].callingCode;
+          setValue(countryCodeId, callingCode);
+          trigger(numberId);
         } catch (error) {
-          setCountryCode("");
-          setCountryIso2("");
+          setValue(countryCodeId, "");
         }
       };
 
       return (
-        <TextField
-          select
-          required
-          fullWidth
-          id={countryFieldId}
-          variant="filled"
-          sx={formFieldStyling}
-          margin={formFieldMargin}
-          label={t("signUp.signUpForm.country")}
-          value={country}
-          onChange={handleCountryChange}
-          InputLabelProps={{ sx: { color: "text.primary" } }}
-          SelectProps={{
-            MenuProps: {
-              MenuListProps: {
-                sx: { maxHeight: dropdownHeight, overflowY: "auto" },
-              },
-            },
-          }}
-        >
-          {Object.values(countryInfoList).map((country) => (
-            <MenuItem key={country.name} value={country.iso2}>
-              {`${country.name} ${country.flagEmoji}`}
-            </MenuItem>
-          ))}
-        </TextField>
+        <Controller
+          name={countryId}
+          control={control}
+          defaultValue=""
+          rules={{ required: t("signUp.signUpForm.countryError") }}
+          render={({ field }) => (
+            <TextField
+              {...field}
+              select
+              required
+              fullWidth
+              variant="filled"
+              sx={formFieldStyling}
+              margin={formFieldMargin}
+              label={t("signUp.signUpForm.country")}
+              value={country}
+              onChange={(event) => handleCountryChange(event, field)}
+              InputLabelProps={{ sx: { color: "text.primary" } }}
+              SelectProps={{
+                MenuProps: {
+                  MenuListProps: {
+                    sx: { maxHeight: dropdownHeight, overflowY: "auto" },
+                  },
+                },
+              }}
+            >
+              {Object.values(countryInfoList).map((country) => (
+                <MenuItem key={country.name} value={country.iso2}>
+                  {`${country.name} ${country.flagEmoji}`}
+                </MenuItem>
+              ))}
+            </TextField>
+          )}
+        />
       );
     };
 
@@ -145,46 +150,71 @@ const SignUpForm = () => {
       const countryCodeWidth: number = 4;
       const numberWidth: number = 12 - countryCodeWidth;
 
-      const handlePhoneNumberChange = (
-        event: React.ChangeEvent<HTMLInputElement>,
-      ) => {
-        const inputPhoneNumber = event.target.value;
-        setPhoneNumber(inputPhoneNumber);
-        executeValidatePhoneNumber(inputPhoneNumber);
-      };
-
       const countryCodeField = () => {
+        const countryCode = getValues(countryCodeId);
+        const countryCodeFilled = Boolean(countryCode);
+
         return (
-          <TextField
-            required
-            fullWidth
-            id={countryCodeFieldId}
-            variant="filled"
-            sx={formFieldStyling}
-            margin={formFieldMargin}
-            label={t("signUp.signUpForm.countryCode")}
-            value={countryCode}
-            InputProps={{ readOnly: true }}
-            InputLabelProps={{ sx: { color: "text.primary" } }}
+          <Controller
+            name={countryCodeId}
+            control={control}
+            render={({ field }) => (
+              <TextField
+                {...field}
+                required
+                fullWidth
+                variant="filled"
+                sx={formFieldStyling}
+                margin={formFieldMargin}
+                label={t("signUp.signUpForm.countryCode")}
+                value={countryCode}
+                InputProps={{ readOnly: true }}
+                InputLabelProps={{
+                  sx: { color: "text.primary" },
+                  shrink: countryCodeFilled,
+                }}
+              />
+            )}
           />
         );
       };
 
       const numberField = () => {
+        const phoneNumberValidation = (value: string) => {
+          const isValid = isValidPhoneNumber(value, country);
+          return isValid ? true : t("signUp.signUpForm.numberError");
+        };
+
         return (
-          <TextField
-            required
-            fullWidth
-            id={numberFieldId}
-            variant="filled"
-            sx={formFieldStyling}
-            margin={formFieldMargin}
-            label={t("signUp.signUpForm.number")}
-            value={phoneNumber}
-            InputLabelProps={{ sx: { color: "text.primary" } }}
-            onChange={handlePhoneNumberChange}
-            error={phoneNumberError}
-            helperText={phoneNumberhelperText}
+          <Controller
+            name={numberId}
+            control={control}
+            defaultValue=""
+            rules={{
+              validate: phoneNumberValidation,
+            }}
+            render={({ field }) => (
+              <TextField
+                {...field}
+                required
+                fullWidth
+                variant="filled"
+                sx={formFieldStyling}
+                margin={formFieldMargin}
+                label={t("signUp.signUpForm.number")}
+                InputLabelProps={{
+                  sx: { color: "text.primary" },
+                }}
+                error={!!errors.number}
+                helperText={
+                  errors.number ? (errors.number.message as string) : ""
+                }
+                onChange={(event) => {
+                  field.onChange(event.target.value);
+                  trigger(numberId);
+                }}
+              />
+            )}
           />
         );
       };
@@ -204,8 +234,11 @@ const SignUpForm = () => {
     const nextButton = () => {
       const buttonWidth: string = "30%";
 
-      const handleClick = () => {
-        setPageNumber(2);
+      const handleClick = async () => {
+        const isCountryValid = await trigger(countryId);
+        const isNumberValid = await trigger(numberId);
+
+        if (isCountryValid && isNumberValid) setPageNumber(2);
       };
 
       return (
@@ -242,53 +275,7 @@ const SignUpForm = () => {
   };
 
   const page2 = () => {
-    const emailField = () => {
-      const handleEmailChange = (
-        event: React.ChangeEvent<HTMLInputElement>,
-      ) => {
-        const inputEmail = event.target.value;
-        setEmail(inputEmail);
-        validateEmail(
-          email,
-          setEmailError,
-          setEmailHelperText,
-          t("signUp.signUpForm.emailError"),
-        );
-      };
-
-      return (
-        <TextField
-          required
-          fullWidth
-          id={emailFieldId}
-          variant="filled"
-          sx={formFieldStyling}
-          margin={formFieldMargin}
-          label={t("signUp.signUpForm.email")}
-          value={email}
-          InputLabelProps={{ sx: { color: "text.primary" } }}
-          onChange={handleEmailChange}
-          error={emailError}
-          helperText={emailHelperText}
-        />
-      );
-    };
-
-    const passwordField = () => {
-      return <Box></Box>;
-    };
-
-    const reEnterPasswordField = () => {
-      return <Box></Box>;
-    };
-
-    return (
-      <Box>
-        {emailField()}
-        {passwordField()}
-        {reEnterPasswordField()}
-      </Box>
-    );
+    return <Box></Box>;
   };
 
   const divider = () => {
@@ -338,7 +325,7 @@ const SignUpForm = () => {
   return (
     <Box
       component="form"
-      onSubmit={handleSubmit}
+      // onSubmit={handleSubmit}
       noValidate
       marginTop={formMargin}
     >

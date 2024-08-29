@@ -18,6 +18,7 @@
     "signUpForm": {
       "country": "Pays/Région",
       "countryCode": "Code du pays",
+      "countryError": "Aucun pays sélectionné !",
       "email": "E-mail",
       "emailError": "Adresse email invalide!",
       "next": "Suivant",
