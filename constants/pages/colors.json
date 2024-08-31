@@ -16,5 +16,9 @@
       "color": "#000000",
       "backgroundColor": "#E7E2E2"
     }
+  },
+  "continueWithGoogleButton": {
+    "color": "#ffffff",
+    "textColor": "#757575"
   }
 }

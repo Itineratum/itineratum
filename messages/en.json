@@ -17,6 +17,7 @@
     "signUp": "Sign Up",
     "signUpForm": {
       "back": "Back",
+      "continueWithGoogle": "Continue with Google",
       "country": "Country/Region",
       "countryCode": "Country Code",
       "countryError": "No country selected!",

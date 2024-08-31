@@ -1,9 +1,12 @@
 "use client";
 
+import Text from "@/components/atoms/text";
 import { countryInfoList } from "@/constants/enums/country";
 import { TypographyVariant } from "@/constants/enums/theme";
 import colorsConst from "@/constants/pages/colors.json";
+import constEndpoints from "@/constants/pages/endpoints.json";
 import urlConst from "@/constants/urls.json";
+import googleIcon from "@/public/google.png";
 import { isValidEmail, isValidPassword } from "@/utils/signUpFormValidation";
 import VisibilityOffOutlinedIcon from "@mui/icons-material/VisibilityOffOutlined";
 import VisibilityOutlinedIcon from "@mui/icons-material/VisibilityOutlined";
@@ -20,7 +23,9 @@ import {
   TextField,
 } from "@mui/material";
 import { CountryCode, isValidPhoneNumber } from "libphonenumber-js";
+import { signIn } from "next-auth/react";
 import { useTranslations } from "next-intl";
+import Image from "next/image";
 import { ChangeEvent, useState } from "react";
 import {
   Controller,
@@ -28,7 +33,6 @@ import {
   FieldValues,
   useForm,
 } from "react-hook-form";
-import Text from "../../../../components/atoms/text";
 
 const SignUpForm = () => {
   const t = useTranslations();
@@ -621,6 +625,54 @@ const SignUpForm = () => {
     );
   };
 
+  const continueWithGoogleButton = () => {
+    const buttonWidth: string = "80%";
+    const iconSize: number = 32;
+    const buttonHeight: number = iconSize * 2;
+    const spacing: number = 2;
+
+    const handleClick = () => {
+      signIn("google", { callbackUrl: constEndpoints.home.endpoint });
+    };
+
+    return (
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+        }}
+      >
+        <Button
+          type="button"
+          fullWidth
+          variant="contained"
+          sx={{
+            my: formMargin,
+            maxWidth: buttonWidth,
+            height: buttonHeight,
+            gap: spacing,
+            backgroundColor: colorsConst.continueWithGoogleButton.color,
+            color: colorsConst.continueWithGoogleButton.textColor,
+          }}
+          onClick={handleClick}
+        >
+          <Image
+            src={googleIcon}
+            width={iconSize}
+            height={iconSize}
+            alt={"Google Icon"}
+          />
+          <Text
+            text={t("signUp.signUpForm.continueWithGoogle")}
+            variant={TypographyVariant.h3}
+            bold={false}
+          />
+        </Button>
+      </Box>
+    );
+  };
+
   return (
     <Box
       component="form"
@@ -635,6 +687,7 @@ const SignUpForm = () => {
         {page2()}
       </Collapse>
       {divider()}
+      {continueWithGoogleButton()}
     </Box>
   );
 };

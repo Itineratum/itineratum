@@ -1,7 +1,10 @@
 import { TypographyVariant } from "@/constants/enums/theme";
-import endpointsConst from "@/constants/pages/endpoints.json";
+import {
+  default as constEndpoints,
+  default as endpointsConst,
+} from "@/constants/pages/endpoints.json";
 import PersonOutlineOutlinedIcon from "@mui/icons-material/PersonOutlineOutlined";
-import { Box, Button, Menu, MenuItem } from "@mui/material";
+import { Button, Menu, MenuItem } from "@mui/material";
 import { signOut } from "next-auth/react";
 import { useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
@@ -45,7 +48,9 @@ const ProfileIcon = () => {
   };
   const signOutMenuItem = () => {
     return (
-      <MenuItem onClick={() => signOut()}>
+      <MenuItem
+        onClick={() => signOut({ callbackUrl: constEndpoints.home.endpoint })}
+      >
         <Text
           text={t("navbar.account.signOut")}
           variant={TypographyVariant.h4}
