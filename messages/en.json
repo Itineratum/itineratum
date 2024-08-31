@@ -16,6 +16,7 @@
   "signUp": {
     "signUp": "Sign Up",
     "signUpForm": {
+      "back": "Back",
       "country": "Country/Region",
       "countryCode": "Country Code",
       "countryError": "No country selected!",
@@ -26,10 +27,11 @@
       "numberError": "Invalid phone number!",
       "or": "or",
       "password": "Password",
-      "passwordError": "Invalid password!\n\nYour password must be:\n-At least 8 characters in length\n-Contain at least 1 lower-case alphabet\n-Contain at least 1 upper-case alphabet\n-Contain at least 1 special character",
+      "passwordError": "Invalid password!\n\nYour password must be:\n- At least 8 characters in length\n- Contain at least 1 lower-case alphabet\n- Contain at least 1 upper-case alphabet\n- Contain at least 1 special character",
       "privacyPolicy": "Privacy Policy",
       "reEnterPassword": "Re-enter Password",
-      "reEnterPasswordError": "Passwords do not match!"
+      "reEnterPasswordError": "Passwords do not match!",
+      "signUp": "Sign Up"
     },
     "welcome": "Welcome Travellor!"
   }

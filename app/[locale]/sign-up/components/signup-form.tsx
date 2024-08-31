@@ -5,11 +5,16 @@ import { TypographyVariant } from "@/constants/enums/theme";
 import colorsConst from "@/constants/pages/colors.json";
 import urlConst from "@/constants/urls.json";
 import { isValidEmail, isValidPassword } from "@/utils/signUpFormValidation";
+import VisibilityOffOutlinedIcon from "@mui/icons-material/VisibilityOffOutlined";
+import VisibilityOutlinedIcon from "@mui/icons-material/VisibilityOutlined";
 import {
   Box,
   Button,
+  Collapse,
   Divider,
   Grid,
+  IconButton,
+  InputAdornment,
   Link,
   MenuItem,
   TextField,
@@ -55,6 +60,7 @@ const SignUpForm = () => {
       borderRadius: formFieldBorderRadius,
     },
   };
+  const pageTransitionDuration: number = 500;
 
   const countryId = "country";
   const countryCodeId = "countryCode";
@@ -342,6 +348,11 @@ const SignUpForm = () => {
     };
 
     const passwordField = () => {
+      const [showPassword, setShowPassword] = useState<boolean>(false);
+
+      const handleClickShowPassword = () => setShowPassword(!showPassword);
+      const handleMouseDownPassword = () => setShowPassword(!showPassword);
+
       const passwordValidation = (passwordInput: string) => {
         const isValid = isValidPassword(passwordInput);
         return isValid ? true : t("signUp.signUpForm.passwordError");
@@ -368,6 +379,7 @@ const SignUpForm = () => {
           render={({ field }) => (
             <TextField
               {...field}
+              type={showPassword ? "text" : "password"}
               required
               fullWidth
               variant="filled"
@@ -382,11 +394,27 @@ const SignUpForm = () => {
               helperText={
                 errors.password ? (errors.password.message as string) : ""
               }
-              multiline
               onChange={async (event) =>
                 await handlePasswordChange(event, field)
               }
               FormHelperTextProps={{ sx: { whiteSpace: "pre-line" } }} // ensures that newline characters (\n) are rendered as actual line breaks
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <IconButton
+                      onClick={handleClickShowPassword}
+                      onMouseDown={handleMouseDownPassword}
+                      edge="end"
+                    >
+                      {showPassword ? (
+                        <VisibilityOffOutlinedIcon />
+                      ) : (
+                        <VisibilityOutlinedIcon />
+                      )}
+                    </IconButton>
+                  </InputAdornment>
+                ),
+              }}
             />
           )}
         />
@@ -394,6 +422,14 @@ const SignUpForm = () => {
     };
 
     const reEnterPasswordField = () => {
+      const [showReEnterPassword, setShowReEnterPassword] =
+        useState<boolean>(false);
+
+      const handleClickShowReEnterPassword = () =>
+        setShowReEnterPassword(!showReEnterPassword);
+      const handleMouseDownReEnterPassword = () =>
+        setShowReEnterPassword(!showReEnterPassword);
+
       const reEnterPasswordValidation = (reEnterPasswordInput: string) => {
         const isValid =
           reEnterPasswordInput === password &&
@@ -423,6 +459,7 @@ const SignUpForm = () => {
           render={({ field }) => (
             <TextField
               {...field}
+              type={showReEnterPassword ? "text" : "password"}
               required
               fullWidth
               variant="filled"
@@ -442,9 +479,82 @@ const SignUpForm = () => {
               onChange={async (event) =>
                 await handleReEnterPasswordChange(event, field)
               }
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <IconButton
+                      onClick={handleClickShowReEnterPassword}
+                      onMouseDown={handleMouseDownReEnterPassword}
+                      edge="end"
+                    >
+                      {showReEnterPassword ? (
+                        <VisibilityOffOutlinedIcon />
+                      ) : (
+                        <VisibilityOutlinedIcon />
+                      )}
+                    </IconButton>
+                  </InputAdornment>
+                ),
+              }}
             />
           )}
         />
+      );
+    };
+
+    const backButton = () => {
+      const buttonWidth: string = "30%";
+
+      const handleClick = async () => {
+        setPageNumber(1);
+      };
+
+      return (
+        <Button
+          type="button"
+          fullWidth
+          variant="contained"
+          sx={{ my: formMargin, maxWidth: buttonWidth }}
+          onClick={handleClick}
+        >
+          <Text
+            text={t("signUp.signUpForm.back")}
+            variant={TypographyVariant.h4}
+            bold={false}
+          />
+        </Button>
+      );
+    };
+
+    const signUpButton = () => {
+      const buttonWidth: string = "30%";
+
+      // TODO:
+      // to set up email authentication using next-auth and then create a function for sign ups
+      const handleClick = async () => {
+        const isEmailValid = await trigger(emailId);
+        const isPasswordValid = await trigger(passwordId);
+        const isReEnterPasswordValid = await trigger(reEnterPasswordId);
+
+        if (isEmailValid && isPasswordValid && isReEnterPasswordValid)
+          setPageNumber(2);
+      };
+
+      return (
+        <Button
+          type="submit"
+          fullWidth
+          variant="contained"
+          sx={{ my: formMargin, maxWidth: buttonWidth }}
+          color="secondary"
+          // onClick={handleClick}
+        >
+          <Text
+            text={t("signUp.signUpForm.signUp")}
+            variant={TypographyVariant.h4}
+            bold={false}
+          />
+        </Button>
       );
     };
 
@@ -453,6 +563,16 @@ const SignUpForm = () => {
         {emailField()}
         {passwordField()}
         {reEnterPasswordField()}
+        {privacyPolicyLink()}
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "space-between",
+          }}
+        >
+          {backButton()}
+          {signUpButton()}
+        </Box>
       </Box>
     );
   };
@@ -508,7 +628,12 @@ const SignUpForm = () => {
       noValidate
       marginTop={formMargin}
     >
-      {pageNumber === 1 ? page1() : page2()}
+      <Collapse in={pageNumber === 1} timeout={pageTransitionDuration}>
+        {page1()}
+      </Collapse>
+      <Collapse in={pageNumber === 2} timeout={pageTransitionDuration}>
+        {page2()}
+      </Collapse>
       {divider()}
     </Box>
   );
