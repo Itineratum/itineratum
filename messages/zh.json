@@ -25,7 +25,9 @@
       "number": "电话号码",
       "numberError": "无效的电话号码！",
       "or": "或者",
-      "privacyPolicy": "隐私政策"
+      "password": "密码",
+      "privacyPolicy": "隐私政策",
+      "reEnterPassword": "重新输入密码"
     },
     "welcome": "欢迎旅行者！"
   }

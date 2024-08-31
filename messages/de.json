@@ -25,7 +25,9 @@
       "number": "Telefonnummer",
       "numberError": "Ungültige Telefonnummer!",
       "or": "oder",
-      "privacyPolicy": "Datenschutzrichtlinie"
+      "password": "Passwort",
+      "privacyPolicy": "Datenschutzrichtlinie",
+      "reEnterPassword": "Kennwort erneut eingeben"
     },
     "welcome": "Willkommen, Travellor!"
   }

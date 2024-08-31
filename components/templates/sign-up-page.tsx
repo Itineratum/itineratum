@@ -5,7 +5,7 @@ import { TypographyVariant } from "@/constants/enums/theme";
 import Box from "@mui/material/Box";
 import Container from "@mui/material/Container";
 import { useTranslations } from "next-intl";
-import SignUpForm from "../organisms/signup-form";
+import SignUpForm from "../../app/[locale]/sign-up/components/signup-form";
 
 const SignUpPage = () => {
   const t = useTranslations();

@@ -25,7 +25,9 @@
       "number": "رقم التليفون",
       "numberError": "رقم الهاتف غير صالح!",
       "or": "أو",
-      "privacyPolicy": "سياسة الخصوصية"
+      "password": "كلمة المرور",
+      "privacyPolicy": "سياسة الخصوصية",
+      "reEnterPassword": "أعد إدخال كلمة المرور"
     },
     "welcome": "مرحباً بالمسافر!"
   }

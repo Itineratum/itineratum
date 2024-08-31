@@ -25,7 +25,9 @@
       "number": "Nombor Telefon",
       "numberError": "Nombor telefon tidak sah!",
       "or": "atau",
-      "privacyPolicy": "Dasar Privasi"
+      "password": "Kata laluan",
+      "privacyPolicy": "Dasar Privasi",
+      "reEnterPassword": "Masukkan semula Kata Laluan"
     },
     "welcome": "Selamat Datang Travellor!"
   }

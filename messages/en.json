@@ -25,7 +25,11 @@
       "number": "Phone Number",
       "numberError": "Invalid phone number!",
       "or": "or",
-      "privacyPolicy": "Privacy Policy"
+      "password": "Password",
+      "passwordError": "Invalid password!\n\nYour password must be:\n-At least 8 characters in length\n-Contain at least 1 lower-case alphabet\n-Contain at least 1 upper-case alphabet\n-Contain at least 1 special character",
+      "privacyPolicy": "Privacy Policy",
+      "reEnterPassword": "Re-enter Password",
+      "reEnterPasswordError": "Passwords do not match!"
     },
     "welcome": "Welcome Travellor!"
   }

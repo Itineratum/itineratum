@@ -25,7 +25,9 @@
       "number": "Número de teléfono",
       "numberError": "¡Número de teléfono inválido!",
       "or": "o",
-      "privacyPolicy": "política de privacidad"
+      "password": "Contraseña",
+      "privacyPolicy": "política de privacidad",
+      "reEnterPassword": "Escriba la contraseña otra vez"
     },
     "welcome": "¡Bienvenido viajero!"
   }

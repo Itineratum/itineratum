@@ -25,7 +25,9 @@
       "number": "電話番号",
       "numberError": "電話番号が無効です。",
       "or": "または",
-      "privacyPolicy": "プライバシーポリシー"
+      "password": "パスワード",
+      "privacyPolicy": "プライバシーポリシー",
+      "reEnterPassword": "パスワード再入力"
     },
     "welcome": "ようこそ旅行者へ！"
   }

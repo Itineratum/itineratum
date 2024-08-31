@@ -28,7 +28,9 @@
       "number": "전화 번호",
       "numberError": "잘못된 전화번호입니다!",
       "or": "또는",
-      "privacyPolicy": "개인정보 보호정책"
+      "password": "비밀번호",
+      "privacyPolicy": "개인정보 보호정책",
+      "reEnterPassword": "비밀번호 재입력"
     },
     "welcome": "Travellor에 오신 것을 환영합니다!"
   }

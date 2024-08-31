@@ -3,10 +3,10 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "i18nexus pull && next dev",
+    "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "prod": "i18nexus pull && next build && next start",
+    "prod": "next build && next start",
     "lint": "next lint",
     "pretty": "prettier --write \"./**/*.{js,jsx,mjs,cjs,ts,tsx,json}\""
   },
