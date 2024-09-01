@@ -4,7 +4,7 @@ import {
   default as endpointsConst,
 } from "@/constants/pages/endpoints.json";
 import PersonOutlineOutlinedIcon from "@mui/icons-material/PersonOutlineOutlined";
-import { Button, Menu, MenuItem } from "@mui/material";
+import { Box, Button, Menu, MenuItem } from "@mui/material";
 import { signOut } from "next-auth/react";
 import { useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
@@ -61,7 +61,7 @@ const ProfileIcon = () => {
   };
 
   return (
-    <div>
+    <Box>
       <Button
         id={button}
         aria-controls={open ? menu : undefined}
@@ -90,7 +90,7 @@ const ProfileIcon = () => {
         {accountMenuItem()}
         {signOutMenuItem()}
       </Menu>
-    </div>
+    </Box>
   );
 };
 

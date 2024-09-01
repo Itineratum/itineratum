@@ -71,7 +71,7 @@ const Navbar = () => {
   const account = () => {
     return (
       <Box sx={{ mx: 3 }}>
-        {session?.user?.name ? <ProfileIcon /> : <SignupLoginButtons />}
+        {session?.user?.email ? <ProfileIcon /> : <SignupLoginButtons />}
       </Box>
     );
   };

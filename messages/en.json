@@ -32,7 +32,9 @@
       "privacyPolicy": "Privacy Policy",
       "reEnterPassword": "Re-enter Password",
       "reEnterPasswordError": "Passwords do not match!",
-      "signUp": "Sign Up"
+      "signUp": "Sign Up",
+      "signUpErrorAlert": "Error signing up! Please try again.",
+      "signInErrorAlert": "Error logging in! Please try again."
     },
     "welcome": "Welcome Travellor!"
   }

@@ -5,12 +5,14 @@ import { countryInfoList } from "@/constants/enums/country";
 import { TypographyVariant } from "@/constants/enums/theme";
 import colorsConst from "@/constants/pages/colors.json";
 import constEndpoints from "@/constants/pages/endpoints.json";
+import { SignUpFormData } from "@/constants/types/signUpFormData";
 import urlConst from "@/constants/urls.json";
 import googleIcon from "@/public/google.png";
 import { isValidEmail, isValidPassword } from "@/utils/signUpFormValidation";
 import VisibilityOffOutlinedIcon from "@mui/icons-material/VisibilityOffOutlined";
 import VisibilityOutlinedIcon from "@mui/icons-material/VisibilityOutlined";
 import {
+  Alert,
   Box,
   Button,
   Collapse,
@@ -26,16 +28,17 @@ import { CountryCode, isValidPhoneNumber } from "libphonenumber-js";
 import { signIn } from "next-auth/react";
 import { useTranslations } from "next-intl";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import { ChangeEvent, useState } from "react";
 import {
   Controller,
   ControllerRenderProps,
-  FieldValues,
+  SubmitHandler,
   useForm,
 } from "react-hook-form";
-
 const SignUpForm = () => {
   const t = useTranslations();
+  const router = useRouter();
   const {
     control,
     handleSubmit,
@@ -44,9 +47,11 @@ const SignUpForm = () => {
     getValues,
     watch,
     trigger,
-  } = useForm();
+  } = useForm<SignUpFormData>();
 
   const [pageNumber, setPageNumber] = useState<number>(1);
+  const [showAlert, setShowAlert] = useState<boolean>(false);
+  const [alertText, setAlertText] = useState<string>("");
   const color = colorsConst.components.textField;
   const formMargin: number = 2;
   const formFieldMargin: "dense" | "normal" | "none" | undefined = "normal";
@@ -79,6 +84,39 @@ const SignUpForm = () => {
   const password = watch(passwordId);
   const reEnterPassword = watch(reEnterPasswordId);
 
+  const onSubmit: SubmitHandler<SignUpFormData> = async (data) => {
+    const { email, password } = data;
+    const signUpRes = await fetch("/api/sign-up", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data),
+    });
+
+    if (signUpRes.ok) {
+      const signInRes = await signIn("credentials", {
+        redirect: false,
+        email,
+        password,
+      });
+
+      if (signInRes && signInRes.ok) {
+        setAlertText("");
+        setShowAlert(false);
+        router.push("/");
+      } else {
+        setAlertText(t("signUp.signUpForm.signUpErrorAlert"));
+        setShowAlert(true);
+      }
+    } else {
+      const error = await signUpRes.json();
+      setAlertText(error.message ?? t("signUp.signUpForm.signUpErrorAlert"));
+      setShowAlert(true);
+      console.log("Error!", error);
+    }
+  };
+
   const privacyPolicyLink = () => {
     return (
       <Box sx={{ textAlign: "left", width: "100%" }}>
@@ -103,7 +141,7 @@ const SignUpForm = () => {
 
       const handleCountryChange = async (
         event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
-        field: ControllerRenderProps<FieldValues, "country">,
+        field: ControllerRenderProps<SignUpFormData, "country">,
       ) => {
         field.onChange(event);
         const inputCountry = event.target.value;
@@ -201,13 +239,16 @@ const SignUpForm = () => {
 
       const numberField = () => {
         const numberValidation = (numberInput: string) => {
-          const isValid = isValidPhoneNumber(numberInput, country);
+          const isValid = isValidPhoneNumber(
+            numberInput,
+            country as CountryCode,
+          );
           return isValid ? true : t("signUp.signUpForm.numberError");
         };
 
         const handleNumberChange = async (
           event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
-          field: ControllerRenderProps<FieldValues, "number">,
+          field: ControllerRenderProps<SignUpFormData, "number">,
         ) => {
           field.onChange(event.target.value);
           await trigger(numberId);
@@ -313,7 +354,7 @@ const SignUpForm = () => {
 
       const handleEmailChange = async (
         event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
-        field: ControllerRenderProps<FieldValues, "email">,
+        field: ControllerRenderProps<SignUpFormData, "email">,
       ) => {
         field.onChange(event.target.value);
         await trigger(emailId);
@@ -355,7 +396,6 @@ const SignUpForm = () => {
       const [showPassword, setShowPassword] = useState<boolean>(false);
 
       const handleClickShowPassword = () => setShowPassword(!showPassword);
-      const handleMouseDownPassword = () => setShowPassword(!showPassword);
 
       const passwordValidation = (passwordInput: string) => {
         const isValid = isValidPassword(passwordInput);
@@ -364,7 +404,7 @@ const SignUpForm = () => {
 
       const handlePasswordChange = async (
         event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
-        field: ControllerRenderProps<FieldValues, "password">,
+        field: ControllerRenderProps<SignUpFormData, "password">,
       ) => {
         field.onChange(event.target.value);
         await trigger(passwordId);
@@ -405,11 +445,7 @@ const SignUpForm = () => {
               InputProps={{
                 endAdornment: (
                   <InputAdornment position="end">
-                    <IconButton
-                      onClick={handleClickShowPassword}
-                      onMouseDown={handleMouseDownPassword}
-                      edge="end"
-                    >
+                    <IconButton onClick={handleClickShowPassword} edge="end">
                       {showPassword ? (
                         <VisibilityOffOutlinedIcon />
                       ) : (
@@ -431,8 +467,6 @@ const SignUpForm = () => {
 
       const handleClickShowReEnterPassword = () =>
         setShowReEnterPassword(!showReEnterPassword);
-      const handleMouseDownReEnterPassword = () =>
-        setShowReEnterPassword(!showReEnterPassword);
 
       const reEnterPasswordValidation = (reEnterPasswordInput: string) => {
         const isValid =
@@ -443,7 +477,7 @@ const SignUpForm = () => {
 
       const handleReEnterPasswordChange = async (
         event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
-        field: ControllerRenderProps<FieldValues, "reEnterPassword">,
+        field: ControllerRenderProps<SignUpFormData, "reEnterPassword">,
       ) => {
         field.onChange(event.target.value);
         await trigger(reEnterPasswordId);
@@ -488,7 +522,6 @@ const SignUpForm = () => {
                   <InputAdornment position="end">
                     <IconButton
                       onClick={handleClickShowReEnterPassword}
-                      onMouseDown={handleMouseDownReEnterPassword}
                       edge="end"
                     >
                       {showReEnterPassword ? (
@@ -533,17 +566,6 @@ const SignUpForm = () => {
     const signUpButton = () => {
       const buttonWidth: string = "30%";
 
-      // TODO:
-      // to set up email authentication using next-auth and then create a function for sign ups
-      const handleClick = async () => {
-        const isEmailValid = await trigger(emailId);
-        const isPasswordValid = await trigger(passwordId);
-        const isReEnterPasswordValid = await trigger(reEnterPasswordId);
-
-        if (isEmailValid && isPasswordValid && isReEnterPasswordValid)
-          setPageNumber(2);
-      };
-
       return (
         <Button
           type="submit"
@@ -551,7 +573,6 @@ const SignUpForm = () => {
           variant="contained"
           sx={{ my: formMargin, maxWidth: buttonWidth }}
           color="secondary"
-          // onClick={handleClick}
         >
           <Text
             text={t("signUp.signUpForm.signUp")}
@@ -676,7 +697,7 @@ const SignUpForm = () => {
   return (
     <Box
       component="form"
-      // onSubmit={handleSubmit}
+      onSubmit={handleSubmit(onSubmit)}
       noValidate
       marginTop={formMargin}
     >
@@ -686,6 +707,7 @@ const SignUpForm = () => {
       <Collapse in={pageNumber === 2} timeout={pageTransitionDuration}>
         {page2()}
       </Collapse>
+      {showAlert ? <Alert severity="error">{alertText}</Alert> : <></>}
       {divider()}
       {continueWithGoogleButton()}
     </Box>

@@ -17,6 +17,7 @@ export const countryInfoList: Record<CountryCode, CountryInfo> = {} as Record<
   CountryInfo
 >;
 const countryList: string[] = [];
+export const Country: CountryCode[] = [];
 
 countryDataList.map((country) => {
   const countryIso2 = country.iso2 as CountryCode;
@@ -32,13 +33,9 @@ countryDataList.map((country) => {
       iso2: countryIso2,
     };
     countryList.push(country.name);
-  } catch (error) {}
+    Country.push(countryIso2);
+  } catch (error) {
+    // there will be some country call codes whose countryIso2 will be unable to retrieve via getCountryCallingCode(countryIso2)
+    // this is due to slight differences in the list of countries available in countries-list and libphonenumber-js
+  }
 });
-
-export const Country = countryList.reduce(
-  (acc, country) => {
-    acc[country] = country;
-    return acc;
-  },
-  {} as Record<string, string>,
-);

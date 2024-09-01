@@ -4,7 +4,7 @@ import { Country } from "@/constants/enums/country";
 import { Currency } from "@/constants/enums/currency";
 import { Language } from "@/constants/enums/language";
 import { IUser } from "@/constants/types/user";
-import mongoose, { Model, model, models } from "mongoose";
+import mongoose, { models } from "mongoose";
 const { Schema } = mongoose;
 
 const userSchema = new Schema<IUser>(
@@ -28,6 +28,7 @@ const userSchema = new Schema<IUser>(
       required: true,
     },
     account_created: { type: Date, required: true },
+    password: { type: String, required: false },
   },
   { collection: constDbCollections.users },
 );

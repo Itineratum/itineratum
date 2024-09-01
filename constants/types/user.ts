@@ -12,4 +12,5 @@ export interface IUser {
   language: Language;
   currency: Currency;
   account_created: Date;
+  password: string;
 }

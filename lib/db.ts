@@ -12,7 +12,7 @@ export const connectToDatabase = async () => {
       ? (cachedClient = await mongoose.connect(process.env.DB_DEV!))
       : process.env.NODE_ENV === "test"
         ? (cachedClient = await mongoose.connect(process.env.DB_TEST!))
-        : await mongoose.connect(process.env.DB_PROD!);
+        : (cachedClient = await mongoose.connect(process.env.DB_PROD!));
 
     console.log("Connected to MongoDB!");
     return cachedClient;

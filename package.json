@@ -11,12 +11,14 @@
     "pretty": "prettier --write \"./**/*.{js,jsx,mjs,cjs,ts,tsx,json}\""
   },
   "dependencies": {
+    "@auth/mongodb-adapter": "^3.4.2",
     "@emotion/cache": "^11.13.1",
     "@emotion/react": "^11.13.0",
     "@emotion/styled": "^11.13.0",
     "@mui/icons-material": "^5.16.7",
     "@mui/material": "^5.16.7",
     "@mui/material-nextjs": "^5.16.6",
+    "bcrypt": "^5.1.1",
     "cookies-next": "^4.2.1",
     "countries-list": "^3.1.1",
     "i18n-iso-countries": "^7.11.3",
@@ -28,11 +30,13 @@
     "next": "14.2.5",
     "next-auth": "^4.24.7",
     "next-intl": "^3.17.3",
+    "nodemailer": "^6.9.14",
     "react": "^18",
     "react-dom": "^18",
     "react-hook-form": "^7.53.0"
   },
   "devDependencies": {
+    "@types/bcrypt": "^5.0.2",
     "@types/lodash.merge": "^4.6.9",
     "@types/node": "^20",
     "@types/react": "^18",
