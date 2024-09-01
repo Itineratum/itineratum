@@ -40,6 +40,7 @@ export const signIn = async ({
 
 export const credentialsSignUp = async (
   country: string,
+  countryCode: string,
   number: string,
   email: string,
   password: string,
@@ -55,9 +56,11 @@ export const credentialsSignUp = async (
       };
     } else {
       const hashedPassword = await bcrypt.hash(password, 12);
+      const sanitizedNumber = number.replace(/\D/g, '');
+      const phoneNumber = `${countryCode}${sanitizedNumber}`;
       await User.create({
         country,
-        phoneNumber: number,
+        phone_number: phoneNumber,
         email,
         password: hashedPassword,
         auth_service: AuthService.Credentials,

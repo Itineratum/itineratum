@@ -4,12 +4,13 @@ import { NextRequest, NextResponse } from "next/server";
 export const POST = async (req: NextRequest, res: NextResponse) => {
   try {
     const data = await req.json();
-    const { country, number, email, password } = data;
+    const { country, countryCode, number, email, password } = data;
     const signUpRes = await credentialsSignUp(
       country,
+      countryCode,
       number,
       email,
-      password,
+      password
     );
 
     if (signUpRes?.success) {
@@ -17,14 +18,14 @@ export const POST = async (req: NextRequest, res: NextResponse) => {
     } else {
       return NextResponse.json(
         { message: signUpRes?.error },
-        { status: 409 }, // user account already exists
+        { status: 409 } // user account already exists
       );
     }
   } catch (error) {
     console.error(error);
     return NextResponse.json(
       { error: "An error occured while signing the user up!" },
-      { status: 500 },
+      { status: 500 }
     );
   }
 };

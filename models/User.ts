@@ -11,7 +11,7 @@ const userSchema = new Schema<IUser>(
   {
     name: { type: String, required: false },
     country: { type: String, enum: Country, required: false },
-    phone_number: { type: Number, required: false },
+    phone_number: { type: String, required: false, set: (v: any) => String(v) },
     email: { type: String, required: true, unique: true },
     profile_picture: { type: String, required: false },
     auth_service: { type: String, enum: AuthService, required: true },
@@ -28,16 +28,16 @@ const userSchema = new Schema<IUser>(
       required: true,
     },
     account_created: { type: Date, required: true },
-    password: { type: String, required: false },
+    password: { type: String, required: false }, // password is stored as hash only if users sign up using credentials
   },
-  { collection: constDbCollections.users },
+  { collection: constDbCollections.users }
 );
 
 export const initialUser = (
   name: string,
   email: string,
   profile_picture: string,
-  auth_service: AuthService,
+  auth_service: AuthService
 ) => {
   return {
     name,
