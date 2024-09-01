@@ -5,19 +5,19 @@ export const POST = async (req: NextRequest, res: NextResponse) => {
   try {
     const data = await req.json();
     const { country, number, email, password } = data;
-    const signUpSuccessful = await credentialsSignUp(
+    const signUpRes = await credentialsSignUp(
       country,
       number,
       email,
       password,
     );
 
-    if (signUpSuccessful?.success) {
+    if (signUpRes?.success) {
       return NextResponse.json({ message: "User created!" }, { status: 200 });
     } else {
       return NextResponse.json(
-        { message: signUpSuccessful?.error },
-        { status: 409 },
+        { message: signUpRes?.error },
+        { status: 409 }, // user account already exists
       );
     }
   } catch (error) {

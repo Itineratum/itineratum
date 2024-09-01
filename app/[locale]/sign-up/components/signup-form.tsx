@@ -1,13 +1,13 @@
 "use client";
 
+import { OrDivider } from "@/components/atoms/or-divider";
+import { PrivacyPolicyLink } from "@/components/atoms/privacy-policy-link";
 import Text from "@/components/atoms/text";
+import { ContinueWithGoogleButton } from "@/components/molecules/continue-with-google-button";
 import { countryInfoList } from "@/constants/enums/country";
 import { TypographyVariant } from "@/constants/enums/theme";
 import colorsConst from "@/constants/pages/colors.json";
-import constEndpoints from "@/constants/pages/endpoints.json";
 import { SignUpFormData } from "@/constants/types/signUpFormData";
-import urlConst from "@/constants/urls.json";
-import googleIcon from "@/public/google.png";
 import { isValidEmail, isValidPassword } from "@/utils/signUpFormValidation";
 import VisibilityOffOutlinedIcon from "@mui/icons-material/VisibilityOffOutlined";
 import VisibilityOutlinedIcon from "@mui/icons-material/VisibilityOutlined";
@@ -15,19 +15,17 @@ import {
   Alert,
   Box,
   Button,
+  CircularProgress,
   Collapse,
-  Divider,
   Grid,
   IconButton,
   InputAdornment,
-  Link,
   MenuItem,
   TextField,
 } from "@mui/material";
 import { CountryCode, isValidPhoneNumber } from "libphonenumber-js";
 import { signIn } from "next-auth/react";
 import { useTranslations } from "next-intl";
-import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { ChangeEvent, useState } from "react";
 import {
@@ -52,6 +50,8 @@ const SignUpForm = () => {
   const [pageNumber, setPageNumber] = useState<number>(1);
   const [showAlert, setShowAlert] = useState<boolean>(false);
   const [alertText, setAlertText] = useState<string>("");
+  const [isSigningUp, setIsSigningUp] = useState<boolean>(false);
+
   const color = colorsConst.components.textField;
   const formMargin: number = 2;
   const formFieldMargin: "dense" | "normal" | "none" | undefined = "normal";
@@ -85,6 +85,9 @@ const SignUpForm = () => {
   const reEnterPassword = watch(reEnterPasswordId);
 
   const onSubmit: SubmitHandler<SignUpFormData> = async (data) => {
+    setIsSigningUp(true);
+    setAlertText("");
+    setShowAlert(false);
     const { email, password } = data;
     const signUpRes = await fetch("/api/sign-up", {
       method: "POST",
@@ -115,24 +118,8 @@ const SignUpForm = () => {
       setShowAlert(true);
       console.log("Error!", error);
     }
-  };
 
-  const privacyPolicyLink = () => {
-    return (
-      <Box sx={{ textAlign: "left", width: "100%" }}>
-        <Link
-          href={urlConst.privacyPolicy}
-          color="text.primary"
-          target="_blank"
-        >
-          <Text
-            text={t("signUp.signUpForm.privacyPolicy")}
-            variant={TypographyVariant.h5}
-            bold={false}
-          />
-        </Link>
-      </Box>
-    );
+    setIsSigningUp(false);
   };
 
   const page1 = () => {
@@ -141,7 +128,7 @@ const SignUpForm = () => {
 
       const handleCountryChange = async (
         event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
-        field: ControllerRenderProps<SignUpFormData, "country">,
+        field: ControllerRenderProps<SignUpFormData, "country">
       ) => {
         field.onChange(event);
         const inputCountry = event.target.value;
@@ -241,14 +228,14 @@ const SignUpForm = () => {
         const numberValidation = (numberInput: string) => {
           const isValid = isValidPhoneNumber(
             numberInput,
-            country as CountryCode,
+            country as CountryCode
           );
           return isValid ? true : t("signUp.signUpForm.numberError");
         };
 
         const handleNumberChange = async (
           event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
-          field: ControllerRenderProps<SignUpFormData, "number">,
+          field: ControllerRenderProps<SignUpFormData, "number">
         ) => {
           field.onChange(event.target.value);
           await trigger(numberId);
@@ -339,7 +326,7 @@ const SignUpForm = () => {
       >
         {countryField()}
         {phoneNumberSection()}
-        {privacyPolicyLink()}
+        <PrivacyPolicyLink />
         {nextButton()}
       </Box>
     );
@@ -354,7 +341,7 @@ const SignUpForm = () => {
 
       const handleEmailChange = async (
         event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
-        field: ControllerRenderProps<SignUpFormData, "email">,
+        field: ControllerRenderProps<SignUpFormData, "email">
       ) => {
         field.onChange(event.target.value);
         await trigger(emailId);
@@ -404,7 +391,7 @@ const SignUpForm = () => {
 
       const handlePasswordChange = async (
         event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
-        field: ControllerRenderProps<SignUpFormData, "password">,
+        field: ControllerRenderProps<SignUpFormData, "password">
       ) => {
         field.onChange(event.target.value);
         await trigger(passwordId);
@@ -477,7 +464,7 @@ const SignUpForm = () => {
 
       const handleReEnterPasswordChange = async (
         event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
-        field: ControllerRenderProps<SignUpFormData, "reEnterPassword">,
+        field: ControllerRenderProps<SignUpFormData, "reEnterPassword">
       ) => {
         field.onChange(event.target.value);
         await trigger(reEnterPasswordId);
@@ -565,6 +552,7 @@ const SignUpForm = () => {
 
     const signUpButton = () => {
       const buttonWidth: string = "30%";
+      const loadingAnimationSize: number = 24;
 
       return (
         <Button
@@ -573,12 +561,17 @@ const SignUpForm = () => {
           variant="contained"
           sx={{ my: formMargin, maxWidth: buttonWidth }}
           color="secondary"
+          disabled={isSigningUp}
         >
-          <Text
-            text={t("signUp.signUpForm.signUp")}
-            variant={TypographyVariant.h4}
-            bold={false}
-          />
+          {isSigningUp ? (
+            <CircularProgress size={loadingAnimationSize} />
+          ) : (
+            <Text
+              text={t("signUp.signUpForm.signUp")}
+              variant={TypographyVariant.h4}
+              bold={false}
+            />
+          )}
         </Button>
       );
     };
@@ -588,7 +581,7 @@ const SignUpForm = () => {
         {emailField()}
         {passwordField()}
         {reEnterPasswordField()}
-        {privacyPolicyLink()}
+        <PrivacyPolicyLink />
         <Box
           sx={{
             display: "flex",
@@ -598,98 +591,6 @@ const SignUpForm = () => {
           {backButton()}
           {signUpButton()}
         </Box>
-      </Box>
-    );
-  };
-
-  const divider = () => {
-    const gapBetweenLines: number = 4;
-    const lineThickness: number = 3;
-
-    return (
-      <Box
-        sx={{
-          display: "flex",
-          alignItems: "center",
-          width: "100%",
-          my: formMargin,
-        }}
-      >
-        <Divider
-          sx={{
-            flexGrow: 1,
-            borderBottomWidth: lineThickness,
-            borderBottomColor: "text.primary",
-          }}
-        />
-        <Box
-          sx={{
-            mx: gapBetweenLines,
-            color: "text.primary",
-            fontWeight: "bold",
-          }}
-        >
-          <Text
-            text={t("signUp.signUpForm.or")}
-            variant={TypographyVariant.h3}
-            bold={true}
-          />
-        </Box>
-        <Divider
-          sx={{
-            flexGrow: 1,
-            borderBottomWidth: lineThickness,
-            borderBottomColor: "text.primary",
-          }}
-        />
-      </Box>
-    );
-  };
-
-  const continueWithGoogleButton = () => {
-    const buttonWidth: string = "80%";
-    const iconSize: number = 32;
-    const buttonHeight: number = iconSize * 2;
-    const spacing: number = 2;
-
-    const handleClick = () => {
-      signIn("google", { callbackUrl: constEndpoints.home.endpoint });
-    };
-
-    return (
-      <Box
-        sx={{
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-        }}
-      >
-        <Button
-          type="button"
-          fullWidth
-          variant="contained"
-          sx={{
-            my: formMargin,
-            maxWidth: buttonWidth,
-            height: buttonHeight,
-            gap: spacing,
-            backgroundColor: colorsConst.continueWithGoogleButton.color,
-            color: colorsConst.continueWithGoogleButton.textColor,
-          }}
-          onClick={handleClick}
-        >
-          <Image
-            src={googleIcon}
-            width={iconSize}
-            height={iconSize}
-            alt={"Google Icon"}
-          />
-          <Text
-            text={t("signUp.signUpForm.continueWithGoogle")}
-            variant={TypographyVariant.h3}
-            bold={false}
-          />
-        </Button>
       </Box>
     );
   };
@@ -708,8 +609,8 @@ const SignUpForm = () => {
         {page2()}
       </Collapse>
       {showAlert ? <Alert severity="error">{alertText}</Alert> : <></>}
-      {divider()}
-      {continueWithGoogleButton()}
+      <OrDivider formMargin={formMargin} />
+      <ContinueWithGoogleButton formMargin={formMargin} />
     </Box>
   );
 };

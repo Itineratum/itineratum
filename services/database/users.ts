@@ -90,7 +90,7 @@ export const credentialsLogIn = async (
         error: "User not found!",
       };
     } else {
-      const isValidPassword = bcrypt.compare(inputPassword, user.password);
+      const isValidPassword = await bcrypt.compare(inputPassword, user.password);
 
       if (!isValidPassword) {
         return {

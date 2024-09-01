@@ -1,5 +1,4 @@
 {
-  "login": { "login": "Login", "welcome": "Welcome Travellor!" },
   "home": { "header": "It's time to travel with EASE." },
   "account": { "welcome": "Welcome, {name}" },
   "navbar": {
@@ -37,5 +36,17 @@
       "signInErrorAlert": "Error logging in! Please try again."
     },
     "welcome": "Welcome Travellor!"
+  },
+  "login": {
+    "login": "Login",
+    "welcome": "Welcome Travellor!",
+    "loginForm": {
+      "email": "Email",
+      "emailError": "Please enter your email address!",
+      "login": "Login",
+      "loginErrorAlert": "Error logging in! Please try again.",
+      "password": "Password",
+      "passwordError": "Please enter your password!"
+    }
   }
 }
