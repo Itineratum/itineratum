@@ -595,6 +595,9 @@ const SignUpForm = () => {
     );
   };
 
+  // TODO:
+  // create some email verification page for the user to input the code to verify their email address
+
   return (
     <Box
       component="form"

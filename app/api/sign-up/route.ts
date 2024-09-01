@@ -5,6 +5,10 @@ export const POST = async (req: NextRequest, res: NextResponse) => {
   try {
     const data = await req.json();
     const { country, countryCode, number, email, password } = data;
+
+    // TODO:
+    // create some function to send the email verification code. checkout the ChatGPT chat
+
     const signUpRes = await credentialsSignUp(
       country,
       countryCode,
