@@ -33,7 +33,7 @@ const SignupLoginButtons = () => {
 
   const SignupButton = () => {
     return (
-      <Link href={buildLocaleEndpoint(locale, endpointConst.signup.endpoint)}>
+      <Link href={buildLocaleEndpoint(locale, endpointConst.signUp.endpoint)}>
         <Button
           sx={{
             mx: buttonMargin,

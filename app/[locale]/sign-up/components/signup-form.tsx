@@ -5,6 +5,7 @@ import { PrivacyPolicyLink } from "@/components/atoms/privacy-policy-link";
 import Text from "@/components/atoms/text";
 import { ContinueWithGoogleButton } from "@/components/molecules/continue-with-google-button";
 import { countryInfoList } from "@/constants/enums/country";
+import { SignUpStep } from "@/constants/enums/signUpSteps";
 import { TypographyVariant } from "@/constants/enums/theme";
 import colorsConst from "@/constants/pages/colors.json";
 import { SignUpFormData } from "@/constants/types/signUpFormData";
@@ -34,6 +35,8 @@ import {
   SubmitHandler,
   useForm,
 } from "react-hook-form";
+import endpointsConst from "@/constants/pages/endpoints.json";
+
 const SignUpForm = () => {
   const t = useTranslations();
   const router = useRouter();
@@ -84,34 +87,25 @@ const SignUpForm = () => {
   const password = watch(passwordId);
   const reEnterPassword = watch(reEnterPasswordId);
 
-  const onSubmit: SubmitHandler<SignUpFormData> = async (data) => {
+  const emailVerificationStep: SubmitHandler<SignUpFormData> = async (data) => {
     setIsSigningUp(true);
     setAlertText("");
     setShowAlert(false);
     const { email, password } = data;
+    const bodyJson = {
+      ...data,
+      step: SignUpStep.emailVerification,
+    };
     const signUpRes = await fetch("/api/sign-up", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(data),
+      body: JSON.stringify(bodyJson),
     });
 
     if (signUpRes.ok) {
-      const signInRes = await signIn("credentials", {
-        redirect: false,
-        email,
-        password,
-      });
-
-      if (signInRes && signInRes.ok) {
-        setAlertText("");
-        setShowAlert(false);
-        router.push("/");
-      } else {
-        setAlertText(t("signUp.signUpForm.signUpErrorAlert"));
-        setShowAlert(true);
-      }
+      router.push(`/${endpointsConst.emailVerification.endpoint}`);
     } else {
       const error = await signUpRes.json();
       setAlertText(error.message ?? t("signUp.signUpForm.signUpErrorAlert"));
@@ -119,7 +113,29 @@ const SignUpForm = () => {
       console.log("Error!", error);
     }
 
-    setIsSigningUp(false);
+    // if (signUpRes.ok) {
+    //   const signInRes = await signIn("credentials", {
+    //     redirect: false,
+    //     email,
+    //     password,
+    //   });
+
+    //   if (signInRes && signInRes.ok) {
+    //     setAlertText("");
+    //     setShowAlert(false);
+    //     router.push("/");
+    //   } else {
+    //     setAlertText(t("signUp.signUpForm.signUpErrorAlert"));
+    //     setShowAlert(true);
+    //   }
+    // } else {
+    //   const error = await signUpRes.json();
+    //   setAlertText(error.message ?? t("signUp.signUpForm.signUpErrorAlert"));
+    //   setShowAlert(true);
+    //   console.log("Error!", error);
+    // }
+
+    // setIsSigningUp(false);
   };
 
   const page1 = () => {
@@ -128,7 +144,7 @@ const SignUpForm = () => {
 
       const handleCountryChange = async (
         event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
-        field: ControllerRenderProps<SignUpFormData, "country">
+        field: ControllerRenderProps<SignUpFormData, "country">,
       ) => {
         field.onChange(event);
         const inputCountry = event.target.value;
@@ -228,14 +244,14 @@ const SignUpForm = () => {
         const numberValidation = (numberInput: string) => {
           const isValid = isValidPhoneNumber(
             numberInput,
-            country as CountryCode
+            country as CountryCode,
           );
           return isValid ? true : t("signUp.signUpForm.numberError");
         };
 
         const handleNumberChange = async (
           event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
-          field: ControllerRenderProps<SignUpFormData, "number">
+          field: ControllerRenderProps<SignUpFormData, "number">,
         ) => {
           field.onChange(event.target.value);
           await trigger(numberId);
@@ -341,7 +357,7 @@ const SignUpForm = () => {
 
       const handleEmailChange = async (
         event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
-        field: ControllerRenderProps<SignUpFormData, "email">
+        field: ControllerRenderProps<SignUpFormData, "email">,
       ) => {
         field.onChange(event.target.value);
         await trigger(emailId);
@@ -391,7 +407,7 @@ const SignUpForm = () => {
 
       const handlePasswordChange = async (
         event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
-        field: ControllerRenderProps<SignUpFormData, "password">
+        field: ControllerRenderProps<SignUpFormData, "password">,
       ) => {
         field.onChange(event.target.value);
         await trigger(passwordId);
@@ -464,7 +480,7 @@ const SignUpForm = () => {
 
       const handleReEnterPasswordChange = async (
         event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
-        field: ControllerRenderProps<SignUpFormData, "reEnterPassword">
+        field: ControllerRenderProps<SignUpFormData, "reEnterPassword">,
       ) => {
         field.onChange(event.target.value);
         await trigger(reEnterPasswordId);
@@ -595,13 +611,13 @@ const SignUpForm = () => {
     );
   };
 
-  // TODO:
-  // create some email verification page for the user to input the code to verify their email address
+  // the email verification page
+  const page3 = () => {};
 
   return (
     <Box
       component="form"
-      onSubmit={handleSubmit(onSubmit)}
+      onSubmit={handleSubmit(emailVerificationStep)}
       noValidate
       marginTop={formMargin}
     >

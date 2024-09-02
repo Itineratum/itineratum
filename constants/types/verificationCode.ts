@@ -1,5 +1,5 @@
 export interface IVerificationCode {
   email: string;
-  verfication_code: string;
-  expires_at: Date;
+  verification_code: string;
+  created_at: Date;
 }

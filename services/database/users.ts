@@ -33,6 +33,7 @@ export const signIn = async ({
     }
   } catch (error) {
     console.error(error);
+    throw error;
   } finally {
     await disconnectFromDatabase();
   }
@@ -56,7 +57,7 @@ export const credentialsSignUp = async (
       };
     } else {
       const hashedPassword = await bcrypt.hash(password, 12);
-      const sanitizedNumber = number.replace(/\D/g, '');
+      const sanitizedNumber = number.replace(/\D/g, "");
       const phoneNumber = `${countryCode}${sanitizedNumber}`;
       await User.create({
         country,
@@ -74,6 +75,7 @@ export const credentialsSignUp = async (
     }
   } catch (error) {
     console.error(error);
+    throw error;
   } finally {
     await disconnectFromDatabase();
   }
@@ -93,7 +95,10 @@ export const credentialsLogIn = async (
         error: "User not found!",
       };
     } else {
-      const isValidPassword = await bcrypt.compare(inputPassword, user.password);
+      const isValidPassword = await bcrypt.compare(
+        inputPassword,
+        user.password,
+      );
 
       if (!isValidPassword) {
         return {
@@ -112,6 +117,7 @@ export const credentialsLogIn = async (
     }
   } catch (error) {
     console.error(error);
+    throw error;
   } finally {
     await disconnectFromDatabase();
   }

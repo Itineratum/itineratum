@@ -3,11 +3,7 @@ import { Box, Divider } from "@mui/material";
 import { useTranslations } from "next-intl";
 import Text from "./text";
 
-export const OrDivider = ({
-  formMargin
-}: {
-  formMargin: number
-}) => {
+export const OrDivider = ({ formMargin }: { formMargin: number }) => {
   const t = useTranslations();
 
   const gapBetweenLines: number = 4;
@@ -51,4 +47,4 @@ export const OrDivider = ({
       />
     </Box>
   );
-}
+};

@@ -9,9 +9,9 @@ import { TypographyVariant } from "@/constants/enums/theme";
 import { useTranslations } from "next-intl";
 
 export const ContinueWithGoogleButton = ({
-  formMargin
+  formMargin,
 }: {
-  formMargin: number
+  formMargin: number;
 }) => {
   const t = useTranslations();
 
@@ -60,4 +60,4 @@ export const ContinueWithGoogleButton = ({
       </Button>
     </Box>
   );
-}
+};

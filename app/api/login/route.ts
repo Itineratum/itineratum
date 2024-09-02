@@ -11,16 +11,13 @@ export const POST = async (req: NextRequest, res: NextResponse) => {
       return NextResponse.json({ message: "User logged in!" }, { status: 200 });
     } else {
       console.log(`loginRes.error = ${loginRes?.error}`);
-      return NextResponse.json(
-        { message: loginRes?.error },
-        { status: 404 }
-      );
+      return NextResponse.json({ message: loginRes?.error }, { status: 404 });
     }
   } catch (error) {
     console.error(error);
     return NextResponse.json(
       { error: "An error occured while signing the login!" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 };

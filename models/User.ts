@@ -30,14 +30,14 @@ const userSchema = new Schema<IUser>(
     account_created: { type: Date, required: true },
     password: { type: String, required: false }, // password is stored as hash only if users sign up using credentials
   },
-  { collection: constDbCollections.users }
+  { collection: constDbCollections.users },
 );
 
 export const initialUser = (
   name: string,
   email: string,
   profile_picture: string,
-  auth_service: AuthService
+  auth_service: AuthService,
 ) => {
   return {
     name,
