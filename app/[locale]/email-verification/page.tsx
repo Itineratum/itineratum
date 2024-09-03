@@ -1,7 +1,7 @@
-import { Box } from "@mui/material";
+import EmailVerificationPage from "@/components/templates/email-verification-page";
 
 const EmailVerification = () => {
-  return <Box>HELLO</Box>;
+  return <EmailVerificationPage />;
 };
 
 export default EmailVerification;

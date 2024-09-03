@@ -48,5 +48,15 @@
       "password": "Password",
       "passwordError": "Please enter your password!"
     }
+  },
+  "emailVerification": {
+    "emailVerification": "Verify your email address",
+    "emailVerificationForm": {
+      "email": "Email",
+      "verificationCode": "Verification Code",
+      "emailError": "Please enter your email address!",
+      "verificationCodeError": "Please enter your verification code!",
+      "verify": "Verify"
+    }
   }
 }
