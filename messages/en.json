@@ -50,13 +50,15 @@
     }
   },
   "emailVerification": {
+    "codeSentToEmail": "A 6-digit verification code was sent to your email, please check!",
     "emailVerification": "Verify your email address",
     "emailVerificationForm": {
       "email": "Email",
       "verificationCode": "Verification Code",
       "emailError": "Please enter your email address!",
       "verificationCodeError": "Please enter your verification code!",
-      "verify": "Verify"
+      "verify": "Verify",
+      "signingUp": "Email verification successful! Signing you up..."
     }
   }
 }

@@ -4,11 +4,13 @@ import { OrDivider } from "@/components/atoms/or-divider";
 import { PrivacyPolicyLink } from "@/components/atoms/privacy-policy-link";
 import Text from "@/components/atoms/text";
 import { ContinueWithGoogleButton } from "@/components/molecules/continue-with-google-button";
+import apiEndpointsConst from "@/constants/api/endpoints.json";
 import { countryInfoList } from "@/constants/enums/country";
-import { SignUpStep } from "@/constants/enums/signUpSteps";
+import { SignUpAction } from "@/constants/enums/signUpActions";
 import { TypographyVariant } from "@/constants/enums/theme";
 import colorsConst from "@/constants/pages/colors.json";
 import { SignUpFormData } from "@/constants/types/signUpFormData";
+import { postRequest } from "@/utils/apiRequest";
 import { isValidEmail, isValidPassword } from "@/utils/signUpFormValidation";
 import VisibilityOffOutlinedIcon from "@mui/icons-material/VisibilityOffOutlined";
 import VisibilityOutlinedIcon from "@mui/icons-material/VisibilityOutlined";
@@ -29,13 +31,7 @@ import { signIn } from "next-auth/react";
 import { useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
 import { ChangeEvent, useState } from "react";
-import {
-  Controller,
-  ControllerRenderProps,
-  SubmitHandler,
-  useForm,
-} from "react-hook-form";
-import endpointsConst from "@/constants/pages/endpoints.json";
+import { Controller, ControllerRenderProps, useForm } from "react-hook-form";
 
 const SignUpForm = () => {
   const t = useTranslations();
@@ -50,10 +46,12 @@ const SignUpForm = () => {
     trigger,
   } = useForm<SignUpFormData>();
 
-  const [pageNumber, setPageNumber] = useState<number>(1);
+  const [stepNumber, setStepNumber] = useState<number>(1);
   const [showAlert, setShowAlert] = useState<boolean>(false);
   const [alertText, setAlertText] = useState<string>("");
+  const [alertType, setAlertType] = useState<"info" | "error">("info");
   const [isSigningUp, setIsSigningUp] = useState<boolean>(false);
+  const [isVerifying, setIsVerifying] = useState<boolean>(false);
 
   const color = colorsConst.components.textField;
   const formMargin: number = 2;
@@ -80,65 +78,17 @@ const SignUpForm = () => {
   const emailId = "email";
   const passwordId = "password";
   const reEnterPasswordId = "reEnterPassword";
+  const verificationCodeId = "verificationCode";
 
   const country = watch(countryId);
+  const countryCode = watch(countryCodeId);
   const number = watch(numberId);
   const email = watch(emailId);
   const password = watch(passwordId);
   const reEnterPassword = watch(reEnterPasswordId);
+  const verificationCode = watch(verificationCodeId);
 
-  const emailVerificationStep: SubmitHandler<SignUpFormData> = async (data) => {
-    setIsSigningUp(true);
-    setAlertText("");
-    setShowAlert(false);
-    const { email, password } = data;
-    const bodyJson = {
-      ...data,
-      step: SignUpStep.emailVerification,
-    };
-    const signUpRes = await fetch("/api/sign-up", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(bodyJson),
-    });
-
-    if (signUpRes.ok) {
-      router.push(`/${endpointsConst.emailVerification.endpoint}`);
-    } else {
-      const error = await signUpRes.json();
-      setAlertText(error.message ?? t("signUp.signUpForm.signUpErrorAlert"));
-      setShowAlert(true);
-      console.log("Error!", error);
-    }
-
-    // if (signUpRes.ok) {
-    //   const signInRes = await signIn("credentials", {
-    //     redirect: false,
-    //     email,
-    //     password,
-    //   });
-
-    //   if (signInRes && signInRes.ok) {
-    //     setAlertText("");
-    //     setShowAlert(false);
-    //     router.push("/");
-    //   } else {
-    //     setAlertText(t("signUp.signUpForm.signUpErrorAlert"));
-    //     setShowAlert(true);
-    //   }
-    // } else {
-    //   const error = await signUpRes.json();
-    //   setAlertText(error.message ?? t("signUp.signUpForm.signUpErrorAlert"));
-    //   setShowAlert(true);
-    //   console.log("Error!", error);
-    // }
-
-    // setIsSigningUp(false);
-  };
-
-  const page1 = () => {
+  const step1 = () => {
     const countryField = () => {
       const dropdownHeight: number = 200;
 
@@ -312,7 +262,7 @@ const SignUpForm = () => {
         const isCountryValid = await trigger(countryId);
         const isNumberValid = await trigger(numberId);
 
-        if (isCountryValid && isNumberValid) setPageNumber(2);
+        if (isCountryValid && isNumberValid) setStepNumber(2);
       };
 
       return (
@@ -348,7 +298,7 @@ const SignUpForm = () => {
     );
   };
 
-  const page2 = () => {
+  const step2 = () => {
     const emailField = () => {
       const emailValidation = (emailInput: string) => {
         const isValid = isValidEmail(emailInput);
@@ -546,7 +496,7 @@ const SignUpForm = () => {
       const buttonWidth: string = "30%";
 
       const handleClick = async () => {
-        setPageNumber(1);
+        setStepNumber(1);
       };
 
       return (
@@ -570,14 +520,51 @@ const SignUpForm = () => {
       const buttonWidth: string = "30%";
       const loadingAnimationSize: number = 24;
 
+      const handleClick = async () => {
+        const isEmailValid = await trigger(emailId);
+        const isPasswordValid = await trigger(passwordId);
+        const isReEnterPasswordValid = await trigger(reEnterPasswordId);
+
+        if (!isEmailValid || !isPasswordValid || !isReEnterPasswordValid)
+          return;
+
+        setIsSigningUp(true);
+        setAlertText("");
+        setShowAlert(false);
+        const bodyJson = {
+          email,
+          action: SignUpAction.generateCode,
+        };
+        const generateCodeRes = await postRequest(
+          apiEndpointsConst.signUp,
+          bodyJson,
+        );
+
+        if (generateCodeRes.ok) {
+          setStepNumber(3);
+          setAlertType("info");
+          setAlertText(t("emailVerification.codeSentToEmail"));
+          setShowAlert(true);
+        } else {
+          const error = await generateCodeRes.json();
+          setAlertText(
+            error.message ?? t("signUp.signUpForm.signUpErrorAlert"),
+          );
+          setAlertType("error");
+          setShowAlert(true);
+          console.log("Error!", error);
+        }
+      };
+
       return (
         <Button
-          type="submit"
+          type="button"
           fullWidth
           variant="contained"
           sx={{ my: formMargin, maxWidth: buttonWidth }}
           color="secondary"
           disabled={isSigningUp}
+          onClick={handleClick}
         >
           {isSigningUp ? (
             <CircularProgress size={loadingAnimationSize} />
@@ -611,23 +598,147 @@ const SignUpForm = () => {
     );
   };
 
-  // the email verification page
-  const page3 = () => {};
+  const step3 = () => {
+    const verificationCodeField = () => {
+      return (
+        <Controller
+          key={verificationCodeId}
+          name={verificationCodeId}
+          control={control}
+          defaultValue=""
+          rules={{
+            required: t(
+              "emailVerification.emailVerificationForm.verificationCodeError",
+            ),
+          }}
+          render={({ field }) => (
+            <TextField
+              {...field}
+              required
+              fullWidth
+              variant="filled"
+              sx={formFieldStyling}
+              margin={formFieldMargin}
+              label={t(
+                "emailVerification.emailVerificationForm.verificationCode",
+              )}
+              value={verificationCode}
+              InputLabelProps={{
+                sx: { color: "text.primary" },
+              }}
+              error={!!errors.verificationCode}
+              helperText={
+                errors.verificationCode
+                  ? (errors.verificationCode.message as string)
+                  : ""
+              }
+            />
+          )}
+        />
+      );
+    };
+
+    const verifyButton = () => {
+      const buttonWidth: string = "30%";
+      const loadingAnimationSize: number = 24;
+
+      const handleClick = async () => {
+        const isVerificationCodeValid = await trigger(verificationCodeId);
+
+        if (!isVerificationCodeValid) return;
+
+        setIsVerifying(true);
+        setAlertText("");
+        setShowAlert(false);
+        const bodyJson = {
+          country,
+          countryCode,
+          number,
+          email,
+          password,
+          verificationCode,
+          action: SignUpAction.verifyCode,
+        };
+        const verifyCodeRes = await postRequest(
+          apiEndpointsConst.signUp,
+          bodyJson,
+        );
+
+        if (verifyCodeRes.ok) {
+          const signInRes = await signIn("credentials", {
+            redirect: false,
+            email,
+            password,
+          });
+
+          if (signInRes && signInRes.ok) {
+            setAlertText("");
+            setShowAlert(false);
+            router.push("/"); // redirect to home page
+          } else {
+            setAlertText(t("signUp.signUpForm.signUpErrorAlert"));
+            setAlertType("error");
+            setShowAlert(true);
+          }
+        } else {
+          const error = await verifyCodeRes.json();
+          setAlertText(
+            error.message ?? t("signUp.signUpForm.signUpErrorAlert"),
+          );
+          setAlertType("error");
+          setShowAlert(true);
+          console.log("Error!", error);
+        }
+
+        setIsSigningUp(false);
+        setIsVerifying(false);
+      };
+
+      return (
+        <Button
+          type="button"
+          fullWidth
+          variant="contained"
+          sx={{ my: formMargin, maxWidth: buttonWidth, ml: "auto" }}
+          color="primary"
+          disabled={isVerifying}
+          onClick={handleClick}
+        >
+          {isVerifying ? (
+            <CircularProgress size={loadingAnimationSize} />
+          ) : (
+            <Text
+              text={t("emailVerification.emailVerificationForm.verify")}
+              variant={TypographyVariant.h4}
+              bold={false}
+            />
+          )}
+        </Button>
+      );
+    };
+
+    return (
+      <Box>
+        {verificationCodeField()}
+        <Box display="flex" justifyContent="flex-end">
+          {verifyButton()}
+        </Box>
+      </Box>
+    );
+  };
 
   return (
-    <Box
-      component="form"
-      onSubmit={handleSubmit(emailVerificationStep)}
-      noValidate
-      marginTop={formMargin}
-    >
-      <Collapse in={pageNumber === 1} timeout={pageTransitionDuration}>
-        {page1()}
+    <Box component="form" noValidate marginTop={formMargin}>
+      <Collapse in={stepNumber === 1} timeout={pageTransitionDuration}>
+        {step1()}
       </Collapse>
-      <Collapse in={pageNumber === 2} timeout={pageTransitionDuration}>
-        {page2()}
+      <Collapse in={stepNumber === 2} timeout={pageTransitionDuration}>
+        {step2()}
       </Collapse>
-      {showAlert ? <Alert severity="error">{alertText}</Alert> : <></>}
+      <Collapse in={stepNumber === 3} timeout={pageTransitionDuration}>
+        {step3()}
+      </Collapse>
+      {showAlert ? <Alert severity={alertType}>{alertText}</Alert> : <></>}
       <OrDivider formMargin={formMargin} />
       <ContinueWithGoogleButton formMargin={formMargin} />
     </Box>

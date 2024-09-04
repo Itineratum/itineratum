@@ -5,4 +5,5 @@ export interface SignUpFormData {
   email: string;
   password: string;
   reEnterPassword: string;
+  verificationCode: string;
 }

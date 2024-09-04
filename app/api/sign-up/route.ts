@@ -1,15 +1,18 @@
-import { SignUpStep } from "@/constants/enums/signUpSteps";
+import { SignUpAction } from "@/constants/enums/signUpActions";
 import { sendSignUpVerificationEmail } from "@/lib/nodeMailer";
 import { credentialsSignUp } from "@/services/database/users";
-import { generateAndSaveVerificationCode } from "@/services/database/verificationCodes";
+import {
+  generateAndSaveVerificationCode,
+  verifyVerificationCode,
+} from "@/services/database/verificationCodes";
 import { NextRequest, NextResponse } from "next/server";
 
 export const POST = async (req: NextRequest, res: NextResponse) => {
   try {
     const data = await req.json();
-    const { country, countryCode, number, email, password, step } = data;
+    const { email, action } = data;
 
-    if (step === SignUpStep.emailVerification) {
+    if (action === SignUpAction.generateCode) {
       const verificationCodeSaveRes =
         await generateAndSaveVerificationCode(email);
 
@@ -27,7 +30,20 @@ export const POST = async (req: NextRequest, res: NextResponse) => {
       } else {
         throw new Error(verificationCodeSaveRes?.error);
       }
-    } else if (step === SignUpStep.signUp) {
+    } else if (action === SignUpAction.verifyCode) {
+      const { country, countryCode, number, password, verificationCode } = data;
+      const verifyVerificationCodeRes = await verifyVerificationCode(
+        email,
+        verificationCode,
+      );
+
+      if (!verifyVerificationCodeRes.success) {
+        return NextResponse.json(
+          { message: verifyVerificationCodeRes.error },
+          { status: 400 },
+        );
+      }
+
       const signUpRes = await credentialsSignUp(
         country,
         countryCode,

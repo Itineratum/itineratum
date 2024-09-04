@@ -52,7 +52,7 @@ const LoginPage = () => {
         {welcomeTravellerText()}
       </Box>
       <Collapse in={isLoginUsingOtp} timeout={pageTransitionDuration}>
-        // TODO:
+        // TODO: // add login by otp page
         {}
       </Collapse>
       <Collapse in={!isLoginUsingOtp} timeout={pageTransitionDuration}>
