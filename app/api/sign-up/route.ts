@@ -25,7 +25,7 @@ export const POST = async (req: NextRequest, res: NextResponse) => {
 
         return NextResponse.json(
           { message: "Verification code sent!" },
-          { status: 200 },
+          { status: 200 }
         );
       } else {
         throw new Error(verificationCodeSaveRes?.error);
@@ -34,13 +34,13 @@ export const POST = async (req: NextRequest, res: NextResponse) => {
       const { country, countryCode, number, password, verificationCode } = data;
       const verifyVerificationCodeRes = await verifyVerificationCode(
         email,
-        verificationCode,
+        verificationCode
       );
 
       if (!verifyVerificationCodeRes.success) {
         return NextResponse.json(
           { message: verifyVerificationCodeRes.error },
-          { status: 400 },
+          { status: 400 }
         );
       }
 
@@ -49,7 +49,7 @@ export const POST = async (req: NextRequest, res: NextResponse) => {
         countryCode,
         number,
         email,
-        password,
+        password
       );
 
       if (signUpRes?.success) {
@@ -57,15 +57,12 @@ export const POST = async (req: NextRequest, res: NextResponse) => {
       } else {
         return NextResponse.json(
           { message: signUpRes?.error },
-          { status: 409 }, // user account already exists
+          { status: 409 } // user account already exists
         );
       }
     }
-  } catch (error) {
+  } catch (error: any) {
     console.error(error);
-    return NextResponse.json(
-      { error: "An error occured while signing the user up!" },
-      { status: 500 },
-    );
+    return NextResponse.json({ message: error.message }, { status: 500 });
   }
 };
