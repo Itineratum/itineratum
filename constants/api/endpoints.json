@@ -1,3 +1,4 @@
 {
-  "signUp": "/api/sign-up"
+  "signUp": "/api/sign-up",
+  "login": "/api/login"
 }

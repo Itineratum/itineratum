@@ -4,9 +4,11 @@ import { OrDivider } from "@/components/atoms/or-divider";
 import { PrivacyPolicyLink } from "@/components/atoms/privacy-policy-link";
 import Text from "@/components/atoms/text";
 import { ContinueWithGoogleButton } from "@/components/molecules/continue-with-google-button";
+import apiEndpointsConst from "@/constants/api/endpoints.json";
 import { TypographyVariant } from "@/constants/enums/theme";
 import colorsConst from "@/constants/pages/colors.json";
 import { LogInFormEmailData } from "@/constants/types/logInFormData";
+import { postRequest } from "@/utils/apiRequest";
 import VisibilityOffOutlinedIcon from "@mui/icons-material/VisibilityOffOutlined";
 import VisibilityOutlinedIcon from "@mui/icons-material/VisibilityOutlined";
 import {
@@ -67,13 +69,7 @@ export const LogInFormEmail = () => {
     setAlertText("");
     setShowAlert(false);
     const { email, password } = data;
-    const loginRes = await fetch("/api/login", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(data),
-    });
+    const loginRes = await postRequest(apiEndpointsConst.login, data);
 
     if (loginRes.ok) {
       const signInRes = await signIn("credentials", {
