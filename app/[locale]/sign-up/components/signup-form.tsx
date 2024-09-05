@@ -94,7 +94,7 @@ const SignUpForm = () => {
 
       const handleCountryChange = async (
         event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
-        field: ControllerRenderProps<SignUpFormData, "country">
+        field: ControllerRenderProps<SignUpFormData, "country">,
       ) => {
         field.onChange(event);
         const inputCountry = event.target.value;
@@ -194,14 +194,14 @@ const SignUpForm = () => {
         const numberValidation = (numberInput: string) => {
           const isValid = isValidPhoneNumber(
             numberInput,
-            country as CountryCode
+            country as CountryCode,
           );
           return isValid ? true : t("signUp.signUpForm.numberError");
         };
 
         const handleNumberChange = async (
           event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
-          field: ControllerRenderProps<SignUpFormData, "number">
+          field: ControllerRenderProps<SignUpFormData, "number">,
         ) => {
           field.onChange(event.target.value);
           await trigger(numberId);
@@ -307,7 +307,7 @@ const SignUpForm = () => {
 
       const handleEmailChange = async (
         event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
-        field: ControllerRenderProps<SignUpFormData, "email">
+        field: ControllerRenderProps<SignUpFormData, "email">,
       ) => {
         field.onChange(event.target.value);
         await trigger(emailId);
@@ -357,7 +357,7 @@ const SignUpForm = () => {
 
       const handlePasswordChange = async (
         event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
-        field: ControllerRenderProps<SignUpFormData, "password">
+        field: ControllerRenderProps<SignUpFormData, "password">,
       ) => {
         field.onChange(event.target.value);
         await trigger(passwordId);
@@ -430,7 +430,7 @@ const SignUpForm = () => {
 
       const handleReEnterPasswordChange = async (
         event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
-        field: ControllerRenderProps<SignUpFormData, "reEnterPassword">
+        field: ControllerRenderProps<SignUpFormData, "reEnterPassword">,
       ) => {
         field.onChange(event.target.value);
         await trigger(reEnterPasswordId);
@@ -537,18 +537,18 @@ const SignUpForm = () => {
         };
         const generateCodeRes = await postRequest(
           apiEndpointsConst.signUp,
-          bodyJson
+          bodyJson,
         );
 
         if (generateCodeRes.ok) {
           setStepNumber(3);
           setAlertType("info");
-          setAlertText(t("emailVerification.codeSentToEmail"));
+          setAlertText(t("signUp.emailVerification.codeSentToEmail"));
           setShowAlert(true);
         } else {
           const error = await generateCodeRes.json();
           setAlertText(
-            error.message ?? t("signUp.signUpForm.signUpErrorAlert")
+            error.message ?? t("signUp.signUpForm.signUpErrorAlert"),
           );
           setAlertType("error");
           setShowAlert(true);
@@ -610,7 +610,7 @@ const SignUpForm = () => {
           defaultValue=""
           rules={{
             required: t(
-              "emailVerification.emailVerificationForm.verificationCodeError"
+              "signUp.emailVerification.emailVerificationForm.verificationCodeError",
             ),
           }}
           render={({ field }) => (
@@ -622,7 +622,7 @@ const SignUpForm = () => {
               sx={formFieldStyling}
               margin={formFieldMargin}
               label={t(
-                "emailVerification.emailVerificationForm.verificationCode"
+                "signUp.emailVerification.emailVerificationForm.verificationCode",
               )}
               value={verificationCode}
               InputLabelProps={{
@@ -663,7 +663,7 @@ const SignUpForm = () => {
         };
         const verifyCodeRes = await postRequest(
           apiEndpointsConst.signUp,
-          bodyJson
+          bodyJson,
         );
 
         if (verifyCodeRes.ok) {
@@ -685,7 +685,7 @@ const SignUpForm = () => {
         } else {
           const error = await verifyCodeRes.json();
           setAlertText(
-            error.message ?? t("signUp.signUpForm.signUpErrorAlert")
+            error.message ?? t("signUp.signUpForm.signUpErrorAlert"),
           );
           setAlertType("error");
           setShowAlert(true);
@@ -710,7 +710,7 @@ const SignUpForm = () => {
             <CircularProgress size={loadingAnimationSize} />
           ) : (
             <Text
-              text={t("emailVerification.emailVerificationForm.verify")}
+              text={t("signUp.emailVerification.emailVerificationForm.verify")}
               variant={TypographyVariant.h4}
               bold={false}
             />

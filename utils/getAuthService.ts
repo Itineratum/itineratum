@@ -15,5 +15,7 @@ export const getAuthService = (provider: string): AuthService => {
       ? AuthService.Facebook
       : provider === "apple"
         ? AuthService.Apple
-        : AuthService.Google; // default
+        : provider === "credentials"
+          ? AuthService.Credentials
+          : AuthService.Google; // default
 };

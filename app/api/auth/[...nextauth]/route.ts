@@ -44,15 +44,16 @@ const callbacks = {
     session.provider = token.provider!;
     return session;
   },
-};
-const events = {
   signIn,
+};
+const pages = {
+  error: "/error", // redirect the user back to home page upon error signing in
 };
 
 export const authOptions = {
   providers,
   callbacks,
-  events,
+  pages,
 };
 
 export const handler = NextAuth(authOptions);

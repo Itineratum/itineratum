@@ -1,4 +1,5 @@
 import { AuthService } from "@/constants/enums/authService";
+import { SignInError } from "@/constants/errors/signIn";
 import { connectToDatabase, disconnectFromDatabase } from "@/lib/db";
 import User, { initialUser } from "@/models/User";
 import { getAuthService } from "@/utils/getAuthService";
@@ -15,21 +16,30 @@ export const signIn = async ({
   try {
     await connectToDatabase();
     const email: string = user.email!;
-    const isExistingUser = await User.findOne({ email });
+    const existingUser = await User.findOne({ email });
+    const authService: AuthService = getAuthService(account?.provider!);
 
-    if (!isExistingUser) {
+    if (!existingUser) {
       const name: string = user.name!;
       const profilePicture: string = user.image!;
-      const authService: AuthService = getAuthService(account?.provider!);
+
       await User.create(
         initialUser(name, email, profilePicture, authService),
       ).then((result) => {
         console.log(`User ${result.id} created!`);
       });
+      return true;
     } else {
+      const isSameProvider = existingUser.auth_service === authService;
+
+      if (!isSameProvider) {
+        throw new Error(SignInError.logInWithoutGoogle);
+      }
+
       console.log(
         `User with email ${email} already exists! Signing in directly.`,
       );
+      return true;
     }
   } catch (error) {
     console.error(error);
@@ -48,9 +58,9 @@ export const credentialsSignUp = async (
 ) => {
   try {
     await connectToDatabase();
-    const isExistingUser = await User.findOne({ email });
+    const existingUser = await User.findOne({ email });
 
-    if (isExistingUser) {
+    if (existingUser) {
       return {
         success: false,
         error: "User already exists! Please sign up with a different email!",

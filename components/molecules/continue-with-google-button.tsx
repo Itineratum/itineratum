@@ -1,12 +1,11 @@
-import { signIn } from "next-auth/react";
-import constEndpoints from "@/constants/pages/endpoints.json";
-import { Box, Button } from "@mui/material";
-import colorsConst from "@/constants/pages/colors.json";
-import Image from "next/image";
-import googleIcon from "@/public/google.png";
-import Text from "../atoms/text";
 import { TypographyVariant } from "@/constants/enums/theme";
+import colorsConst from "@/constants/pages/colors.json";
+import googleIcon from "@/public/google.png";
+import { Box, Button } from "@mui/material";
+import { signIn } from "next-auth/react";
 import { useTranslations } from "next-intl";
+import Image from "next/image";
+import Text from "../atoms/text";
 
 export const ContinueWithGoogleButton = ({
   formMargin,
@@ -20,8 +19,10 @@ export const ContinueWithGoogleButton = ({
   const buttonHeight: number = iconSize * 2;
   const spacing: number = 2;
 
-  const handleClick = () => {
-    signIn("google", { callbackUrl: constEndpoints.home.endpoint });
+  const handleClick = async () => {
+    await signIn("google", {
+      callbackUrl: "/",
+    });
   };
 
   return (
