@@ -5,6 +5,6 @@ export interface LogInFormEmailData {
 
 export interface LogInFormOtpData {
   countryCode: string;
-  phoneNumber: string;
+  number: string;
   otp: string;
 }

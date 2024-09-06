@@ -38,7 +38,6 @@ const SignUpForm = () => {
   const router = useRouter();
   const {
     control,
-    handleSubmit,
     formState: { errors },
     setValue,
     getValues,

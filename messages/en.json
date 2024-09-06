@@ -58,7 +58,14 @@
       "login": "Login",
       "loginErrorAlert": "Error logging in! Please try again.",
       "password": "Password",
-      "passwordError": "Please enter your password!"
+      "passwordError": "Please enter your password!",
+      "loginUsingPhoneNumber": "Login using phone number",
+      "loginUsingEmail": "Login using email",
+      "countryCode": "Country Code",
+      "number": "Phone Number",
+      "numberError": "Invalid phone number!",
+      "otp": "OTP",
+      "otpError": "OTP required!"
     }
   },
   "error": {

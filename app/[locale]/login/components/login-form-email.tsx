@@ -1,11 +1,12 @@
 "use client";
 
-import { OrDivider } from "@/components/atoms/or-divider";
 import { PrivacyPolicyLink } from "@/components/atoms/privacy-policy-link";
 import Text from "@/components/atoms/text";
-import { ContinueWithGoogleButton } from "@/components/molecules/continue-with-google-button";
 import apiEndpointsConst from "@/constants/api/endpoints.json";
-import { TypographyVariant } from "@/constants/enums/theme";
+import {
+  TypographyTextDecoration,
+  TypographyVariant,
+} from "@/constants/enums/theme";
 import colorsConst from "@/constants/pages/colors.json";
 import { LogInFormEmailData } from "@/constants/types/logInFormData";
 import { postRequest } from "@/utils/apiRequest";
@@ -23,10 +24,14 @@ import {
 import { signIn } from "next-auth/react";
 import { useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { Dispatch, SetStateAction, useState } from "react";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
 
-export const LogInFormEmail = () => {
+export const LogInFormEmail = ({
+  setIsLoginUsingOtp,
+}: {
+  setIsLoginUsingOtp: Dispatch<SetStateAction<boolean>>;
+}) => {
   const t = useTranslations();
   const router = useRouter();
   const {
@@ -178,29 +183,51 @@ export const LogInFormEmail = () => {
     );
   };
 
-  const logInButton = () => {
+  const loginUsingPhoneNumberButton = () => {
+    const handleOnClick = () => {
+      setIsLoginUsingOtp(true);
+    };
+
+    return (
+      <Box
+        sx={{ textAlign: "right", width: "100%", cursor: "pointer" }}
+        onClick={handleOnClick}
+      >
+        <Text
+          text={t("login.loginForm.loginUsingPhoneNumber")}
+          variant={TypographyVariant.h5}
+          bold={false}
+          textDecoration={TypographyTextDecoration.underline}
+        />
+      </Box>
+    );
+  };
+
+  const loginButton = () => {
     const buttonWidth: string = "30%";
     const loadingAnimationSize: number = 24;
 
     return (
-      <Button
-        type="submit"
-        fullWidth
-        variant="contained"
-        sx={{ my: formMargin, maxWidth: buttonWidth, ml: "auto" }}
-        color="primary"
-        disabled={isLoggingIn}
-      >
-        {isLoggingIn ? (
-          <CircularProgress size={loadingAnimationSize} />
-        ) : (
-          <Text
-            text={t("login.loginForm.login")}
-            variant={TypographyVariant.h4}
-            bold={false}
-          />
-        )}
-      </Button>
+      <Box sx={{ display: "flex", justifyContent: "center" }}>
+        <Button
+          type="submit"
+          fullWidth
+          variant="contained"
+          sx={{ my: formMargin, maxWidth: buttonWidth }}
+          color="primary"
+          disabled={isLoggingIn}
+        >
+          {isLoggingIn ? (
+            <CircularProgress size={loadingAnimationSize} />
+          ) : (
+            <Text
+              text={t("login.loginForm.login")}
+              variant={TypographyVariant.h4}
+              bold={false}
+            />
+          )}
+        </Button>
+      </Box>
     );
   };
 
@@ -217,11 +244,12 @@ export const LogInFormEmail = () => {
     >
       {emailField()}
       {passwordField()}
-      <PrivacyPolicyLink />
-      {logInButton()}
+      <Box sx={{ display: "flex" }}>
+        <PrivacyPolicyLink />
+        {loginUsingPhoneNumberButton()}
+      </Box>
+      {loginButton()}
       {showAlert ? <Alert severity="error">{alertText}</Alert> : <></>}
-      <OrDivider formMargin={formMargin} />
-      <ContinueWithGoogleButton formMargin={formMargin} />
     </Box>
   );
 };

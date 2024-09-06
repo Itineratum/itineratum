@@ -1,6 +1,7 @@
 "use client";
 
 import { LogInFormEmail } from "@/app/[locale]/login/components/login-form-email";
+import { LogInFormOtp } from "@/app/[locale]/login/components/login-form-otp";
 import Text from "@/components/atoms/text";
 import { TypographyVariant } from "@/constants/enums/theme";
 import { Collapse } from "@mui/material";
@@ -8,12 +9,15 @@ import Box from "@mui/material/Box";
 import Container from "@mui/material/Container";
 import { useTranslations } from "next-intl";
 import { useState } from "react";
+import { OrDivider } from "../atoms/or-divider";
+import { ContinueWithGoogleButton } from "../molecules/continue-with-google-button";
 
 const LoginPage = () => {
   const t = useTranslations();
   const [isLoginUsingOtp, setIsLoginUsingOtp] = useState<boolean>(false);
 
   const pageTransitionDuration: number = 500;
+  const formMargin: number = 2;
 
   const loginText = () => {
     return (
@@ -26,6 +30,7 @@ const LoginPage = () => {
       </Box>
     );
   };
+
   const welcomeTravellerText = () => {
     return (
       <Box sx={{ textAlign: "left", width: "100%" }}>
@@ -52,12 +57,13 @@ const LoginPage = () => {
         {welcomeTravellerText()}
       </Box>
       <Collapse in={isLoginUsingOtp} timeout={pageTransitionDuration}>
-        // TODO: // add login by otp page
-        {}
+        <LogInFormOtp setIsLoginUsingOtp={setIsLoginUsingOtp} />
       </Collapse>
       <Collapse in={!isLoginUsingOtp} timeout={pageTransitionDuration}>
-        <LogInFormEmail />
+        <LogInFormEmail setIsLoginUsingOtp={setIsLoginUsingOtp} />
       </Collapse>
+      <OrDivider formMargin={formMargin} />
+      <ContinueWithGoogleButton formMargin={formMargin} />
     </Container>
   );
 };
