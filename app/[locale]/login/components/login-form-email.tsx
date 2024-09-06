@@ -3,6 +3,7 @@
 import { PrivacyPolicyLink } from "@/components/atoms/privacy-policy-link";
 import Text from "@/components/atoms/text";
 import apiEndpointsConst from "@/constants/api/endpoints.json";
+import { LoginType } from "@/constants/enums/loginType";
 import {
   TypographyTextDecoration,
   TypographyVariant,
@@ -74,7 +75,12 @@ export const LogInFormEmail = ({
     setAlertText("");
     setShowAlert(false);
     const { email, password } = data;
-    const loginRes = await postRequest(apiEndpointsConst.login, data);
+    const bodyJson = {
+      email,
+      password,
+      type: LoginType.viaEmail,
+    };
+    const loginRes = await postRequest(apiEndpointsConst.login, bodyJson);
 
     if (loginRes.ok) {
       const signInRes = await signIn("credentials", {

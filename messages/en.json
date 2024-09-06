@@ -36,7 +36,7 @@
       "signInErrorAlert": "Error logging in! Please try again."
     },
     "emailVerification": {
-      "codeSentToEmail": "A 6-digit verification code was sent to your email, please check!",
+      "codeSentToEmail": "A 6-digit verification code was sent to your email, please check! The code is only valid for 15 minutes!",
       "emailVerification": "Verify your email address",
       "emailVerificationForm": {
         "email": "Email",
@@ -62,8 +62,10 @@
       "loginUsingPhoneNumber": "Login using phone number",
       "loginUsingEmail": "Login using email",
       "countryCode": "Country Code",
+      "countryCodeError": "No country code selected!",
       "number": "Phone Number",
       "numberError": "Invalid phone number!",
+      "getOtp": "Get OTP",
       "otp": "OTP",
       "otpError": "OTP required!"
     }

@@ -1,4 +1,4 @@
-import { SignUpAction } from "@/constants/enums/signUpActions";
+import { SignUpAction } from "@/constants/enums/signUpAction";
 import { sendSignUpVerificationEmail } from "@/lib/nodeMailer";
 import { credentialsSignUp } from "@/services/database/users";
 import {

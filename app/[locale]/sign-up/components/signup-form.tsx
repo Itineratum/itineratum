@@ -6,7 +6,7 @@ import Text from "@/components/atoms/text";
 import { ContinueWithGoogleButton } from "@/components/molecules/continue-with-google-button";
 import apiEndpointsConst from "@/constants/api/endpoints.json";
 import { countryInfoList } from "@/constants/enums/country";
-import { SignUpAction } from "@/constants/enums/signUpActions";
+import { SignUpAction } from "@/constants/enums/signUpAction";
 import { TypographyVariant } from "@/constants/enums/theme";
 import colorsConst from "@/constants/pages/colors.json";
 import { SignUpFormData } from "@/constants/types/signUpFormData";
