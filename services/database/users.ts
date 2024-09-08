@@ -18,11 +18,10 @@ export const signIn = async ({
     const email: string = user.email!;
     const existingUser = await User.findOne({ email });
     const authService: AuthService = getAuthService(account?.provider!);
+    const name: string = user.name!;
+    const profilePicture: string = user.image!;
 
     if (!existingUser) {
-      const name: string = user.name!;
-      const profilePicture: string = user.image!;
-
       await User.create(
         initialUser(name, email, profilePicture, authService),
       ).then((result) => {
@@ -30,10 +29,25 @@ export const signIn = async ({
       });
       return true;
     } else {
-      const isSameProvider = existingUser.auth_service === authService;
+      const isSameAuthService = existingUser.auth_service === authService;
 
-      if (!isSameProvider) {
-        throw new Error(SignInError.logInWithoutGoogle);
+      if (!isSameAuthService) {
+        // allow users who signed up using credentials to sign in using Google, combine their accounts
+        const isCredentialsSignUpGoogleLogin =
+          existingUser.auth_service === AuthService.Credentials &&
+          authService === AuthService.Google;
+
+        if (!isCredentialsSignUpGoogleLogin) {
+          throw new Error(SignInError.logInWithoutGoogle);
+        } else {
+          await User.findOneAndUpdate(
+            { email },
+            { profile_picture: profilePicture, name },
+          );
+          console.log(
+            `User with email ${email} has been combined with details from their Google account!`,
+          );
+        }
       }
 
       console.log(
