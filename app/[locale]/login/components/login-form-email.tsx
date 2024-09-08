@@ -1,5 +1,6 @@
 "use client";
 
+import { trpc } from "@/app/_trpc/client";
 import { PrivacyPolicyLink } from "@/components/atoms/privacy-policy-link";
 import Text from "@/components/atoms/text";
 import apiEndpointsConst from "@/constants/api/endpoints.json";
@@ -69,6 +70,8 @@ export const LogInFormEmail = ({
 
   const email = watch(emailId);
   const password = watch(passwordId);
+
+  const res = trpc.user.generateVerificationCode.useQuery({email: "string"});
 
   const onSubmit: SubmitHandler<LogInFormEmailData> = async (data) => {
     setIsLoggingIn(true);
@@ -213,10 +216,15 @@ export const LogInFormEmail = ({
     const buttonWidth: string = "30%";
     const loadingAnimationSize: number = 24;
 
+    const handleOnClick = async () => {
+      console.log(res.data);
+    }
+
     return (
       <Box sx={{ display: "flex", justifyContent: "center" }}>
         <Button
-          type="submit"
+          // type="submit"
+          onClick={handleOnClick}
           fullWidth
           variant="contained"
           sx={{ my: formMargin, maxWidth: buttonWidth }}

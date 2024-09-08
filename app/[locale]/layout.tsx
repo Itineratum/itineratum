@@ -1,5 +1,5 @@
-import Navbar from "@/components/organisms/navbar";
 import SessionProvider from "@/app/providers/SessionProvider";
+import Navbar from "@/components/organisms/navbar";
 import { locales } from "@/navigation";
 import theme from "@/styles/theme";
 import { ThemeProvider } from "@mui/material";
@@ -8,6 +8,7 @@ import { getServerSession } from "next-auth";
 import { NextIntlClientProvider, useMessages } from "next-intl";
 import { notFound } from "next/navigation";
 import { use } from "react";
+import TRPCProvider from "../_trpc/Provider";
 
 const HomeLayout = ({
   children,
@@ -30,8 +31,10 @@ const HomeLayout = ({
           <AppRouterCacheProvider>
             <body>
               <ThemeProvider theme={theme}>
-                <Navbar />
-                <main>{children}</main>
+                <TRPCProvider>
+                  <Navbar />
+                  <main>{children}</main>
+                </TRPCProvider>
               </ThemeProvider>
             </body>
           </AppRouterCacheProvider>
