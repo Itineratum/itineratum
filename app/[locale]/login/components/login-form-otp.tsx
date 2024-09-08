@@ -1,17 +1,15 @@
 "use client";
 
+import { trpc } from "@/app/_trpc/client";
 import { PrivacyPolicyLink } from "@/components/atoms/privacy-policy-link";
 import Text from "@/components/atoms/text";
-import apiEndpointsConst from "@/constants/api/endpoints.json";
 import { countryInfoList } from "@/constants/enums/country";
-import { LoginType } from "@/constants/enums/loginType";
 import {
   TypographyTextDecoration,
   TypographyVariant,
 } from "@/constants/enums/theme";
 import colorsConst from "@/constants/pages/colors.json";
 import { LogInFormOtpData } from "@/constants/types/logInFormData";
-import { postRequest } from "@/utils/apiRequest";
 import {
   Alert,
   Box,
@@ -21,6 +19,7 @@ import {
   MenuItem,
   TextField,
 } from "@mui/material";
+import { TRPCClientError } from "@trpc/client";
 import { CountryCode, isValidPhoneNumber } from "libphonenumber-js";
 import { useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
@@ -80,6 +79,10 @@ export const LogInFormOtp = ({
   const number = watch(numberId);
   const otp = watch(otpId);
   const country = watch(countryId);
+
+  const loginViaOtp = trpc.user.loginViaOtp.useMutation({
+    onSuccess: () => {},
+  });
 
   const onSubmit: SubmitHandler<LogInFormOtpData> = async (data) => {
     // TODO:
@@ -179,17 +182,17 @@ export const LogInFormOtp = ({
 
           if (isNumberValid) {
             const phoneNumber = `${countryCode}${number}`;
-            const bodyJson = {
+            const data = {
               phoneNumber,
-              type: LoginType.viaOtp,
             };
-            const otpRes = await postRequest(apiEndpointsConst.login, bodyJson);
 
-            // if (otpRes.ok) {
-            //   console.log("SUCCESS");
-            // } else {
-            //   console.log("FAILURE");
-            // }
+            try {
+              await loginViaOtp.mutateAsync(data);
+            } catch (error) {
+              if (error instanceof TRPCClientError) {
+              }
+            } finally {
+            }
           }
         };
 

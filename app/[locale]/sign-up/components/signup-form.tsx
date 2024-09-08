@@ -1,16 +1,14 @@
 "use client";
 
+import { trpc } from "@/app/_trpc/client";
 import { OrDivider } from "@/components/atoms/or-divider";
 import { PrivacyPolicyLink } from "@/components/atoms/privacy-policy-link";
 import Text from "@/components/atoms/text";
 import { ContinueWithGoogleButton } from "@/components/molecules/continue-with-google-button";
-import apiEndpointsConst from "@/constants/api/endpoints.json";
 import { countryInfoList } from "@/constants/enums/country";
-import { SignUpAction } from "@/constants/enums/signUpAction";
 import { TypographyVariant } from "@/constants/enums/theme";
 import colorsConst from "@/constants/pages/colors.json";
 import { SignUpFormData } from "@/constants/types/signUpFormData";
-import { postRequest } from "@/utils/apiRequest";
 import { isValidEmail, isValidPassword } from "@/utils/signUpFormValidation";
 import VisibilityOffOutlinedIcon from "@mui/icons-material/VisibilityOffOutlined";
 import VisibilityOutlinedIcon from "@mui/icons-material/VisibilityOutlined";
@@ -26,6 +24,7 @@ import {
   MenuItem,
   TextField,
 } from "@mui/material";
+import { TRPCClientError } from "@trpc/client";
 import { CountryCode, isValidPhoneNumber } from "libphonenumber-js";
 import { signIn } from "next-auth/react";
 import { useTranslations } from "next-intl";
@@ -86,6 +85,38 @@ const SignUpForm = () => {
   const password = watch(passwordId);
   const reEnterPassword = watch(reEnterPasswordId);
   const verificationCode = watch(verificationCodeId);
+
+  const generateVerificationCode =
+    trpc.user.generateVerificationCode.useMutation({
+      onSuccess: () => {
+        setStepNumber(3);
+        setAlertType("info");
+        setAlertText(t("signUp.emailVerification.codeSentToEmail"));
+        setShowAlert(true);
+        // setIsSigningUp(false);
+      },
+    });
+  const verifyVerificationCode = trpc.user.verifyVerificationCode.useMutation({
+    onSuccess: async () => {
+      const signInRes = await signIn("credentials", {
+        redirect: false,
+        email,
+        password,
+      });
+
+      if (signInRes && signInRes.ok) {
+        setAlertText("");
+        setShowAlert(false);
+        router.push("/"); // redirect to home page
+      } else {
+        setAlertText(t("signUp.signUpForm.signUpErrorAlert"));
+        setAlertType("error");
+        setShowAlert(true);
+      }
+      setIsSigningUp(false);
+      // setIsVerifying(false);
+    },
+  });
 
   const step1 = () => {
     const countryField = () => {
@@ -360,6 +391,8 @@ const SignUpForm = () => {
       ) => {
         field.onChange(event.target.value);
         await trigger(passwordId);
+
+        if (reEnterPassword) await trigger(reEnterPasswordId);
       };
 
       return (
@@ -530,31 +563,23 @@ const SignUpForm = () => {
         setIsSigningUp(true);
         setAlertText("");
         setShowAlert(false);
-        const bodyJson = {
+        const data = {
           email,
-          action: SignUpAction.generateCode,
         };
-        const generateCodeRes = await postRequest(
-          apiEndpointsConst.signUp,
-          bodyJson,
-        );
 
-        if (generateCodeRes.ok) {
-          setStepNumber(3);
-          setAlertType("info");
-          setAlertText(t("signUp.emailVerification.codeSentToEmail"));
-          setShowAlert(true);
-        } else {
-          const error = await generateCodeRes.json();
-          setAlertText(
-            error.message ?? t("signUp.signUpForm.signUpErrorAlert"),
-          );
-          setAlertType("error");
-          setShowAlert(true);
-          console.log("Error!", error);
+        try {
+          await generateVerificationCode.mutateAsync(data);
+        } catch (error) {
+          if (error instanceof TRPCClientError) {
+            setAlertText(
+              error.message ?? t("signUp.signUpForm.signUpErrorAlert"),
+            );
+            setAlertType("error");
+            setShowAlert(true);
+          }
+        } finally {
+          setIsSigningUp(false);
         }
-
-        setIsSigningUp(false);
       };
 
       return (
@@ -651,48 +676,29 @@ const SignUpForm = () => {
         setIsVerifying(true);
         setAlertText("");
         setShowAlert(false);
-        const bodyJson = {
+        const data = {
           country,
           countryCode,
           number,
           email,
           password,
           verificationCode,
-          action: SignUpAction.verifyCode,
         };
-        const verifyCodeRes = await postRequest(
-          apiEndpointsConst.signUp,
-          bodyJson,
-        );
 
-        if (verifyCodeRes.ok) {
-          const signInRes = await signIn("credentials", {
-            redirect: false,
-            email,
-            password,
-          });
-
-          if (signInRes && signInRes.ok) {
-            setAlertText("");
-            setShowAlert(false);
-            router.push("/"); // redirect to home page
-          } else {
-            setAlertText(t("signUp.signUpForm.signUpErrorAlert"));
+        try {
+          await verifyVerificationCode.mutateAsync(data);
+        } catch (error) {
+          if (error instanceof TRPCClientError) {
+            setAlertText(
+              error.message ?? t("signUp.signUpForm.signUpErrorAlert"),
+            );
             setAlertType("error");
             setShowAlert(true);
+            setIsSigningUp(false);
           }
-        } else {
-          const error = await verifyCodeRes.json();
-          setAlertText(
-            error.message ?? t("signUp.signUpForm.signUpErrorAlert"),
-          );
-          setAlertType("error");
-          setShowAlert(true);
-          console.log("Error!", error);
+        } finally {
+          setIsVerifying(false);
         }
-
-        setIsSigningUp(false);
-        setIsVerifying(false);
       };
 
       return (

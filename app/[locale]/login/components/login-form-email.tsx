@@ -3,15 +3,12 @@
 import { trpc } from "@/app/_trpc/client";
 import { PrivacyPolicyLink } from "@/components/atoms/privacy-policy-link";
 import Text from "@/components/atoms/text";
-import apiEndpointsConst from "@/constants/api/endpoints.json";
-import { LoginType } from "@/constants/enums/loginType";
 import {
   TypographyTextDecoration,
   TypographyVariant,
 } from "@/constants/enums/theme";
 import colorsConst from "@/constants/pages/colors.json";
 import { LogInFormEmailData } from "@/constants/types/logInFormData";
-import { postRequest } from "@/utils/apiRequest";
 import VisibilityOffOutlinedIcon from "@mui/icons-material/VisibilityOffOutlined";
 import VisibilityOutlinedIcon from "@mui/icons-material/VisibilityOutlined";
 import {
@@ -23,6 +20,7 @@ import {
   InputAdornment,
   TextField,
 } from "@mui/material";
+import { TRPCClientError } from "@trpc/client";
 import { signIn } from "next-auth/react";
 import { useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
@@ -71,21 +69,8 @@ export const LogInFormEmail = ({
   const email = watch(emailId);
   const password = watch(passwordId);
 
-  const res = trpc.user.generateVerificationCode.useQuery({email: "string"});
-
-  const onSubmit: SubmitHandler<LogInFormEmailData> = async (data) => {
-    setIsLoggingIn(true);
-    setAlertText("");
-    setShowAlert(false);
-    const { email, password } = data;
-    const bodyJson = {
-      email,
-      password,
-      type: LoginType.viaEmail,
-    };
-    const loginRes = await postRequest(apiEndpointsConst.login, bodyJson);
-
-    if (loginRes.ok) {
+  const loginViaEmail = trpc.user.loginViaEmail.useMutation({
+    onSuccess: async () => {
       const signInRes = await signIn("credentials", {
         redirect: false,
         email,
@@ -100,14 +85,26 @@ export const LogInFormEmail = ({
         setAlertText(t("login.loginForm.loginErrorAlert"));
         setShowAlert(true);
       }
-    } else {
-      const error = await loginRes.json();
-      setAlertText(error.message ?? t("login.loginForm.loginErrorAlert"));
-      setShowAlert(true);
-      console.log("Error!", error);
-    }
 
-    setIsLoggingIn(false);
+      setIsLoggingIn(false);
+    },
+  });
+
+  const onSubmit: SubmitHandler<LogInFormEmailData> = async (data) => {
+    setIsLoggingIn(true);
+    setAlertText("");
+    setShowAlert(false);
+
+    try {
+      await loginViaEmail.mutateAsync(data);
+    } catch (error) {
+      if (error instanceof TRPCClientError) {
+        setAlertText(error.message ?? t("login.loginForm.loginErrorAlert"));
+        setShowAlert(true);
+      }
+    } finally {
+      setIsLoggingIn(false);
+    }
   };
 
   const emailField = () => {
@@ -216,15 +213,10 @@ export const LogInFormEmail = ({
     const buttonWidth: string = "30%";
     const loadingAnimationSize: number = 24;
 
-    const handleOnClick = async () => {
-      console.log(res.data);
-    }
-
     return (
       <Box sx={{ display: "flex", justifyContent: "center" }}>
         <Button
-          // type="submit"
-          onClick={handleOnClick}
+          type="submit"
           fullWidth
           variant="contained"
           sx={{ my: formMargin, maxWidth: buttonWidth }}
