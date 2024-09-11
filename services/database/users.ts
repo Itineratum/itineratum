@@ -23,7 +23,7 @@ export const signIn = async ({
 
     if (!existingUser) {
       await User.create(
-        initialUser(name, email, profilePicture, authService),
+        initialUser(name, email, profilePicture, authService)
       ).then((result) => {
         console.log(`User ${result.id} created!`);
       });
@@ -42,16 +42,16 @@ export const signIn = async ({
         } else {
           await User.findOneAndUpdate(
             { email },
-            { profile_picture: profilePicture, name },
+            { profile_picture: profilePicture, name }
           );
           console.log(
-            `User with email ${email} has been combined with details from their Google account!`,
+            `User with email ${email} has been combined with details from their Google account!`
           );
         }
       }
 
       console.log(
-        `User with email ${email} already exists! Signing in directly.`,
+        `User with email ${email} already exists! Signing in directly.`
       );
       return true;
     }
@@ -68,7 +68,7 @@ export const credentialsSignUp = async (
   countryCode: string,
   number: string,
   email: string,
-  password: string,
+  password: string
 ) => {
   try {
     await connectToDatabase();
@@ -107,7 +107,7 @@ export const credentialsSignUp = async (
 
 export const credentialsLogIn = async (
   inputEmail: string,
-  inputPassword: string,
+  inputPassword: string
 ) => {
   try {
     await connectToDatabase();
@@ -121,7 +121,7 @@ export const credentialsLogIn = async (
     } else {
       const isValidPassword = await bcrypt.compare(
         inputPassword,
-        user.password,
+        user.password
       );
 
       if (!isValidPassword) {

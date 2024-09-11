@@ -18,6 +18,7 @@ import LanguageSwitcher from "../molecules/language-switcher";
 import NavbarItem from "../molecules/navbar-item";
 import ProfileIcon from "../molecules/profile-icon";
 import SignupLoginButtons from "../molecules/signup-login-buttons";
+import colorsConst from "@/constants/pages/colors.json";
 
 const Navbar = () => {
   const navBarWidth: string = "90%";
@@ -31,7 +32,7 @@ const Navbar = () => {
         name={t("navbar.savedTrips")}
         linkToPage={buildLocaleEndpoint(
           locale,
-          endpointsConst.savedTrips.endpoint,
+          endpointsConst.savedTrips.endpoint
         )}
         icon={<FavoriteBorderOutlinedIcon />}
       />
@@ -43,7 +44,7 @@ const Navbar = () => {
         name={t("navbar.aboutUs")}
         linkToPage={buildLocaleEndpoint(
           locale,
-          endpointsConst.aboutUs.endpoint,
+          endpointsConst.aboutUs.endpoint
         )}
         icon={<PeopleAltOutlinedIcon />}
       />
@@ -55,7 +56,7 @@ const Navbar = () => {
         name={t("navbar.contactUs")}
         linkToPage={buildLocaleEndpoint(
           locale,
-          endpointsConst.contactUs.endpoint,
+          endpointsConst.contactUs.endpoint
         )}
         icon={<PhoneInTalkOutlinedIcon />}
       />
@@ -73,6 +74,21 @@ const Navbar = () => {
       <Box sx={{ mx: 3 }}>
         {session?.user?.email ? <ProfileIcon /> : <SignupLoginButtons />}
       </Box>
+    );
+  };
+  const bottomBorder = () => {
+    const borderHeight: string = "2px";
+    const borderWidth: string = "100%";
+
+    return (
+      <Box
+        sx={{
+          height: borderHeight,
+          backgroundColor: colorsConst.palette.text.primary,
+          width: borderWidth,
+          margin: "0 auto",
+        }}
+      />
     );
   };
 
@@ -109,6 +125,7 @@ const Navbar = () => {
           {account()}
         </Box>
       </Toolbar>
+      {bottomBorder()}
     </AppBar>
   );
 };

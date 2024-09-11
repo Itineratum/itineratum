@@ -1,6 +1,15 @@
 {
   "home": { "header": "It's time to travel with EASE." },
-  "account": { "welcome": "Welcome, {name}" },
+  "account": { 
+    "personalInformation": "Personal information",
+    "accessibility": "Accessibility",
+    "notifications": "Notifications",
+    "termsAndConditions": "T & C",
+    "privacyPolicy": "Privacy Policy",
+    "settings": "Settings",
+    "legal": "Legal",
+    "deleteAccount": "Delete your account"
+  },
   "navbar": {
     "aboutUs": "About Us",
     "account": {

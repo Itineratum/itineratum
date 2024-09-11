@@ -1,22 +1,179 @@
 "use client";
 
+import Text from "@/components/atoms/text";
+import { TypographyVariant } from "@/constants/enums/theme";
+import colorsConst from "@/constants/pages/colors.json";
+import defaultUserImage from "@/public/user_profile.svg";
+import { Box, Button, Stack } from "@mui/material";
 import { useSession } from "next-auth/react";
 import { useTranslations } from "next-intl";
+import Image from "next/image";
 
 const Account = () => {
   const t = useTranslations();
   const { data: session } = useSession();
-  const name: string = session?.user?.name!;
+  const name: string | undefined | null = session?.user?.name;
   const email: string = session?.user?.email!;
-  const provider: string = session?.provider!;
+  const image: string | undefined | null = session?.user?.image;
+
+  const sectionMargin: number = 10;
+
+  const userAvatar = () => {
+    const imageSize: number = 200;
+    const topMargin: number = 40;
+    const bottomMargin = topMargin;
+
+    return (
+      <Image
+        src={image ? image : defaultUserImage}
+        width={imageSize}
+        height={imageSize}
+        alt="User Profile Picture"
+        style={{
+          objectFit: "cover",
+          borderRadius: imageSize / 2,
+          marginTop: topMargin,
+          marginBottom: bottomMargin,
+        }}
+      />
+    );
+  };
+  const userDetailsSection = () => {
+    const spacing: number = 3;
+
+    const userName = () => {
+      return name ? (
+        <Text text={name} variant={TypographyVariant.h3} bold={false} />
+      ) : (
+        <></>
+      );
+    };
+
+    const userEmail = () => {
+      return <Text text={email} variant={TypographyVariant.h3} bold={false} />;
+    };
+
+    return (
+      <Stack spacing={spacing} sx={{ textAlign: "center" }}>
+        {userName()}
+        {userEmail()}
+      </Stack>
+    );
+  };
+  const accountActionsSection = () => {
+    const spacing: number = 2;
+
+    const personalInformation = () => {
+      return (
+        <Button
+          sx={{
+            color: colorsConst.palette.text.primary,
+          }}
+        >
+          <Text
+            text={t("account.personalInformation")}
+            variant={TypographyVariant.h3}
+            bold={false}
+          />
+        </Button>
+      );
+    };
+
+    const accessibility = () => {
+      return (
+        <Button
+          sx={{
+            color: colorsConst.palette.text.primary,
+          }}
+        >
+          <Text
+            text={t("account.accessibility")}
+            variant={TypographyVariant.h3}
+            bold={false}
+          />
+        </Button>
+      );
+    };
+
+    const notifications = () => {
+      return (
+        <Button
+          sx={{
+            color: colorsConst.palette.text.primary,
+          }}
+        >
+          <Text
+            text={t("account.notifications")}
+            variant={TypographyVariant.h3}
+            bold={false}
+          />
+        </Button>
+      );
+    };
+
+    return (
+      <Stack spacing={spacing} sx={{ textAlign: "center", marginTop: sectionMargin }}>
+        {personalInformation()}
+        {accessibility()}
+        {notifications()}
+      </Stack>
+    );
+  };
+  const legalSection = () => {
+    const spacing: number = 2;
+
+    const termsAndConditions = () => {
+      return (
+        <Button
+          sx={{
+            color: colorsConst.palette.text.primary,
+          }}
+        >
+          <Text
+            text={t("account.termsAndConditions")}
+            variant={TypographyVariant.h3}
+            bold={false}
+          />
+        </Button>
+      );
+    };
+
+    const accessibility = () => {
+      return (
+        <Button
+          sx={{
+            color: colorsConst.palette.text.primary,
+          }}
+        >
+          <Text
+            text={t("account.privacyPolicy")}
+            variant={TypographyVariant.h3}
+            bold={false}
+          />
+        </Button>
+      );
+    };
+
+    return (
+      <Stack spacing={spacing} sx={{ textAlign: "center", marginTop: sectionMargin }}>
+        {termsAndConditions()}
+        {accessibility()}
+      </Stack>
+    );
+  };
 
   return (
-    <div>
-      <h1>Account</h1>
-      <h2>{t("account.welcome", { name: name })}</h2>
-      <h2>{`Email: ${email}`}</h2>
-      <h2>{`Provider: ${provider}`}</h2>
-    </div>
+    <Box
+      display="flex"
+      flexDirection="column"
+      justifyContent="center"
+      alignItems="center"
+    >
+      {userAvatar()}
+      {userDetailsSection()}
+      {accountActionsSection()}
+      {legalSection()}
+    </Box>
   );
 };
 
