@@ -174,10 +174,7 @@ export const retrieveCurrencyLanguage = async (email: string) => {
   }
 };
 
-export const switchPreferredCurrency = async (
-  email: string,
-  newCurrency: string
-) => {
+export const updateUser = async (email: string, update: Object) => {
   try {
     await connectToDatabase();
     const user = await User.find({ email });
@@ -188,7 +185,7 @@ export const switchPreferredCurrency = async (
         error: "User not found!",
       };
     } else {
-      await User.findOneAndUpdate({ email }, { currency: newCurrency });
+      await User.findOneAndUpdate({ email }, update);
       return {
         success: true,
       };

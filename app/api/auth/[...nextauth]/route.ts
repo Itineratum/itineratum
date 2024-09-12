@@ -44,17 +44,6 @@ const callbacks = {
   },
   async session({ session, token }: { session: Session; token: JWTToken }) {
     session.provider = token.provider!;
-
-    if (session.user?.email) {
-      const res = await retrieveCurrencyLanguage(session.user.email);
-
-      if (res.success) {
-        const { currency, language } = res.data!;
-        session.user.currency = currency;
-        session.user.language = language;
-      }
-    }
-
     return session;
   },
   signIn,

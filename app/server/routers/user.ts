@@ -1,5 +1,10 @@
 import { sendSignUpVerificationEmail } from "@/lib/nodeMailer";
-import { credentialsLogIn, credentialsSignUp, switchPreferredCurrency } from "@/services/database/users";
+import {
+  credentialsLogIn,
+  credentialsSignUp,
+  retrieveCurrencyLanguage,
+  updateUser,
+} from "@/services/database/users";
 import {
   generateAndSaveVerificationCode,
   verifyVerificationCode,
@@ -7,9 +12,11 @@ import {
 import { TRPCError } from "@trpc/server";
 import {
   generateVerificationCodeSchema,
+  getUserCurrencyLanguage,
   loginViaEmail,
   loginViaOtp,
   switchCurrency,
+  switchLanguage,
   verifyVerificationCodeSchema,
 } from "../schemas/user";
 import { publicProcedure, router } from "../trpc";
@@ -101,13 +108,48 @@ export const userRouter = router({
     .output(switchCurrency.output)
     .mutation(async (data) => {
       const { email, currency } = data.input;
-      const switchCurrencyRes = await switchPreferredCurrency(email, currency);
+      const updateUserRes = await updateUser(email, { currency });
 
-      if (!switchCurrencyRes.success) {
+      if (!updateUserRes.success) {
         throw new TRPCError({
           code: "INTERNAL_SERVER_ERROR",
-          message: switchCurrencyRes.error
-        })
+          message: updateUserRes.error,
+        });
+      }
+    }),
+  switchLanguage: publicProcedure
+    .input(switchLanguage.input)
+    .output(switchLanguage.output)
+    .mutation(async (data) => {
+      const { email, language } = data.input;
+      const updateUserRes = await updateUser(email, { language });
+
+      if (!updateUserRes.success) {
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message: updateUserRes.error,
+        });
+      }
+    }),
+  getUserCurrencyLanguage: publicProcedure
+    .input(getUserCurrencyLanguage.input)
+    .output(getUserCurrencyLanguage.output)
+    .query(async (data) => {
+      const { email } = data.input;
+      const retrieveCurrencyLanguageRes = await retrieveCurrencyLanguage(email);
+
+      if (!retrieveCurrencyLanguageRes.success) {
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message: retrieveCurrencyLanguageRes.error,
+        });
+      } else {
+        const currency = retrieveCurrencyLanguageRes.data?.currency as string;
+        const language = retrieveCurrencyLanguageRes.data?.language as string;
+        return {
+          currency,
+          language,
+        };
       }
     }),
 });

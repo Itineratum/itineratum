@@ -1,4 +1,5 @@
 import { Currency } from "@/constants/enums/currency";
+import { Language } from "@/constants/enums/language";
 import { enumToZod } from "@/utils/enumToZod";
 import { z } from "zod";
 
@@ -41,4 +42,22 @@ export const switchCurrency = {
     currency: z.enum(enumToZod(Currency)),
   }),
   output: z.void(),
+};
+
+export const switchLanguage = {
+  input: z.object({
+    email: z.string(),
+    language: z.enum(enumToZod(Language)),
+  }),
+  output: z.void(),
+};
+
+export const getUserCurrencyLanguage = {
+  input: z.object({
+    email: z.string(),
+  }),
+  output: z.object({
+    currency: z.enum(enumToZod(Currency)),
+    language: z.enum(enumToZod(Language)),
+  }),
 };
