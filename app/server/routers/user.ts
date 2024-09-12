@@ -1,5 +1,5 @@
 import { sendSignUpVerificationEmail } from "@/lib/nodeMailer";
-import { credentialsLogIn, credentialsSignUp } from "@/services/database/users";
+import { credentialsLogIn, credentialsSignUp, switchPreferredCurrency } from "@/services/database/users";
 import {
   generateAndSaveVerificationCode,
   verifyVerificationCode,
@@ -9,6 +9,7 @@ import {
   generateVerificationCodeSchema,
   loginViaEmail,
   loginViaOtp,
+  switchCurrency,
   verifyVerificationCodeSchema,
 } from "../schemas/user";
 import { publicProcedure, router } from "../trpc";
@@ -49,7 +50,7 @@ export const userRouter = router({
       } = data.input;
       const verifyVerificationCodeRes = await verifyVerificationCode(
         email,
-        verificationCode,
+        verificationCode
       );
 
       if (!verifyVerificationCodeRes.success) {
@@ -64,7 +65,7 @@ export const userRouter = router({
         countryCode,
         number,
         email,
-        password,
+        password
       );
 
       if (!signUpRes.success) {
@@ -94,6 +95,20 @@ export const userRouter = router({
     .mutation(async (data) => {
       // TODO: if OTP is being set up in the future, complete this?
       const { phoneNumber } = data.input;
+    }),
+  switchCurrency: publicProcedure
+    .input(switchCurrency.input)
+    .output(switchCurrency.output)
+    .mutation(async (data) => {
+      const { email, currency } = data.input;
+      const switchCurrencyRes = await switchPreferredCurrency(email, currency);
+
+      if (!switchCurrencyRes.success) {
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message: switchCurrencyRes.error
+        })
+      }
     }),
 });
 

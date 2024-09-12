@@ -1,3 +1,5 @@
+import { Currency } from "@/constants/enums/currency";
+import { enumToZod } from "@/utils/enumToZod";
 import { z } from "zod";
 
 export const generateVerificationCodeSchema = {
@@ -29,6 +31,14 @@ export const loginViaEmail = {
 export const loginViaOtp = {
   input: z.object({
     phoneNumber: z.string(),
+  }),
+  output: z.void(),
+};
+
+export const switchCurrency = {
+  input: z.object({
+    email: z.string(),
+    currency: z.enum(enumToZod(Currency)),
   }),
   output: z.void(),
 };

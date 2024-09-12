@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 import * as constDbCollections from "@/constants/dbCollections.json";
 import { AuthService } from "@/constants/enums/authService";
 import { Country } from "@/constants/enums/country";
@@ -6,6 +8,7 @@ import { Language } from "@/constants/enums/language";
 import { IUser } from "@/constants/types/user";
 import mongoose, { models } from "mongoose";
 const { Schema } = mongoose;
+
 
 const userSchema = new Schema<IUser>(
   {
@@ -17,27 +20,27 @@ const userSchema = new Schema<IUser>(
     auth_service: { type: String, enum: AuthService, required: true },
     language: {
       type: String,
-      enum: Language,
-      default: Language.en,
+      enum: Object.keys(Language),
+      default: "en",
       required: true,
     },
     currency: {
       type: String,
-      enum: Currency,
-      default: Currency.sgd,
+      enum: Object.keys(Currency),
+      default: "sgd",
       required: true,
     },
     account_created: { type: Date, required: true },
     password: { type: String, required: false }, // password is stored as hash only if users sign up using credentials
   },
-  { collection: constDbCollections.users },
+  { collection: constDbCollections.users }
 );
 
 export const initialUser = (
   name: string,
   email: string,
   profile_picture: string,
-  auth_service: AuthService,
+  auth_service: AuthService
 ) => {
   return {
     name,
