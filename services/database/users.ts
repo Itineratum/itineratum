@@ -147,6 +147,33 @@ export const credentialsLogIn = async (
   }
 };
 
+export const retrieveCurrencyLanguage = async (email: string) => {
+  try {
+    await connectToDatabase();
+
+    const user = await User.findOne({ email });
+
+    if (!user) {
+      return {
+        success: false,
+        error: "User not found!",
+      };
+    } else {
+      return {
+        success: true,
+        data: {
+          currency: user.currency,
+          language: user.language,
+        },
+      };
+    }
+  } catch (error) {
+    throw error;
+  } finally {
+    disconnectFromDatabase();
+  }
+};
+
 export const switchPreferredCurrency = async (
   email: string,
   newCurrency: string

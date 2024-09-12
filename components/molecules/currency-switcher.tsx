@@ -33,8 +33,13 @@ const CurrencySwitcher = () => {
     if (storedCurrency && typeof storedCurrency === "string") {
       setCurrency(storedCurrency);
     }
-    // TODO: retrieve currency from user document in MongoDB
   }, []);
+
+  useEffect(() => {
+    const userCurrency = session?.user.currency;
+
+    if (userCurrency) setCurrency(userCurrency);
+  }, [session?.user.currency]);
 
   return (
     <ButtonMenu

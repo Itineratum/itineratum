@@ -1,5 +1,9 @@
 import JWTToken from "@/constants/types/jwtToken";
-import { credentialsLogIn, signIn } from "@/services/database/users";
+import {
+  credentialsLogIn,
+  retrieveCurrencyLanguage,
+  signIn,
+} from "@/services/database/users";
 import NextAuth, { Account, Session, User } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import Google from "next-auth/providers/google";
@@ -33,15 +37,24 @@ const providers = [
 ];
 const callbacks = {
   async jwt({ token, account }: { token: JWTToken; account?: Account | null }) {
-    // store the provider information in the token
     if (account) {
       token.provider = account.provider;
     }
     return token;
   },
   async session({ session, token }: { session: Session; token: JWTToken }) {
-    // include the provider information in the session
     session.provider = token.provider!;
+
+    if (session.user?.email) {
+      const res = await retrieveCurrencyLanguage(session.user.email);
+
+      if (res.success) {
+        const { currency, language } = res.data!;
+        session.user.currency = currency;
+        session.user.language = language;
+      }
+    }
+
     return session;
   },
   signIn,
