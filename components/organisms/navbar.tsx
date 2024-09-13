@@ -63,15 +63,17 @@ const Navbar = () => {
     );
   };
   const dash = () => {
+    const dashSpacing: number = 0.3;
+
     return (
-      <Box sx={{ ml: 1 }}>
+      <Box sx={{ marginX: dashSpacing }}>
         <Text text={"-"} variant={TypographyVariant.h4} bold={true} />
       </Box>
     );
   };
   const account = () => {
     return (
-      <Box sx={{ mx: 3 }}>
+      <Box sx={{ ml: 3 }}>
         {session?.user?.email ? <ProfileIcon /> : <SignupLoginButtons />}
       </Box>
     );

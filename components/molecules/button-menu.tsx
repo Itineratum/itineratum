@@ -1,6 +1,6 @@
 import { TypographyVariant } from "@/constants/enums/theme";
 import { ButtonMenuProps } from "@/constants/types/buttonMenu";
-import { Button, Menu, MenuItem } from "@mui/material";
+import { Box, Button, Menu, MenuItem } from "@mui/material";
 import { useState } from "react";
 import LinkMenuItem from "../atoms/link-menu-item";
 import NavbarIconText from "../atoms/navbar-icon-text";
@@ -50,14 +50,14 @@ const ButtonMenu = ({
   );
 
   return (
-    <div>
+    <Box>
       <Button
         id={button}
         aria-controls={open ? menu : undefined}
         aria-haspopup="true"
         aria-expanded={open ? "true" : undefined}
         onClick={handleClick}
-        sx={{ color: "text.primary", mx: 0.5 }}
+        sx={{ color: "text.primary", minWidth: "auto" }}
       >
         {buttonElement}
       </Button>
@@ -78,7 +78,7 @@ const ButtonMenu = ({
       >
         {menuElement}
       </Menu>
-    </div>
+    </Box>
   );
 };
 

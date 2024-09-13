@@ -1,10 +1,10 @@
 {
   "home": { "header": "It's time to travel with EASE." },
   "account": { 
-    "personalInformation": "Personal information",
+    "personalInformation": "Personal Information",
     "accessibility": "Accessibility",
     "notifications": "Notifications",
-    "termsAndConditions": "T & C",
+    "termsAndConditions": "T&C",
     "privacyPolicy": "Privacy Policy",
     "settings": "Settings",
     "legal": "Legal",

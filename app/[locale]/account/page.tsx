@@ -1,7 +1,10 @@
 "use client";
 
 import Text from "@/components/atoms/text";
-import { TypographyVariant } from "@/constants/enums/theme";
+import {
+  TypographyTextDecoration,
+  TypographyVariant,
+} from "@/constants/enums/theme";
 import colorsConst from "@/constants/pages/colors.json";
 import defaultUserImage from "@/public/user_profile.svg";
 import { Box, Button, Stack } from "@mui/material";
@@ -13,10 +16,9 @@ const Account = () => {
   const t = useTranslations("account");
   const { data: session } = useSession();
   const name: string | undefined | null = session?.user?.name;
-  const email: string = session?.user?.email!;
   const image: string | undefined | null = session?.user?.image;
 
-  const sectionMargin: number = 10;
+  const sectionMargin: number = 7;
 
   const userAvatar = () => {
     const imageSize: number = 200;
@@ -38,30 +40,26 @@ const Account = () => {
       />
     );
   };
-  const userDetailsSection = () => {
-    const spacing: number = 3;
-
-    const userName = () => {
-      return name ? (
-        <Text text={name} variant={TypographyVariant.h3} bold={false} />
-      ) : (
-        <></>
-      );
-    };
-
-    const userEmail = () => {
-      return <Text text={email} variant={TypographyVariant.h3} bold={false} />;
-    };
-
-    return (
-      <Stack spacing={spacing} sx={{ textAlign: "center" }}>
-        {userName()}
-        {userEmail()}
-      </Stack>
+  const userName = () => {
+    return name ? (
+      <Text text={name} variant={TypographyVariant.h3} bold={false} />
+    ) : (
+      <></>
     );
   };
-  const accountActionsSection = () => {
+  const settingsSection = () => {
     const spacing: number = 2;
+
+    const header = () => {
+      return (
+        <Text
+          text={t("settings")}
+          variant={TypographyVariant.h3}
+          bold={false}
+          textDecoration={TypographyTextDecoration.underline}
+        />
+      );
+    };
 
     const personalInformation = () => {
       return (
@@ -112,7 +110,11 @@ const Account = () => {
     };
 
     return (
-      <Stack spacing={spacing} sx={{ textAlign: "center", marginTop: sectionMargin }}>
+      <Stack
+        spacing={spacing}
+        sx={{ textAlign: "center", marginTop: sectionMargin }}
+      >
+        {header()}
         {personalInformation()}
         {accessibility()}
         {notifications()}
@@ -121,6 +123,17 @@ const Account = () => {
   };
   const legalSection = () => {
     const spacing: number = 2;
+
+    const header = () => {
+      return (
+        <Text
+          text={t("legal")}
+          variant={TypographyVariant.h3}
+          bold={false}
+          textDecoration={TypographyTextDecoration.underline}
+        />
+      );
+    };
 
     const termsAndConditions = () => {
       return (
@@ -155,7 +168,11 @@ const Account = () => {
     };
 
     return (
-      <Stack spacing={spacing} sx={{ textAlign: "center", marginTop: sectionMargin }}>
+      <Stack
+        spacing={spacing}
+        sx={{ textAlign: "center", marginTop: sectionMargin }}
+      >
+        {header()}
         {termsAndConditions()}
         {accessibility()}
       </Stack>
@@ -170,8 +187,8 @@ const Account = () => {
       alignItems="center"
     >
       {userAvatar()}
-      {userDetailsSection()}
-      {accountActionsSection()}
+      {userName()}
+      {settingsSection()}
       {legalSection()}
     </Box>
   );
