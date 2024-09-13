@@ -8,13 +8,13 @@ import { useTranslations } from "next-intl";
 import SignUpForm from "../../app/[locale]/sign-up/components/signup-form";
 
 const SignUpPage = () => {
-  const t = useTranslations();
+  const t = useTranslations("signUp");
 
   const signUpText = () => {
     return (
       <Box marginBottom={5}>
         <Text
-          text={t("signUp.signUp")}
+          text={t("signUp")}
           variant={TypographyVariant.h3}
           bold={true}
         />
@@ -25,7 +25,7 @@ const SignUpPage = () => {
     return (
       <Box sx={{ textAlign: "left", width: "100%" }}>
         <Text
-          text={t("signUp.welcome")}
+          text={t("welcome")}
           variant={TypographyVariant.h3}
           bold={true}
         />

@@ -36,7 +36,7 @@ export const LogInFormOtp = ({
 }: {
   setIsLoginUsingOtp: Dispatch<SetStateAction<boolean>>;
 }) => {
-  const t = useTranslations();
+  const t = useTranslations("login.loginForm");
   const router = useRouter();
   const {
     control,
@@ -99,12 +99,12 @@ export const LogInFormOtp = ({
 
       const handleCountryCodeChange = async (
         event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
-        field: ControllerRenderProps<LogInFormOtpData, "countryCode">,
+        field: ControllerRenderProps<LogInFormOtpData, "countryCode">
       ) => {
         field.onChange(event);
         const inputCountryCode = event.target.value;
         const countryIso2 = Object.values(countryInfoList).find(
-          (country) => country.callingCode === inputCountryCode,
+          (country) => country.callingCode === inputCountryCode
         )?.iso2;
         setValue(countryId, countryIso2!);
 
@@ -118,7 +118,7 @@ export const LogInFormOtp = ({
           name={countryCodeId}
           control={control}
           defaultValue=""
-          rules={{ required: t("login.loginForm.countryCodeError") }}
+          rules={{ required: t("countryCodeError") }}
           render={({ field }) => (
             <TextField
               {...field}
@@ -128,7 +128,7 @@ export const LogInFormOtp = ({
               variant="filled"
               sx={formFieldStyling}
               margin={formFieldMargin}
-              label={t("login.loginForm.countryCode")}
+              label={t("countryCode")}
               value={countryCode}
               error={!!errors.countryCode}
               helperText={
@@ -163,12 +163,12 @@ export const LogInFormOtp = ({
     const numberField = () => {
       const numberValidation = (numberInput: string) => {
         const isValid = isValidPhoneNumber(numberInput, country as CountryCode);
-        return isValid ? true : t("login.loginForm.numberError");
+        return isValid ? true : t("numberError");
       };
 
       const handleNumberChange = async (
         event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
-        field: ControllerRenderProps<LogInFormOtpData, "number">,
+        field: ControllerRenderProps<LogInFormOtpData, "number">
       ) => {
         field.onChange(event.target.value);
         await trigger(numberId);
@@ -206,7 +206,7 @@ export const LogInFormOtp = ({
             onClick={handleClick}
           >
             <Text
-              text={t("login.loginForm.getOtp")}
+              text={t("getOtp")}
               variant={TypographyVariant.h4}
               bold={false}
             />
@@ -222,7 +222,7 @@ export const LogInFormOtp = ({
           defaultValue=""
           rules={{
             validate: numberValidation,
-            required: t("login.loginForm.numberError"),
+            required: t("numberError"),
           }}
           render={({ field }) => (
             <TextField
@@ -232,7 +232,7 @@ export const LogInFormOtp = ({
               variant="filled"
               sx={formFieldStyling}
               margin={formFieldMargin}
-              label={t("login.loginForm.number")}
+              label={t("number")}
               value={number}
               InputLabelProps={{
                 sx: { color: "text.primary" },
@@ -271,7 +271,7 @@ export const LogInFormOtp = ({
         control={control}
         defaultValue=""
         rules={{
-          required: t("login.loginForm.otpError"),
+          required: t("otpError"),
         }}
         render={({ field }) => (
           <TextField
@@ -281,7 +281,7 @@ export const LogInFormOtp = ({
             variant="filled"
             sx={formFieldStyling}
             margin={formFieldMargin}
-            label={t("login.loginForm.otp")}
+            label={t("otp")}
             value={otp}
             InputLabelProps={{
               sx: { color: "text.primary" },
@@ -305,7 +305,7 @@ export const LogInFormOtp = ({
         onClick={handleOnClick}
       >
         <Text
-          text={t("login.loginForm.loginUsingEmail")}
+          text={t("loginUsingEmail")}
           variant={TypographyVariant.h5}
           bold={false}
           textDecoration={TypographyTextDecoration.underline}
@@ -332,7 +332,7 @@ export const LogInFormOtp = ({
             <CircularProgress size={loadingAnimationSize} />
           ) : (
             <Text
-              text={t("login.loginForm.login")}
+              text={t("login")}
               variant={TypographyVariant.h4}
               bold={false}
             />

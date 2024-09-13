@@ -12,7 +12,7 @@ const ProfileIcon = () => {
   const id: string = "profile-icon";
   const button: string = `${id}-button`;
   const menu: string = `${id}-menu`;
-  const t = useTranslations();
+  const t = useTranslations("navbar.account");
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [profileIconMenu, setProfileIconMenu] = useState<
     Record<string, string>
@@ -38,7 +38,7 @@ const ProfileIcon = () => {
     return (
       <LinkMenuItem
         item={"account"}
-        text={t("navbar.account.account")}
+        text={t("account")}
         handleClose={handleClose}
       />
     );
@@ -47,7 +47,7 @@ const ProfileIcon = () => {
     return (
       <MenuItem onClick={() => signOut({ callbackUrl: "/" })}>
         <Text
-          text={t("navbar.account.signOut")}
+          text={t("signOut")}
           variant={TypographyVariant.h4}
           bold={false}
         />

@@ -5,13 +5,13 @@ import { useTranslations } from "next-intl";
 import Text from "./text";
 
 export const PrivacyPolicyLink = () => {
-  const t = useTranslations();
+  const t = useTranslations("signUp.signUpForm");
 
   return (
     <Box sx={{ textAlign: "left", width: "100%" }}>
       <Link href={urlConst.privacyPolicy} color="text.primary" target="_blank">
         <Text
-          text={t("signUp.signUpForm.privacyPolicy")}
+          text={t("privacyPolicy")}
           variant={TypographyVariant.h5}
           bold={false}
         />

@@ -33,7 +33,7 @@ import { ChangeEvent, useState } from "react";
 import { Controller, ControllerRenderProps, useForm } from "react-hook-form";
 
 const SignUpForm = () => {
-  const t = useTranslations();
+  const t = useTranslations("signUp.signUpForm");
   const router = useRouter();
   const {
     control,
@@ -109,7 +109,7 @@ const SignUpForm = () => {
         setShowAlert(false);
         router.push("/"); // redirect to home page
       } else {
-        setAlertText(t("signUp.signUpForm.signUpErrorAlert"));
+        setAlertText(t("signUpErrorAlert"));
         setAlertType("error");
         setShowAlert(true);
       }
@@ -147,7 +147,7 @@ const SignUpForm = () => {
           name={countryId}
           control={control}
           defaultValue=""
-          rules={{ required: t("signUp.signUpForm.countryError") }}
+          rules={{ required: t("countryError") }}
           render={({ field }) => (
             <TextField
               {...field}
@@ -157,7 +157,7 @@ const SignUpForm = () => {
               variant="filled"
               sx={formFieldStyling}
               margin={formFieldMargin}
-              label={t("signUp.signUpForm.country")}
+              label={t("country")}
               value={country}
               error={!!errors.country}
               helperText={
@@ -207,7 +207,7 @@ const SignUpForm = () => {
                 variant="filled"
                 sx={formFieldStyling}
                 margin={formFieldMargin}
-                label={t("signUp.signUpForm.countryCode")}
+                label={t("countryCode")}
                 value={countryCode}
                 InputProps={{ readOnly: true }}
                 InputLabelProps={{
@@ -226,7 +226,7 @@ const SignUpForm = () => {
             numberInput,
             country as CountryCode,
           );
-          return isValid ? true : t("signUp.signUpForm.numberError");
+          return isValid ? true : t("numberError");
         };
 
         const handleNumberChange = async (
@@ -245,7 +245,7 @@ const SignUpForm = () => {
             defaultValue=""
             rules={{
               validate: numberValidation,
-              required: t("signUp.signUpForm.numberError"),
+              required: t("numberError"),
             }}
             render={({ field }) => (
               <TextField
@@ -255,7 +255,7 @@ const SignUpForm = () => {
                 variant="filled"
                 sx={formFieldStyling}
                 margin={formFieldMargin}
-                label={t("signUp.signUpForm.number")}
+                label={t("number")}
                 value={number}
                 InputLabelProps={{
                   sx: { color: "text.primary" },
@@ -304,7 +304,7 @@ const SignUpForm = () => {
           onClick={handleClick}
         >
           <Text
-            text={t("signUp.signUpForm.next")}
+            text={t("next")}
             variant={TypographyVariant.h4}
             bold={false}
           />
@@ -332,7 +332,7 @@ const SignUpForm = () => {
     const emailField = () => {
       const emailValidation = (emailInput: string) => {
         const isValid = isValidEmail(emailInput);
-        return isValid ? true : t("signUp.signUpForm.emailError");
+        return isValid ? true : t("emailError");
       };
 
       const handleEmailChange = async (
@@ -351,7 +351,7 @@ const SignUpForm = () => {
           defaultValue=""
           rules={{
             validate: emailValidation,
-            required: t("signUp.signUpForm.emailError"),
+            required: t("emailError"),
           }}
           render={({ field }) => (
             <TextField
@@ -361,7 +361,7 @@ const SignUpForm = () => {
               variant="filled"
               sx={formFieldStyling}
               margin={formFieldMargin}
-              label={t("signUp.signUpForm.email")}
+              label={t("email")}
               value={email}
               InputLabelProps={{
                 sx: { color: "text.primary" },
@@ -382,7 +382,7 @@ const SignUpForm = () => {
 
       const passwordValidation = (passwordInput: string) => {
         const isValid = isValidPassword(passwordInput);
-        return isValid ? true : t("signUp.signUpForm.passwordError");
+        return isValid ? true : t("passwordError");
       };
 
       const handlePasswordChange = async (
@@ -403,7 +403,7 @@ const SignUpForm = () => {
           defaultValue=""
           rules={{
             validate: passwordValidation,
-            required: t("signUp.signUpForm.passwordError"),
+            required: t("passwordError"),
           }}
           render={({ field }) => (
             <TextField
@@ -414,7 +414,7 @@ const SignUpForm = () => {
               variant="filled"
               sx={formFieldStyling}
               margin={formFieldMargin}
-              label={t("signUp.signUpForm.password")}
+              label={t("password")}
               value={password}
               InputLabelProps={{
                 sx: { color: "text.primary" },
@@ -457,7 +457,7 @@ const SignUpForm = () => {
         const isValid =
           reEnterPasswordInput === password &&
           isValidPassword(reEnterPasswordInput);
-        return isValid ? true : t("signUp.signUpForm.reEnterPasswordError");
+        return isValid ? true : t("reEnterPasswordError");
       };
 
       const handleReEnterPasswordChange = async (
@@ -476,7 +476,7 @@ const SignUpForm = () => {
           defaultValue=""
           rules={{
             validate: reEnterPasswordValidation,
-            required: t("signUp.signUpForm.reEnterPasswordError"),
+            required: t("reEnterPasswordError"),
           }}
           disabled={!isValidPassword(password)}
           render={({ field }) => (
@@ -488,7 +488,7 @@ const SignUpForm = () => {
               variant="filled"
               sx={formFieldStyling}
               margin={formFieldMargin}
-              label={t("signUp.signUpForm.reEnterPassword")}
+              label={t("reEnterPassword")}
               value={reEnterPassword}
               InputLabelProps={{
                 sx: { color: "text.primary" },
@@ -540,7 +540,7 @@ const SignUpForm = () => {
           onClick={handleClick}
         >
           <Text
-            text={t("signUp.signUpForm.back")}
+            text={t("back")}
             variant={TypographyVariant.h4}
             bold={false}
           />
@@ -572,7 +572,7 @@ const SignUpForm = () => {
         } catch (error) {
           if (error instanceof TRPCClientError) {
             setAlertText(
-              error.message ?? t("signUp.signUpForm.signUpErrorAlert"),
+              error.message ?? t("signUpErrorAlert"),
             );
             setAlertType("error");
             setShowAlert(true);
@@ -596,7 +596,7 @@ const SignUpForm = () => {
             <CircularProgress size={loadingAnimationSize} />
           ) : (
             <Text
-              text={t("signUp.signUpForm.signUp")}
+              text={t("signUp")}
               variant={TypographyVariant.h4}
               bold={false}
             />
@@ -690,7 +690,7 @@ const SignUpForm = () => {
         } catch (error) {
           if (error instanceof TRPCClientError) {
             setAlertText(
-              error.message ?? t("signUp.signUpForm.signUpErrorAlert"),
+              error.message ?? t("signUpErrorAlert"),
             );
             setAlertType("error");
             setShowAlert(true);

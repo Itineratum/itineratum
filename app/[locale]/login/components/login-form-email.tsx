@@ -32,7 +32,7 @@ export const LogInFormEmail = ({
 }: {
   setIsLoginUsingOtp: Dispatch<SetStateAction<boolean>>;
 }) => {
-  const t = useTranslations();
+  const t = useTranslations("login.loginForm");
   const router = useRouter();
   const {
     control,
@@ -82,7 +82,7 @@ export const LogInFormEmail = ({
         setShowAlert(false);
         router.push("/");
       } else {
-        setAlertText(t("login.loginForm.loginErrorAlert"));
+        setAlertText(t("loginErrorAlert"));
         setShowAlert(true);
       }
 
@@ -99,7 +99,7 @@ export const LogInFormEmail = ({
       await loginViaEmail.mutateAsync(data);
     } catch (error) {
       if (error instanceof TRPCClientError) {
-        setAlertText(error.message ?? t("login.loginForm.loginErrorAlert"));
+        setAlertText(error.message ?? t("loginErrorAlert"));
         setShowAlert(true);
       }
     } finally {
@@ -115,7 +115,7 @@ export const LogInFormEmail = ({
         control={control}
         defaultValue=""
         rules={{
-          required: t("login.loginForm.emailError"),
+          required: t("emailError"),
         }}
         render={({ field }) => (
           <TextField
@@ -125,7 +125,7 @@ export const LogInFormEmail = ({
             variant="filled"
             sx={formFieldStyling}
             margin={formFieldMargin}
-            label={t("login.loginForm.email")}
+            label={t("email")}
             value={email}
             InputLabelProps={{
               sx: { color: "text.primary" },
@@ -150,7 +150,7 @@ export const LogInFormEmail = ({
         control={control}
         defaultValue=""
         rules={{
-          required: t("login.loginForm.passwordError"),
+          required: t("passwordError"),
         }}
         render={({ field }) => (
           <TextField
@@ -161,7 +161,7 @@ export const LogInFormEmail = ({
             variant="filled"
             sx={formFieldStyling}
             margin={formFieldMargin}
-            label={t("login.loginForm.password")}
+            label={t("password")}
             value={password}
             InputLabelProps={{
               sx: { color: "text.primary" },
@@ -200,7 +200,7 @@ export const LogInFormEmail = ({
         onClick={handleOnClick}
       >
         <Text
-          text={t("login.loginForm.loginUsingPhoneNumber")}
+          text={t("loginUsingPhoneNumber")}
           variant={TypographyVariant.h5}
           bold={false}
           textDecoration={TypographyTextDecoration.underline}
@@ -227,7 +227,7 @@ export const LogInFormEmail = ({
             <CircularProgress size={loadingAnimationSize} />
           ) : (
             <Text
-              text={t("login.loginForm.login")}
+              text={t("login")}
               variant={TypographyVariant.h4}
               bold={false}
             />

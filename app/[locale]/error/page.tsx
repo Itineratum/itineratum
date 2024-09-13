@@ -11,7 +11,7 @@ import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 
 const Error = () => {
-  const t = useTranslations();
+  const t = useTranslations("errror");
   const locale = useLocale();
   const searchParams = useSearchParams();
 
@@ -24,7 +24,7 @@ const Error = () => {
       <Link href={buildLocaleEndpoint(locale, constEndpoints.home.endpoint)}>
         <Button variant="contained">
           <Text
-            text={t("error.home")}
+            text={t("home")}
             variant={TypographyVariant.h4}
             bold={false}
           />

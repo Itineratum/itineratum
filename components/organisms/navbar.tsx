@@ -1,6 +1,7 @@
 "use client";
 
 import { TypographyVariant } from "@/constants/enums/theme";
+import colorsConst from "@/constants/pages/colors.json";
 import endpointsConst from "@/constants/pages/endpoints.json";
 import { buildLocaleEndpoint } from "@/utils/buildLocaleEndpoint";
 import FavoriteBorderOutlinedIcon from "@mui/icons-material/FavoriteBorderOutlined";
@@ -18,18 +19,17 @@ import LanguageSwitcher from "../molecules/language-switcher";
 import NavbarItem from "../molecules/navbar-item";
 import ProfileIcon from "../molecules/profile-icon";
 import SignupLoginButtons from "../molecules/signup-login-buttons";
-import colorsConst from "@/constants/pages/colors.json";
 
 const Navbar = () => {
   const navBarWidth: string = "90%";
   const { data: session } = useSession();
-  const t = useTranslations();
+  const t = useTranslations("navbar");
   const locale = useLocale();
 
   const savedTrips = () => {
     return (
       <NavbarItem
-        name={t("navbar.savedTrips")}
+        name={t("savedTrips")}
         linkToPage={buildLocaleEndpoint(
           locale,
           endpointsConst.savedTrips.endpoint
@@ -41,7 +41,7 @@ const Navbar = () => {
   const aboutUs = () => {
     return (
       <NavbarItem
-        name={t("navbar.aboutUs")}
+        name={t("aboutUs")}
         linkToPage={buildLocaleEndpoint(
           locale,
           endpointsConst.aboutUs.endpoint
@@ -53,7 +53,7 @@ const Navbar = () => {
   const contactUs = () => {
     return (
       <NavbarItem
-        name={t("navbar.contactUs")}
+        name={t("contactUs")}
         linkToPage={buildLocaleEndpoint(
           locale,
           endpointsConst.contactUs.endpoint

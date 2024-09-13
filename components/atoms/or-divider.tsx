@@ -4,7 +4,7 @@ import { useTranslations } from "next-intl";
 import Text from "./text";
 
 export const OrDivider = ({ formMargin }: { formMargin: number }) => {
-  const t = useTranslations();
+  const t = useTranslations("signUp.signUpForm");
 
   const gapBetweenLines: number = 4;
   const lineThickness: number = 3;
@@ -33,7 +33,7 @@ export const OrDivider = ({ formMargin }: { formMargin: number }) => {
         }}
       >
         <Text
-          text={t("signUp.signUpForm.or")}
+          text={t("or")}
           variant={TypographyVariant.h3}
           bold={true}
         />

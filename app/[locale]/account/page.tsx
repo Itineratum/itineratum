@@ -10,7 +10,7 @@ import { useTranslations } from "next-intl";
 import Image from "next/image";
 
 const Account = () => {
-  const t = useTranslations();
+  const t = useTranslations("account");
   const { data: session } = useSession();
   const name: string | undefined | null = session?.user?.name;
   const email: string = session?.user?.email!;
@@ -71,7 +71,7 @@ const Account = () => {
           }}
         >
           <Text
-            text={t("account.personalInformation")}
+            text={t("personalInformation")}
             variant={TypographyVariant.h3}
             bold={false}
           />
@@ -87,7 +87,7 @@ const Account = () => {
           }}
         >
           <Text
-            text={t("account.accessibility")}
+            text={t("accessibility")}
             variant={TypographyVariant.h3}
             bold={false}
           />
@@ -103,7 +103,7 @@ const Account = () => {
           }}
         >
           <Text
-            text={t("account.notifications")}
+            text={t("notifications")}
             variant={TypographyVariant.h3}
             bold={false}
           />
@@ -130,7 +130,7 @@ const Account = () => {
           }}
         >
           <Text
-            text={t("account.termsAndConditions")}
+            text={t("termsAndConditions")}
             variant={TypographyVariant.h3}
             bold={false}
           />
@@ -146,7 +146,7 @@ const Account = () => {
           }}
         >
           <Text
-            text={t("account.privacyPolicy")}
+            text={t("privacyPolicy")}
             variant={TypographyVariant.h3}
             bold={false}
           />

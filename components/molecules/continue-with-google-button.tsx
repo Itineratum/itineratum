@@ -12,7 +12,7 @@ export const ContinueWithGoogleButton = ({
 }: {
   formMargin: number;
 }) => {
-  const t = useTranslations();
+  const t = useTranslations("signUp.signUpForm");
 
   const buttonWidth: string = "80%";
   const iconSize: number = 32;
@@ -54,7 +54,7 @@ export const ContinueWithGoogleButton = ({
           alt={"Google Icon"}
         />
         <Text
-          text={t("signUp.signUpForm.continueWithGoogle")}
+          text={t("continueWithGoogle")}
           variant={TypographyVariant.h3}
           bold={false}
         />
