@@ -55,7 +55,7 @@ export const ContinueWithGoogleButton = ({
         />
         <Text
           text={t("continueWithGoogle")}
-          variant={TypographyVariant.h3}
+          variant={TypographyVariant.h4}
           bold={false}
         />
       </Button>

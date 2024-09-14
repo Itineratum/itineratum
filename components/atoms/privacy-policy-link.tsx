@@ -12,7 +12,7 @@ export const PrivacyPolicyLink = () => {
       <Link href={urlConst.privacyPolicy} color="text.primary" target="_blank">
         <Text
           text={t("privacyPolicy")}
-          variant={TypographyVariant.h5}
+          variant={TypographyVariant.subtitle2}
           bold={false}
         />
       </Link>

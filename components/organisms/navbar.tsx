@@ -67,7 +67,7 @@ const Navbar = () => {
 
     return (
       <Box sx={{ marginX: dashSpacing }}>
-        <Text text={"-"} variant={TypographyVariant.h4} bold={true} />
+        <Text text={"-"} variant={TypographyVariant.h6} bold={true} />
       </Box>
     );
   };

@@ -207,7 +207,7 @@ export const LogInFormOtp = ({
           >
             <Text
               text={t("getOtp")}
-              variant={TypographyVariant.h4}
+              variant={TypographyVariant.button}
               bold={false}
             />
           </Button>
@@ -306,7 +306,7 @@ export const LogInFormOtp = ({
       >
         <Text
           text={t("loginUsingEmail")}
-          variant={TypographyVariant.h5}
+          variant={TypographyVariant.subtitle2}
           bold={false}
           textDecoration={TypographyTextDecoration.underline}
         />
@@ -333,7 +333,7 @@ export const LogInFormOtp = ({
           ) : (
             <Text
               text={t("login")}
-              variant={TypographyVariant.h4}
+              variant={TypographyVariant.button}
               bold={false}
             />
           )}

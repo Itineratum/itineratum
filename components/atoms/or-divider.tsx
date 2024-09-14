@@ -34,7 +34,7 @@ export const OrDivider = ({ formMargin }: { formMargin: number }) => {
       >
         <Text
           text={t("or")}
-          variant={TypographyVariant.h3}
+          variant={TypographyVariant.h6}
           bold={true}
         />
       </Box>

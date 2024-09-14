@@ -201,7 +201,7 @@ export const LogInFormEmail = ({
       >
         <Text
           text={t("loginUsingPhoneNumber")}
-          variant={TypographyVariant.h5}
+          variant={TypographyVariant.subtitle2}
           bold={false}
           textDecoration={TypographyTextDecoration.underline}
         />
@@ -228,7 +228,7 @@ export const LogInFormEmail = ({
           ) : (
             <Text
               text={t("login")}
-              variant={TypographyVariant.h4}
+              variant={TypographyVariant.button}
               bold={false}
             />
           )}

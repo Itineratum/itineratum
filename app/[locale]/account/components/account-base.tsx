@@ -48,7 +48,7 @@ const AccountBase = ({
   };
   const userName = () => {
     return name ? (
-      <Text text={name} variant={TypographyVariant.h3} bold={false} />
+      <Text text={name} variant={TypographyVariant.h4} bold={false} />
     ) : (
       <></>
     );
@@ -60,7 +60,7 @@ const AccountBase = ({
       return (
         <Text
           text={t("settings")}
-          variant={TypographyVariant.h3}
+          variant={TypographyVariant.h4}
           bold={false}
           textDecoration={TypographyTextDecoration.underline}
         />
@@ -81,7 +81,7 @@ const AccountBase = ({
         >
           <Text
             text={t("personalInformation")}
-            variant={TypographyVariant.h3}
+            variant={TypographyVariant.h5}
             bold={false}
           />
         </Button>
@@ -97,7 +97,7 @@ const AccountBase = ({
         >
           <Text
             text={t("accessibility")}
-            variant={TypographyVariant.h3}
+            variant={TypographyVariant.h5}
             bold={false}
           />
         </Button>
@@ -113,7 +113,7 @@ const AccountBase = ({
         >
           <Text
             text={t("notifications")}
-            variant={TypographyVariant.h3}
+            variant={TypographyVariant.h5}
             bold={false}
           />
         </Button>
@@ -139,7 +139,7 @@ const AccountBase = ({
       return (
         <Text
           text={t("legal")}
-          variant={TypographyVariant.h3}
+          variant={TypographyVariant.h4}
           bold={false}
           textDecoration={TypographyTextDecoration.underline}
         />
@@ -155,7 +155,7 @@ const AccountBase = ({
         >
           <Text
             text={t("termsAndConditions")}
-            variant={TypographyVariant.h3}
+            variant={TypographyVariant.h5}
             bold={false}
           />
         </Button>
@@ -171,7 +171,7 @@ const AccountBase = ({
         >
           <Text
             text={t("privacyPolicy")}
-            variant={TypographyVariant.h3}
+            variant={TypographyVariant.h5}
             bold={false}
           />
         </Button>

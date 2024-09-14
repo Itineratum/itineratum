@@ -48,7 +48,7 @@ const ProfileIcon = () => {
       <MenuItem onClick={() => signOut({ callbackUrl: "/" })}>
         <Text
           text={t("signOut")}
-          variant={TypographyVariant.h4}
+          variant={TypographyVariant.body1}
           bold={false}
         />
       </MenuItem>

@@ -33,7 +33,7 @@ const ButtonMenu = ({
   const buttonElement = icon ? (
     <NavbarIconText icon={icon} text={text} />
   ) : (
-    <Text text={text} variant={TypographyVariant.h4} bold={true} />
+    <Text text={text} variant={TypographyVariant.h6} bold={true} />
   );
   const menuElement = Object.keys(menuItems).map((item) =>
     useLink ? (

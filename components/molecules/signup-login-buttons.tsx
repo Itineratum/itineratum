@@ -11,6 +11,7 @@ const SignupLoginButtons = () => {
   const buttonTextColor: string = "text.primary";
   const t = useTranslations("navbar.account");
   const locale = useLocale();
+  const typographyVariant: TypographyVariant = TypographyVariant.h6;
 
   const LoginButton = () => {
     return (
@@ -23,7 +24,7 @@ const SignupLoginButtons = () => {
         >
           <Text
             text={t("login")}
-            variant={TypographyVariant.h4}
+            variant={typographyVariant}
             bold={true}
           />
         </Button>
@@ -42,7 +43,7 @@ const SignupLoginButtons = () => {
         >
           <Text
             text={t("signUp")}
-            variant={TypographyVariant.h4}
+            variant={typographyVariant}
             bold={true}
           />
         </Button>

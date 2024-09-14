@@ -15,7 +15,6 @@ const LoginPage = () => {
   );
 
   const pageTransitionDuration: number = 500;
-  const slideDirection: "right" | "left" | "up" | "down" | undefined = "left";
 
   return (
     <Container

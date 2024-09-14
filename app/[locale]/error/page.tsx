@@ -11,7 +11,7 @@ import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 
 const Error = () => {
-  const t = useTranslations("errror");
+  const t = useTranslations("error");
   const locale = useLocale();
   const searchParams = useSearchParams();
 
@@ -25,7 +25,7 @@ const Error = () => {
         <Button variant="contained">
           <Text
             text={t("home")}
-            variant={TypographyVariant.h4}
+            variant={TypographyVariant.button}
             bold={false}
           />
         </Button>
@@ -42,7 +42,7 @@ const Error = () => {
       height="100vh"
       width="100vw"
     >
-      <Text text={errorMessage} variant={TypographyVariant.h3} bold={false} />
+      <Text text={errorMessage} variant={TypographyVariant.h2} bold={false} />
       <Box sx={{ height: heightBetweenErrorTextAndButton }} />
       {homeButton()}
     </Box>

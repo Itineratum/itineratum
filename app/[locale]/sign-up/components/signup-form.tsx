@@ -91,7 +91,7 @@ const SignUpForm = () => {
       onSuccess: () => {
         setStepNumber(3);
         setAlertType("info");
-        setAlertText(t("signUp.emailVerification.codeSentToEmail"));
+        setAlertText(t("emailVerification.codeSentToEmail"));
         setShowAlert(true);
         // setIsSigningUp(false);
       },
@@ -305,7 +305,7 @@ const SignUpForm = () => {
         >
           <Text
             text={t("next")}
-            variant={TypographyVariant.h4}
+            variant={TypographyVariant.button}
             bold={false}
           />
         </Button>
@@ -541,7 +541,7 @@ const SignUpForm = () => {
         >
           <Text
             text={t("back")}
-            variant={TypographyVariant.h4}
+            variant={TypographyVariant.button}
             bold={false}
           />
         </Button>
@@ -597,7 +597,7 @@ const SignUpForm = () => {
           ) : (
             <Text
               text={t("signUp")}
-              variant={TypographyVariant.h4}
+              variant={TypographyVariant.button}
               bold={false}
             />
           )}
@@ -634,7 +634,7 @@ const SignUpForm = () => {
           defaultValue=""
           rules={{
             required: t(
-              "signUp.emailVerification.emailVerificationForm.verificationCodeError",
+              "emailVerification.emailVerificationForm.verificationCodeError",
             ),
           }}
           render={({ field }) => (
@@ -646,7 +646,7 @@ const SignUpForm = () => {
               sx={formFieldStyling}
               margin={formFieldMargin}
               label={t(
-                "signUp.emailVerification.emailVerificationForm.verificationCode",
+                "emailVerification.emailVerificationForm.verificationCode",
               )}
               value={verificationCode}
               InputLabelProps={{
@@ -715,8 +715,8 @@ const SignUpForm = () => {
             <CircularProgress size={loadingAnimationSize} />
           ) : (
             <Text
-              text={t("signUp.emailVerification.emailVerificationForm.verify")}
-              variant={TypographyVariant.h4}
+              text={t("emailVerification.emailVerificationForm.verify")}
+              variant={TypographyVariant.button}
               bold={false}
             />
           )}

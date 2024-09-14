@@ -8,7 +8,7 @@ const NavbarIconText = ({ icon, text }: { icon: ReactNode; text: string }) => {
     <Box sx={{ display: "flex", alignItems: "center" }}>
       {icon}
       <Box sx={{ mx: 0.5 }} />
-      <Text text={text} variant={TypographyVariant.h4} bold={true} />
+      <Text text={text} variant={TypographyVariant.h6} bold={true} />
     </Box>
   );
 };

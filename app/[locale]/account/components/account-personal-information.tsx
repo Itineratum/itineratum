@@ -26,8 +26,16 @@ const AccountPersonalInformation = ({
 
   const sectionMargin: number = 7;
 
-  const navigation = () => {
-    
+  const goBackToAccountBase = () => {
+    setAccountSetting(AccountSetting.base);
+  }
+
+  const navigator = () => {
+    return (
+      <Box>
+        
+      </Box>
+    )
   }
 
   return (
@@ -37,7 +45,7 @@ const AccountPersonalInformation = ({
       justifyContent="center"
       alignItems="center"
     >
-      PERSONAL INFORMATION
+      {navigator()}
     </Box>
   );
 };

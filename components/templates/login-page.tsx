@@ -24,7 +24,7 @@ const LoginPage = () => {
       <Box marginBottom={5}>
         <Text
           text={t("login")}
-          variant={TypographyVariant.h3}
+          variant={TypographyVariant.h5}
           bold={true}
         />
       </Box>
@@ -36,7 +36,7 @@ const LoginPage = () => {
       <Box sx={{ textAlign: "left", width: "100%" }}>
         <Text
           text={t("welcome")}
-          variant={TypographyVariant.h3}
+          variant={TypographyVariant.h5}
           bold={true}
         />
       </Box>
