@@ -1,8 +1,8 @@
 "use client";
+import colorsConst from "@/constants/pages/colors.json";
 import { getFontFamily } from "@/utils/getFontFamily";
 import { createTheme } from "@mui/material/styles";
 import { Roboto, Roboto_Mono } from "next/font/google";
-import colorsConst from "@/constants/pages/colors.json";
 
 export const roboto = Roboto({
   weight: ["300", "400", "500", "700"],
@@ -37,7 +37,7 @@ const theme = createTheme({
     h1: {
       fontFamily: getFontFamily(roboto),
       fontSize: 72,
-      fontWeight: 500 // semi bold
+      fontWeight: 500, // semi bold
     },
     h2: {
       fontFamily: getFontFamily(roboto),
@@ -67,7 +67,8 @@ const theme = createTheme({
       fontFamily: getFontFamily(robotoMono),
       fontSize: 13,
     },
-    body1: { // also the typography used in TextField
+    body1: {
+      // also the typography used in TextField
       fontFamily: getFontFamily(robotoMono),
       fontSize: 16,
     },
@@ -75,7 +76,8 @@ const theme = createTheme({
       fontFamily: getFontFamily(robotoMono),
       fontSize: 10,
     },
-    overline: { // footer
+    overline: {
+      // footer
       fontFamily: getFontFamily(robotoMono),
       fontSize: 7,
     },
@@ -83,6 +85,22 @@ const theme = createTheme({
       fontFamily: getFontFamily(robotoMono),
       fontSize: 15,
       textTransform: "none",
+    },
+  },
+  components: {
+    MuiAlert: { // Alert
+      styleOverrides: {
+        message: {
+          fontSize: 15,
+        },
+      },
+    },
+    MuiInputBase: { // TextField input text
+      styleOverrides: {
+        input: {
+          fontSize: 16,
+        },
+      },
     },
   },
 });

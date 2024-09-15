@@ -114,7 +114,7 @@ const SignUpForm = () => {
         setShowAlert(true);
       }
       setIsSigningUp(false);
-      // setIsVerifying(false);
+      setIsVerifying(false);
     },
   });
 
