@@ -95,6 +95,31 @@ const theme = createTheme({
         },
       },
     },
+    MuiBreadcrumbs: {
+      styleOverrides: {
+        root: {
+          color: colorsConst.breadcrumbNavigator.selected
+        }
+      }
+    },
+    MuiTextField: {
+      styleOverrides: {
+        root: {
+          backgroundColor: colorsConst.components.textField.backgroundColor,
+          borderRadius: 10,
+        }
+      }
+    },
+    MuiFilledInput: {
+      styleOverrides: {
+        root: {
+          borderRadius: 10,
+          "&:before, &:after": {
+            borderBottom: "none"
+          }
+        }
+      }
+    },
     MuiInputBase: { // TextField input text
       styleOverrides: {
         input: {

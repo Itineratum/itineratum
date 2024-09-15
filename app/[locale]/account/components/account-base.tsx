@@ -1,23 +1,22 @@
 "use client";
 
 import Text from "@/components/atoms/text";
+import UserAvatar from "@/components/molecules/user-avatar";
 import { AccountSetting } from "@/constants/enums/accountSetting";
 import {
   TypographyTextDecoration,
   TypographyVariant,
 } from "@/constants/enums/theme";
 import colorsConst from "@/constants/pages/colors.json";
-import defaultUserImage from "@/public/user_profile.svg";
 import { Box, Button, Stack } from "@mui/material";
 import { useSession } from "next-auth/react";
 import { useTranslations } from "next-intl";
-import Image from "next/image";
 import { Dispatch, SetStateAction } from "react";
 
 const AccountBase = ({
-  setAccountSetting
+  setAccountSetting,
 }: {
-  setAccountSetting: Dispatch<SetStateAction<AccountSetting>>
+  setAccountSetting: Dispatch<SetStateAction<AccountSetting>>;
 }) => {
   const t = useTranslations("account");
   const { data: session } = useSession();
@@ -26,26 +25,6 @@ const AccountBase = ({
 
   const sectionMargin: number = 7;
 
-  const userAvatar = () => {
-    const imageSize: number = 200;
-    const topMargin: number = 40;
-    const bottomMargin = topMargin;
-
-    return (
-      <Image
-        src={image ? image : defaultUserImage}
-        width={imageSize}
-        height={imageSize}
-        alt="User Profile Picture"
-        style={{
-          objectFit: "cover",
-          borderRadius: imageSize / 2,
-          marginTop: topMargin,
-          marginBottom: bottomMargin,
-        }}
-      />
-    );
-  };
   const userName = () => {
     return name ? (
       <Text text={name} variant={TypographyVariant.h4} bold={false} />
@@ -70,7 +49,7 @@ const AccountBase = ({
     const personalInformation = () => {
       const handleOnClick = () => {
         setAccountSetting(AccountSetting.personalInformation);
-      }
+      };
 
       return (
         <Button
@@ -80,7 +59,7 @@ const AccountBase = ({
           onClick={handleOnClick}
         >
           <Text
-            text={t("personalInformation")}
+            text={t("personalInformation.personalInformation")}
             variant={TypographyVariant.h5}
             bold={false}
           />
@@ -197,7 +176,7 @@ const AccountBase = ({
       justifyContent="center"
       alignItems="center"
     >
-      {userAvatar()}
+      <UserAvatar image={image} editable={false} />
       {userName()}
       {settingsSection()}
       {legalSection()}

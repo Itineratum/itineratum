@@ -20,5 +20,9 @@
   "continueWithGoogleButton": {
     "color": "#ffffff",
     "textColor": "#757575"
+  },
+  "breadcrumbNavigator": {
+    "unselected": "#c9c9c9",
+    "selected": "#000000"
   }
 }

@@ -7,7 +7,6 @@ import {
   TypographyTextDecoration,
   TypographyVariant,
 } from "@/constants/enums/theme";
-import colorsConst from "@/constants/pages/colors.json";
 import { LogInFormEmailData } from "@/constants/types/logInFormData";
 import VisibilityOffOutlinedIcon from "@mui/icons-material/VisibilityOffOutlined";
 import VisibilityOutlinedIcon from "@mui/icons-material/VisibilityOutlined";
@@ -45,23 +44,8 @@ export const LogInFormEmail = ({
   const [alertText, setAlertText] = useState<string>("");
   const [isLoggingIn, setIsLoggingIn] = useState<boolean>(false);
 
-  const color = colorsConst.components.textField;
   const formMargin: number = 2;
   const formFieldMargin: "dense" | "normal" | "none" | undefined = "normal";
-  const formFieldBorderRadius: number = 2;
-  const formFieldStyling: Object = {
-    backgroundColor: color.backgroundColor,
-    borderRadius: formFieldBorderRadius,
-    "& .MuiFilledInput-root": {
-      borderRadius: formFieldBorderRadius,
-      "&:before, &:after": {
-        borderBottom: "none",
-      },
-    },
-    "& .MuiInputBase-input": {
-      borderRadius: formFieldBorderRadius,
-    },
-  };
 
   const emailId = "email";
   const passwordId = "password";
@@ -123,7 +107,6 @@ export const LogInFormEmail = ({
             required
             fullWidth
             variant="filled"
-            sx={formFieldStyling}
             margin={formFieldMargin}
             label={t("email")}
             value={email}
@@ -159,7 +142,6 @@ export const LogInFormEmail = ({
             required
             fullWidth
             variant="filled"
-            sx={formFieldStyling}
             margin={formFieldMargin}
             label={t("password")}
             value={password}

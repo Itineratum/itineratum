@@ -8,7 +8,6 @@ import {
   TypographyTextDecoration,
   TypographyVariant,
 } from "@/constants/enums/theme";
-import colorsConst from "@/constants/pages/colors.json";
 import { LogInFormOtpData } from "@/constants/types/logInFormData";
 import {
   Alert,
@@ -52,23 +51,8 @@ export const LogInFormOtp = ({
   const [alertText, setAlertText] = useState<string>("");
   const [isLoggingIn, setIsLoggingIn] = useState<boolean>(false);
 
-  const color = colorsConst.components.textField;
   const formMargin: number = 2;
   const formFieldMargin: "dense" | "normal" | "none" | undefined = "normal";
-  const formFieldBorderRadius: number = 2;
-  const formFieldStyling: Object = {
-    backgroundColor: color.backgroundColor,
-    borderRadius: formFieldBorderRadius,
-    "& .MuiFilledInput-root": {
-      borderRadius: formFieldBorderRadius,
-      "&:before, &:after": {
-        borderBottom: "none",
-      },
-    },
-    "& .MuiInputBase-input": {
-      borderRadius: formFieldBorderRadius,
-    },
-  };
 
   const countryCodeId = "countryCode";
   const numberId = "number";
@@ -126,7 +110,6 @@ export const LogInFormOtp = ({
               required
               fullWidth
               variant="filled"
-              sx={formFieldStyling}
               margin={formFieldMargin}
               label={t("countryCode")}
               value={countryCode}
@@ -230,7 +213,6 @@ export const LogInFormOtp = ({
               required
               fullWidth
               variant="filled"
-              sx={formFieldStyling}
               margin={formFieldMargin}
               label={t("number")}
               value={number}
@@ -279,7 +261,6 @@ export const LogInFormOtp = ({
             required
             fullWidth
             variant="filled"
-            sx={formFieldStyling}
             margin={formFieldMargin}
             label={t("otp")}
             value={otp}

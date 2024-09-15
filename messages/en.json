@@ -1,7 +1,27 @@
 {
   "home": { "header": "It's time to travel with EASE." },
-  "account": { 
-    "personalInformation": "Personal Information",
+  "account": {
+    "account": "Account",
+    "personalInformation": {
+      "account": "Account",
+      "personalInformation": "Personal Information",
+      "firstName": "First Name",
+      "firstNameError": "First name required!",
+      "lastName": "Last Name",
+      "password": "Password",
+      "passwordError": "Password required!",
+      "changePassword": "Change Password",
+      "email": "Email",
+      "address1": "Address Line #1",
+      "address2": "Address Line #2",
+      "dob": {
+        "dob": "Date of Birth",
+        "month": "Month",
+        "day": "Day",
+        "year": "Year"
+      },
+      "google": "Google"
+    },
     "accessibility": "Accessibility",
     "notifications": "Notifications",
     "termsAndConditions": "T&C",

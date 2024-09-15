@@ -47,7 +47,10 @@ const LoginPage = () => {
         style={{ position: "absolute", width: "100%" }}
       >
         <div key={AccountSetting.personalInformation}>
-          <AccountPersonalInformation setAccountSetting={setAccountSetting} />
+          <AccountPersonalInformation
+            accountSetting={accountSetting}
+            setAccountSetting={setAccountSetting}
+          />
         </div>
       </Slide>
     </Container>

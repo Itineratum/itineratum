@@ -7,7 +7,6 @@ import Text from "@/components/atoms/text";
 import { ContinueWithGoogleButton } from "@/components/molecules/continue-with-google-button";
 import { countryInfoList } from "@/constants/enums/country";
 import { TypographyVariant } from "@/constants/enums/theme";
-import colorsConst from "@/constants/pages/colors.json";
 import { SignUpFormData } from "@/constants/types/signUpFormData";
 import { isValidEmail, isValidPassword } from "@/utils/signUpFormValidation";
 import VisibilityOffOutlinedIcon from "@mui/icons-material/VisibilityOffOutlined";
@@ -51,23 +50,8 @@ const SignUpForm = () => {
   const [isSigningUp, setIsSigningUp] = useState<boolean>(false);
   const [isVerifying, setIsVerifying] = useState<boolean>(false);
 
-  const color = colorsConst.components.textField;
   const formMargin: number = 2;
   const formFieldMargin: "dense" | "normal" | "none" | undefined = "normal";
-  const formFieldBorderRadius: number = 2;
-  const formFieldStyling: Object = {
-    backgroundColor: color.backgroundColor,
-    borderRadius: formFieldBorderRadius,
-    "& .MuiFilledInput-root": {
-      borderRadius: formFieldBorderRadius,
-      "&:before, &:after": {
-        borderBottom: "none",
-      },
-    },
-    "& .MuiInputBase-input": {
-      borderRadius: formFieldBorderRadius,
-    },
-  };
   const pageTransitionDuration: number = 500;
 
   const countryId = "country";
@@ -93,7 +77,7 @@ const SignUpForm = () => {
         setAlertType("info");
         setAlertText(t("emailVerification.codeSentToEmail"));
         setShowAlert(true);
-        // setIsSigningUp(false);
+        setIsSigningUp(false);
       },
     });
   const verifyVerificationCode = trpc.user.verifyVerificationCode.useMutation({
@@ -124,7 +108,7 @@ const SignUpForm = () => {
 
       const handleCountryChange = async (
         event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
-        field: ControllerRenderProps<SignUpFormData, "country">,
+        field: ControllerRenderProps<SignUpFormData, "country">
       ) => {
         field.onChange(event);
         const inputCountry = event.target.value;
@@ -155,7 +139,6 @@ const SignUpForm = () => {
               required
               fullWidth
               variant="filled"
-              sx={formFieldStyling}
               margin={formFieldMargin}
               label={t("country")}
               value={country}
@@ -205,7 +188,6 @@ const SignUpForm = () => {
                 required
                 fullWidth
                 variant="filled"
-                sx={formFieldStyling}
                 margin={formFieldMargin}
                 label={t("countryCode")}
                 value={countryCode}
@@ -224,14 +206,14 @@ const SignUpForm = () => {
         const numberValidation = (numberInput: string) => {
           const isValid = isValidPhoneNumber(
             numberInput,
-            country as CountryCode,
+            country as CountryCode
           );
           return isValid ? true : t("numberError");
         };
 
         const handleNumberChange = async (
           event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
-          field: ControllerRenderProps<SignUpFormData, "number">,
+          field: ControllerRenderProps<SignUpFormData, "number">
         ) => {
           field.onChange(event.target.value);
           await trigger(numberId);
@@ -253,7 +235,6 @@ const SignUpForm = () => {
                 required
                 fullWidth
                 variant="filled"
-                sx={formFieldStyling}
                 margin={formFieldMargin}
                 label={t("number")}
                 value={number}
@@ -337,7 +318,7 @@ const SignUpForm = () => {
 
       const handleEmailChange = async (
         event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
-        field: ControllerRenderProps<SignUpFormData, "email">,
+        field: ControllerRenderProps<SignUpFormData, "email">
       ) => {
         field.onChange(event.target.value);
         await trigger(emailId);
@@ -359,7 +340,6 @@ const SignUpForm = () => {
               required
               fullWidth
               variant="filled"
-              sx={formFieldStyling}
               margin={formFieldMargin}
               label={t("email")}
               value={email}
@@ -387,7 +367,7 @@ const SignUpForm = () => {
 
       const handlePasswordChange = async (
         event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
-        field: ControllerRenderProps<SignUpFormData, "password">,
+        field: ControllerRenderProps<SignUpFormData, "password">
       ) => {
         field.onChange(event.target.value);
         await trigger(passwordId);
@@ -412,7 +392,6 @@ const SignUpForm = () => {
               required
               fullWidth
               variant="filled"
-              sx={formFieldStyling}
               margin={formFieldMargin}
               label={t("password")}
               value={password}
@@ -462,7 +441,7 @@ const SignUpForm = () => {
 
       const handleReEnterPasswordChange = async (
         event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
-        field: ControllerRenderProps<SignUpFormData, "reEnterPassword">,
+        field: ControllerRenderProps<SignUpFormData, "reEnterPassword">
       ) => {
         field.onChange(event.target.value);
         await trigger(reEnterPasswordId);
@@ -486,7 +465,6 @@ const SignUpForm = () => {
               required
               fullWidth
               variant="filled"
-              sx={formFieldStyling}
               margin={formFieldMargin}
               label={t("reEnterPassword")}
               value={reEnterPassword}
@@ -571,9 +549,7 @@ const SignUpForm = () => {
           await generateVerificationCode.mutateAsync(data);
         } catch (error) {
           if (error instanceof TRPCClientError) {
-            setAlertText(
-              error.message ?? t("signUpErrorAlert"),
-            );
+            setAlertText(error.message ?? t("signUpErrorAlert"));
             setAlertType("error");
             setShowAlert(true);
           }
@@ -634,7 +610,7 @@ const SignUpForm = () => {
           defaultValue=""
           rules={{
             required: t(
-              "emailVerification.emailVerificationForm.verificationCodeError",
+              "emailVerification.emailVerificationForm.verificationCodeError"
             ),
           }}
           render={({ field }) => (
@@ -643,10 +619,9 @@ const SignUpForm = () => {
               required
               fullWidth
               variant="filled"
-              sx={formFieldStyling}
               margin={formFieldMargin}
               label={t(
-                "emailVerification.emailVerificationForm.verificationCode",
+                "emailVerification.emailVerificationForm.verificationCode"
               )}
               value={verificationCode}
               InputLabelProps={{
@@ -689,9 +664,7 @@ const SignUpForm = () => {
           await verifyVerificationCode.mutateAsync(data);
         } catch (error) {
           if (error instanceof TRPCClientError) {
-            setAlertText(
-              error.message ?? t("signUpErrorAlert"),
-            );
+            setAlertText(error.message ?? t("signUpErrorAlert"));
             setAlertType("error");
             setShowAlert(true);
             setIsSigningUp(false);
