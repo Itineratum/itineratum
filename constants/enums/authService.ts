@@ -1,6 +1,6 @@
 export enum AuthService {
-  Google = "Google",
-  Facebook = "Facebook",
-  Apple = "Apple",
-  Credentials = "Credentials",
+  Google = "google",
+  Facebook = "facebook",
+  Apple = "apple",
+  Credentials = "credentials",
 }

@@ -8,27 +8,22 @@
       "firstName": "First Name",
       "firstNameError": "First name required!",
       "lastName": "Last Name",
-      "password": "Password",
-      "passwordError": "Password required!",
       "changePassword": "Change Password",
       "email": "Email",
       "address1": "Address Line #1",
       "address2": "Address Line #2",
-      "dob": {
-        "dob": "Date of Birth",
-        "month": "Month",
-        "day": "Day",
-        "year": "Year"
-      },
-      "google": "Google"
+      "dob": "Date of Birth",
+      "google": "Google",
+      "connectGoogle": "Connect your Google Account",
+      "saveAccount": "Save",
+      "deleteAccount": "Delete your account"
     },
     "accessibility": "Accessibility",
     "notifications": "Notifications",
     "termsAndConditions": "T&C",
     "privacyPolicy": "Privacy Policy",
     "settings": "Settings",
-    "legal": "Legal",
-    "deleteAccount": "Delete your account"
+    "legal": "Legal"
   },
   "navbar": {
     "aboutUs": "About Us",

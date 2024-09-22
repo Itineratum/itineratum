@@ -2,7 +2,9 @@ import { sendSignUpVerificationEmail } from "@/lib/nodeMailer";
 import {
   credentialsLogIn,
   credentialsSignUp,
+  deleteUser,
   retrieveCurrencyLanguage,
+  retrieveUserDetails,
   updateUser,
 } from "@/services/database/users";
 import {
@@ -11,12 +13,15 @@ import {
 } from "@/services/database/verificationCodes";
 import { TRPCError } from "@trpc/server";
 import {
+  deleteUserAccount,
   generateVerificationCodeSchema,
+  getUserAccountDetails,
   getUserCurrencyLanguage,
   loginViaEmail,
   loginViaOtp,
   switchCurrency,
   switchLanguage,
+  updateUserAccount,
   verifyVerificationCodeSchema,
 } from "../schemas/user";
 import { publicProcedure, router } from "../trpc";
@@ -150,6 +155,72 @@ export const userRouter = router({
           currency,
           language,
         };
+      }
+    }),
+  getUserAccountDetails: publicProcedure
+    .input(getUserAccountDetails.input)
+    .output(getUserAccountDetails.output)
+    .query(async (data) => {
+      const { email } = data.input;
+      const retrieveUserDetailsRes = await retrieveUserDetails(email);
+
+      if (!retrieveUserDetailsRes.success) {
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message: retrieveUserDetailsRes.error,
+        });
+      } else {
+        const user = retrieveUserDetailsRes.data;
+        return {
+          firstName: user.first_name,
+          lastName: user.last_name,
+          email: user.email,
+          address1: user.address_1,
+          address2: user.address_2,
+          dateOfBirth: user.date_of_birth,
+        };
+      }
+    }),
+  updateUserAccount: publicProcedure
+    .input(updateUserAccount.input)
+    .output(updateUserAccount.output)
+    .mutation(async (data) => {
+      const { email, firstName, lastName, address1, address2, dateOfBirth } =
+        data.input;
+
+      // TODO: problems with updating the date of birth, to fix
+      console.log(typeof dateOfBirth);
+
+      const update = {
+        $set: {
+          first_name: firstName,
+          last_name: lastName,
+          address_1: address1, 
+          address_2: address2,
+          date_of_birth: dateOfBirth
+        }
+      };
+      const updateUserRes = await updateUser(email, update);
+
+      if (!updateUserRes.success) {
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message: updateUserRes.error,
+        });
+      }
+    }),
+  deleteUserAccount: publicProcedure
+    .input(deleteUserAccount.input)
+    .output(deleteUserAccount.output)
+    .mutation(async (data) => {
+      const { email } = data.input;
+      const deleteUserRes = await deleteUser(email);
+
+      if (!deleteUserRes.success) {
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message: deleteUserRes.error,
+        });
       }
     }),
 });

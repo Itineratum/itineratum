@@ -197,3 +197,51 @@ export const updateUser = async (email: string, update: Object) => {
     disconnectFromDatabase();
   }
 };
+
+export const retrieveUserDetails = async (email: string) => {
+  try {
+    await connectToDatabase();
+    const user = await User.findOne({ email });
+
+    if (!user) {
+      return {
+        success: false,
+        error: "User not found!",
+      };
+    } else {
+      return {
+        success: true,
+        data: user,
+      };
+    }
+  } catch (error) {
+    console.error(error);
+    throw error;
+  } finally {
+    disconnectFromDatabase();
+  }
+};
+
+export const deleteUser = async (email: string) => {
+  try {
+    await connectToDatabase();
+    const user = await User.findOne({ email });
+
+    if (!user) {
+      return {
+        success: false,
+        error: "User not found!",
+      };
+    } else {
+      await User.deleteOne({ email });
+      return {
+        success: true
+      }
+    }
+  } catch (error) {
+    console.error(error);
+    throw error;
+  } finally {
+    disconnectFromDatabase();
+  }
+};

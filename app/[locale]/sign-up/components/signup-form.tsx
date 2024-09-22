@@ -720,7 +720,14 @@ const SignUpForm = () => {
       </Collapse>
       {showAlert ? <Alert severity={alertType}>{alertText}</Alert> : <></>}
       <OrDivider formMargin={formMargin} />
-      <ContinueWithGoogleButton formMargin={formMargin} />
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "center",
+        }}
+      >
+        <ContinueWithGoogleButton formMargin={formMargin} />
+      </Box>
     </Box>
   );
 };

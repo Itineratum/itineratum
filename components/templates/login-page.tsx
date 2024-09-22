@@ -22,11 +22,7 @@ const LoginPage = () => {
   const loginText = () => {
     return (
       <Box marginBottom={5}>
-        <Text
-          text={t("login")}
-          variant={TypographyVariant.h5}
-          bold={true}
-        />
+        <Text text={t("login")} variant={TypographyVariant.h5} bold={true} />
       </Box>
     );
   };
@@ -34,11 +30,7 @@ const LoginPage = () => {
   const welcomeTravellerText = () => {
     return (
       <Box sx={{ textAlign: "left", width: "100%" }}>
-        <Text
-          text={t("welcome")}
-          variant={TypographyVariant.h5}
-          bold={true}
-        />
+        <Text text={t("welcome")} variant={TypographyVariant.h5} bold={true} />
       </Box>
     );
   };
@@ -63,7 +55,14 @@ const LoginPage = () => {
         <LogInFormEmail setIsLoginUsingOtp={setIsLoginUsingOtp} />
       </Collapse>
       <OrDivider formMargin={formMargin} />
-      <ContinueWithGoogleButton formMargin={formMargin} />
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "center",
+        }}
+      >
+        <ContinueWithGoogleButton formMargin={formMargin} />
+      </Box>
     </Container>
   );
 };

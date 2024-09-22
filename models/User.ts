@@ -9,13 +9,16 @@ import { IUser } from "@/constants/types/user";
 import mongoose, { models } from "mongoose";
 const { Schema } = mongoose;
 
-
 const userSchema = new Schema<IUser>(
   {
-    name: { type: String, required: false },
+    first_name: {type: String, required: false},
+    last_name: { type: String, required: false },
     country: { type: String, enum: Country, required: false },
     phone_number: { type: String, required: false, set: (v: any) => String(v) },
     email: { type: String, required: true, unique: true },
+    address_1: {type: String, required: false},
+    address_2: {type: String, required: false},
+    date_of_birth: { type: Date, required: false },
     profile_picture: { type: String, required: false },
     auth_service: { type: String, enum: AuthService, required: true },
     language: {
@@ -37,13 +40,13 @@ const userSchema = new Schema<IUser>(
 );
 
 export const initialUser = (
-  name: string,
+  first_name: string,
   email: string,
   profile_picture: string,
   auth_service: AuthService
 ) => {
   return {
-    name,
+    first_name,
     email,
     profile_picture,
     auth_service,

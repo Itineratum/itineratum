@@ -1,8 +1,11 @@
 "use client";
 
+import { trpc } from "@/app/_trpc/client";
 import Text from "@/components/atoms/text";
+import { ContinueWithGoogleButton } from "@/components/molecules/continue-with-google-button";
 import UserAvatar from "@/components/molecules/user-avatar";
 import { AccountSetting } from "@/constants/enums/accountSetting";
+import { AuthService } from "@/constants/enums/authService";
 import { TypographyVariant } from "@/constants/enums/theme";
 import colorsConst from "@/constants/pages/colors.json";
 import { AccountPersonalInformationData } from "@/constants/types/accountPersonalInformationData";
@@ -10,14 +13,17 @@ import {
   Box,
   Breadcrumbs,
   Button,
-  Input,
+  Grid,
   InputLabel,
   Stack,
   TextField,
 } from "@mui/material";
-import { useSession } from "next-auth/react";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider/LocalizationProvider";
+import { signOut, useSession } from "next-auth/react";
 import { useTranslations } from "next-intl";
-import { Dispatch, SetStateAction, useState } from "react";
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 
 const AccountPersonalInformation = ({
@@ -46,27 +52,62 @@ const AccountPersonalInformation = ({
   const name: string | undefined | null = session?.user?.name;
   const image: string | undefined | null = session?.user?.image;
 
-  const sectionMargin: number = 7;
+  const columnSpacing: number = 7;
   const topMargin: number = 5;
   const formMargin: number = 2;
   const formFieldMargin: "dense" | "normal" | "none" | undefined = "normal";
   const fieldSpacing: number = 2;
+  const columnSx: number = 12 / 2;
+  const textFieldSx = {
+    "& .MuiInputBase-input": {
+      padding: "10px",
+    },
+  };
 
   const firstNameId = "firstName";
   const lastNameId = "lastName";
-  const passwordId = "password";
   const emailId = "email";
   const address1Id = "address1";
   const address2Id = "address2";
-  const dobId = "dob";
+  const dateOfBirthId = "dateOfBirth";
 
   const firstName = watch(firstNameId);
   const lastName = watch(lastNameId);
-  const password = watch(passwordId);
   const email = watch(emailId);
   const address1 = watch(address1Id);
   const address2 = watch(address2Id);
-  const dob = watch(dobId);
+  const dateOfBirth = watch(dateOfBirthId);
+
+  const getUserAccountDetails = trpc.user.getUserAccountDetails.useQuery({
+    email: session?.user.email!,
+  });
+  const deleteUserAccount = trpc.user.deleteUserAccount.useMutation({
+    onSuccess: () => {
+      // TODO: come out with a better logic to show to the user that they have deleted their account
+      window.alert("USER DELETED");
+    },
+  });
+  const updateUserAccount = trpc.user.updateUserAccount.useMutation({
+    onSuccess: () => {
+      // TODO: come out with a better logic to show to the user that they have updated their account
+      window.alert("USER UPDATED");
+    },
+  });
+
+  useEffect(() => {
+    if (getUserAccountDetails.data) {
+      const userDetails = getUserAccountDetails.data;
+
+      setValue(firstNameId, userDetails.firstName);
+      setValue(lastNameId, userDetails.lastName);
+      setValue(emailId, userDetails.email);
+      setValue(address1Id, userDetails.address1);
+      setValue(address2Id, userDetails.address2);
+
+      if (userDetails.dateOfBirth)
+        setValue(dateOfBirthId, new Date(userDetails.dateOfBirth));
+    }
+  }, [getUserAccountDetails.data]);
 
   const breadcrumbNavigator = () => {
     const accountOnClickHandler = () => {
@@ -108,10 +149,17 @@ const AccountPersonalInformation = ({
       </Breadcrumbs>
     );
   };
+  const userAvatarField = () => {
+    return (
+      <Box sx={{ display: "flex", justifyContent: "center" }}>
+        <UserAvatar image={image} editable={true} />
+      </Box>
+    );
+  };
   const nameSection = () => {
     const firstNameField = () => {
       return (
-        <Box>
+        <Box width="100%">
           <InputLabel sx={{ color: colorsConst.palette.text.primary }}>
             {t("firstName")}
           </InputLabel>
@@ -126,14 +174,11 @@ const AccountPersonalInformation = ({
             render={({ field }) => (
               <TextField
                 {...field}
-                required
                 fullWidth
                 variant="filled"
                 margin={formFieldMargin}
                 value={firstName}
-                InputLabelProps={{
-                  sx: { color: "text.primary" },
-                }}
+                sx={textFieldSx}
                 error={!!errors.firstName}
                 helperText={
                   errors.firstName ? (errors.firstName.message as string) : ""
@@ -147,7 +192,7 @@ const AccountPersonalInformation = ({
 
     const lastNameField = () => {
       return (
-        <Box>
+        <Box width="100%">
           <InputLabel sx={{ color: colorsConst.palette.text.primary }}>
             {t("lastName")}
           </InputLabel>
@@ -159,14 +204,11 @@ const AccountPersonalInformation = ({
             render={({ field }) => (
               <TextField
                 {...field}
-                required
                 fullWidth
                 variant="filled"
                 margin={formFieldMargin}
                 value={lastName}
-                InputLabelProps={{
-                  sx: { color: "text.primary" },
-                }}
+                sx={textFieldSx}
               />
             )}
           />
@@ -179,41 +221,6 @@ const AccountPersonalInformation = ({
         {firstNameField()}
         {lastNameField()}
       </Stack>
-    );
-  };
-  const passwordField = () => {
-    return (
-      <Box>
-        <InputLabel sx={{ color: colorsConst.palette.text.primary }}>
-          {t("password")}
-        </InputLabel>
-        <Controller
-          key={passwordId}
-          name={passwordId}
-          control={control}
-          defaultValue=""
-          rules={{
-            required: t("passwordError"),
-          }}
-          render={({ field }) => (
-            <TextField
-              {...field}
-              required
-              fullWidth
-              variant="filled"
-              margin={formFieldMargin}
-              value={password}
-              InputLabelProps={{
-                sx: { color: "text.primary" },
-              }}
-              error={!!errors.password}
-              helperText={
-                errors.password ? (errors.password.message as string) : ""
-              }
-            />
-          )}
-        />
-      </Box>
     );
   };
   const emailField = () => {
@@ -235,14 +242,36 @@ const AccountPersonalInformation = ({
               variant="filled"
               margin={formFieldMargin}
               value={email}
-              InputLabelProps={{
-                sx: { color: "text.primary" },
-              }}
+              sx={textFieldSx}
               disabled
             />
           )}
         />
       </Box>
+    );
+  };
+  // TODO: should not even have a password field that displays the user's password. both technically impossible and not the best practice. instead, ask users to verify their current password and then change password by typing in a new one
+  const changePasswordButton = () => {
+    const buttonWidth: string = "50%";
+
+    const handleOnClick = () => {};
+
+    return (
+      <Button
+        type="button"
+        fullWidth
+        variant="contained"
+        sx={{ my: formMargin, maxWidth: buttonWidth, alignSelf: "center" }}
+        color="primary"
+        // disabled={isVerifying}
+        onClick={handleOnClick}
+      >
+        <Text
+          text={t("changePassword")}
+          variant={TypographyVariant.button}
+          bold={false}
+        />
+      </Button>
     );
   };
   const addressSection = () => {
@@ -260,14 +289,11 @@ const AccountPersonalInformation = ({
             render={({ field }) => (
               <TextField
                 {...field}
-                required
                 fullWidth
                 variant="filled"
                 margin={formFieldMargin}
                 value={address1}
-                InputLabelProps={{
-                  sx: { color: "text.primary" },
-                }}
+                sx={textFieldSx}
               />
             )}
           />
@@ -289,14 +315,11 @@ const AccountPersonalInformation = ({
             render={({ field }) => (
               <TextField
                 {...field}
-                required
                 fullWidth
                 variant="filled"
                 margin={formFieldMargin}
                 value={address2}
-                InputLabelProps={{
-                  sx: { color: "text.primary" },
-                }}
+                sx={textFieldSx}
               />
             )}
           />
@@ -311,116 +334,149 @@ const AccountPersonalInformation = ({
       </Stack>
     );
   };
-  const dobSection = () => {
-    const monthField = () => {
-      return (
+  const dobField = () => {
+    const dateFormat: string = "DD/MM/YYYY";
+
+    return (
+      <Box>
+        <InputLabel sx={{ color: colorsConst.palette.text.primary }}>
+          {t("dob")}
+        </InputLabel>
         <Controller
-          key={address2Id}
-          name={address2Id}
+          key={dateOfBirthId}
+          name={dateOfBirthId}
           control={control}
-          defaultValue=""
           render={({ field }) => (
-            <TextField
-              {...field}
-              required
-              fullWidth
-              label={t("dob.month")}
-              variant="filled"
-              margin={formFieldMargin}
-              value={address2}
-              InputLabelProps={{
-                sx: { color: "text.primary" },
-              }}
-            />
+            <LocalizationProvider dateAdapter={AdapterDayjs}>
+              <DatePicker
+                {...field}
+                format={dateFormat}
+                sx={{ width: "100%" }}
+                value={dateOfBirth}
+              />
+            </LocalizationProvider>
           )}
         />
+      </Box>
+    );
+  };
+  const googleButton = () => {
+    const buttonWidth: string = "100%";
+
+    return (
+      <Box>
+        <InputLabel sx={{ color: colorsConst.palette.text.primary }}>
+          {t("google")}
+        </InputLabel>
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "flex-start",
+          }}
+        >
+          <ContinueWithGoogleButton
+            formMargin={formMargin}
+            buttonWidth={buttonWidth}
+            text={t("connectGoogle")}
+          />
+        </Box>
+      </Box>
+    );
+  };
+  const actionButtons = () => {
+    const buttonWidth: string = "50%";
+
+    const saveButton = () => {
+      const handleOnClick = async () => {
+        const data = {
+          firstName,
+          lastName,
+          email,
+          address1,
+          address2,
+          dateOfBirth,
+        };
+        await updateUserAccount.mutateAsync(data);
+      };
+
+      return (
+        <Button
+          type="button"
+          fullWidth
+          variant="contained"
+          sx={{ my: formMargin, maxWidth: buttonWidth, alignSelf: "center" }}
+          color="secondary"
+          // disabled={isVerifying}
+          onClick={handleOnClick}
+        >
+          <Text
+            text={t("saveAccount")}
+            variant={TypographyVariant.button}
+            bold={false}
+          />
+        </Button>
       );
     };
 
-    const dayField = () => {
-      return (
-        <Controller
-          key={address2Id}
-          name={address2Id}
-          control={control}
-          defaultValue=""
-          render={({ field }) => (
-            <TextField
-              {...field}
-              required
-              fullWidth
-              label={t("dob.day")}
-              variant="filled"
-              margin={formFieldMargin}
-              value={address2}
-              InputLabelProps={{
-                sx: { color: "text.primary" },
-              }}
-            />
-          )}
-        />
-      );
-    };
+    const deleteAccountButton = () => {
+      const handleOnClick = async () => {
+        const data = { email };
+        await deleteUserAccount.mutateAsync(data);
+        signOut({ callbackUrl: "/" });
+      };
 
-    const yearField = () => {
       return (
-        <Controller
-          key={address2Id}
-          name={address2Id}
-          control={control}
-          defaultValue=""
-          render={({ field }) => (
-            <TextField
-              {...field}
-              required
-              fullWidth
-              label={t("dob.year")}
-              variant="filled"
-              margin={formFieldMargin}
-              value={address2}
-              InputLabelProps={{
-                sx: { color: "text.primary" },
-              }}
-            />
-          )}
-        />
+        <Button
+          type="button"
+          fullWidth
+          variant="contained"
+          sx={{ my: formMargin, maxWidth: buttonWidth, alignSelf: "center" }}
+          color="primary"
+          // disabled={isVerifying}
+          onClick={handleOnClick}
+        >
+          <Text
+            text={t("deleteAccount")}
+            variant={TypographyVariant.button}
+            bold={false}
+          />
+        </Button>
       );
     };
 
     return (
-      <Box>
-        <InputLabel>
-          {" "}
-          <InputLabel sx={{ color: colorsConst.palette.text.primary }}>
-            {t("dob.dob")}
-          </InputLabel>
-        </InputLabel>
-        <Stack direction={"row"} spacing={fieldSpacing}>
-          {monthField()}
-          {dayField()}
-          {yearField()}
-        </Stack>
-      </Box>
+      <Stack direction={"row"} spacing={fieldSpacing}>
+        {saveButton()}
+        {deleteAccountButton()}
+      </Stack>
     );
   };
 
   return (
-    <Box
-      display="flex"
-      flexDirection="column"
-      justifyContent="center"
-      alignItems="center"
-      marginTop={topMargin}
-    >
-      <Stack spacing={fieldSpacing}>
-        {breadcrumbNavigator()}
-        <UserAvatar image={image} editable={true} />
-        {nameSection()}
-        {passwordField()}
-        {emailField()}
-        {addressSection()}
-        {dobSection()}
-      </Stack>
+    <Box component="form" noValidate marginTop={topMargin}>
+      {breadcrumbNavigator()}
+      <Grid container spacing={columnSpacing}>
+        <Grid item xs={columnSx}>
+          <Stack spacing={fieldSpacing}>
+            {userAvatarField()}
+            {nameSection()}
+            {emailField()}
+            {session?.provider === AuthService.Credentials ? (
+              changePasswordButton()
+            ) : (
+              <></>
+            )}
+          </Stack>
+        </Grid>
+        <Grid item xs={columnSx}>
+          <Stack spacing={fieldSpacing}>
+            {addressSection()}
+            {dobField()}
+            {session?.provider === AuthService.Google ? <></> : googleButton()}
+            {actionButtons()}
+          </Stack>
+        </Grid>
+      </Grid>
     </Box>
   );
 };
