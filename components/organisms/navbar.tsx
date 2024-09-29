@@ -121,8 +121,8 @@ const Navbar = () => {
           {contactUs()}
         </Box>
         <Box sx={{ display: "flex", alignItems: "center" }}>
-          <LanguageSwitcher locale={locale} />
-          {dash()}
+          {/* <LanguageSwitcher locale={locale} />
+          {dash()} */}
           <CurrencySwitcher />
           {account()}
         </Box>
