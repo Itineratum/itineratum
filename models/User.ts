@@ -7,6 +7,7 @@ import { Currency } from "@/constants/enums/currency";
 import { Language } from "@/constants/enums/language";
 import { IUser } from "@/constants/types/user";
 import mongoose, { models } from "mongoose";
+import { boolean } from "zod";
 const { Schema } = mongoose;
 
 const userSchema = new Schema<IUser>(
@@ -35,6 +36,7 @@ const userSchema = new Schema<IUser>(
     },
     account_created: { type: Date, required: true },
     password: { type: String, required: false }, // password is stored as hash only if users sign up using credentials
+    is_deleted: { type: Boolean, required: true, default: false },
   },
   { collection: constDbCollections.users },
 );

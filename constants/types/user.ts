@@ -17,4 +17,5 @@ export interface IUser {
   currency: Currency;
   account_created: Date;
   password: string;
+  is_deleted: boolean;
 }

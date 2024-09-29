@@ -21,17 +21,8 @@ export const signIn = async ({
     const authService: AuthService = getAuthService(account?.provider!);
     const name: string = user.name!;
     const profilePicture: string = user.image!;
-    console.log("PROFILE PICTURE");
-    console.log(profilePicture);
 
-    if (!existingUser) {
-      await User.create(
-        initialUser(name, email, profilePicture, authService),
-      ).then((result) => {
-        console.log(`User ${result.id} created!`);
-      });
-      return true;
-    } else {
+    if (existingUser && !existingUser.is_deleted) {
       const isSameAuthService = existingUser.auth_service === authService;
 
       if (!isSameAuthService) {
@@ -57,6 +48,31 @@ export const signIn = async ({
         `User with email ${email} already exists! Signing in directly.`,
       );
       return true;
+    } else {
+      const userDocument = initialUser(
+        name,
+        email,
+        profilePicture,
+        authService,
+      );
+
+      if (existingUser && existingUser.is_deleted) {
+        // returning user
+        const update = {
+          $set: {
+            ...userDocument,
+            is_deleted: false,
+          },
+        };
+        await User.findOneAndUpdate({ email, is_deleted: true }, update);
+      } else {
+        // brand new user
+        await User.create(userDocument).then((result) => {
+          console.log(`User ${result.id} created!`);
+        });
+      }
+
+      return true;
     }
   } catch (error) {
     console.error(error);
@@ -70,7 +86,7 @@ export const signIn = async ({
 export const googleLogIn = async (email: string) => {
   try {
     await connectToDatabase();
-    const existingUser = await User.findOne({ email });
+    const existingUser = await User.findOne({ email, is_deleted: false });
 
     if (existingUser) {
       return {
@@ -102,7 +118,7 @@ export const credentialsSignUp = async (
     await connectToDatabase();
     const existingUser = await User.findOne({ email });
 
-    if (existingUser) {
+    if (existingUser && !existingUser.is_deleted) {
       return {
         success: false,
         error: "User already exists! Please sign up with a different email!",
@@ -111,16 +127,31 @@ export const credentialsSignUp = async (
       const hashedPassword = await bcrypt.hash(password, 12);
       const sanitizedNumber = number.replace(/\D/g, "");
       const phoneNumber = `${countryCode}${sanitizedNumber}`;
-      await User.create({
+      const userDocument = {
         country,
         phone_number: phoneNumber,
         email,
         password: hashedPassword,
         auth_service: AuthService.Credentials,
         account_created: Date.now(),
-      }).then((result) => {
-        console.log(`User ${result.id} created!`);
-      });
+      };
+
+      if (existingUser && existingUser.is_deleted) {
+        // returning user
+        const update = {
+          $set: {
+            ...userDocument,
+            is_deleted: false,
+          },
+        };
+        await User.findOneAndUpdate({ email, is_deleted: true }, update);
+      } else {
+        // brand new user
+        await User.create(userDocument).then((result) => {
+          console.log(`User ${result.id} created!`);
+        });
+      }
+
       return {
         success: true,
       };
@@ -139,7 +170,7 @@ export const credentialsLogIn = async (
 ) => {
   try {
     await connectToDatabase();
-    const user = await User.findOne({ email: inputEmail });
+    const user = await User.findOne({ email: inputEmail, is_deleted: false });
 
     if (!user) {
       return {
@@ -254,7 +285,7 @@ export const retrieveUserDetails = async (email: string) => {
 export const deleteUser = async (email: string) => {
   try {
     await connectToDatabase();
-    const user = await User.findOne({ email });
+    const user = await User.findOne({ email }).lean();
 
     if (!user) {
       return {
@@ -262,7 +293,23 @@ export const deleteUser = async (email: string) => {
         error: "User not found!",
       };
     } else {
-      await User.deleteOne({ email });
+      // do a soft delete, so that we can still keep track of whether it is the user's first time signing up or not if they sign up again in the future
+      const fields = Object.keys(user);
+      const permanentFields = ["_id", "email", "is_deleted"];
+      const fieldsToDelete = fields.filter(
+        (field) => !permanentFields.includes(field),
+      );
+      const unsetFields: Record<string, string> = {};
+      fieldsToDelete.map((fieldToDelete) => {
+        unsetFields[fieldToDelete] = "";
+      });
+      const softDeleteUpdate = {
+        $unset: unsetFields,
+        $set: {
+          is_deleted: true,
+        },
+      };
+      await User.findOneAndUpdate({ email }, softDeleteUpdate);
       return {
         success: true,
       };
