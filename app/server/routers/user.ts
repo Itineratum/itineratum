@@ -188,9 +188,6 @@ export const userRouter = router({
       const { email, firstName, lastName, address1, address2, dateOfBirth } =
         data.input;
 
-      // TODO: problems with updating the date of birth, to fix
-      console.log(typeof dateOfBirth);
-
       const update = {
         $set: {
           first_name: firstName,

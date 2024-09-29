@@ -21,10 +21,14 @@ import {
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider/LocalizationProvider";
+import dayjs, { Dayjs } from "dayjs";
+import utc from "dayjs/plugin/utc";
 import { signOut, useSession } from "next-auth/react";
 import { useTranslations } from "next-intl";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
+
+dayjs.extend(utc);
 
 const AccountPersonalInformation = ({
   accountSetting,
@@ -104,8 +108,10 @@ const AccountPersonalInformation = ({
       setValue(address1Id, userDetails.address1);
       setValue(address2Id, userDetails.address2);
 
-      if (userDetails.dateOfBirth)
-        setValue(dateOfBirthId, new Date(userDetails.dateOfBirth));
+      if (userDetails.dateOfBirth) {
+        const utcDate = dayjs(userDetails.dateOfBirth).utc(true);
+        setValue(dateOfBirthId, utcDate);
+      }
     }
   }, [getUserAccountDetails.data]);
 
@@ -334,7 +340,7 @@ const AccountPersonalInformation = ({
       </Stack>
     );
   };
-  const dobField = () => {
+  const dateOfBirthField = () => {
     const dateFormat: string = "DD/MM/YYYY";
 
     return (
@@ -353,6 +359,12 @@ const AccountPersonalInformation = ({
                 format={dateFormat}
                 sx={{ width: "100%" }}
                 value={dateOfBirth}
+                onChange={(date: Dayjs | null) => {
+                  const utcDate = date
+                    ? dayjs(date).utc(true).startOf("day")
+                    : null;
+                  field.onChange(utcDate);
+                }}
               />
             </LocalizationProvider>
           )}
@@ -389,12 +401,15 @@ const AccountPersonalInformation = ({
     const saveButton = () => {
       const handleOnClick = async () => {
         const data = {
+          email,
           firstName,
           lastName,
-          email,
           address1,
           address2,
-          dateOfBirth,
+          // this is to ensure that the MongoDB stores the date of birth as UTC, and this component will also display the date of birth as UTC
+          dateOfBirth: dateOfBirth
+            ? dateOfBirth.utc(true).startOf("day").toISOString()
+            : undefined,
         };
         await updateUserAccount.mutateAsync(data);
       };
@@ -471,7 +486,7 @@ const AccountPersonalInformation = ({
         <Grid item xs={columnSx}>
           <Stack spacing={fieldSpacing}>
             {addressSection()}
-            {dobField()}
+            {dateOfBirthField()}
             {session?.provider === AuthService.Google ? <></> : googleButton()}
             {actionButtons()}
           </Stack>
