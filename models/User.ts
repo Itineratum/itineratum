@@ -53,6 +53,8 @@ export const initialUser = (
     profile_picture,
     auth_service,
     account_created: Date.now(),
+    language: "en",
+    currency: "sgd",
   };
 };
 
