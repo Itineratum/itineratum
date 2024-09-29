@@ -17,7 +17,7 @@ const CurrencySwitcher = () => {
     {
       email,
     },
-    { enabled: !!email, retry: false }
+    { enabled: !!email, retry: false },
   );
 
   const handleCurrencyChange = async (newCurrency: string) => {

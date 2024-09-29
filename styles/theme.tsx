@@ -88,7 +88,8 @@ const theme = createTheme({
     },
   },
   components: {
-    MuiAlert: { // Alert
+    MuiAlert: {
+      // Alert
       styleOverrides: {
         message: {
           fontSize: 15,
@@ -98,29 +99,30 @@ const theme = createTheme({
     MuiBreadcrumbs: {
       styleOverrides: {
         root: {
-          color: colorsConst.breadcrumbNavigator.selected
-        }
-      }
+          color: colorsConst.breadcrumbNavigator.selected,
+        },
+      },
     },
     MuiTextField: {
       styleOverrides: {
         root: {
           backgroundColor: colorsConst.components.textField.backgroundColor,
           borderRadius: 10,
-        }
-      }
+        },
+      },
     },
     MuiFilledInput: {
       styleOverrides: {
         root: {
           borderRadius: 10,
           "&:before, &:after": {
-            borderBottom: "none"
-          }
-        }
-      }
+            borderBottom: "none",
+          },
+        },
+      },
     },
-    MuiInputBase: { // TextField input text
+    MuiInputBase: {
+      // TextField input text
       styleOverrides: {
         input: {
           fontSize: 16,

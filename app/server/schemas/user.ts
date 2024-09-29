@@ -83,7 +83,7 @@ export const updateUserAccount = {
     lastName: z.string().optional(),
     address1: z.string().optional(),
     address2: z.string().optional(),
-    dateOfBirth: z.string().optional()
+    dateOfBirth: z.string().optional(),
   }),
   output: z.void(),
 };
@@ -91,6 +91,15 @@ export const updateUserAccount = {
 export const deleteUserAccount = {
   input: z.object({
     email: z.string(),
+  }),
+  output: z.void(),
+};
+
+export const changeUserPassword = {
+  input: z.object({
+    email: z.string(),
+    currentPassword: z.string(),
+    newPassword: z.string(),
   }),
   output: z.void(),
 };

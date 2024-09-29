@@ -11,7 +11,7 @@ import { useState } from "react";
 const LoginPage = () => {
   const t = useTranslations("account");
   const [accountSetting, setAccountSetting] = useState<AccountSetting>(
-    AccountSetting.base
+    AccountSetting.base,
   );
 
   const pageTransitionDuration: number = 500;

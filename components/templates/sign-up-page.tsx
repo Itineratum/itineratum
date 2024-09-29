@@ -13,22 +13,14 @@ const SignUpPage = () => {
   const signUpText = () => {
     return (
       <Box marginBottom={5}>
-        <Text
-          text={t("signUp")}
-          variant={TypographyVariant.h5}
-          bold={true}
-        />
+        <Text text={t("signUp")} variant={TypographyVariant.h5} bold={true} />
       </Box>
     );
   };
   const welcomeTravellerText = () => {
     return (
       <Box sx={{ textAlign: "left", width: "100%" }}>
-        <Text
-          text={t("welcome")}
-          variant={TypographyVariant.h5}
-          bold={true}
-        />
+        <Text text={t("welcome")} variant={TypographyVariant.h5} bold={true} />
       </Box>
     );
   };

@@ -10,7 +10,7 @@ export enum TypographyVariant {
   body1 = "body1",
   body2 = "body2",
   button = "button",
-  footer = "overline"
+  footer = "overline",
 }
 
 export enum TypographyTextDecoration {

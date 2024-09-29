@@ -32,11 +32,7 @@ export const OrDivider = ({ formMargin }: { formMargin: number }) => {
           fontWeight: "bold",
         }}
       >
-        <Text
-          text={t("or")}
-          variant={TypographyVariant.h6}
-          bold={true}
-        />
+        <Text text={t("or")} variant={TypographyVariant.h6} bold={true} />
       </Box>
       <Divider
         sx={{

@@ -22,11 +22,7 @@ const SignupLoginButtons = () => {
             color: buttonTextColor,
           }}
         >
-          <Text
-            text={t("login")}
-            variant={typographyVariant}
-            bold={true}
-          />
+          <Text text={t("login")} variant={typographyVariant} bold={true} />
         </Button>
       </Link>
     );
@@ -41,11 +37,7 @@ const SignupLoginButtons = () => {
             color: buttonTextColor,
           }}
         >
-          <Text
-            text={t("signUp")}
-            variant={typographyVariant}
-            bold={true}
-          />
+          <Text text={t("signUp")} variant={typographyVariant} bold={true} />
         </Button>
       </Link>
     );

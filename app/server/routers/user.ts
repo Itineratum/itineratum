@@ -6,13 +6,16 @@ import {
   retrieveCurrencyLanguage,
   retrieveUserDetails,
   updateUser,
+  verifyUserPassword,
 } from "@/services/database/users";
 import {
   generateAndSaveVerificationCode,
   verifyVerificationCode,
 } from "@/services/database/verificationCodes";
 import { TRPCError } from "@trpc/server";
+import bcrypt from "bcrypt";
 import {
+  changeUserPassword,
   deleteUserAccount,
   generateVerificationCodeSchema,
   getUserAccountDetails,
@@ -62,7 +65,7 @@ export const userRouter = router({
       } = data.input;
       const verifyVerificationCodeRes = await verifyVerificationCode(
         email,
-        verificationCode
+        verificationCode,
       );
 
       if (!verifyVerificationCodeRes.success) {
@@ -77,7 +80,7 @@ export const userRouter = router({
         countryCode,
         number,
         email,
-        password
+        password,
       );
 
       if (!signUpRes.success) {
@@ -217,6 +220,40 @@ export const userRouter = router({
         throw new TRPCError({
           code: "INTERNAL_SERVER_ERROR",
           message: deleteUserRes.error,
+        });
+      }
+    }),
+  changeUserPassword: publicProcedure
+    .input(changeUserPassword.input)
+    .output(changeUserPassword.output)
+    .mutation(async (data) => {
+      const { email, currentPassword, newPassword } = data.input;
+      const verifyUserPasswordRes = await verifyUserPassword(
+        email,
+        currentPassword,
+      );
+
+      // verify that the user has entered the correct current password
+      if (!verifyUserPasswordRes.success) {
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message: verifyUserPasswordRes.error,
+        });
+      }
+
+      // if the user has entered the correct current password, proceed to update their password
+      const hashedNewPassword = await bcrypt.hash(newPassword, 12);
+      const update = {
+        $set: {
+          password: hashedNewPassword,
+        },
+      };
+      const updateUserRes = await updateUser(email, update);
+
+      if (!updateUserRes.success) {
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message: updateUserRes.error,
         });
       }
     }),

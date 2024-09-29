@@ -109,7 +109,7 @@ const SignUpForm = () => {
 
       const handleCountryChange = async (
         event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
-        field: ControllerRenderProps<SignUpFormData, "country">
+        field: ControllerRenderProps<SignUpFormData, "country">,
       ) => {
         field.onChange(event);
         const inputCountry = event.target.value;
@@ -207,14 +207,14 @@ const SignUpForm = () => {
         const numberValidation = (numberInput: string) => {
           const isValid = isValidPhoneNumber(
             numberInput,
-            country as CountryCode
+            country as CountryCode,
           );
           return isValid ? true : t("numberError");
         };
 
         const handleNumberChange = async (
           event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
-          field: ControllerRenderProps<SignUpFormData, "number">
+          field: ControllerRenderProps<SignUpFormData, "number">,
         ) => {
           field.onChange(event.target.value);
           await trigger(numberId);
@@ -319,7 +319,7 @@ const SignUpForm = () => {
 
       const handleEmailChange = async (
         event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
-        field: ControllerRenderProps<SignUpFormData, "email">
+        field: ControllerRenderProps<SignUpFormData, "email">,
       ) => {
         field.onChange(event.target.value);
         await trigger(emailId);
@@ -368,7 +368,7 @@ const SignUpForm = () => {
 
       const handlePasswordChange = async (
         event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
-        field: ControllerRenderProps<SignUpFormData, "password">
+        field: ControllerRenderProps<SignUpFormData, "password">,
       ) => {
         field.onChange(event.target.value);
         await trigger(passwordId);
@@ -442,7 +442,7 @@ const SignUpForm = () => {
 
       const handleReEnterPasswordChange = async (
         event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
-        field: ControllerRenderProps<SignUpFormData, "reEnterPassword">
+        field: ControllerRenderProps<SignUpFormData, "reEnterPassword">,
       ) => {
         field.onChange(event.target.value);
         await trigger(reEnterPasswordId);
@@ -531,7 +531,7 @@ const SignUpForm = () => {
       const buttonWidth: string = "30%";
       const loadingAnimationSize: number = 24;
 
-      const handleClick = async () => {
+      const handleOnClick = async () => {
         const isEmailValid = await trigger(emailId);
         const isPasswordValid = await trigger(passwordId);
         const isReEnterPasswordValid = await trigger(reEnterPasswordId);
@@ -567,7 +567,7 @@ const SignUpForm = () => {
           sx={{ my: formMargin, maxWidth: buttonWidth }}
           color="secondary"
           disabled={isSigningUp}
-          onClick={handleClick}
+          onClick={handleOnClick}
         >
           {isSigningUp ? (
             <CircularProgress size={loadingAnimationSize} />
@@ -611,7 +611,7 @@ const SignUpForm = () => {
           defaultValue=""
           rules={{
             required: t(
-              "emailVerification.emailVerificationForm.verificationCodeError"
+              "emailVerification.emailVerificationForm.verificationCodeError",
             ),
           }}
           render={({ field }) => (
@@ -622,7 +622,7 @@ const SignUpForm = () => {
               variant="filled"
               margin={formFieldMargin}
               label={t(
-                "emailVerification.emailVerificationForm.verificationCode"
+                "emailVerification.emailVerificationForm.verificationCode",
               )}
               value={verificationCode}
               InputLabelProps={{

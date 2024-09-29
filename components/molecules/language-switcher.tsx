@@ -23,7 +23,7 @@ const LanguageSwitcher = ({ locale }: { locale: string }) => {
     {
       email,
     },
-    { enabled: !!email, retry: false }
+    { enabled: !!email, retry: false },
   );
 
   const handleLanguageChange = async (newLanguage: string) => {

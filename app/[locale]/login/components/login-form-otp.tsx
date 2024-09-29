@@ -84,12 +84,12 @@ export const LogInFormOtp = ({
 
       const handleCountryCodeChange = async (
         event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
-        field: ControllerRenderProps<LogInFormOtpData, "countryCode">
+        field: ControllerRenderProps<LogInFormOtpData, "countryCode">,
       ) => {
         field.onChange(event);
         const inputCountryCode = event.target.value;
         const countryIso2 = Object.values(countryInfoList).find(
-          (country) => country.callingCode === inputCountryCode
+          (country) => country.callingCode === inputCountryCode,
         )?.iso2;
         setValue(countryId, countryIso2!);
 
@@ -152,7 +152,7 @@ export const LogInFormOtp = ({
 
       const handleNumberChange = async (
         event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
-        field: ControllerRenderProps<LogInFormOtpData, "number">
+        field: ControllerRenderProps<LogInFormOtpData, "number">,
       ) => {
         field.onChange(event.target.value);
         await trigger(numberId);
