@@ -39,9 +39,9 @@ const callbacks = {
     session
   }: {
     token: JWTToken;
-    trigger: string;
+    trigger?: string | undefined;
     account?: Account | null;
-    session: any;
+    session?: any;
   }) {
     if (account) {
       token.provider = account.provider;

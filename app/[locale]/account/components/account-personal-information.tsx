@@ -2,9 +2,11 @@
 
 import { trpc } from "@/app/_trpc/client";
 import Text from "@/components/atoms/text";
+import Alert from "@/components/molecules/alert";
 import { ContinueWithGoogleButton } from "@/components/molecules/continue-with-google-button";
 import UserAvatar from "@/components/molecules/user-avatar";
 import { AccountSetting } from "@/constants/enums/accountSetting";
+import { AlertType } from "@/constants/enums/alertType";
 import { AuthService } from "@/constants/enums/authService";
 import { TypographyVariant } from "@/constants/enums/theme";
 import colorsConst from "@/constants/pages/colors.json";
@@ -30,8 +32,6 @@ import { useTranslations } from "next-intl";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import DeleteAccountConfirmationDialog from "./delete-account-confirmation-dialog";
-import Alert from "@/components/molecules/alert";
-import { AlertType } from "@/constants/enums/alertType";
 
 dayjs.extend(utc);
 
@@ -48,9 +48,7 @@ const AccountPersonalInformation = ({
     control,
     formState: { errors },
     setValue,
-    getValues,
     watch,
-    trigger,
   } = useForm<AccountPersonalInformationData>();
 
   const [showAlert, setShowAlert] = useState<boolean>(false);
@@ -60,7 +58,6 @@ const AccountPersonalInformation = ({
   const [showConfirmDeleteDialog, setShowConformDeleteDialog] =
     useState<boolean>(false);
 
-  const name: string | undefined | null = session?.user?.name;
   const image: string | undefined | null = session?.user?.image;
 
   const columnSpacing: number = 7;
@@ -493,7 +490,7 @@ const AccountPersonalInformation = ({
     };
 
     return (
-      <Stack direction={"row"} spacing={fieldSpacing}>
+      <Stack direction={"row"} spacing={fieldSpacing} useFlexGap>
         {saveButton()}
         {deleteAccountButton()}
       </Stack>
