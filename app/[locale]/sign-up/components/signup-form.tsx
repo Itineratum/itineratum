@@ -4,16 +4,16 @@ import { trpc } from "@/app/_trpc/client";
 import { OrDivider } from "@/components/atoms/or-divider";
 import { PrivacyPolicyLink } from "@/components/atoms/privacy-policy-link";
 import Text from "@/components/atoms/text";
+import Alert from "@/components/molecules/alert";
 import { ContinueWithGoogleButton } from "@/components/molecules/continue-with-google-button";
+import { AlertType } from "@/constants/enums/alertType";
 import { countryInfoList } from "@/constants/enums/country";
 import { TypographyVariant } from "@/constants/enums/theme";
-import colorsConst from "@/constants/pages/colors.json";
 import { SignUpFormData } from "@/constants/types/signUpFormData";
 import { isValidEmail, isValidPassword } from "@/utils/signUpFormValidation";
 import VisibilityOffOutlinedIcon from "@mui/icons-material/VisibilityOffOutlined";
 import VisibilityOutlinedIcon from "@mui/icons-material/VisibilityOutlined";
 import {
-  Alert,
   Box,
   Button,
   CircularProgress,
@@ -33,7 +33,7 @@ import { ChangeEvent, useState } from "react";
 import { Controller, ControllerRenderProps, useForm } from "react-hook-form";
 
 const SignUpForm = () => {
-  const t = useTranslations();
+  const t = useTranslations("signUp.signUpForm");
   const router = useRouter();
   const {
     control,
@@ -47,27 +47,12 @@ const SignUpForm = () => {
   const [stepNumber, setStepNumber] = useState<number>(1);
   const [showAlert, setShowAlert] = useState<boolean>(false);
   const [alertText, setAlertText] = useState<string>("");
-  const [alertType, setAlertType] = useState<"info" | "error">("info");
+  const [alertType, setAlertType] = useState<AlertType>(AlertType.info);
   const [isSigningUp, setIsSigningUp] = useState<boolean>(false);
   const [isVerifying, setIsVerifying] = useState<boolean>(false);
 
-  const color = colorsConst.components.textField;
   const formMargin: number = 2;
   const formFieldMargin: "dense" | "normal" | "none" | undefined = "normal";
-  const formFieldBorderRadius: number = 2;
-  const formFieldStyling: Object = {
-    backgroundColor: color.backgroundColor,
-    borderRadius: formFieldBorderRadius,
-    "& .MuiFilledInput-root": {
-      borderRadius: formFieldBorderRadius,
-      "&:before, &:after": {
-        borderBottom: "none",
-      },
-    },
-    "& .MuiInputBase-input": {
-      borderRadius: formFieldBorderRadius,
-    },
-  };
   const pageTransitionDuration: number = 500;
 
   const countryId = "country";
@@ -90,10 +75,10 @@ const SignUpForm = () => {
     trpc.user.generateVerificationCode.useMutation({
       onSuccess: () => {
         setStepNumber(3);
-        setAlertType("info");
-        setAlertText(t("signUp.emailVerification.codeSentToEmail"));
+        setAlertType(AlertType.info);
+        setAlertText(t("emailVerification.codeSentToEmail"));
         setShowAlert(true);
-        // setIsSigningUp(false);
+        setIsSigningUp(false);
       },
     });
   const verifyVerificationCode = trpc.user.verifyVerificationCode.useMutation({
@@ -109,12 +94,12 @@ const SignUpForm = () => {
         setShowAlert(false);
         router.push("/"); // redirect to home page
       } else {
-        setAlertText(t("signUp.signUpForm.signUpErrorAlert"));
-        setAlertType("error");
+        setAlertText(t("signUpErrorAlert"));
+        setAlertType(AlertType.error);
         setShowAlert(true);
       }
       setIsSigningUp(false);
-      // setIsVerifying(false);
+      setIsVerifying(false);
     },
   });
 
@@ -147,7 +132,7 @@ const SignUpForm = () => {
           name={countryId}
           control={control}
           defaultValue=""
-          rules={{ required: t("signUp.signUpForm.countryError") }}
+          rules={{ required: t("countryError") }}
           render={({ field }) => (
             <TextField
               {...field}
@@ -155,9 +140,8 @@ const SignUpForm = () => {
               required
               fullWidth
               variant="filled"
-              sx={formFieldStyling}
               margin={formFieldMargin}
-              label={t("signUp.signUpForm.country")}
+              label={t("country")}
               value={country}
               error={!!errors.country}
               helperText={
@@ -205,9 +189,8 @@ const SignUpForm = () => {
                 required
                 fullWidth
                 variant="filled"
-                sx={formFieldStyling}
                 margin={formFieldMargin}
-                label={t("signUp.signUpForm.countryCode")}
+                label={t("countryCode")}
                 value={countryCode}
                 InputProps={{ readOnly: true }}
                 InputLabelProps={{
@@ -226,7 +209,7 @@ const SignUpForm = () => {
             numberInput,
             country as CountryCode,
           );
-          return isValid ? true : t("signUp.signUpForm.numberError");
+          return isValid ? true : t("numberError");
         };
 
         const handleNumberChange = async (
@@ -245,7 +228,7 @@ const SignUpForm = () => {
             defaultValue=""
             rules={{
               validate: numberValidation,
-              required: t("signUp.signUpForm.numberError"),
+              required: t("numberError"),
             }}
             render={({ field }) => (
               <TextField
@@ -253,9 +236,8 @@ const SignUpForm = () => {
                 required
                 fullWidth
                 variant="filled"
-                sx={formFieldStyling}
                 margin={formFieldMargin}
-                label={t("signUp.signUpForm.number")}
+                label={t("number")}
                 value={number}
                 InputLabelProps={{
                   sx: { color: "text.primary" },
@@ -304,8 +286,8 @@ const SignUpForm = () => {
           onClick={handleClick}
         >
           <Text
-            text={t("signUp.signUpForm.next")}
-            variant={TypographyVariant.h4}
+            text={t("next")}
+            variant={TypographyVariant.button}
             bold={false}
           />
         </Button>
@@ -332,7 +314,7 @@ const SignUpForm = () => {
     const emailField = () => {
       const emailValidation = (emailInput: string) => {
         const isValid = isValidEmail(emailInput);
-        return isValid ? true : t("signUp.signUpForm.emailError");
+        return isValid ? true : t("emailError");
       };
 
       const handleEmailChange = async (
@@ -351,7 +333,7 @@ const SignUpForm = () => {
           defaultValue=""
           rules={{
             validate: emailValidation,
-            required: t("signUp.signUpForm.emailError"),
+            required: t("emailError"),
           }}
           render={({ field }) => (
             <TextField
@@ -359,9 +341,8 @@ const SignUpForm = () => {
               required
               fullWidth
               variant="filled"
-              sx={formFieldStyling}
               margin={formFieldMargin}
-              label={t("signUp.signUpForm.email")}
+              label={t("email")}
               value={email}
               InputLabelProps={{
                 sx: { color: "text.primary" },
@@ -382,7 +363,7 @@ const SignUpForm = () => {
 
       const passwordValidation = (passwordInput: string) => {
         const isValid = isValidPassword(passwordInput);
-        return isValid ? true : t("signUp.signUpForm.passwordError");
+        return isValid ? true : t("passwordError");
       };
 
       const handlePasswordChange = async (
@@ -403,7 +384,7 @@ const SignUpForm = () => {
           defaultValue=""
           rules={{
             validate: passwordValidation,
-            required: t("signUp.signUpForm.passwordError"),
+            required: t("passwordError"),
           }}
           render={({ field }) => (
             <TextField
@@ -412,9 +393,8 @@ const SignUpForm = () => {
               required
               fullWidth
               variant="filled"
-              sx={formFieldStyling}
               margin={formFieldMargin}
-              label={t("signUp.signUpForm.password")}
+              label={t("password")}
               value={password}
               InputLabelProps={{
                 sx: { color: "text.primary" },
@@ -457,7 +437,7 @@ const SignUpForm = () => {
         const isValid =
           reEnterPasswordInput === password &&
           isValidPassword(reEnterPasswordInput);
-        return isValid ? true : t("signUp.signUpForm.reEnterPasswordError");
+        return isValid ? true : t("reEnterPasswordError");
       };
 
       const handleReEnterPasswordChange = async (
@@ -476,7 +456,7 @@ const SignUpForm = () => {
           defaultValue=""
           rules={{
             validate: reEnterPasswordValidation,
-            required: t("signUp.signUpForm.reEnterPasswordError"),
+            required: t("reEnterPasswordError"),
           }}
           disabled={!isValidPassword(password)}
           render={({ field }) => (
@@ -486,9 +466,8 @@ const SignUpForm = () => {
               required
               fullWidth
               variant="filled"
-              sx={formFieldStyling}
               margin={formFieldMargin}
-              label={t("signUp.signUpForm.reEnterPassword")}
+              label={t("reEnterPassword")}
               value={reEnterPassword}
               InputLabelProps={{
                 sx: { color: "text.primary" },
@@ -540,8 +519,8 @@ const SignUpForm = () => {
           onClick={handleClick}
         >
           <Text
-            text={t("signUp.signUpForm.back")}
-            variant={TypographyVariant.h4}
+            text={t("back")}
+            variant={TypographyVariant.button}
             bold={false}
           />
         </Button>
@@ -552,7 +531,7 @@ const SignUpForm = () => {
       const buttonWidth: string = "30%";
       const loadingAnimationSize: number = 24;
 
-      const handleClick = async () => {
+      const handleOnClick = async () => {
         const isEmailValid = await trigger(emailId);
         const isPasswordValid = await trigger(passwordId);
         const isReEnterPasswordValid = await trigger(reEnterPasswordId);
@@ -571,10 +550,8 @@ const SignUpForm = () => {
           await generateVerificationCode.mutateAsync(data);
         } catch (error) {
           if (error instanceof TRPCClientError) {
-            setAlertText(
-              error.message ?? t("signUp.signUpForm.signUpErrorAlert"),
-            );
-            setAlertType("error");
+            setAlertText(error.message ?? t("signUpErrorAlert"));
+            setAlertType(AlertType.error);
             setShowAlert(true);
           }
         } finally {
@@ -590,14 +567,14 @@ const SignUpForm = () => {
           sx={{ my: formMargin, maxWidth: buttonWidth }}
           color="secondary"
           disabled={isSigningUp}
-          onClick={handleClick}
+          onClick={handleOnClick}
         >
           {isSigningUp ? (
             <CircularProgress size={loadingAnimationSize} />
           ) : (
             <Text
-              text={t("signUp.signUpForm.signUp")}
-              variant={TypographyVariant.h4}
+              text={t("signUp")}
+              variant={TypographyVariant.button}
               bold={false}
             />
           )}
@@ -634,7 +611,7 @@ const SignUpForm = () => {
           defaultValue=""
           rules={{
             required: t(
-              "signUp.emailVerification.emailVerificationForm.verificationCodeError",
+              "emailVerification.emailVerificationForm.verificationCodeError",
             ),
           }}
           render={({ field }) => (
@@ -643,10 +620,9 @@ const SignUpForm = () => {
               required
               fullWidth
               variant="filled"
-              sx={formFieldStyling}
               margin={formFieldMargin}
               label={t(
-                "signUp.emailVerification.emailVerificationForm.verificationCode",
+                "emailVerification.emailVerificationForm.verificationCode",
               )}
               value={verificationCode}
               InputLabelProps={{
@@ -689,10 +665,8 @@ const SignUpForm = () => {
           await verifyVerificationCode.mutateAsync(data);
         } catch (error) {
           if (error instanceof TRPCClientError) {
-            setAlertText(
-              error.message ?? t("signUp.signUpForm.signUpErrorAlert"),
-            );
-            setAlertType("error");
+            setAlertText(error.message ?? t("signUpErrorAlert"));
+            setAlertType(AlertType.error);
             setShowAlert(true);
             setIsSigningUp(false);
           }
@@ -715,8 +689,8 @@ const SignUpForm = () => {
             <CircularProgress size={loadingAnimationSize} />
           ) : (
             <Text
-              text={t("signUp.emailVerification.emailVerificationForm.verify")}
-              variant={TypographyVariant.h4}
+              text={t("emailVerification.emailVerificationForm.verify")}
+              variant={TypographyVariant.button}
               bold={false}
             />
           )}
@@ -745,9 +719,21 @@ const SignUpForm = () => {
       <Collapse in={stepNumber === 3} timeout={pageTransitionDuration}>
         {step3()}
       </Collapse>
-      {showAlert ? <Alert severity={alertType}>{alertText}</Alert> : <></>}
+      <Alert
+        showAlert={showAlert}
+        setShowAlert={setShowAlert}
+        alertType={alertType}
+        alertText={alertText}
+      />
       <OrDivider formMargin={formMargin} />
-      <ContinueWithGoogleButton formMargin={formMargin} />
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "center",
+        }}
+      >
+        <ContinueWithGoogleButton formMargin={formMargin} />
+      </Box>
     </Box>
   );
 };

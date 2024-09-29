@@ -13,7 +13,7 @@ import { OrDivider } from "../atoms/or-divider";
 import { ContinueWithGoogleButton } from "../molecules/continue-with-google-button";
 
 const LoginPage = () => {
-  const t = useTranslations();
+  const t = useTranslations("login");
   const [isLoginUsingOtp, setIsLoginUsingOtp] = useState<boolean>(false);
 
   const pageTransitionDuration: number = 500;
@@ -22,11 +22,7 @@ const LoginPage = () => {
   const loginText = () => {
     return (
       <Box marginBottom={5}>
-        <Text
-          text={t("login.login")}
-          variant={TypographyVariant.h3}
-          bold={true}
-        />
+        <Text text={t("login")} variant={TypographyVariant.h5} bold={true} />
       </Box>
     );
   };
@@ -34,11 +30,7 @@ const LoginPage = () => {
   const welcomeTravellerText = () => {
     return (
       <Box sx={{ textAlign: "left", width: "100%" }}>
-        <Text
-          text={t("login.welcome")}
-          variant={TypographyVariant.h3}
-          bold={true}
-        />
+        <Text text={t("welcome")} variant={TypographyVariant.h5} bold={true} />
       </Box>
     );
   };
@@ -63,7 +55,14 @@ const LoginPage = () => {
         <LogInFormEmail setIsLoginUsingOtp={setIsLoginUsingOtp} />
       </Collapse>
       <OrDivider formMargin={formMargin} />
-      <ContinueWithGoogleButton formMargin={formMargin} />
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "center",
+        }}
+      >
+        <ContinueWithGoogleButton formMargin={formMargin} />
+      </Box>
     </Container>
   );
 };

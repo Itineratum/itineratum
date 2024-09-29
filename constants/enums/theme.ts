@@ -4,6 +4,13 @@ export enum TypographyVariant {
   h3 = "h3",
   h4 = "h4",
   h5 = "h5",
+  h6 = "h6",
+  subtitle1 = "subtitle1",
+  subtitle2 = "subtitle2",
+  body1 = "body1",
+  body2 = "body2",
+  button = "button",
+  footer = "overline",
 }
 
 export enum TypographyTextDecoration {

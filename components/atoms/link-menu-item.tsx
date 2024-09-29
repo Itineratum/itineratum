@@ -29,7 +29,7 @@ const LinkMenuItem = ({
     <MenuItem key={item} onClick={handleClick}>
       <Link href={buildLocaleEndpoint(locale, item)} underline="none">
         <Box sx={{ color: "text.primary" }}>
-          <Text text={text} variant={TypographyVariant.h4} bold={false} />
+          <Text text={text} variant={TypographyVariant.body1} bold={false} />
         </Box>
       </Link>
     </MenuItem>

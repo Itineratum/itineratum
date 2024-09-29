@@ -1,5 +1,9 @@
 import JWTToken from "@/constants/types/jwtToken";
-import { credentialsLogIn, signIn } from "@/services/database/users";
+import {
+  credentialsLogIn,
+  googleLogIn,
+  signIn,
+} from "@/services/database/users";
 import NextAuth, { Account, Session, User } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import Google from "next-auth/providers/google";
@@ -8,6 +12,18 @@ const providers = [
   Google({
     clientId: process.env.GOOGLE_CLIENT_ID ?? "",
     clientSecret: process.env.GOOGLE_CLIENT_SECRET ?? "",
+    async profile(profile) {
+      const email = profile.email;
+      const res = await googleLogIn(email);
+      const isExistingUser = res.isExistingUser;
+      const user = {
+        id: isExistingUser ? res.id : profile.sub,
+        email: profile.email,
+        name: isExistingUser ? res.name : profile.name,
+        image: profile.picture,
+      } as User;
+      return user;
+    },
   }),
   CredentialsProvider({
     credentials: {
@@ -23,6 +39,7 @@ const providers = [
         const user = {
           id: res.data.id,
           email: res.data.email,
+          name: res.data.firstName,
         } as User;
         return user;
       } else {
@@ -32,16 +49,36 @@ const providers = [
   }),
 ];
 const callbacks = {
-  async jwt({ token, account }: { token: JWTToken; account?: Account | null }) {
-    // store the provider information in the token
+  async jwt({
+    token,
+    trigger,
+    account,
+    session,
+    user,
+  }: {
+    token: JWTToken;
+    trigger?: string | undefined;
+    account?: Account | null;
+    session?: any;
+    user?: User | undefined;
+  }) {
     if (account) {
       token.provider = account.provider;
     }
+
+    if (trigger === "update" && session?.name) {
+      token.name = session.name;
+    }
+
+    if (user) {
+      token.name = user.name;
+    }
+
     return token;
   },
   async session({ session, token }: { session: Session; token: JWTToken }) {
-    // include the provider information in the session
     session.provider = token.provider!;
+    session.user.name = token.name;
     return session;
   },
   signIn,

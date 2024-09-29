@@ -9,8 +9,9 @@ import Text from "../atoms/text";
 const SignupLoginButtons = () => {
   const buttonMargin: number = 1;
   const buttonTextColor: string = "text.primary";
-  const t = useTranslations();
+  const t = useTranslations("navbar.account");
   const locale = useLocale();
+  const typographyVariant: TypographyVariant = TypographyVariant.h6;
 
   const LoginButton = () => {
     return (
@@ -21,11 +22,7 @@ const SignupLoginButtons = () => {
             color: buttonTextColor,
           }}
         >
-          <Text
-            text={t("navbar.account.login")}
-            variant={TypographyVariant.h4}
-            bold={true}
-          />
+          <Text text={t("login")} variant={typographyVariant} bold={true} />
         </Button>
       </Link>
     );
@@ -40,11 +37,7 @@ const SignupLoginButtons = () => {
             color: buttonTextColor,
           }}
         >
-          <Text
-            text={t("navbar.account.signUp")}
-            variant={TypographyVariant.h4}
-            bold={true}
-          />
+          <Text text={t("signUp")} variant={typographyVariant} bold={true} />
         </Button>
       </Link>
     );

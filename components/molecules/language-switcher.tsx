@@ -1,8 +1,11 @@
 "use client";
 
+import { trpc } from "@/app/_trpc/client";
 import { Language } from "@/constants/enums/language";
 import { usePathname, useRouter } from "@/navigation";
 import LanguageOutlinedIcon from "@mui/icons-material/LanguageOutlined";
+import { useSession } from "next-auth/react";
+import { useEffect, useState } from "react";
 import ButtonMenu from "./button-menu";
 
 const LanguageSwitcher = ({ locale }: { locale: string }) => {
@@ -10,15 +13,46 @@ const LanguageSwitcher = ({ locale }: { locale: string }) => {
   const languages = Object(Language);
   const router = useRouter();
   const pathname = usePathname();
+  const { data: session } = useSession();
+  const email = session?.user.email!;
 
-  const handleLanguageChange = (newLanguage: string) => {
+  const [language, setLanguage] = useState<string>(locale.toUpperCase());
+
+  const switchLangauge = trpc.user.switchLanguage.useMutation();
+  const getUserCurrencyLanguage = trpc.user.getUserCurrencyLanguage.useQuery(
+    {
+      email,
+    },
+    { enabled: !!email, retry: false },
+  );
+
+  const handleLanguageChange = async (newLanguage: string) => {
+    if (session?.user) {
+      const data = { email, language: newLanguage };
+
+      try {
+        await switchLangauge.mutateAsync(data);
+      } catch (error) {
+        console.error(error);
+      }
+    }
+
     router.push(pathname, { locale: newLanguage });
   };
+
+  useEffect(() => {
+    const userLanguage = getUserCurrencyLanguage.data?.language;
+
+    if (userLanguage) {
+      setLanguage(userLanguage.toUpperCase());
+      router.push(pathname, { locale: userLanguage });
+    }
+  }, [getUserCurrencyLanguage.data?.language]);
 
   return (
     <ButtonMenu
       id={id}
-      text={locale.toUpperCase()}
+      text={language}
       icon={<LanguageOutlinedIcon />}
       menuItems={languages}
       useLink={false}

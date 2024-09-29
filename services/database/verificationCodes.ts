@@ -19,7 +19,7 @@ export const generateAndSaveVerificationCode = async (email: string) => {
       };
     }
 
-    const isExistingUser = await User.findOne({ email });
+    const isExistingUser = await User.findOne({ email, is_deleted: false });
 
     if (isExistingUser) {
       return {

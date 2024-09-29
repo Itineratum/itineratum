@@ -1,6 +1,7 @@
 "use client";
 
 import { TypographyVariant } from "@/constants/enums/theme";
+import colorsConst from "@/constants/pages/colors.json";
 import endpointsConst from "@/constants/pages/endpoints.json";
 import { buildLocaleEndpoint } from "@/utils/buildLocaleEndpoint";
 import FavoriteBorderOutlinedIcon from "@mui/icons-material/FavoriteBorderOutlined";
@@ -18,21 +19,20 @@ import LanguageSwitcher from "../molecules/language-switcher";
 import NavbarItem from "../molecules/navbar-item";
 import ProfileIcon from "../molecules/profile-icon";
 import SignupLoginButtons from "../molecules/signup-login-buttons";
-import colorsConst from "@/constants/pages/colors.json";
 
 const Navbar = () => {
   const navBarWidth: string = "90%";
   const { data: session } = useSession();
-  const t = useTranslations();
+  const t = useTranslations("navbar");
   const locale = useLocale();
 
   const savedTrips = () => {
     return (
       <NavbarItem
-        name={t("navbar.savedTrips")}
+        name={t("savedTrips")}
         linkToPage={buildLocaleEndpoint(
           locale,
-          endpointsConst.savedTrips.endpoint
+          endpointsConst.savedTrips.endpoint,
         )}
         icon={<FavoriteBorderOutlinedIcon />}
       />
@@ -41,10 +41,10 @@ const Navbar = () => {
   const aboutUs = () => {
     return (
       <NavbarItem
-        name={t("navbar.aboutUs")}
+        name={t("aboutUs")}
         linkToPage={buildLocaleEndpoint(
           locale,
-          endpointsConst.aboutUs.endpoint
+          endpointsConst.aboutUs.endpoint,
         )}
         icon={<PeopleAltOutlinedIcon />}
       />
@@ -53,25 +53,27 @@ const Navbar = () => {
   const contactUs = () => {
     return (
       <NavbarItem
-        name={t("navbar.contactUs")}
+        name={t("contactUs")}
         linkToPage={buildLocaleEndpoint(
           locale,
-          endpointsConst.contactUs.endpoint
+          endpointsConst.contactUs.endpoint,
         )}
         icon={<PhoneInTalkOutlinedIcon />}
       />
     );
   };
   const dash = () => {
+    const dashSpacing: number = 0.3;
+
     return (
-      <Box sx={{ ml: 1 }}>
-        <Text text={"-"} variant={TypographyVariant.h4} bold={true} />
+      <Box sx={{ marginX: dashSpacing }}>
+        <Text text={"-"} variant={TypographyVariant.h6} bold={true} />
       </Box>
     );
   };
   const account = () => {
     return (
-      <Box sx={{ mx: 3 }}>
+      <Box sx={{ ml: 3 }}>
         {session?.user?.email ? <ProfileIcon /> : <SignupLoginButtons />}
       </Box>
     );
@@ -119,8 +121,8 @@ const Navbar = () => {
           {contactUs()}
         </Box>
         <Box sx={{ display: "flex", alignItems: "center" }}>
-          <LanguageSwitcher locale={locale} />
-          {dash()}
+          {/* <LanguageSwitcher locale={locale} />
+          {dash()} */}
           <CurrencySwitcher />
           {account()}
         </Box>

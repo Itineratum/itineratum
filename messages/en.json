@@ -1,14 +1,50 @@
 {
   "home": { "header": "It's time to travel with EASE." },
-  "account": { 
-    "personalInformation": "Personal information",
+  "account": {
+    "account": "Account",
+    "personalInformation": {
+      "account": "Account",
+      "personalInformation": "Personal Information",
+      "firstName": "First Name",
+      "firstNameError": "First name required!",
+      "lastName": "Last Name",
+      "changePasswordButton": "Change Password",
+      "changePassword": {
+        "changePassword": "Change Password",
+        "currentPassword": "Current Password",
+        "currentPasswordError": "Please enter your current password!",
+        "newPassword": "New Password",
+        "newPasswordError": "Invalid new password!\n\nYour password must be:\n- At least 8 characters in length\n- Contain at least 1 lower-case alphabet\n- Contain at least 1 upper-case alphabet\n- Contain at least 1 special character",
+        "reEnterNewPassword": "Re-enter New Password",
+        "reEnterNewPasswordError": "New passwords do not match!",
+        "update": "Update",
+        "cancel": "Cancel",
+        "samePasswordError": "The new password you typed in is the same as your current one!",
+        "passwordChangeSuccess": "Password changed successfully!"
+      },
+      "email": "Email",
+      "address1": "Address Line #1",
+      "address2": "Address Line #2",
+      "dob": "Date of Birth",
+      "google": "Google",
+      "connectGoogle": "Connect your Google Account",
+      "saveAccount": "Save",
+      "accountUpdated": "Your account has been updated!",
+      "accountUpdateError": "An error occured while updating your account! Please try again.",
+      "deleteAccount": "Delete your account",
+      "deleteAccountDialog": {
+        "title": "Delete your account?",
+        "content": "You will permanently delete your user account, and lose all your trips and saved information.",
+        "deleteButton": "Delete account",
+        "cancelButton": "Not now"
+      }
+    },
     "accessibility": "Accessibility",
     "notifications": "Notifications",
-    "termsAndConditions": "T & C",
+    "termsAndConditions": "T&C",
     "privacyPolicy": "Privacy Policy",
     "settings": "Settings",
-    "legal": "Legal",
-    "deleteAccount": "Delete your account"
+    "legal": "Legal"
   },
   "navbar": {
     "aboutUs": "About Us",
@@ -42,18 +78,18 @@
       "reEnterPasswordError": "Passwords do not match!",
       "signUp": "Sign Up",
       "signUpErrorAlert": "Error signing up! Please try again.",
-      "signInErrorAlert": "Error logging in! Please try again."
-    },
-    "emailVerification": {
-      "codeSentToEmail": "A 6-digit verification code was sent to your email, please check! The code is only valid for 15 minutes!",
-      "emailVerification": "Verify your email address",
-      "emailVerificationForm": {
-        "email": "Email",
-        "verificationCode": "Verification Code",
-        "emailError": "Please enter your email address!",
-        "verificationCodeError": "Please enter your verification code!",
-        "verify": "Verify",
-        "signingUp": "Email verification successful! Signing you up..."
+      "signInErrorAlert": "Error logging in! Please try again.",
+      "emailVerification": {
+        "codeSentToEmail": "A 6-digit verification code was sent to your email, please check! The code is only valid for 15 minutes!",
+        "emailVerification": "Verify your email address",
+        "emailVerificationForm": {
+          "email": "Email",
+          "verificationCode": "Verification Code",
+          "emailError": "Please enter your email address!",
+          "verificationCodeError": "Please enter your verification code!",
+          "verify": "Verify",
+          "signingUp": "Email verification successful! Signing you up..."
+        }
       }
     },
     "welcome": "Welcome Travellor!"

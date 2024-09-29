@@ -3,16 +3,16 @@
 import { trpc } from "@/app/_trpc/client";
 import { PrivacyPolicyLink } from "@/components/atoms/privacy-policy-link";
 import Text from "@/components/atoms/text";
+import Alert from "@/components/molecules/alert";
+import { AlertType } from "@/constants/enums/alertType";
 import {
   TypographyTextDecoration,
   TypographyVariant,
 } from "@/constants/enums/theme";
-import colorsConst from "@/constants/pages/colors.json";
 import { LogInFormEmailData } from "@/constants/types/logInFormData";
 import VisibilityOffOutlinedIcon from "@mui/icons-material/VisibilityOffOutlined";
 import VisibilityOutlinedIcon from "@mui/icons-material/VisibilityOutlined";
 import {
-  Alert,
   Box,
   Button,
   CircularProgress,
@@ -32,7 +32,7 @@ export const LogInFormEmail = ({
 }: {
   setIsLoginUsingOtp: Dispatch<SetStateAction<boolean>>;
 }) => {
-  const t = useTranslations();
+  const t = useTranslations("login.loginForm");
   const router = useRouter();
   const {
     control,
@@ -45,23 +45,8 @@ export const LogInFormEmail = ({
   const [alertText, setAlertText] = useState<string>("");
   const [isLoggingIn, setIsLoggingIn] = useState<boolean>(false);
 
-  const color = colorsConst.components.textField;
   const formMargin: number = 2;
   const formFieldMargin: "dense" | "normal" | "none" | undefined = "normal";
-  const formFieldBorderRadius: number = 2;
-  const formFieldStyling: Object = {
-    backgroundColor: color.backgroundColor,
-    borderRadius: formFieldBorderRadius,
-    "& .MuiFilledInput-root": {
-      borderRadius: formFieldBorderRadius,
-      "&:before, &:after": {
-        borderBottom: "none",
-      },
-    },
-    "& .MuiInputBase-input": {
-      borderRadius: formFieldBorderRadius,
-    },
-  };
 
   const emailId = "email";
   const passwordId = "password";
@@ -82,7 +67,7 @@ export const LogInFormEmail = ({
         setShowAlert(false);
         router.push("/");
       } else {
-        setAlertText(t("login.loginForm.loginErrorAlert"));
+        setAlertText(t("loginErrorAlert"));
         setShowAlert(true);
       }
 
@@ -99,7 +84,7 @@ export const LogInFormEmail = ({
       await loginViaEmail.mutateAsync(data);
     } catch (error) {
       if (error instanceof TRPCClientError) {
-        setAlertText(error.message ?? t("login.loginForm.loginErrorAlert"));
+        setAlertText(error.message ?? t("loginErrorAlert"));
         setShowAlert(true);
       }
     } finally {
@@ -115,7 +100,7 @@ export const LogInFormEmail = ({
         control={control}
         defaultValue=""
         rules={{
-          required: t("login.loginForm.emailError"),
+          required: t("emailError"),
         }}
         render={({ field }) => (
           <TextField
@@ -123,9 +108,8 @@ export const LogInFormEmail = ({
             required
             fullWidth
             variant="filled"
-            sx={formFieldStyling}
             margin={formFieldMargin}
-            label={t("login.loginForm.email")}
+            label={t("email")}
             value={email}
             InputLabelProps={{
               sx: { color: "text.primary" },
@@ -150,7 +134,7 @@ export const LogInFormEmail = ({
         control={control}
         defaultValue=""
         rules={{
-          required: t("login.loginForm.passwordError"),
+          required: t("passwordError"),
         }}
         render={({ field }) => (
           <TextField
@@ -159,9 +143,8 @@ export const LogInFormEmail = ({
             required
             fullWidth
             variant="filled"
-            sx={formFieldStyling}
             margin={formFieldMargin}
-            label={t("login.loginForm.password")}
+            label={t("password")}
             value={password}
             InputLabelProps={{
               sx: { color: "text.primary" },
@@ -200,8 +183,8 @@ export const LogInFormEmail = ({
         onClick={handleOnClick}
       >
         <Text
-          text={t("login.loginForm.loginUsingPhoneNumber")}
-          variant={TypographyVariant.h5}
+          text={t("loginUsingPhoneNumber")}
+          variant={TypographyVariant.subtitle2}
           bold={false}
           textDecoration={TypographyTextDecoration.underline}
         />
@@ -227,8 +210,8 @@ export const LogInFormEmail = ({
             <CircularProgress size={loadingAnimationSize} />
           ) : (
             <Text
-              text={t("login.loginForm.login")}
-              variant={TypographyVariant.h4}
+              text={t("login")}
+              variant={TypographyVariant.button}
               bold={false}
             />
           )}
@@ -255,7 +238,12 @@ export const LogInFormEmail = ({
         {loginUsingPhoneNumberButton()}
       </Box>
       {loginButton()}
-      {showAlert ? <Alert severity="error">{alertText}</Alert> : <></>}
+      <Alert
+        showAlert={showAlert}
+        setShowAlert={setShowAlert}
+        alertType={AlertType.error}
+        alertText={alertText}
+      />
     </Box>
   );
 };

@@ -3,15 +3,15 @@
 import { trpc } from "@/app/_trpc/client";
 import { PrivacyPolicyLink } from "@/components/atoms/privacy-policy-link";
 import Text from "@/components/atoms/text";
+import Alert from "@/components/molecules/alert";
+import { AlertType } from "@/constants/enums/alertType";
 import { countryInfoList } from "@/constants/enums/country";
 import {
   TypographyTextDecoration,
   TypographyVariant,
 } from "@/constants/enums/theme";
-import colorsConst from "@/constants/pages/colors.json";
 import { LogInFormOtpData } from "@/constants/types/logInFormData";
 import {
-  Alert,
   Box,
   Button,
   CircularProgress,
@@ -36,7 +36,7 @@ export const LogInFormOtp = ({
 }: {
   setIsLoginUsingOtp: Dispatch<SetStateAction<boolean>>;
 }) => {
-  const t = useTranslations();
+  const t = useTranslations("login.loginForm");
   const router = useRouter();
   const {
     control,
@@ -52,23 +52,8 @@ export const LogInFormOtp = ({
   const [alertText, setAlertText] = useState<string>("");
   const [isLoggingIn, setIsLoggingIn] = useState<boolean>(false);
 
-  const color = colorsConst.components.textField;
   const formMargin: number = 2;
   const formFieldMargin: "dense" | "normal" | "none" | undefined = "normal";
-  const formFieldBorderRadius: number = 2;
-  const formFieldStyling: Object = {
-    backgroundColor: color.backgroundColor,
-    borderRadius: formFieldBorderRadius,
-    "& .MuiFilledInput-root": {
-      borderRadius: formFieldBorderRadius,
-      "&:before, &:after": {
-        borderBottom: "none",
-      },
-    },
-    "& .MuiInputBase-input": {
-      borderRadius: formFieldBorderRadius,
-    },
-  };
 
   const countryCodeId = "countryCode";
   const numberId = "number";
@@ -118,7 +103,7 @@ export const LogInFormOtp = ({
           name={countryCodeId}
           control={control}
           defaultValue=""
-          rules={{ required: t("login.loginForm.countryCodeError") }}
+          rules={{ required: t("countryCodeError") }}
           render={({ field }) => (
             <TextField
               {...field}
@@ -126,9 +111,8 @@ export const LogInFormOtp = ({
               required
               fullWidth
               variant="filled"
-              sx={formFieldStyling}
               margin={formFieldMargin}
-              label={t("login.loginForm.countryCode")}
+              label={t("countryCode")}
               value={countryCode}
               error={!!errors.countryCode}
               helperText={
@@ -163,7 +147,7 @@ export const LogInFormOtp = ({
     const numberField = () => {
       const numberValidation = (numberInput: string) => {
         const isValid = isValidPhoneNumber(numberInput, country as CountryCode);
-        return isValid ? true : t("login.loginForm.numberError");
+        return isValid ? true : t("numberError");
       };
 
       const handleNumberChange = async (
@@ -206,8 +190,8 @@ export const LogInFormOtp = ({
             onClick={handleClick}
           >
             <Text
-              text={t("login.loginForm.getOtp")}
-              variant={TypographyVariant.h4}
+              text={t("getOtp")}
+              variant={TypographyVariant.button}
               bold={false}
             />
           </Button>
@@ -222,7 +206,7 @@ export const LogInFormOtp = ({
           defaultValue=""
           rules={{
             validate: numberValidation,
-            required: t("login.loginForm.numberError"),
+            required: t("numberError"),
           }}
           render={({ field }) => (
             <TextField
@@ -230,9 +214,8 @@ export const LogInFormOtp = ({
               required
               fullWidth
               variant="filled"
-              sx={formFieldStyling}
               margin={formFieldMargin}
-              label={t("login.loginForm.number")}
+              label={t("number")}
               value={number}
               InputLabelProps={{
                 sx: { color: "text.primary" },
@@ -271,7 +254,7 @@ export const LogInFormOtp = ({
         control={control}
         defaultValue=""
         rules={{
-          required: t("login.loginForm.otpError"),
+          required: t("otpError"),
         }}
         render={({ field }) => (
           <TextField
@@ -279,9 +262,8 @@ export const LogInFormOtp = ({
             required
             fullWidth
             variant="filled"
-            sx={formFieldStyling}
             margin={formFieldMargin}
-            label={t("login.loginForm.otp")}
+            label={t("otp")}
             value={otp}
             InputLabelProps={{
               sx: { color: "text.primary" },
@@ -305,8 +287,8 @@ export const LogInFormOtp = ({
         onClick={handleOnClick}
       >
         <Text
-          text={t("login.loginForm.loginUsingEmail")}
-          variant={TypographyVariant.h5}
+          text={t("loginUsingEmail")}
+          variant={TypographyVariant.subtitle2}
           bold={false}
           textDecoration={TypographyTextDecoration.underline}
         />
@@ -332,8 +314,8 @@ export const LogInFormOtp = ({
             <CircularProgress size={loadingAnimationSize} />
           ) : (
             <Text
-              text={t("login.loginForm.login")}
-              variant={TypographyVariant.h4}
+              text={t("login")}
+              variant={TypographyVariant.button}
               bold={false}
             />
           )}
@@ -360,7 +342,12 @@ export const LogInFormOtp = ({
         {loginUsingEmailButton()}
       </Box>
       {loginButton()}
-      {showAlert ? <Alert severity="error">{alertText}</Alert> : <></>}
+      <Alert
+        showAlert={showAlert}
+        setShowAlert={setShowAlert}
+        alertType={AlertType.error}
+        alertText={alertText}
+      />
     </Box>
   );
 };

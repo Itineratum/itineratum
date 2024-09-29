@@ -3,14 +3,19 @@ import { Currency } from "../enums/currency";
 import { Language } from "../enums/language";
 
 export interface IUser {
-  name?: String | undefined;
+  first_name?: String | undefined;
+  last_name?: String | undefined;
   country?: String | undefined;
   phone_number?: Number | undefined;
   email: String;
+  address_1?: String | undefined;
+  address_2?: String | undefined;
+  date_of_birth?: Date | undefined;
   profile_picture?: String | undefined;
   auth_service: AuthService;
   language: Language;
   currency: Currency;
   account_created: Date;
   password: string;
+  is_deleted: boolean;
 }

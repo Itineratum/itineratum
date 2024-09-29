@@ -15,7 +15,7 @@ const ItineratumLogo = ({}: {}) => {
       <Button key={constEndpoints.home.name} sx={{ color: "text.primary" }}>
         <Text
           text={constTexts.pageTitle}
-          variant={TypographyVariant.h2}
+          variant={TypographyVariant.h3}
           bold={true}
         />
       </Button>

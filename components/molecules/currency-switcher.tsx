@@ -7,17 +7,26 @@ import ButtonMenu from "./button-menu";
 
 const CurrencySwitcher = () => {
   const id: string = "currency-switcher";
-  const [currency, setCurrency] = useState<string>(Currency.sgd);
   const { data: session } = useSession();
+  const email = session?.user.email!;
+
+  const [currency, setCurrency] = useState<string>(Currency.sgd);
 
   const switchCurrency = trpc.user.switchCurrency.useMutation();
+  const getUserCurrencyLanguage = trpc.user.getUserCurrencyLanguage.useQuery(
+    {
+      email,
+    },
+    { enabled: !!email, retry: false },
+  );
 
   const handleCurrencyChange = async (newCurrency: string) => {
     setCookie("currency", newCurrency);
     setCurrency(newCurrency);
 
+    console.log(getCookie("currency"));
+
     if (session?.user) {
-      const email = session.user.email!;
       const data = { email, currency: newCurrency };
 
       try {
@@ -33,8 +42,16 @@ const CurrencySwitcher = () => {
     if (storedCurrency && typeof storedCurrency === "string") {
       setCurrency(storedCurrency);
     }
-    // TODO: retrieve currency from user document in MongoDB
   }, []);
+
+  useEffect(() => {
+    const userCurrency = getUserCurrencyLanguage.data?.currency;
+
+    if (userCurrency) {
+      setCurrency(userCurrency);
+      setCookie("currency", userCurrency);
+    }
+  }, [getUserCurrencyLanguage.data?.currency]);
 
   return (
     <ButtonMenu

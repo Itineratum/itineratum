@@ -1,15 +1,30 @@
 import { sendSignUpVerificationEmail } from "@/lib/nodeMailer";
-import { credentialsLogIn, credentialsSignUp, switchPreferredCurrency } from "@/services/database/users";
+import {
+  credentialsLogIn,
+  credentialsSignUp,
+  deleteUser,
+  retrieveCurrencyLanguage,
+  retrieveUserDetails,
+  updateUser,
+  verifyUserPassword,
+} from "@/services/database/users";
 import {
   generateAndSaveVerificationCode,
   verifyVerificationCode,
 } from "@/services/database/verificationCodes";
 import { TRPCError } from "@trpc/server";
+import bcrypt from "bcrypt";
 import {
+  changeUserPassword,
+  deleteUserAccount,
   generateVerificationCodeSchema,
+  getUserAccountDetails,
+  getUserCurrencyLanguage,
   loginViaEmail,
   loginViaOtp,
   switchCurrency,
+  switchLanguage,
+  updateUserAccount,
   verifyVerificationCodeSchema,
 } from "../schemas/user";
 import { publicProcedure, router } from "../trpc";
@@ -50,7 +65,7 @@ export const userRouter = router({
       } = data.input;
       const verifyVerificationCodeRes = await verifyVerificationCode(
         email,
-        verificationCode
+        verificationCode,
       );
 
       if (!verifyVerificationCodeRes.success) {
@@ -65,7 +80,7 @@ export const userRouter = router({
         countryCode,
         number,
         email,
-        password
+        password,
       );
 
       if (!signUpRes.success) {
@@ -101,13 +116,145 @@ export const userRouter = router({
     .output(switchCurrency.output)
     .mutation(async (data) => {
       const { email, currency } = data.input;
-      const switchCurrencyRes = await switchPreferredCurrency(email, currency);
+      const updateUserRes = await updateUser(email, { currency });
 
-      if (!switchCurrencyRes.success) {
+      if (!updateUserRes.success) {
         throw new TRPCError({
           code: "INTERNAL_SERVER_ERROR",
-          message: switchCurrencyRes.error
-        })
+          message: updateUserRes.error,
+        });
+      }
+    }),
+  switchLanguage: publicProcedure
+    .input(switchLanguage.input)
+    .output(switchLanguage.output)
+    .mutation(async (data) => {
+      const { email, language } = data.input;
+      const updateUserRes = await updateUser(email, { language });
+
+      if (!updateUserRes.success) {
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message: updateUserRes.error,
+        });
+      }
+    }),
+  getUserCurrencyLanguage: publicProcedure
+    .input(getUserCurrencyLanguage.input)
+    .output(getUserCurrencyLanguage.output)
+    .query(async (data) => {
+      const { email } = data.input;
+      const retrieveCurrencyLanguageRes = await retrieveCurrencyLanguage(email);
+
+      if (!retrieveCurrencyLanguageRes.success) {
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message: retrieveCurrencyLanguageRes.error,
+        });
+      } else {
+        const currency = retrieveCurrencyLanguageRes.data?.currency as string;
+        const language = retrieveCurrencyLanguageRes.data?.language as string;
+        return {
+          currency,
+          language,
+        };
+      }
+    }),
+  getUserAccountDetails: publicProcedure
+    .input(getUserAccountDetails.input)
+    .output(getUserAccountDetails.output)
+    .query(async (data) => {
+      const { email } = data.input;
+      const retrieveUserDetailsRes = await retrieveUserDetails(email);
+
+      if (!retrieveUserDetailsRes.success) {
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message: retrieveUserDetailsRes.error,
+        });
+      } else {
+        const user = retrieveUserDetailsRes.data;
+        return {
+          firstName: user.first_name,
+          lastName: user.last_name,
+          email: user.email,
+          address1: user.address_1,
+          address2: user.address_2,
+          dateOfBirth: user.date_of_birth,
+        };
+      }
+    }),
+  updateUserAccount: publicProcedure
+    .input(updateUserAccount.input)
+    .output(updateUserAccount.output)
+    .mutation(async (data) => {
+      const { email, firstName, lastName, address1, address2, dateOfBirth } =
+        data.input;
+
+      const update = {
+        $set: {
+          first_name: firstName,
+          last_name: lastName,
+          address_1: address1,
+          address_2: address2,
+          date_of_birth: dateOfBirth,
+        },
+      };
+      const updateUserRes = await updateUser(email, update);
+
+      if (!updateUserRes.success) {
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message: updateUserRes.error,
+        });
+      }
+    }),
+  deleteUserAccount: publicProcedure
+    .input(deleteUserAccount.input)
+    .output(deleteUserAccount.output)
+    .mutation(async (data) => {
+      const { email } = data.input;
+      const deleteUserRes = await deleteUser(email);
+
+      if (!deleteUserRes.success) {
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message: deleteUserRes.error,
+        });
+      }
+    }),
+  changeUserPassword: publicProcedure
+    .input(changeUserPassword.input)
+    .output(changeUserPassword.output)
+    .mutation(async (data) => {
+      const { email, currentPassword, newPassword } = data.input;
+      const verifyUserPasswordRes = await verifyUserPassword(
+        email,
+        currentPassword,
+      );
+
+      // verify that the user has entered the correct current password
+      if (!verifyUserPasswordRes.success) {
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message: verifyUserPasswordRes.error,
+        });
+      }
+
+      // if the user has entered the correct current password, proceed to update their password
+      const hashedNewPassword = await bcrypt.hash(newPassword, 12);
+      const update = {
+        $set: {
+          password: hashedNewPassword,
+        },
+      };
+      const updateUserRes = await updateUser(email, update);
+
+      if (!updateUserRes.success) {
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message: updateUserRes.error,
+        });
       }
     }),
 });
