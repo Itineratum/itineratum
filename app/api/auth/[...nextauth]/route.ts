@@ -1,9 +1,5 @@
 import JWTToken from "@/constants/types/jwtToken";
-import {
-  credentialsLogIn,
-  retrieveCurrencyLanguage,
-  signIn,
-} from "@/services/database/users";
+import { credentialsLogIn, signIn } from "@/services/database/users";
 import NextAuth, { Account, Session, User } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import Google from "next-auth/providers/google";
@@ -36,10 +32,25 @@ const providers = [
   }),
 ];
 const callbacks = {
-  async jwt({ token, account }: { token: JWTToken; account?: Account | null }) {
+  async jwt({
+    token,
+    trigger,
+    account,
+    session
+  }: {
+    token: JWTToken;
+    trigger: string;
+    account?: Account | null;
+    session: any;
+  }) {
     if (account) {
       token.provider = account.provider;
     }
+
+    if (trigger === "update" && session?.name) {
+      token.name = session.name;
+    }
+
     return token;
   },
   async session({ session, token }: { session: Session; token: JWTToken }) {

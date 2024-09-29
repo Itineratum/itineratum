@@ -4,7 +4,9 @@ import { trpc } from "@/app/_trpc/client";
 import { OrDivider } from "@/components/atoms/or-divider";
 import { PrivacyPolicyLink } from "@/components/atoms/privacy-policy-link";
 import Text from "@/components/atoms/text";
+import Alert from "@/components/molecules/alert";
 import { ContinueWithGoogleButton } from "@/components/molecules/continue-with-google-button";
+import { AlertType } from "@/constants/enums/alertType";
 import { countryInfoList } from "@/constants/enums/country";
 import { TypographyVariant } from "@/constants/enums/theme";
 import { SignUpFormData } from "@/constants/types/signUpFormData";
@@ -12,7 +14,6 @@ import { isValidEmail, isValidPassword } from "@/utils/signUpFormValidation";
 import VisibilityOffOutlinedIcon from "@mui/icons-material/VisibilityOffOutlined";
 import VisibilityOutlinedIcon from "@mui/icons-material/VisibilityOutlined";
 import {
-  Alert,
   Box,
   Button,
   CircularProgress,
@@ -46,7 +47,7 @@ const SignUpForm = () => {
   const [stepNumber, setStepNumber] = useState<number>(1);
   const [showAlert, setShowAlert] = useState<boolean>(false);
   const [alertText, setAlertText] = useState<string>("");
-  const [alertType, setAlertType] = useState<"info" | "error">("info");
+  const [alertType, setAlertType] = useState<AlertType>(AlertType.info);
   const [isSigningUp, setIsSigningUp] = useState<boolean>(false);
   const [isVerifying, setIsVerifying] = useState<boolean>(false);
 
@@ -74,7 +75,7 @@ const SignUpForm = () => {
     trpc.user.generateVerificationCode.useMutation({
       onSuccess: () => {
         setStepNumber(3);
-        setAlertType("info");
+        setAlertType(AlertType.info);
         setAlertText(t("emailVerification.codeSentToEmail"));
         setShowAlert(true);
         setIsSigningUp(false);
@@ -94,7 +95,7 @@ const SignUpForm = () => {
         router.push("/"); // redirect to home page
       } else {
         setAlertText(t("signUpErrorAlert"));
-        setAlertType("error");
+        setAlertType(AlertType.error);
         setShowAlert(true);
       }
       setIsSigningUp(false);
@@ -550,7 +551,7 @@ const SignUpForm = () => {
         } catch (error) {
           if (error instanceof TRPCClientError) {
             setAlertText(error.message ?? t("signUpErrorAlert"));
-            setAlertType("error");
+            setAlertType(AlertType.error);
             setShowAlert(true);
           }
         } finally {
@@ -665,7 +666,7 @@ const SignUpForm = () => {
         } catch (error) {
           if (error instanceof TRPCClientError) {
             setAlertText(error.message ?? t("signUpErrorAlert"));
-            setAlertType("error");
+            setAlertType(AlertType.error);
             setShowAlert(true);
             setIsSigningUp(false);
           }
@@ -718,7 +719,12 @@ const SignUpForm = () => {
       <Collapse in={stepNumber === 3} timeout={pageTransitionDuration}>
         {step3()}
       </Collapse>
-      {showAlert ? <Alert severity={alertType}>{alertText}</Alert> : <></>}
+      <Alert
+        showAlert={showAlert}
+        setShowAlert={setShowAlert}
+        alertType={alertType}
+        alertText={alertText}
+      />
       <OrDivider formMargin={formMargin} />
       <Box
         sx={{

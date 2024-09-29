@@ -3,6 +3,8 @@
 import { trpc } from "@/app/_trpc/client";
 import { PrivacyPolicyLink } from "@/components/atoms/privacy-policy-link";
 import Text from "@/components/atoms/text";
+import Alert from "@/components/molecules/alert";
+import { AlertType } from "@/constants/enums/alertType";
 import {
   TypographyTextDecoration,
   TypographyVariant,
@@ -11,7 +13,6 @@ import { LogInFormEmailData } from "@/constants/types/logInFormData";
 import VisibilityOffOutlinedIcon from "@mui/icons-material/VisibilityOffOutlined";
 import VisibilityOutlinedIcon from "@mui/icons-material/VisibilityOutlined";
 import {
-  Alert,
   Box,
   Button,
   CircularProgress,
@@ -237,7 +238,12 @@ export const LogInFormEmail = ({
         {loginUsingPhoneNumberButton()}
       </Box>
       {loginButton()}
-      {showAlert ? <Alert severity="error">{alertText}</Alert> : <></>}
+      <Alert
+        showAlert={showAlert}
+        setShowAlert={setShowAlert}
+        alertType={AlertType.error}
+        alertText={alertText}
+      />
     </Box>
   );
 };

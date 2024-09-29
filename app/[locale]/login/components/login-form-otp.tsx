@@ -3,6 +3,8 @@
 import { trpc } from "@/app/_trpc/client";
 import { PrivacyPolicyLink } from "@/components/atoms/privacy-policy-link";
 import Text from "@/components/atoms/text";
+import Alert from "@/components/molecules/alert";
+import { AlertType } from "@/constants/enums/alertType";
 import { countryInfoList } from "@/constants/enums/country";
 import {
   TypographyTextDecoration,
@@ -10,7 +12,6 @@ import {
 } from "@/constants/enums/theme";
 import { LogInFormOtpData } from "@/constants/types/logInFormData";
 import {
-  Alert,
   Box,
   Button,
   CircularProgress,
@@ -341,7 +342,12 @@ export const LogInFormOtp = ({
         {loginUsingEmailButton()}
       </Box>
       {loginButton()}
-      {showAlert ? <Alert severity="error">{alertText}</Alert> : <></>}
+      <Alert
+        showAlert={showAlert}
+        setShowAlert={setShowAlert}
+        alertType={AlertType.error}
+        alertText={alertText}
+      />
     </Box>
   );
 };

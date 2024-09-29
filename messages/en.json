@@ -16,7 +16,15 @@
       "google": "Google",
       "connectGoogle": "Connect your Google Account",
       "saveAccount": "Save",
-      "deleteAccount": "Delete your account"
+      "accountUpdated": "Your account has been updated!",
+      "accountUpdateError": "An error occured while updating your account! Please try again.",
+      "deleteAccount": "Delete your account",
+      "deleteAccountDialog": {
+        "title": "Delete your account?",
+        "content": "You will permanently delete your user account, and lose all your trips and saved information.",
+        "deleteButton": "Delete account",
+        "cancelButton": "Not now"
+      }
     },
     "accessibility": "Accessibility",
     "notifications": "Notifications",

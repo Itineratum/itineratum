@@ -13,6 +13,7 @@ import {
   Box,
   Breadcrumbs,
   Button,
+  CircularProgress,
   Grid,
   InputLabel,
   Stack,
@@ -21,12 +22,16 @@ import {
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider/LocalizationProvider";
+import { TRPCClientError } from "@trpc/client";
 import dayjs, { Dayjs } from "dayjs";
 import utc from "dayjs/plugin/utc";
 import { signOut, useSession } from "next-auth/react";
 import { useTranslations } from "next-intl";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
+import DeleteAccountConfirmationDialog from "./delete-account-confirmation-dialog";
+import Alert from "@/components/molecules/alert";
+import { AlertType } from "@/constants/enums/alertType";
 
 dayjs.extend(utc);
 
@@ -38,7 +43,7 @@ const AccountPersonalInformation = ({
   setAccountSetting: Dispatch<SetStateAction<AccountSetting>>;
 }) => {
   const t = useTranslations("account.personalInformation");
-  const { data: session } = useSession();
+  const { data: session, update } = useSession();
   const {
     control,
     formState: { errors },
@@ -50,8 +55,10 @@ const AccountPersonalInformation = ({
 
   const [showAlert, setShowAlert] = useState<boolean>(false);
   const [alertText, setAlertText] = useState<string>("");
-  const [alertType, setAlertType] = useState<"info" | "error">("info");
+  const [alertType, setAlertType] = useState<AlertType>(AlertType.info);
   const [isUpdating, setIsUpdating] = useState<boolean>(false);
+  const [showConfirmDeleteDialog, setShowConformDeleteDialog] =
+    useState<boolean>(false);
 
   const name: string | undefined | null = session?.user?.name;
   const image: string | undefined | null = session?.user?.image;
@@ -85,16 +92,10 @@ const AccountPersonalInformation = ({
   const getUserAccountDetails = trpc.user.getUserAccountDetails.useQuery({
     email: session?.user.email!,
   });
-  const deleteUserAccount = trpc.user.deleteUserAccount.useMutation({
-    onSuccess: () => {
-      // TODO: come out with a better logic to show to the user that they have deleted their account
-      window.alert("USER DELETED");
-    },
-  });
+  const deleteUserAccount = trpc.user.deleteUserAccount.useMutation();
   const updateUserAccount = trpc.user.updateUserAccount.useMutation({
     onSuccess: () => {
-      // TODO: come out with a better logic to show to the user that they have updated their account
-      window.alert("USER UPDATED");
+      update({ name: firstName });
     },
   });
 
@@ -114,6 +115,15 @@ const AccountPersonalInformation = ({
       }
     }
   }, [getUserAccountDetails.data]);
+
+  const closeConfirmDeleteDialog = () => {
+    setShowConformDeleteDialog(false);
+  };
+  const deleteAccount = async () => {
+    const data = { email };
+    await deleteUserAccount.mutateAsync(data);
+    signOut({ callbackUrl: "/" });
+  };
 
   const breadcrumbNavigator = () => {
     const accountOnClickHandler = () => {
@@ -345,7 +355,12 @@ const AccountPersonalInformation = ({
 
     return (
       <Box>
-        <InputLabel sx={{ color: colorsConst.palette.text.primary }}>
+        <InputLabel
+          sx={{
+            color: colorsConst.palette.text.primary,
+            marginBottom: formMargin,
+          }}
+        >
           {t("dob")}
         </InputLabel>
         <Controller
@@ -397,9 +412,14 @@ const AccountPersonalInformation = ({
   };
   const actionButtons = () => {
     const buttonWidth: string = "50%";
+    const loadingAnimationSize: number = 24;
 
     const saveButton = () => {
       const handleOnClick = async () => {
+        setIsUpdating(true);
+        setAlertType(AlertType.success);
+        setAlertText(t("accountUpdated"));
+        setShowAlert(true);
         const data = {
           email,
           firstName,
@@ -411,7 +431,18 @@ const AccountPersonalInformation = ({
             ? dateOfBirth.utc(true).startOf("day").toISOString()
             : undefined,
         };
-        await updateUserAccount.mutateAsync(data);
+
+        try {
+          await updateUserAccount.mutateAsync(data);
+        } catch (error) {
+          if (error instanceof TRPCClientError) {
+            setAlertType(AlertType.error);
+            setAlertText(t("accountUpdateError"));
+            setShowAlert(true);
+          }
+        } finally {
+          setIsUpdating(false);
+        }
       };
 
       return (
@@ -421,23 +452,25 @@ const AccountPersonalInformation = ({
           variant="contained"
           sx={{ my: formMargin, maxWidth: buttonWidth, alignSelf: "center" }}
           color="secondary"
-          // disabled={isVerifying}
+          disabled={isUpdating}
           onClick={handleOnClick}
         >
-          <Text
-            text={t("saveAccount")}
-            variant={TypographyVariant.button}
-            bold={false}
-          />
+          {isUpdating ? (
+            <CircularProgress size={loadingAnimationSize} />
+          ) : (
+            <Text
+              text={t("saveAccount")}
+              variant={TypographyVariant.button}
+              bold={false}
+            />
+          )}
         </Button>
       );
     };
 
     const deleteAccountButton = () => {
       const handleOnClick = async () => {
-        const data = { email };
-        await deleteUserAccount.mutateAsync(data);
-        signOut({ callbackUrl: "/" });
+        setShowConformDeleteDialog(true);
       };
 
       return (
@@ -447,7 +480,7 @@ const AccountPersonalInformation = ({
           variant="contained"
           sx={{ my: formMargin, maxWidth: buttonWidth, alignSelf: "center" }}
           color="primary"
-          // disabled={isVerifying}
+          disabled={isUpdating}
           onClick={handleOnClick}
         >
           <Text
@@ -489,9 +522,20 @@ const AccountPersonalInformation = ({
             {dateOfBirthField()}
             {session?.provider === AuthService.Google ? <></> : googleButton()}
             {actionButtons()}
+            <Alert
+              showAlert={showAlert}
+              setShowAlert={setShowAlert}
+              alertType={alertType}
+              alertText={alertText}
+            />
           </Stack>
         </Grid>
       </Grid>
+      <DeleteAccountConfirmationDialog
+        open={showConfirmDeleteDialog}
+        handleClose={closeConfirmDeleteDialog}
+        deleteAccount={deleteAccount}
+      />
     </Box>
   );
 };

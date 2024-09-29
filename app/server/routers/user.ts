@@ -192,10 +192,10 @@ export const userRouter = router({
         $set: {
           first_name: firstName,
           last_name: lastName,
-          address_1: address1, 
+          address_1: address1,
           address_2: address2,
-          date_of_birth: dateOfBirth
-        }
+          date_of_birth: dateOfBirth,
+        },
       };
       const updateUserRes = await updateUser(email, update);
 
