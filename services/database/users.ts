@@ -1,6 +1,7 @@
 import { AuthService } from "@/constants/enums/authService";
 import { SignInError } from "@/constants/errors/signIn";
 import { connectToDatabase, disconnectFromDatabase } from "@/lib/db";
+import { deleteImage } from "@/lib/uploadThing";
 import User, { initialUser } from "@/models/User";
 import { getAuthService } from "@/utils/getAuthService";
 import bcrypt from "bcrypt";
@@ -312,10 +313,7 @@ export const deleteUser = async (email: string) => {
       );
 
       // delete profile picture from UploadThing
-      if (profilePicture && profilePicture.startsWith("https://utfs.io")) {
-        const [_, key] = profilePicture.split("/f/");
-        await new UTApi().deleteFiles(key);
-      }
+      await deleteImage(profilePicture);
 
       const softDeleteUpdate = {
         $unset: unsetFields,

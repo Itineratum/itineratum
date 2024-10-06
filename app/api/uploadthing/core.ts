@@ -3,6 +3,7 @@ import { getServerSession } from "next-auth";
 import { createUploadthing, type FileRouter } from "uploadthing/next";
 import { UploadThingError, UTApi } from "uploadthing/server";
 import { authOptions } from "../auth/[...nextauth]/route";
+import { deleteImage } from "@/lib/uploadThing";
 
 const f = createUploadthing();
 
@@ -54,11 +55,7 @@ export const ourFileRouter = {
         }
 
         // delete old profile picture
-        // code from https://github.com/pingdotgg/uploadthing/issues/683#issuecomment-1984422217
-        if (oldPicture && oldPicture.startsWith("https://utfs.io")) {
-          const [_, key] = oldPicture.split("/f/");
-          await new UTApi().deleteFiles(key);
-        }
+        await deleteImage(oldPicture);
 
         // !!! Whatever is returned here is sent to the clientside `onClientUploadComplete`4 callback
         return { image: file.url };
