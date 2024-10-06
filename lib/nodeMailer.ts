@@ -16,7 +16,7 @@ export const sendSignUpVerificationEmail = async (
   const mailOptions = {
     from: process.env.NODEMAILER_EMAIL,
     to: toEmail,
-    subject: "Verify your Email with Itineratum",
+    subject: "Verify your email with Itineratum",
     text: `Your verification code is: ${verificationCode}`,
   };
 
@@ -24,6 +24,42 @@ export const sendSignUpVerificationEmail = async (
     await transporter.sendMail(mailOptions);
   } catch (error) {
     console.error("Error sending verification email!", error);
+    throw error;
+  }
+};
+
+export const sendAccountPasswordChangedEmail = async (
+  toEmail: string,
+) => {
+  const mailOptions = {
+    from: process.env.NODEMAILER_EMAIL,
+    to: toEmail,
+    subject: "Password change on Itineratum",
+    text: `You have changed your password for your account on Itineratum. No further action is needed from you.`,
+  };
+
+  try {
+    await transporter.sendMail(mailOptions);
+  } catch (error) {
+    console.error("Error sending password change email!", error);
+    throw error;
+  }
+};
+
+export const sendAccountDeletedEmail = async (
+  toEmail: string,
+) => {
+  const mailOptions = {
+    from: process.env.NODEMAILER_EMAIL,
+    to: toEmail,
+    subject: "Itineratum account deleted",
+    text: `We are sorry to see you go. If you wish to use Itineratum again, please sign up for a new account.`,
+  };
+
+  try {
+    await transporter.sendMail(mailOptions);
+  } catch (error) {
+    console.error("Error sending account deleted email!", error);
     throw error;
   }
 };

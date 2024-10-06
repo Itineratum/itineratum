@@ -1,4 +1,4 @@
-import { sendSignUpVerificationEmail } from "@/lib/nodeMailer";
+import { sendAccountDeletedEmail, sendAccountPasswordChangedEmail, sendSignUpVerificationEmail } from "@/lib/nodeMailer";
 import {
   credentialsLogIn,
   credentialsSignUp,
@@ -215,6 +215,7 @@ export const userRouter = router({
     .mutation(async (data) => {
       const { email } = data.input;
       const deleteUserRes = await deleteUser(email);
+      await sendAccountDeletedEmail(email);
 
       if (!deleteUserRes.success) {
         throw new TRPCError({
@@ -228,12 +229,13 @@ export const userRouter = router({
     .output(changeUserPassword.output)
     .mutation(async (data) => {
       const { email, currentPassword, newPassword } = data.input;
+
+      // verify that the user has entered the correct current password
       const verifyUserPasswordRes = await verifyUserPassword(
         email,
         currentPassword,
       );
 
-      // verify that the user has entered the correct current password
       if (!verifyUserPasswordRes.success) {
         throw new TRPCError({
           code: "INTERNAL_SERVER_ERROR",
@@ -249,7 +251,8 @@ export const userRouter = router({
         },
       };
       const updateUserRes = await updateUser(email, update);
-
+      await sendAccountPasswordChangedEmail(email);
+    
       if (!updateUserRes.success) {
         throw new TRPCError({
           code: "INTERNAL_SERVER_ERROR",
