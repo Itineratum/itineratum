@@ -55,7 +55,7 @@ export const ourFileRouter = {
 
         // delete old profile picture
         // code from https://github.com/pingdotgg/uploadthing/issues/683#issuecomment-1984422217
-        if (oldPicture) {
+        if (oldPicture && oldPicture.startsWith("https://utfs.io")) {
           const [_, key] = oldPicture.split("/f/");
           await new UTApi().deleteFiles(key);
         }

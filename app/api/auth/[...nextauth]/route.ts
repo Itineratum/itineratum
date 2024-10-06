@@ -20,7 +20,7 @@ const providers = [
         id: isExistingUser ? res.id : profile.sub,
         email: profile.email,
         name: isExistingUser ? res.name : profile.name,
-        image: isExistingUser ? res.image : profile.image,
+        image: isExistingUser ? res.image : profile.picture,
       } as User;
       return user;
     },

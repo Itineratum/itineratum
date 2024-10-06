@@ -5,6 +5,7 @@ import User, { initialUser } from "@/models/User";
 import { getAuthService } from "@/utils/getAuthService";
 import bcrypt from "bcrypt";
 import { Account, User as AuthUser } from "next-auth";
+import { UTApi } from "uploadthing/server";
 
 // used by Google provider login
 export const signIn = async ({
@@ -305,6 +306,17 @@ export const deleteUser = async (email: string) => {
       fieldsToDelete.map((fieldToDelete) => {
         unsetFields[fieldToDelete] = "";
       });
+
+      const profilePicture = await User.findOne({ email }).then(
+        (result) => result.profile_picture,
+      );
+
+      // delete profile picture from UploadThing
+      if (profilePicture && profilePicture.startsWith("https://utfs.io")) {
+        const [_, key] = profilePicture.split("/f/");
+        await new UTApi().deleteFiles(key);
+      }
+
       const softDeleteUpdate = {
         $unset: unsetFields,
         $set: {
