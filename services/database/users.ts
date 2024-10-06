@@ -27,29 +27,14 @@ export const signIn = async ({
     if (existingUser && !existingUser.is_deleted) {
       const isSameAuthService = existingUser.auth_service === authService;
 
-      if (!isSameAuthService) {
-        // allow users who signed up using credentials to sign in using Google, combine their accounts
-        const isCredentialsSignUpGoogleLogin =
-          existingUser.auth_service === AuthService.Credentials &&
-          authService === AuthService.Google;
-
-        if (!isCredentialsSignUpGoogleLogin) {
-          throw new Error(SignInError.logInWithoutGoogle);
-        } else {
-          await User.findOneAndUpdate(
-            { email },
-            { profile_picture: profilePicture, name },
-          );
-          console.log(
-            `User with email ${email} has been combined with details from their Google account!`,
-          );
-        }
+      if (isSameAuthService) {
+        console.log(
+          `User with email ${email} already exists! Signing in directly.`,
+        );
+        return true;
+      } else {
+        throw new Error(SignInError.logInWithoutGoogle);
       }
-
-      console.log(
-        `User with email ${email} already exists! Signing in directly.`,
-      );
-      return true;
     } else {
       const userDocument = initialUser(
         name,

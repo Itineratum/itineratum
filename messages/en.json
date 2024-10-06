@@ -124,6 +124,9 @@
       "otpError": "OTP required!"
     }
   },
+  "googleButton": {
+    "continueWithGoogle": "Continue with Google"
+  },
   "error": {
     "error": "Error!",
     "home": "Go to home"

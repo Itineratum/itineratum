@@ -3,7 +3,6 @@
 import { trpc } from "@/app/_trpc/client";
 import Text from "@/components/atoms/text";
 import Alert from "@/components/molecules/alert";
-import { ContinueWithGoogleButton } from "@/components/molecules/continue-with-google-button";
 import UserAvatar from "@/components/molecules/user-avatar";
 import { AccountSetting } from "@/constants/enums/accountSetting";
 import { AlertType } from "@/constants/enums/alertType";
@@ -34,7 +33,6 @@ import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import ChangePasswordForm from "./change-password-form";
 import DeleteAccountConfirmationDialog from "./delete-account-confirmation-dialog";
-
 dayjs.extend(utc);
 
 const AccountPersonalInformation = ({
@@ -441,29 +439,6 @@ const AccountPersonalInformation = ({
         </Box>
       );
     };
-    const googleButton = () => {
-      const buttonWidth: string = "100%";
-
-      return (
-        <Box>
-          <InputLabel sx={{ color: colorsConst.palette.text.primary }}>
-            {t("google")}
-          </InputLabel>
-          <Box
-            sx={{
-              display: "flex",
-              justifyContent: "flex-start",
-            }}
-          >
-            <ContinueWithGoogleButton
-              formMargin={formMargin}
-              buttonWidth={buttonWidth}
-              text={t("connectGoogle")}
-            />
-          </Box>
-        </Box>
-      );
-    };
     const actionButtons = () => {
       const buttonWidth: string = "50%";
       const loadingAnimationSize: number = 24;
@@ -559,7 +534,6 @@ const AccountPersonalInformation = ({
         <Stack spacing={fieldSpacing} useFlexGap>
           {addressSection()}
           {dateOfBirthField()}
-          {session?.provider === AuthService.Google ? <></> : googleButton()}
           {actionButtons()}
           <Alert
             showAlert={showAlert}

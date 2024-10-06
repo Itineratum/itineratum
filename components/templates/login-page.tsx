@@ -10,7 +10,7 @@ import Container from "@mui/material/Container";
 import { useTranslations } from "next-intl";
 import { useState } from "react";
 import { OrDivider } from "../atoms/or-divider";
-import { ContinueWithGoogleButton } from "../molecules/continue-with-google-button";
+import { GoogleButton } from "../molecules/google-button";
 
 const LoginPage = () => {
   const t = useTranslations("login");
@@ -61,7 +61,7 @@ const LoginPage = () => {
           justifyContent: "center",
         }}
       >
-        <ContinueWithGoogleButton formMargin={formMargin} />
+        <GoogleButton formMargin={formMargin} />
       </Box>
     </Container>
   );

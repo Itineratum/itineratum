@@ -7,22 +7,20 @@ import { useTranslations } from "next-intl";
 import Image from "next/image";
 import Text from "../atoms/text";
 
-export const ContinueWithGoogleButton = ({
+export const GoogleButton = ({
   formMargin,
   buttonWidth = "80%",
-  text,
 }: {
   formMargin: number;
   buttonWidth?: string;
-  text?: string;
 }) => {
-  const t = useTranslations("signUp.signUpForm");
+  const t = useTranslations("googleButton");
 
   const iconSize: number = 32;
   const buttonHeight: number = iconSize * 2;
   const spacing: number = 2;
 
-  const handleClick = async () => {
+  const handleOnClick = async () => {
     await signIn("google", {
       callbackUrl: "/",
     });
@@ -41,7 +39,7 @@ export const ContinueWithGoogleButton = ({
         backgroundColor: colorsConst.continueWithGoogleButton.color,
         color: colorsConst.continueWithGoogleButton.textColor,
       }}
-      onClick={handleClick}
+      onClick={handleOnClick}
     >
       <Image
         src={googleIcon}
@@ -50,7 +48,7 @@ export const ContinueWithGoogleButton = ({
         alt={"Google Icon"}
       />
       <Text
-        text={text ? text : t("continueWithGoogle")}
+        text={t("continueWithGoogle")}
         variant={TypographyVariant.h4}
         bold={false}
       />

@@ -5,7 +5,7 @@ import { OrDivider } from "@/components/atoms/or-divider";
 import { PrivacyPolicyLink } from "@/components/atoms/privacy-policy-link";
 import Text from "@/components/atoms/text";
 import Alert from "@/components/molecules/alert";
-import { ContinueWithGoogleButton } from "@/components/molecules/continue-with-google-button";
+import { GoogleButton } from "@/components/molecules/google-button";
 import { AlertType } from "@/constants/enums/alertType";
 import { countryInfoList } from "@/constants/enums/country";
 import { TypographyVariant } from "@/constants/enums/theme";
@@ -732,7 +732,7 @@ const SignUpForm = () => {
           justifyContent: "center",
         }}
       >
-        <ContinueWithGoogleButton formMargin={formMargin} />
+        <GoogleButton formMargin={formMargin} />
       </Box>
     </Box>
   );
