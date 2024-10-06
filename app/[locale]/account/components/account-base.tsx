@@ -176,7 +176,7 @@ const AccountBase = ({
       justifyContent="center"
       alignItems="center"
     >
-      <UserAvatar image={image} editable={false} />
+      <UserAvatar editable={false} />
       {userName()}
       {settingsSection()}
       {legalSection()}

@@ -78,7 +78,7 @@ export const signIn = async ({
     console.error(error);
     throw error;
   } finally {
-    await disconnectFromDatabase();
+    // await disconnectFromDatabase();
   }
 };
 
@@ -93,6 +93,7 @@ export const googleLogIn = async (email: string) => {
         isExistingUser: true,
         id: existingUser._id,
         name: existingUser.first_name,
+        image: existingUser.profile_picture,
       };
     } else {
       return {
@@ -103,7 +104,7 @@ export const googleLogIn = async (email: string) => {
     console.error(error);
     throw error;
   } finally {
-    await disconnectFromDatabase();
+    // await disconnectFromDatabase();
   }
 };
 
@@ -160,7 +161,7 @@ export const credentialsSignUp = async (
     console.error(error);
     throw error;
   } finally {
-    await disconnectFromDatabase();
+    // await disconnectFromDatabase();
   }
 };
 
@@ -195,6 +196,7 @@ export const credentialsLogIn = async (
             id: user._id,
             email: user.email,
             firstName: user.first_name,
+            image: user.profile_picture,
           },
         };
       }
@@ -203,7 +205,7 @@ export const credentialsLogIn = async (
     console.error(error);
     throw error;
   } finally {
-    await disconnectFromDatabase();
+    // await disconnectFromDatabase();
   }
 };
 
@@ -230,7 +232,7 @@ export const retrieveCurrencyLanguage = async (email: string) => {
   } catch (error) {
     throw error;
   } finally {
-    await disconnectFromDatabase();
+    // await disconnectFromDatabase();
   }
 };
 
@@ -254,7 +256,7 @@ export const updateUser = async (email: string, update: Object) => {
     console.error(error);
     throw error;
   } finally {
-    await disconnectFromDatabase();
+    // await disconnectFromDatabase();
   }
 };
 
@@ -278,7 +280,7 @@ export const retrieveUserDetails = async (email: string) => {
     console.error(error);
     throw error;
   } finally {
-    await disconnectFromDatabase();
+    // await disconnectFromDatabase();
   }
 };
 
@@ -356,6 +358,6 @@ export const verifyUserPassword = async (
     console.error(error);
     throw error;
   } finally {
-    await disconnectFromDatabase();
+    // await disconnectFromDatabase();
   }
 };

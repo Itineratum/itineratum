@@ -1,4 +1,8 @@
-import { sendAccountDeletedEmail, sendAccountPasswordChangedEmail, sendSignUpVerificationEmail } from "@/lib/nodeMailer";
+import {
+  sendAccountDeletedEmail,
+  sendAccountPasswordChangedEmail,
+  sendSignUpVerificationEmail,
+} from "@/lib/nodeMailer";
 import {
   credentialsLogIn,
   credentialsSignUp,
@@ -252,7 +256,7 @@ export const userRouter = router({
       };
       const updateUserRes = await updateUser(email, update);
       await sendAccountPasswordChangedEmail(email);
-    
+
       if (!updateUserRes.success) {
         throw new TRPCError({
           code: "INTERNAL_SERVER_ERROR",

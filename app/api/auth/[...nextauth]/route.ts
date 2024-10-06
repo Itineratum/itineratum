@@ -20,7 +20,7 @@ const providers = [
         id: isExistingUser ? res.id : profile.sub,
         email: profile.email,
         name: isExistingUser ? res.name : profile.name,
-        image: profile.picture,
+        image: isExistingUser ? res.image : profile.image,
       } as User;
       return user;
     },
@@ -40,6 +40,7 @@ const providers = [
           id: res.data.id,
           email: res.data.email,
           name: res.data.firstName,
+          image: res.data.image,
         } as User;
         return user;
       } else {
@@ -66,12 +67,17 @@ const callbacks = {
       token.provider = account.provider;
     }
 
-    if (trigger === "update" && session?.name) {
-      token.name = session.name;
+    if (trigger === "update") {
+      if (session?.name) {
+        token.name = session.name;
+      } else if (session?.image) {
+        token.picture = session.image;
+      }
     }
 
     if (user) {
       token.name = user.name;
+      token.picture = user.image;
     }
 
     return token;
@@ -79,6 +85,7 @@ const callbacks = {
   async session({ session, token }: { session: Session; token: JWTToken }) {
     session.provider = token.provider!;
     session.user.name = token.name;
+    session.user.image = token.picture;
     return session;
   },
   signIn,

@@ -28,9 +28,7 @@ export const sendSignUpVerificationEmail = async (
   }
 };
 
-export const sendAccountPasswordChangedEmail = async (
-  toEmail: string,
-) => {
+export const sendAccountPasswordChangedEmail = async (toEmail: string) => {
   const mailOptions = {
     from: process.env.NODEMAILER_EMAIL,
     to: toEmail,
@@ -46,9 +44,7 @@ export const sendAccountPasswordChangedEmail = async (
   }
 };
 
-export const sendAccountDeletedEmail = async (
-  toEmail: string,
-) => {
+export const sendAccountDeletedEmail = async (toEmail: string) => {
   const mailOptions = {
     from: process.env.NODEMAILER_EMAIL,
     to: toEmail,

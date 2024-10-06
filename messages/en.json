@@ -5,6 +5,15 @@
     "personalInformation": {
       "account": "Account",
       "personalInformation": "Personal Information",
+      "chooseFromLibrary": "Choose from library",
+      "takePhoto": "Take a photo",
+      "profilePictureChangeSuccess": "Your profile picture has been changed successfully!",
+      "profilePictureChangeError": "Your profile picture has failed to upload!\nPlease ensure that you are not uploading anything more than 2MB in size and try again later!",
+      "takePhotoDialog": {
+        "title": "Take a photo",
+        "capturePhotoButton": "Capture photo",
+        "cancelButton": "Cancel"
+      },
       "firstName": "First Name",
       "firstNameError": "First name required!",
       "lastName": "Last Name",

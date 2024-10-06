@@ -61,8 +61,6 @@ const AccountPersonalInformation = ({
     useState<boolean>(false);
   const [isChangePassword, setIsChangePassword] = useState<boolean>(false);
 
-  const image: string | undefined | null = session?.user?.image;
-
   const columnSpacing: number = 7;
   const margin: number = 5;
   const formMargin: number = 2;
@@ -95,6 +93,7 @@ const AccountPersonalInformation = ({
   const deleteUserAccount = trpc.user.deleteUserAccount.useMutation();
   const updateUserAccount = trpc.user.updateUserAccount.useMutation({
     onSuccess: () => {
+      // update the session
       update({ name: firstName });
     },
   });
@@ -180,7 +179,7 @@ const AccountPersonalInformation = ({
     const userAvatarField = () => {
       return (
         <Box sx={{ display: "flex", justifyContent: "center" }}>
-          <UserAvatar image={image} editable={true} />
+          <UserAvatar editable={true} />
         </Box>
       );
     };
