@@ -2,6 +2,7 @@ import { trpc } from "@/app/_trpc/client";
 import { Currency, currencyMap } from "@/constants/enums/currency";
 import { getCookie, setCookie } from "cookies-next";
 import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import ButtonMenu from "./button-menu";
 
@@ -9,6 +10,7 @@ const CurrencySwitcher = () => {
   const id: string = "currency-switcher";
   const { data: session } = useSession();
   const email = session?.user.email!;
+  const router = useRouter();
 
   const [currency, setCurrency] = useState<string>(Currency.sgd);
 
@@ -17,14 +19,18 @@ const CurrencySwitcher = () => {
     {
       email,
     },
-    { enabled: !!email, retry: false },
+    {
+      enabled: !!email,
+      retry: false,
+      onError: (error) => {
+        if (error.message === "UNAUTHORIZED") router.push("/protected");
+      },
+    },
   );
 
   const handleCurrencyChange = async (newCurrency: string) => {
     setCookie("currency", newCurrency);
     setCurrency(newCurrency);
-
-    console.log(getCookie("currency"));
 
     if (session?.user) {
       const data = { email, currency: newCurrency };

@@ -15,6 +15,7 @@ import { Box, Breadcrumbs, Button, Stack, Switch } from "@mui/material";
 import { TRPCClientError } from "@trpc/client";
 import { useSession } from "next-auth/react";
 import { useTranslations } from "next-intl";
+import { useRouter } from "next/navigation";
 import React, { Dispatch, SetStateAction, useEffect, useState } from "react";
 
 const AccountNotifications = ({
@@ -26,6 +27,7 @@ const AccountNotifications = ({
 }) => {
   const t = useTranslations("account.notifications");
   const { data: session } = useSession();
+  const router = useRouter();
 
   const [showAlert, setShowAlert] = useState<boolean>(false);
   const [alertText, setAlertText] = useState<string>("");
@@ -46,15 +48,25 @@ const AccountNotifications = ({
   const fieldWidth: string = "27%";
 
   const getUserAccountNotificationsSettings =
-    trpc.user.getUserNotificationsSettings.useQuery({
-      email: session?.user.email!,
-    });
+    trpc.user.getUserNotificationsSettings.useQuery(
+      {
+        email: session?.user.email!,
+      },
+      {
+        onError: (error) => {
+          if (error.message === "UNAUTHORIZED") router.push("/protected");
+        },
+      },
+    );
   const updateUserNotificationsSetting =
     trpc.user.updateUserNotificationsSettings.useMutation({
       onSuccess: () => {
         setAlertType(AlertType.success);
         setAlertText(t("notificationsUpdated"));
         setShowAlert(true);
+      },
+      onError: (error) => {
+        if (error.message === "UNAUTHORIZED") router.push("/protected");
       },
     });
 

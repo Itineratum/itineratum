@@ -23,6 +23,7 @@ import {
 import { TRPCClientError } from "@trpc/client";
 import { useSession } from "next-auth/react";
 import { useTranslations } from "next-intl";
+import { useRouter } from "next/navigation";
 import { ChangeEvent, Dispatch, SetStateAction, useState } from "react";
 import { Controller, ControllerRenderProps, useForm } from "react-hook-form";
 
@@ -38,6 +39,7 @@ const ChangePasswordForm = ({
   setAccountPersonalInformationShowAlert: Dispatch<SetStateAction<boolean>>;
 }) => {
   const t = useTranslations("account.personalInformation.changePassword");
+  const router = useRouter();
   const { data: session } = useSession();
   const {
     control,
@@ -82,6 +84,9 @@ const ChangePasswordForm = ({
       setAccountPersonalInformationAlertText(t("passwordChangeSuccess"));
       setAccountPersonalInformationAlertType(AlertType.success);
       setAccountPersonalInformationShowAlert(true);
+    },
+    onError: (error) => {
+      if (error.message === "UNAUTHORIZED") router.push("/protected");
     },
   });
 

@@ -29,6 +29,7 @@ import dayjs, { Dayjs } from "dayjs";
 import utc from "dayjs/plugin/utc";
 import { signOut, useSession } from "next-auth/react";
 import { useTranslations } from "next-intl";
+import { useRouter } from "next/navigation";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import ChangePasswordForm from "./change-password-form";
@@ -43,6 +44,7 @@ const AccountPersonalInformation = ({
   setAccountSetting: Dispatch<SetStateAction<AccountSetting>>;
 }) => {
   const t = useTranslations("account.personalInformation");
+  const router = useRouter();
   const { data: session, update } = useSession();
   const {
     control,
@@ -85,14 +87,29 @@ const AccountPersonalInformation = ({
   const address2 = watch(address2Id);
   const dateOfBirth = watch(dateOfBirthId);
 
-  const getUserAccountDetails = trpc.user.getUserAccountDetails.useQuery({
-    email: session?.user.email!,
+  const getUserAccountDetails = trpc.user.getUserAccountDetails.useQuery(
+    {
+      email: session?.user.email!,
+    },
+    {
+      retry: false,
+      onError: (error) => {
+        if (error.message === "UNAUTHORIZED") router.push("/protected");
+      },
+    },
+  );
+  const deleteUserAccount = trpc.user.deleteUserAccount.useMutation({
+    onError: (error) => {
+      if (error.message === "UNAUTHORIZED") router.push("/protected");
+    },
   });
-  const deleteUserAccount = trpc.user.deleteUserAccount.useMutation();
   const updateUserAccount = trpc.user.updateUserAccount.useMutation({
     onSuccess: () => {
       // update the session
       update({ name: firstName });
+    },
+    onError: (error) => {
+      if (error.message === "UNAUTHORIZED") router.push("/protected");
     },
   });
 

@@ -6,8 +6,6 @@ export const retrieveFAQs = async () => {
     await connectToDatabase();
     const faqs = await FAQ.find({});
 
-    console.log("FAQS", faqs);
-
     if (faqs && faqs.length > 0) {
       return {
         success: true,

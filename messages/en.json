@@ -158,5 +158,11 @@
   "error": {
     "error": "Error!",
     "home": "Go to home"
+  },
+  "protected": {
+    "heading": "Unathorised Access",
+    "description": "You are not authorised to view the requested page or complete the action.",
+    "recovery": "Please log in or sign up to continue.",
+    "login": "Login"
   }
 }

@@ -11,7 +11,8 @@ import colorsConst from "@/constants/pages/colors.json";
 import { Box, Button, Stack } from "@mui/material";
 import { useSession } from "next-auth/react";
 import { useTranslations } from "next-intl";
-import { Dispatch, SetStateAction } from "react";
+import { useRouter } from "next/navigation";
+import { Dispatch, SetStateAction, useEffect } from "react";
 
 const AccountBase = ({
   setAccountSetting,
@@ -19,10 +20,16 @@ const AccountBase = ({
   setAccountSetting: Dispatch<SetStateAction<AccountSetting>>;
 }) => {
   const t = useTranslations("account");
-  const { data: session } = useSession();
+  const { data: session, status } = useSession();
   const name: string | undefined | null = session?.user?.name;
+  const router = useRouter();
 
   const sectionMargin: number = 7;
+
+  useEffect(() => {
+    if (status === "unauthenticated" || !session || !session.user)
+      router.push("/protected");
+  }, [status, router]);
 
   const userName = () => {
     return name ? (

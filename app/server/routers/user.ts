@@ -37,7 +37,7 @@ import {
   updateUserNotificationsSettingsSchema,
   verifyVerificationCodeSchema,
 } from "../schemas/user";
-import { publicProcedure, router } from "../trpc";
+import { privateProcedure, publicProcedure, router } from "../trpc";
 
 export const userRouter = router({
   generateVerificationCode: publicProcedure
@@ -149,7 +149,7 @@ export const userRouter = router({
         });
       }
     }),
-  getUserCurrencyLanguage: publicProcedure
+  getUserCurrencyLanguage: privateProcedure
     .input(getUserCurrencyLanguageSchema.input)
     .output(getUserCurrencyLanguageSchema.output)
     .query(async (data) => {
@@ -170,7 +170,7 @@ export const userRouter = router({
         };
       }
     }),
-  getUserAccountDetails: publicProcedure
+  getUserAccountDetails: privateProcedure
     .input(getUserAccountDetailsSchema.input)
     .output(getUserAccountDetailsSchema.output)
     .query(async (data) => {
@@ -194,7 +194,7 @@ export const userRouter = router({
         };
       }
     }),
-  updateUserAccount: publicProcedure
+  updateUserAccount: privateProcedure
     .input(updateUserAccountSchema.input)
     .output(updateUserAccountSchema.output)
     .mutation(async (data) => {
@@ -219,7 +219,7 @@ export const userRouter = router({
         });
       }
     }),
-  deleteUserAccount: publicProcedure
+  deleteUserAccount: privateProcedure
     .input(deleteUserAccountSchema.input)
     .output(deleteUserAccountSchema.output)
     .mutation(async (data) => {
@@ -234,7 +234,7 @@ export const userRouter = router({
         });
       }
     }),
-  changeUserPassword: publicProcedure
+  changeUserPassword: privateProcedure
     .input(changeUserPasswordSchema.input)
     .output(changeUserPasswordSchema.output)
     .mutation(async (data) => {
@@ -270,7 +270,7 @@ export const userRouter = router({
         });
       }
     }),
-  getUserNotificationsSettings: publicProcedure
+  getUserNotificationsSettings: privateProcedure
     .input(getUserNotificationsSettingsSchema.input)
     .output(getUserNotificationsSettingsSchema.output)
     .query(async (data) => {
@@ -298,7 +298,7 @@ export const userRouter = router({
         };
       }
     }),
-  updateUserNotificationsSettings: publicProcedure
+  updateUserNotificationsSettings: privateProcedure
     .input(updateUserNotificationsSettingsSchema.input)
     .output(updateUserNotificationsSettingsSchema.output)
     .mutation(async (data) => {

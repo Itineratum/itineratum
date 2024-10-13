@@ -1,18 +1,72 @@
-import { getServerSession } from "next-auth";
-import { redirect } from "next/navigation";
-import { use } from "react";
+"use client";
+
+import Text from "@/components/atoms/text";
+import { TypographyVariant } from "@/constants/enums/theme";
+import { Box, Button, Container, Stack } from "@mui/material";
+import { useTranslations } from "next-intl";
+import { useRouter } from "next/navigation";
 
 const ProtectedRoute = () => {
-  const session = use(getServerSession());
+  const t = useTranslations("protected");
+  const router = useRouter();
 
-  if (!session || !session.user) {
-    redirect("/api/auth/signin");
-  }
+  const spacing: number = 7;
+
+  const heading = () => {
+    const margin: number = 5;
+
+    return (
+      <Box marginY={margin}>
+        <Text text={t("heading")} variant={TypographyVariant.h2} bold={true} />
+      </Box>
+    );
+  };
+
+  const description = () => {
+    return (
+      <Text
+        text={t("description")}
+        variant={TypographyVariant.h5}
+        bold={false}
+      />
+    );
+  };
+
+  const recovery = () => {
+    return (
+      <Text text={t("recovery")} variant={TypographyVariant.h5} bold={false} />
+    );
+  };
+
+  const loginButton = () => {
+    const width: string = "30%";
+
+    const handleOnClick = () => {
+      router.push("/login");
+    };
+
+    return (
+      <Button
+        type="button"
+        variant="contained"
+        color="primary"
+        sx={{ maxWidth: width }}
+        onClick={handleOnClick}
+      >
+        {t("login")}
+      </Button>
+    );
+  };
 
   return (
-    <div>
-      This is a protected route. You will only see this if you are logged in.
-    </div>
+    <Container maxWidth="md">
+      {heading()}
+      <Stack spacing={spacing}>
+        {description()}
+        {recovery()}
+        {loginButton()}
+      </Stack>
+    </Container>
   );
 };
 
