@@ -5,9 +5,8 @@ import { AuthService } from "@/constants/enums/authService";
 import { Country } from "@/constants/enums/country";
 import { Currency } from "@/constants/enums/currency";
 import { Language } from "@/constants/enums/language";
-import { IUser } from "@/constants/types/user";
+import { IUser, Notifications } from "@/constants/types/user";
 import mongoose, { models } from "mongoose";
-import { boolean } from "zod";
 const { Schema } = mongoose;
 
 const userSchema = new Schema<IUser>(
@@ -15,7 +14,11 @@ const userSchema = new Schema<IUser>(
     first_name: { type: String, required: false },
     last_name: { type: String, required: false },
     country: { type: String, enum: Country, required: false },
-    phone_number: { type: String, required: false, set: (v: any) => String(v) },
+    phone_number: {
+      type: String,
+      required: false,
+      set: (value: any) => String(value),
+    },
     email: { type: String, required: true, unique: true },
     address_1: { type: String, required: false },
     address_2: { type: String, required: false },
@@ -37,15 +40,29 @@ const userSchema = new Schema<IUser>(
     account_created: { type: Date, required: true },
     password: { type: String, required: false }, // password is stored as hash only if users sign up using credentials
     is_deleted: { type: Boolean, required: true, default: false },
+    notifications: {
+      type: Object,
+      default: {
+        newsletter: {
+          email: true,
+          push_notifications: false,
+        },
+        offers_updates: {
+          email: true,
+          push_notifications: false,
+        },
+      },
+      required: true,
+    },
   },
-  { collection: constDbCollections.users },
+  { collection: constDbCollections.users }
 );
 
 export const initialUser = (
   first_name: string,
   email: string,
   profile_picture: string,
-  auth_service: AuthService,
+  auth_service: AuthService
 ) => {
   return {
     first_name,

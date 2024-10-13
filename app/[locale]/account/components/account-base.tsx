@@ -21,7 +21,6 @@ const AccountBase = ({
   const t = useTranslations("account");
   const { data: session } = useSession();
   const name: string | undefined | null = session?.user?.name;
-  const image: string | undefined | null = session?.user?.image;
 
   const sectionMargin: number = 7;
 
@@ -84,14 +83,19 @@ const AccountBase = ({
     };
 
     const notifications = () => {
+      const handleOnClick = () => {
+        setAccountSetting(AccountSetting.notifications);
+      }
+
       return (
         <Button
           sx={{
             color: colorsConst.palette.text.primary,
           }}
+          onClick={handleOnClick}
         >
           <Text
-            text={t("notifications")}
+            text={t("notifications.notifications")}
             variant={TypographyVariant.h5}
             bold={false}
           />
@@ -141,7 +145,7 @@ const AccountBase = ({
       );
     };
 
-    const accessibility = () => {
+    const privacyPolicy = () => {
       return (
         <Button
           sx={{
@@ -164,7 +168,7 @@ const AccountBase = ({
       >
         {header()}
         {termsAndConditions()}
-        {accessibility()}
+        {privacyPolicy()}
       </Stack>
     );
   };

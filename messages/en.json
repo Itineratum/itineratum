@@ -49,7 +49,10 @@
       }
     },
     "accessibility": "Accessibility",
-    "notifications": "Notifications",
+    "notifications": {
+      "account": "Account",
+      "notifications": "Notifications"
+    },
     "termsAndConditions": "T&C",
     "privacyPolicy": "Privacy Policy",
     "settings": "Settings",
