@@ -1,4 +1,15 @@
 {
+  "navbar": {
+    "aboutUs": "About Us",
+    "account": {
+      "account": "Account",
+      "login": "Login",
+      "signOut": "Sign Out",
+      "signUp": "Sign Up"
+    },
+    "contactUs": "Contact Us",
+    "savedTrips": "Saved Trips"
+  },
   "home": { "header": "It's time to travel with EASE." },
   "account": {
     "account": "Account",
@@ -69,16 +80,19 @@
     "settings": "Settings",
     "legal": "Legal"
   },
-  "navbar": {
-    "aboutUs": "About Us",
-    "account": {
-      "account": "Account",
-      "login": "Login",
-      "signOut": "Sign Out",
-      "signUp": "Sign Up"
-    },
+  "contactUs": {
     "contactUs": "Contact Us",
-    "savedTrips": "Saved Trips"
+    "emailDescription": "We are always here to help.",
+    "email": "itineratumsg@gmail.com",
+    "phoneDescription": "If you prefer interacting with a real voice...",
+    "phone": "+65 96554223",
+    "commonFaqs": "Common FAQs",
+    "faq1": "Are the accommodations listed on your website pet-friendly?",
+    "faq1Answer": "You can select our pet-friendly option in the menu when planning your trip. We will then try our best to suggest pet-friendly accommodations for you!",
+    "faq2": "Are there any charges that comes with using Itineratum to generate an itinerary?",
+    "faq2Answer": "No, using Itineratum to generate an itinerary is completely free. We believe in making travel planning easy and accessible for everyone. Our basic itinerary generation service is provided at no cost. However, if you choose to book accommodations, flights, or other services through our platform, those will be subject to the respective providers' fees.",
+    "faq3": "What is the cancellation policy?",
+    "faq3Answer": "Lorem ipsum"
   },
   "signUp": {
     "signUp": "Sign Up",

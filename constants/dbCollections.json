@@ -1,4 +1,5 @@
 {
   "users": "users",
-  "verificationCodes": "verification_codes"
+  "verificationCodes": "verification_codes",
+  "faqs": "faqs"
 }

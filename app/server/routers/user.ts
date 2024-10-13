@@ -23,18 +23,18 @@ import {
 import { TRPCError } from "@trpc/server";
 import bcrypt from "bcrypt";
 import {
-  changeUserPassword,
-  deleteUserAccount,
+  changeUserPasswordSchema,
+  deleteUserAccountSchema,
   generateVerificationCodeSchema,
-  getUserAccountDetails,
-  getUserCurrencyLanguage,
-  getUserNotificationsSettings,
-  loginViaEmail,
-  loginViaOtp,
-  switchCurrency,
-  switchLanguage,
-  updateUserAccount,
-  updateUserNotificationsSettings,
+  getUserAccountDetailsSchema,
+  getUserCurrencyLanguageSchema,
+  getUserNotificationsSettingsSchema,
+  loginViaEmailSchema,
+  loginViaOtpSchema,
+  switchCurrencySchema,
+  switchLanguageSchema,
+  updateUserAccountSchema,
+  updateUserNotificationsSettingsSchema,
   verifyVerificationCodeSchema,
 } from "../schemas/user";
 import { publicProcedure, router } from "../trpc";
@@ -101,8 +101,8 @@ export const userRouter = router({
       }
     }),
   loginViaEmail: publicProcedure
-    .input(loginViaEmail.input)
-    .output(loginViaEmail.output)
+    .input(loginViaEmailSchema.input)
+    .output(loginViaEmailSchema.output)
     .mutation(async (data) => {
       const { email, password } = data.input;
       const loginRes = await credentialsLogIn(email, password);
@@ -115,15 +115,15 @@ export const userRouter = router({
       }
     }),
   loginViaOtp: publicProcedure
-    .input(loginViaOtp.input)
-    .output(loginViaOtp.output)
+    .input(loginViaOtpSchema.input)
+    .output(loginViaOtpSchema.output)
     .mutation(async (data) => {
       // TODO: if OTP is being set up in the future, complete this?
       const { phoneNumber } = data.input;
     }),
   switchCurrency: publicProcedure
-    .input(switchCurrency.input)
-    .output(switchCurrency.output)
+    .input(switchCurrencySchema.input)
+    .output(switchCurrencySchema.output)
     .mutation(async (data) => {
       const { email, currency } = data.input;
       const updateUserRes = await updateUser(email, { currency });
@@ -136,8 +136,8 @@ export const userRouter = router({
       }
     }),
   switchLanguage: publicProcedure
-    .input(switchLanguage.input)
-    .output(switchLanguage.output)
+    .input(switchLanguageSchema.input)
+    .output(switchLanguageSchema.output)
     .mutation(async (data) => {
       const { email, language } = data.input;
       const updateUserRes = await updateUser(email, { language });
@@ -150,8 +150,8 @@ export const userRouter = router({
       }
     }),
   getUserCurrencyLanguage: publicProcedure
-    .input(getUserCurrencyLanguage.input)
-    .output(getUserCurrencyLanguage.output)
+    .input(getUserCurrencyLanguageSchema.input)
+    .output(getUserCurrencyLanguageSchema.output)
     .query(async (data) => {
       const { email } = data.input;
       const retrieveCurrencyLanguageRes = await retrieveCurrencyLanguage(email);
@@ -171,8 +171,8 @@ export const userRouter = router({
       }
     }),
   getUserAccountDetails: publicProcedure
-    .input(getUserAccountDetails.input)
-    .output(getUserAccountDetails.output)
+    .input(getUserAccountDetailsSchema.input)
+    .output(getUserAccountDetailsSchema.output)
     .query(async (data) => {
       const { email } = data.input;
       const retrieveUserDetailsRes = await retrieveUserDetails(email);
@@ -195,8 +195,8 @@ export const userRouter = router({
       }
     }),
   updateUserAccount: publicProcedure
-    .input(updateUserAccount.input)
-    .output(updateUserAccount.output)
+    .input(updateUserAccountSchema.input)
+    .output(updateUserAccountSchema.output)
     .mutation(async (data) => {
       const { email, firstName, lastName, address1, address2, dateOfBirth } =
         data.input;
@@ -220,8 +220,8 @@ export const userRouter = router({
       }
     }),
   deleteUserAccount: publicProcedure
-    .input(deleteUserAccount.input)
-    .output(deleteUserAccount.output)
+    .input(deleteUserAccountSchema.input)
+    .output(deleteUserAccountSchema.output)
     .mutation(async (data) => {
       const { email } = data.input;
       const deleteUserRes = await deleteUser(email);
@@ -235,8 +235,8 @@ export const userRouter = router({
       }
     }),
   changeUserPassword: publicProcedure
-    .input(changeUserPassword.input)
-    .output(changeUserPassword.output)
+    .input(changeUserPasswordSchema.input)
+    .output(changeUserPasswordSchema.output)
     .mutation(async (data) => {
       const { email, currentPassword, newPassword } = data.input;
 
@@ -271,8 +271,8 @@ export const userRouter = router({
       }
     }),
   getUserNotificationsSettings: publicProcedure
-    .input(getUserNotificationsSettings.input)
-    .output(getUserNotificationsSettings.output)
+    .input(getUserNotificationsSettingsSchema.input)
+    .output(getUserNotificationsSettingsSchema.output)
     .query(async (data) => {
       const { email } = data.input;
       const retrieveUserDetailsRes = await retrieveUserDetails(email);
@@ -299,8 +299,8 @@ export const userRouter = router({
       }
     }),
   updateUserNotificationsSettings: publicProcedure
-    .input(updateUserNotificationsSettings.input)
-    .output(updateUserNotificationsSettings.output)
+    .input(updateUserNotificationsSettingsSchema.input)
+    .output(updateUserNotificationsSettingsSchema.output)
     .mutation(async (data) => {
       const { email, field, fieldType, value } = data.input;
 

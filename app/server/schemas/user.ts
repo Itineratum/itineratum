@@ -24,7 +24,7 @@ export const verifyVerificationCodeSchema = {
   ouput: z.void(),
 };
 
-export const loginViaEmail = {
+export const loginViaEmailSchema = {
   input: z.object({
     email: z.string(),
     password: z.string(),
@@ -33,14 +33,14 @@ export const loginViaEmail = {
 };
 
 // TODO: if OTP is being set up in the future, complete this?
-export const loginViaOtp = {
+export const loginViaOtpSchema = {
   input: z.object({
     phoneNumber: z.string(),
   }),
   output: z.void(),
 };
 
-export const switchCurrency = {
+export const switchCurrencySchema = {
   input: z.object({
     email: z.string(),
     currency: z.enum(enumToZod(Currency)),
@@ -48,7 +48,7 @@ export const switchCurrency = {
   output: z.void(),
 };
 
-export const switchLanguage = {
+export const switchLanguageSchema = {
   input: z.object({
     email: z.string(),
     language: z.enum(enumToZod(Language)),
@@ -56,7 +56,7 @@ export const switchLanguage = {
   output: z.void(),
 };
 
-export const getUserCurrencyLanguage = {
+export const getUserCurrencyLanguageSchema = {
   input: z.object({
     email: z.string(),
   }),
@@ -66,7 +66,7 @@ export const getUserCurrencyLanguage = {
   }),
 };
 
-export const getUserAccountDetails = {
+export const getUserAccountDetailsSchema = {
   input: z.object({
     email: z.string(),
   }),
@@ -80,7 +80,7 @@ export const getUserAccountDetails = {
   }),
 };
 
-export const updateUserAccount = {
+export const updateUserAccountSchema = {
   input: z.object({
     email: z.string(),
     firstName: z.string().optional(),
@@ -92,14 +92,14 @@ export const updateUserAccount = {
   output: z.void(),
 };
 
-export const deleteUserAccount = {
+export const deleteUserAccountSchema = {
   input: z.object({
     email: z.string(),
   }),
   output: z.void(),
 };
 
-export const changeUserPassword = {
+export const changeUserPasswordSchema = {
   input: z.object({
     email: z.string(),
     currentPassword: z.string(),
@@ -108,7 +108,7 @@ export const changeUserPassword = {
   output: z.void(),
 };
 
-export const getUserNotificationsSettings = {
+export const getUserNotificationsSettingsSchema = {
   input: z.object({
     email: z.string(),
   }),
@@ -124,7 +124,7 @@ export const getUserNotificationsSettings = {
   }),
 };
 
-export const updateUserNotificationsSettings = {
+export const updateUserNotificationsSettingsSchema = {
   input: z.object({
     email: z.string(),
     field: z.enum(enumToZod(AccountNotificationsField)),

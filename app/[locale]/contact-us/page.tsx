@@ -1,7 +1,7 @@
-import React from "react";
+import ContactUsPage from "@/components/templates/contact-us-page";
 
 const ContactUs = () => {
-  return <h1>Contact Us</h1>;
+  return <ContactUsPage />;
 };
 
 export default ContactUs;
