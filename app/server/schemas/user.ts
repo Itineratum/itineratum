@@ -1,3 +1,7 @@
+import {
+  AccountNotificationsField,
+  AccountNotificationsFieldType,
+} from "@/constants/enums/accountNotifications";
 import { Currency } from "@/constants/enums/currency";
 import { Language } from "@/constants/enums/language";
 import { enumToZod } from "@/utils/enumToZod";
@@ -100,6 +104,32 @@ export const changeUserPassword = {
     email: z.string(),
     currentPassword: z.string(),
     newPassword: z.string(),
+  }),
+  output: z.void(),
+};
+
+export const getUserNotificationsSettings = {
+  input: z.object({
+    email: z.string(),
+  }),
+  output: z.object({
+    newsletter: z.object({
+      email: z.boolean(),
+      pushNotifications: z.boolean(),
+    }),
+    allOffersUpdates: z.object({
+      email: z.boolean(),
+      pushNotifications: z.boolean(),
+    }),
+  }),
+};
+
+export const updateUserNotificationsSettings = {
+  input: z.object({
+    email: z.string(),
+    field: z.enum(enumToZod(AccountNotificationsField)),
+    fieldType: z.enum(enumToZod(AccountNotificationsFieldType)),
+    value: z.boolean(),
   }),
   output: z.void(),
 };

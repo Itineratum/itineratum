@@ -51,7 +51,18 @@
     "accessibility": "Accessibility",
     "notifications": {
       "account": "Account",
-      "notifications": "Notifications"
+      "notifications": "Notifications",
+      "travelTipsAndOffers": "Travel Tips & Offers",
+      "newsletter": "Newsletter",
+      "email": "Email",
+      "pushNotifications": "Push Notifications",
+      "unsubAllOffersUpdates": "Unsubscribe from all Offers and Updates",
+      "unsubAllOffersUpdatesDescription": "You will still receive notifications on your account's activities.",
+      "allOffersAndUpdates": "All Offers and Updates",
+      "on": "Turned on",
+      "off": "Turned off",
+      "notificationsUpdated": "Your account notifications settings have been updated!",
+      "notificationsUpdateError": "Error updating your account notifications settings, please try again later!"
     },
     "termsAndConditions": "T&C",
     "privacyPolicy": "Privacy Policy",

@@ -1,4 +1,8 @@
 import {
+  AccountNotificationsField,
+  AccountNotificationsFieldType,
+} from "@/constants/enums/accountNotifications";
+import {
   sendAccountDeletedEmail,
   sendAccountPasswordChangedEmail,
   sendSignUpVerificationEmail,
@@ -24,11 +28,13 @@ import {
   generateVerificationCodeSchema,
   getUserAccountDetails,
   getUserCurrencyLanguage,
+  getUserNotificationsSettings,
   loginViaEmail,
   loginViaOtp,
   switchCurrency,
   switchLanguage,
   updateUserAccount,
+  updateUserNotificationsSettings,
   verifyVerificationCodeSchema,
 } from "../schemas/user";
 import { publicProcedure, router } from "../trpc";
@@ -256,6 +262,67 @@ export const userRouter = router({
       };
       const updateUserRes = await updateUser(email, update);
       await sendAccountPasswordChangedEmail(email);
+
+      if (!updateUserRes.success) {
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message: updateUserRes.error,
+        });
+      }
+    }),
+  getUserNotificationsSettings: publicProcedure
+    .input(getUserNotificationsSettings.input)
+    .output(getUserNotificationsSettings.output)
+    .query(async (data) => {
+      const { email } = data.input;
+      const retrieveUserDetailsRes = await retrieveUserDetails(email);
+
+      if (!retrieveUserDetailsRes.success) {
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message: retrieveUserDetailsRes.error,
+        });
+      } else {
+        const notificationsSettings = retrieveUserDetailsRes.data.notifications;
+        return {
+          newsletter: {
+            email: notificationsSettings.newsletter.email,
+            pushNotifications:
+              notificationsSettings.newsletter.push_notifications,
+          },
+          allOffersUpdates: {
+            email: notificationsSettings.all_offers_updates.email,
+            pushNotifications:
+              notificationsSettings.all_offers_updates.push_notifications,
+          },
+        };
+      }
+    }),
+  updateUserNotificationsSettings: publicProcedure
+    .input(updateUserNotificationsSettings.input)
+    .output(updateUserNotificationsSettings.output)
+    .mutation(async (data) => {
+      const { email, field, fieldType, value } = data.input;
+
+      let updateField: string;
+      let updateFieldType: string;
+
+      updateField =
+        field === AccountNotificationsField.newsletter
+          ? field
+          : "all_offers_updates";
+      updateFieldType =
+        fieldType === AccountNotificationsFieldType.email
+          ? fieldType
+          : "push_notifications";
+
+      const update = {
+        $set: {
+          [`notifications.${updateField}.${updateFieldType}`]: value,
+        },
+      };
+
+      const updateUserRes = await updateUser(email, update);
 
       if (!updateUserRes.success) {
         throw new TRPCError({

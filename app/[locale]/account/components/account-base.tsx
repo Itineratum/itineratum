@@ -85,7 +85,7 @@ const AccountBase = ({
     const notifications = () => {
       const handleOnClick = () => {
         setAccountSetting(AccountSetting.notifications);
-      }
+      };
 
       return (
         <Button

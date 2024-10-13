@@ -9,10 +9,10 @@ import Container from "@mui/material/Container";
 import { useTranslations } from "next-intl";
 import { useState } from "react";
 
-const LoginPage = () => {
+const AccountPage = () => {
   const t = useTranslations("account");
   const [accountSetting, setAccountSetting] = useState<AccountSetting>(
-    AccountSetting.base
+    AccountSetting.base,
   );
 
   const pageTransitionDuration: number = 500;
@@ -91,4 +91,4 @@ const LoginPage = () => {
   );
 };
 
-export default LoginPage;
+export default AccountPage;

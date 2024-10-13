@@ -6,7 +6,6 @@ import User, { initialUser } from "@/models/User";
 import { getAuthService } from "@/utils/getAuthService";
 import bcrypt from "bcrypt";
 import { Account, User as AuthUser } from "next-auth";
-import { UTApi } from "uploadthing/server";
 
 // used by Google provider login
 export const signIn = async ({

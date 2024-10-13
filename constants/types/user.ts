@@ -18,12 +18,12 @@ export interface IUser {
   account_created: Date;
   password: string;
   is_deleted: boolean;
-  notifications: Notifications
+  notifications: Notifications;
 }
 
 export interface Notifications {
   newsletter: NotificationsOptions;
-  offers_updates: NotificationsOptions
+  all_offers_updates: NotificationsOptions;
 }
 
 interface NotificationsOptions {

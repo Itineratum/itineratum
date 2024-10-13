@@ -47,7 +47,7 @@ const userSchema = new Schema<IUser>(
           email: true,
           push_notifications: false,
         },
-        offers_updates: {
+        all_offers_updates: {
           email: true,
           push_notifications: false,
         },
@@ -55,14 +55,14 @@ const userSchema = new Schema<IUser>(
       required: true,
     },
   },
-  { collection: constDbCollections.users }
+  { collection: constDbCollections.users },
 );
 
 export const initialUser = (
   first_name: string,
   email: string,
   profile_picture: string,
-  auth_service: AuthService
+  auth_service: AuthService,
 ) => {
   return {
     first_name,

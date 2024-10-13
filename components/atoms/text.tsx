@@ -10,15 +10,18 @@ const Text = ({
   variant,
   bold,
   textDecoration = TypographyTextDecoration.none,
+  color = "inherit",
 }: {
   text: string;
   variant: TypographyVariant;
   bold: boolean;
   textDecoration?: TypographyTextDecoration;
+  color?: string;
 }) => {
   return (
     <Typography
       variant={variant as Variant}
+      color={color}
       sx={{
         textDecoration: textDecoration,
       }}
