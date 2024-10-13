@@ -11,7 +11,8 @@ import colorsConst from "@/constants/pages/colors.json";
 import { Box, Button, Stack } from "@mui/material";
 import { useSession } from "next-auth/react";
 import { useTranslations } from "next-intl";
-import { Dispatch, SetStateAction } from "react";
+import { useRouter } from "next/navigation";
+import { Dispatch, SetStateAction, useEffect } from "react";
 
 const AccountBase = ({
   setAccountSetting,
@@ -19,11 +20,16 @@ const AccountBase = ({
   setAccountSetting: Dispatch<SetStateAction<AccountSetting>>;
 }) => {
   const t = useTranslations("account");
-  const { data: session } = useSession();
+  const { data: session, status } = useSession();
   const name: string | undefined | null = session?.user?.name;
-  const image: string | undefined | null = session?.user?.image;
+  const router = useRouter();
 
   const sectionMargin: number = 7;
+
+  useEffect(() => {
+    if (status === "unauthenticated" || !session || !session.user)
+      router.push("/protected");
+  }, [status, router]);
 
   const userName = () => {
     return name ? (
@@ -84,14 +90,19 @@ const AccountBase = ({
     };
 
     const notifications = () => {
+      const handleOnClick = () => {
+        setAccountSetting(AccountSetting.notifications);
+      };
+
       return (
         <Button
           sx={{
             color: colorsConst.palette.text.primary,
           }}
+          onClick={handleOnClick}
         >
           <Text
-            text={t("notifications")}
+            text={t("notifications.notifications")}
             variant={TypographyVariant.h5}
             bold={false}
           />
@@ -141,7 +152,7 @@ const AccountBase = ({
       );
     };
 
-    const accessibility = () => {
+    const privacyPolicy = () => {
       return (
         <Button
           sx={{
@@ -164,7 +175,7 @@ const AccountBase = ({
       >
         {header()}
         {termsAndConditions()}
-        {accessibility()}
+        {privacyPolicy()}
       </Stack>
     );
   };
@@ -176,7 +187,7 @@ const AccountBase = ({
       justifyContent="center"
       alignItems="center"
     >
-      <UserAvatar image={image} editable={false} />
+      <UserAvatar editable={false} />
       {userName()}
       {settingsSection()}
       {legalSection()}

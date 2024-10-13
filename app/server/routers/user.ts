@@ -1,4 +1,12 @@
-import { sendSignUpVerificationEmail } from "@/lib/nodeMailer";
+import {
+  AccountNotificationsField,
+  AccountNotificationsFieldType,
+} from "@/constants/enums/accountNotifications";
+import {
+  sendAccountDeletedEmail,
+  sendAccountPasswordChangedEmail,
+  sendSignUpVerificationEmail,
+} from "@/lib/nodeMailer";
 import {
   credentialsLogIn,
   credentialsSignUp,
@@ -15,19 +23,21 @@ import {
 import { TRPCError } from "@trpc/server";
 import bcrypt from "bcrypt";
 import {
-  changeUserPassword,
-  deleteUserAccount,
+  changeUserPasswordSchema,
+  deleteUserAccountSchema,
   generateVerificationCodeSchema,
-  getUserAccountDetails,
-  getUserCurrencyLanguage,
-  loginViaEmail,
-  loginViaOtp,
-  switchCurrency,
-  switchLanguage,
-  updateUserAccount,
+  getUserAccountDetailsSchema,
+  getUserCurrencyLanguageSchema,
+  getUserNotificationsSettingsSchema,
+  loginViaEmailSchema,
+  loginViaOtpSchema,
+  switchCurrencySchema,
+  switchLanguageSchema,
+  updateUserAccountSchema,
+  updateUserNotificationsSettingsSchema,
   verifyVerificationCodeSchema,
 } from "../schemas/user";
-import { publicProcedure, router } from "../trpc";
+import { privateProcedure, publicProcedure, router } from "../trpc";
 
 export const userRouter = router({
   generateVerificationCode: publicProcedure
@@ -91,8 +101,8 @@ export const userRouter = router({
       }
     }),
   loginViaEmail: publicProcedure
-    .input(loginViaEmail.input)
-    .output(loginViaEmail.output)
+    .input(loginViaEmailSchema.input)
+    .output(loginViaEmailSchema.output)
     .mutation(async (data) => {
       const { email, password } = data.input;
       const loginRes = await credentialsLogIn(email, password);
@@ -105,15 +115,15 @@ export const userRouter = router({
       }
     }),
   loginViaOtp: publicProcedure
-    .input(loginViaOtp.input)
-    .output(loginViaOtp.output)
+    .input(loginViaOtpSchema.input)
+    .output(loginViaOtpSchema.output)
     .mutation(async (data) => {
       // TODO: if OTP is being set up in the future, complete this?
       const { phoneNumber } = data.input;
     }),
   switchCurrency: publicProcedure
-    .input(switchCurrency.input)
-    .output(switchCurrency.output)
+    .input(switchCurrencySchema.input)
+    .output(switchCurrencySchema.output)
     .mutation(async (data) => {
       const { email, currency } = data.input;
       const updateUserRes = await updateUser(email, { currency });
@@ -126,8 +136,8 @@ export const userRouter = router({
       }
     }),
   switchLanguage: publicProcedure
-    .input(switchLanguage.input)
-    .output(switchLanguage.output)
+    .input(switchLanguageSchema.input)
+    .output(switchLanguageSchema.output)
     .mutation(async (data) => {
       const { email, language } = data.input;
       const updateUserRes = await updateUser(email, { language });
@@ -139,9 +149,9 @@ export const userRouter = router({
         });
       }
     }),
-  getUserCurrencyLanguage: publicProcedure
-    .input(getUserCurrencyLanguage.input)
-    .output(getUserCurrencyLanguage.output)
+  getUserCurrencyLanguage: privateProcedure
+    .input(getUserCurrencyLanguageSchema.input)
+    .output(getUserCurrencyLanguageSchema.output)
     .query(async (data) => {
       const { email } = data.input;
       const retrieveCurrencyLanguageRes = await retrieveCurrencyLanguage(email);
@@ -160,9 +170,9 @@ export const userRouter = router({
         };
       }
     }),
-  getUserAccountDetails: publicProcedure
-    .input(getUserAccountDetails.input)
-    .output(getUserAccountDetails.output)
+  getUserAccountDetails: privateProcedure
+    .input(getUserAccountDetailsSchema.input)
+    .output(getUserAccountDetailsSchema.output)
     .query(async (data) => {
       const { email } = data.input;
       const retrieveUserDetailsRes = await retrieveUserDetails(email);
@@ -184,9 +194,9 @@ export const userRouter = router({
         };
       }
     }),
-  updateUserAccount: publicProcedure
-    .input(updateUserAccount.input)
-    .output(updateUserAccount.output)
+  updateUserAccount: privateProcedure
+    .input(updateUserAccountSchema.input)
+    .output(updateUserAccountSchema.output)
     .mutation(async (data) => {
       const { email, firstName, lastName, address1, address2, dateOfBirth } =
         data.input;
@@ -209,12 +219,13 @@ export const userRouter = router({
         });
       }
     }),
-  deleteUserAccount: publicProcedure
-    .input(deleteUserAccount.input)
-    .output(deleteUserAccount.output)
+  deleteUserAccount: privateProcedure
+    .input(deleteUserAccountSchema.input)
+    .output(deleteUserAccountSchema.output)
     .mutation(async (data) => {
       const { email } = data.input;
       const deleteUserRes = await deleteUser(email);
+      await sendAccountDeletedEmail(email);
 
       if (!deleteUserRes.success) {
         throw new TRPCError({
@@ -223,17 +234,18 @@ export const userRouter = router({
         });
       }
     }),
-  changeUserPassword: publicProcedure
-    .input(changeUserPassword.input)
-    .output(changeUserPassword.output)
+  changeUserPassword: privateProcedure
+    .input(changeUserPasswordSchema.input)
+    .output(changeUserPasswordSchema.output)
     .mutation(async (data) => {
       const { email, currentPassword, newPassword } = data.input;
+
+      // verify that the user has entered the correct current password
       const verifyUserPasswordRes = await verifyUserPassword(
         email,
         currentPassword,
       );
 
-      // verify that the user has entered the correct current password
       if (!verifyUserPasswordRes.success) {
         throw new TRPCError({
           code: "INTERNAL_SERVER_ERROR",
@@ -248,6 +260,68 @@ export const userRouter = router({
           password: hashedNewPassword,
         },
       };
+      const updateUserRes = await updateUser(email, update);
+      await sendAccountPasswordChangedEmail(email);
+
+      if (!updateUserRes.success) {
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message: updateUserRes.error,
+        });
+      }
+    }),
+  getUserNotificationsSettings: privateProcedure
+    .input(getUserNotificationsSettingsSchema.input)
+    .output(getUserNotificationsSettingsSchema.output)
+    .query(async (data) => {
+      const { email } = data.input;
+      const retrieveUserDetailsRes = await retrieveUserDetails(email);
+
+      if (!retrieveUserDetailsRes.success) {
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message: retrieveUserDetailsRes.error,
+        });
+      } else {
+        const notificationsSettings = retrieveUserDetailsRes.data.notifications;
+        return {
+          newsletter: {
+            email: notificationsSettings.newsletter.email,
+            pushNotifications:
+              notificationsSettings.newsletter.push_notifications,
+          },
+          allOffersUpdates: {
+            email: notificationsSettings.all_offers_updates.email,
+            pushNotifications:
+              notificationsSettings.all_offers_updates.push_notifications,
+          },
+        };
+      }
+    }),
+  updateUserNotificationsSettings: privateProcedure
+    .input(updateUserNotificationsSettingsSchema.input)
+    .output(updateUserNotificationsSettingsSchema.output)
+    .mutation(async (data) => {
+      const { email, field, fieldType, value } = data.input;
+
+      let updateField: string;
+      let updateFieldType: string;
+
+      updateField =
+        field === AccountNotificationsField.newsletter
+          ? field
+          : "all_offers_updates";
+      updateFieldType =
+        fieldType === AccountNotificationsFieldType.email
+          ? fieldType
+          : "push_notifications";
+
+      const update = {
+        $set: {
+          [`notifications.${updateField}.${updateFieldType}`]: value,
+        },
+      };
+
       const updateUserRes = await updateUser(email, update);
 
       if (!updateUserRes.success) {

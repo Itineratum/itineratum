@@ -1,6 +1,7 @@
 import { AuthService } from "@/constants/enums/authService";
 import { SignInError } from "@/constants/errors/signIn";
 import { connectToDatabase, disconnectFromDatabase } from "@/lib/db";
+import { deleteImage } from "@/lib/uploadThing";
 import User, { initialUser } from "@/models/User";
 import { getAuthService } from "@/utils/getAuthService";
 import bcrypt from "bcrypt";
@@ -25,29 +26,14 @@ export const signIn = async ({
     if (existingUser && !existingUser.is_deleted) {
       const isSameAuthService = existingUser.auth_service === authService;
 
-      if (!isSameAuthService) {
-        // allow users who signed up using credentials to sign in using Google, combine their accounts
-        const isCredentialsSignUpGoogleLogin =
-          existingUser.auth_service === AuthService.Credentials &&
-          authService === AuthService.Google;
-
-        if (!isCredentialsSignUpGoogleLogin) {
-          throw new Error(SignInError.logInWithoutGoogle);
-        } else {
-          await User.findOneAndUpdate(
-            { email },
-            { profile_picture: profilePicture, name },
-          );
-          console.log(
-            `User with email ${email} has been combined with details from their Google account!`,
-          );
-        }
+      if (isSameAuthService) {
+        console.log(
+          `User with email ${email} already exists! Signing in directly.`,
+        );
+        return true;
+      } else {
+        throw new Error(SignInError.logInWithoutGoogle);
       }
-
-      console.log(
-        `User with email ${email} already exists! Signing in directly.`,
-      );
-      return true;
     } else {
       const userDocument = initialUser(
         name,
@@ -78,7 +64,7 @@ export const signIn = async ({
     console.error(error);
     throw error;
   } finally {
-    await disconnectFromDatabase();
+    // await disconnectFromDatabase();
   }
 };
 
@@ -93,6 +79,7 @@ export const googleLogIn = async (email: string) => {
         isExistingUser: true,
         id: existingUser._id,
         name: existingUser.first_name,
+        image: existingUser.profile_picture,
       };
     } else {
       return {
@@ -103,7 +90,7 @@ export const googleLogIn = async (email: string) => {
     console.error(error);
     throw error;
   } finally {
-    await disconnectFromDatabase();
+    // await disconnectFromDatabase();
   }
 };
 
@@ -160,7 +147,7 @@ export const credentialsSignUp = async (
     console.error(error);
     throw error;
   } finally {
-    await disconnectFromDatabase();
+    // await disconnectFromDatabase();
   }
 };
 
@@ -195,6 +182,7 @@ export const credentialsLogIn = async (
             id: user._id,
             email: user.email,
             firstName: user.first_name,
+            image: user.profile_picture,
           },
         };
       }
@@ -203,7 +191,7 @@ export const credentialsLogIn = async (
     console.error(error);
     throw error;
   } finally {
-    await disconnectFromDatabase();
+    // await disconnectFromDatabase();
   }
 };
 
@@ -230,7 +218,7 @@ export const retrieveCurrencyLanguage = async (email: string) => {
   } catch (error) {
     throw error;
   } finally {
-    await disconnectFromDatabase();
+    // await disconnectFromDatabase();
   }
 };
 
@@ -254,7 +242,7 @@ export const updateUser = async (email: string, update: Object) => {
     console.error(error);
     throw error;
   } finally {
-    await disconnectFromDatabase();
+    // await disconnectFromDatabase();
   }
 };
 
@@ -278,7 +266,7 @@ export const retrieveUserDetails = async (email: string) => {
     console.error(error);
     throw error;
   } finally {
-    await disconnectFromDatabase();
+    // await disconnectFromDatabase();
   }
 };
 
@@ -303,6 +291,14 @@ export const deleteUser = async (email: string) => {
       fieldsToDelete.map((fieldToDelete) => {
         unsetFields[fieldToDelete] = "";
       });
+
+      const profilePicture = await User.findOne({ email }).then(
+        (result) => result.profile_picture,
+      );
+
+      // delete profile picture from UploadThing
+      await deleteImage(profilePicture);
+
       const softDeleteUpdate = {
         $unset: unsetFields,
         $set: {
@@ -356,6 +352,6 @@ export const verifyUserPassword = async (
     console.error(error);
     throw error;
   } finally {
-    await disconnectFromDatabase();
+    // await disconnectFromDatabase();
   }
 };

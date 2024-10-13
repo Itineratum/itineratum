@@ -9,6 +9,7 @@ import { NextIntlClientProvider, useMessages } from "next-intl";
 import { notFound } from "next/navigation";
 import { use } from "react";
 import TRPCProvider from "../_trpc/Provider";
+import "@uploadthing/react/styles.css";
 
 const HomeLayout = ({
   children,

@@ -1,10 +1,30 @@
 {
+  "navbar": {
+    "aboutUs": "About Us",
+    "account": {
+      "account": "Account",
+      "login": "Login",
+      "signOut": "Sign Out",
+      "signUp": "Sign Up"
+    },
+    "contactUs": "Contact Us",
+    "savedTrips": "Saved Trips"
+  },
   "home": { "header": "It's time to travel with EASE." },
   "account": {
     "account": "Account",
     "personalInformation": {
       "account": "Account",
       "personalInformation": "Personal Information",
+      "chooseFromLibrary": "Choose from library",
+      "takePhoto": "Take a photo",
+      "profilePictureChangeSuccess": "Your profile picture has been changed successfully!",
+      "profilePictureChangeError": "Your profile picture has failed to upload!\nPlease ensure that you are not uploading anything more than 2MB in size and try again later!",
+      "takePhotoDialog": {
+        "title": "Take a photo",
+        "capturePhotoButton": "Capture photo",
+        "cancelButton": "Cancel"
+      },
       "firstName": "First Name",
       "firstNameError": "First name required!",
       "lastName": "Last Name",
@@ -40,22 +60,39 @@
       }
     },
     "accessibility": "Accessibility",
-    "notifications": "Notifications",
+    "notifications": {
+      "account": "Account",
+      "notifications": "Notifications",
+      "travelTipsAndOffers": "Travel Tips & Offers",
+      "newsletter": "Newsletter",
+      "email": "Email",
+      "pushNotifications": "Push Notifications",
+      "unsubAllOffersUpdates": "Unsubscribe from all Offers and Updates",
+      "unsubAllOffersUpdatesDescription": "You will still receive notifications on your account's activities.",
+      "allOffersAndUpdates": "All Offers and Updates",
+      "on": "Turned on",
+      "off": "Turned off",
+      "notificationsUpdated": "Your account notifications settings have been updated!",
+      "notificationsUpdateError": "Error updating your account notifications settings, please try again later!"
+    },
     "termsAndConditions": "T&C",
     "privacyPolicy": "Privacy Policy",
     "settings": "Settings",
     "legal": "Legal"
   },
-  "navbar": {
-    "aboutUs": "About Us",
-    "account": {
-      "account": "Account",
-      "login": "Login",
-      "signOut": "Sign Out",
-      "signUp": "Sign Up"
-    },
+  "contactUs": {
     "contactUs": "Contact Us",
-    "savedTrips": "Saved Trips"
+    "emailDescription": "We are always here to help.",
+    "email": "itineratumsg@gmail.com",
+    "phoneDescription": "If you prefer interacting with a real voice...",
+    "phone": "+65 96554223",
+    "commonFaqs": "Common FAQs",
+    "faq1": "Are the accommodations listed on your website pet-friendly?",
+    "faq1Answer": "You can select our pet-friendly option in the menu when planning your trip. We will then try our best to suggest pet-friendly accommodations for you!",
+    "faq2": "Are there any charges that comes with using Itineratum to generate an itinerary?",
+    "faq2Answer": "No, using Itineratum to generate an itinerary is completely free. We believe in making travel planning easy and accessible for everyone. Our basic itinerary generation service is provided at no cost. However, if you choose to book accommodations, flights, or other services through our platform, those will be subject to the respective providers' fees.",
+    "faq3": "What is the cancellation policy?",
+    "faq3Answer": "Lorem ipsum"
   },
   "signUp": {
     "signUp": "Sign Up",
@@ -115,8 +152,17 @@
       "otpError": "OTP required!"
     }
   },
+  "googleButton": {
+    "continueWithGoogle": "Continue with Google"
+  },
   "error": {
     "error": "Error!",
     "home": "Go to home"
+  },
+  "protected": {
+    "heading": "Unathorised Access",
+    "description": "You are not authorised to view the requested page or complete the action.",
+    "recovery": "Please log in or sign up to continue.",
+    "login": "Login"
   }
 }

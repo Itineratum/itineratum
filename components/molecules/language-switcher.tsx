@@ -23,7 +23,13 @@ const LanguageSwitcher = ({ locale }: { locale: string }) => {
     {
       email,
     },
-    { enabled: !!email, retry: false },
+    {
+      enabled: !!email,
+      retry: false,
+      onError: (error) => {
+        if (error.message === "UNAUTHORIZED") router.push("/protected");
+      },
+    },
   );
 
   const handleLanguageChange = async (newLanguage: string) => {

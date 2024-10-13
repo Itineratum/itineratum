@@ -5,12 +5,12 @@ import { AlertType } from "@/constants/enums/alertType";
 const Alert = ({
   showAlert,
   setShowAlert,
-  alertType,
+  alertType = AlertType.info,
   alertText,
 }: {
   showAlert: boolean;
   setShowAlert: (value: SetStateAction<boolean>) => void;
-  alertType: AlertType;
+  alertType?: AlertType;
   alertText: string;
 }) => {
   const handleOnClose = () => {

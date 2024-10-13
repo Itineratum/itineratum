@@ -3,7 +3,6 @@
 import { trpc } from "@/app/_trpc/client";
 import Text from "@/components/atoms/text";
 import Alert from "@/components/molecules/alert";
-import { ContinueWithGoogleButton } from "@/components/molecules/continue-with-google-button";
 import UserAvatar from "@/components/molecules/user-avatar";
 import { AccountSetting } from "@/constants/enums/accountSetting";
 import { AlertType } from "@/constants/enums/alertType";
@@ -30,11 +29,11 @@ import dayjs, { Dayjs } from "dayjs";
 import utc from "dayjs/plugin/utc";
 import { signOut, useSession } from "next-auth/react";
 import { useTranslations } from "next-intl";
+import { useRouter } from "next/navigation";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import ChangePasswordForm from "./change-password-form";
 import DeleteAccountConfirmationDialog from "./delete-account-confirmation-dialog";
-
 dayjs.extend(utc);
 
 const AccountPersonalInformation = ({
@@ -45,6 +44,7 @@ const AccountPersonalInformation = ({
   setAccountSetting: Dispatch<SetStateAction<AccountSetting>>;
 }) => {
   const t = useTranslations("account.personalInformation");
+  const router = useRouter();
   const { data: session, update } = useSession();
   const {
     control,
@@ -60,8 +60,6 @@ const AccountPersonalInformation = ({
   const [showConfirmDeleteDialog, setShowConformDeleteDialog] =
     useState<boolean>(false);
   const [isChangePassword, setIsChangePassword] = useState<boolean>(false);
-
-  const image: string | undefined | null = session?.user?.image;
 
   const columnSpacing: number = 7;
   const margin: number = 5;
@@ -89,13 +87,29 @@ const AccountPersonalInformation = ({
   const address2 = watch(address2Id);
   const dateOfBirth = watch(dateOfBirthId);
 
-  const getUserAccountDetails = trpc.user.getUserAccountDetails.useQuery({
-    email: session?.user.email!,
+  const getUserAccountDetails = trpc.user.getUserAccountDetails.useQuery(
+    {
+      email: session?.user.email!,
+    },
+    {
+      retry: false,
+      onError: (error) => {
+        if (error.message === "UNAUTHORIZED") router.push("/protected");
+      },
+    },
+  );
+  const deleteUserAccount = trpc.user.deleteUserAccount.useMutation({
+    onError: (error) => {
+      if (error.message === "UNAUTHORIZED") router.push("/protected");
+    },
   });
-  const deleteUserAccount = trpc.user.deleteUserAccount.useMutation();
   const updateUserAccount = trpc.user.updateUserAccount.useMutation({
     onSuccess: () => {
+      // update the session
       update({ name: firstName });
+    },
+    onError: (error) => {
+      if (error.message === "UNAUTHORIZED") router.push("/protected");
     },
   });
 
@@ -180,7 +194,7 @@ const AccountPersonalInformation = ({
     const userAvatarField = () => {
       return (
         <Box sx={{ display: "flex", justifyContent: "center" }}>
-          <UserAvatar image={image} editable={true} />
+          <UserAvatar editable={true} />
         </Box>
       );
     };
@@ -442,29 +456,6 @@ const AccountPersonalInformation = ({
         </Box>
       );
     };
-    const googleButton = () => {
-      const buttonWidth: string = "100%";
-
-      return (
-        <Box>
-          <InputLabel sx={{ color: colorsConst.palette.text.primary }}>
-            {t("google")}
-          </InputLabel>
-          <Box
-            sx={{
-              display: "flex",
-              justifyContent: "flex-start",
-            }}
-          >
-            <ContinueWithGoogleButton
-              formMargin={formMargin}
-              buttonWidth={buttonWidth}
-              text={t("connectGoogle")}
-            />
-          </Box>
-        </Box>
-      );
-    };
     const actionButtons = () => {
       const buttonWidth: string = "50%";
       const loadingAnimationSize: number = 24;
@@ -560,7 +551,6 @@ const AccountPersonalInformation = ({
         <Stack spacing={fieldSpacing} useFlexGap>
           {addressSection()}
           {dateOfBirthField()}
-          {session?.provider === AuthService.Google ? <></> : googleButton()}
           {actionButtons()}
           <Alert
             showAlert={showAlert}
