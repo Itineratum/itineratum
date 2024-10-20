@@ -2,8 +2,8 @@ import { updateUser } from "@/services/database/users";
 import { getServerSession } from "next-auth";
 import { createUploadthing, type FileRouter } from "uploadthing/next";
 import { UploadThingError, UTApi } from "uploadthing/server";
-import { authOptions } from "../auth/[...nextauth]/route";
 import { deleteImage } from "@/lib/uploadThing";
+import { authOptions } from "../auth/authOptions";
 
 const f = createUploadthing();
 

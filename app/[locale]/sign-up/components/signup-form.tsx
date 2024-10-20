@@ -356,7 +356,7 @@ const SignUpForm = () => {
       );
     };
 
-    const passwordField = () => {
+    const PasswordField = () => {
       const [showPassword, setShowPassword] = useState<boolean>(false);
 
       const handleClickShowPassword = () => setShowPassword(!showPassword);
@@ -426,7 +426,7 @@ const SignUpForm = () => {
       );
     };
 
-    const reEnterPasswordField = () => {
+    const ReEnterPasswordField = () => {
       const [showReEnterPassword, setShowReEnterPassword] =
         useState<boolean>(false);
 
@@ -585,8 +585,8 @@ const SignUpForm = () => {
     return (
       <Box>
         {emailField()}
-        {passwordField()}
-        {reEnterPasswordField()}
+        {PasswordField()}
+        {ReEnterPasswordField()}
         <PrivacyPolicyLink />
         <Box
           sx={{

@@ -122,7 +122,7 @@ export const LogInFormEmail = ({
     );
   };
 
-  const passwordField = () => {
+  const PasswordField = () => {
     const [showPassword, setShowPassword] = useState<boolean>(false);
 
     const handleClickShowPassword = () => setShowPassword(!showPassword);
@@ -232,7 +232,7 @@ export const LogInFormEmail = ({
       }}
     >
       {emailField()}
-      {passwordField()}
+      {PasswordField()}
       <Box sx={{ display: "flex" }}>
         <PrivacyPolicyLink />
         {loginUsingPhoneNumberButton()}
