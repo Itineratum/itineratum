@@ -11,13 +11,23 @@ const Text = ({
   bold,
   textDecoration = TypographyTextDecoration.none,
   color = "inherit",
+  link = undefined,
 }: {
   text: string;
   variant: TypographyVariant;
   bold: boolean;
   textDecoration?: TypographyTextDecoration;
   color?: string;
+  link?: string | undefined;
 }) => {
+  const textElement = link ? (
+    <a href={link} style={{ color: color }}>
+      {text}
+    </a>
+  ) : (
+    text
+  );
+
   return (
     <Typography
       variant={variant as Variant}
@@ -26,7 +36,7 @@ const Text = ({
         textDecoration: textDecoration,
       }}
     >
-      {bold ? <strong>{text}</strong> : text}
+      {bold ? <strong>{textElement}</strong> : textElement}
     </Typography>
   );
 };

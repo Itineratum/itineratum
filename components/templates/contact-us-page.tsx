@@ -13,6 +13,7 @@ import { Box, Card, CardContent, Container, Stack } from "@mui/material";
 import { useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
 import Text from "../atoms/text";
+import { emailParser, phoneParser } from "@/utils/stringParsers";
 
 const ContactUsPage = () => {
   const t = useTranslations("contactUs");
@@ -84,6 +85,7 @@ const ContactUsPage = () => {
             variant={TypographyVariant.h5}
             bold={true}
             textDecoration={TypographyTextDecoration.underline}
+            link={emailParser(t("email"))}
           />
         );
       };
@@ -125,6 +127,7 @@ const ContactUsPage = () => {
             variant={TypographyVariant.h5}
             bold={true}
             textDecoration={TypographyTextDecoration.underline}
+            link={phoneParser(t("phone"))}
           />
         );
       };
