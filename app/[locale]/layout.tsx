@@ -10,6 +10,7 @@ import { notFound } from "next/navigation";
 import { use } from "react";
 import TRPCProvider from "../_trpc/Provider";
 import "@uploadthing/react/styles.css";
+import Footer from "@/components/organisms/footer";
 
 const HomeLayout = ({
   children,
@@ -35,6 +36,7 @@ const HomeLayout = ({
                 <TRPCProvider>
                   <Navbar />
                   <main>{children}</main>
+                  {/* <Footer /> */}
                 </TRPCProvider>
               </ThemeProvider>
             </body>

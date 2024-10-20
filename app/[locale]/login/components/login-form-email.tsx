@@ -4,28 +4,20 @@ import { trpc } from "@/app/_trpc/client";
 import { PrivacyPolicyLink } from "@/components/atoms/privacy-policy-link";
 import Text from "@/components/atoms/text";
 import Alert from "@/components/molecules/alert";
+import TextInputField from "@/components/molecules/text-input-field";
 import { AlertType } from "@/constants/enums/alertType";
 import {
   TypographyTextDecoration,
   TypographyVariant,
 } from "@/constants/enums/theme";
 import { LogInFormEmailData } from "@/constants/types/logInFormData";
-import VisibilityOffOutlinedIcon from "@mui/icons-material/VisibilityOffOutlined";
-import VisibilityOutlinedIcon from "@mui/icons-material/VisibilityOutlined";
-import {
-  Box,
-  Button,
-  CircularProgress,
-  IconButton,
-  InputAdornment,
-  TextField,
-} from "@mui/material";
+import { Box, Button, CircularProgress } from "@mui/material";
 import { TRPCClientError } from "@trpc/client";
 import { signIn } from "next-auth/react";
 import { useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
-import { Dispatch, SetStateAction, useState } from "react";
-import { Controller, SubmitHandler, useForm } from "react-hook-form";
+import { Dispatch, SetStateAction, useCallback, useState } from "react";
+import { SubmitHandler, useForm } from "react-hook-form";
 
 export const LogInFormEmail = ({
   setIsLoginUsingOtp,
@@ -46,7 +38,6 @@ export const LogInFormEmail = ({
   const [isLoggingIn, setIsLoggingIn] = useState<boolean>(false);
 
   const formMargin: number = 2;
-  const formFieldMargin: "dense" | "normal" | "none" | undefined = "normal";
 
   const emailId = "email";
   const passwordId = "password";
@@ -75,99 +66,49 @@ export const LogInFormEmail = ({
     },
   });
 
-  const onSubmit: SubmitHandler<LogInFormEmailData> = async (data) => {
-    setIsLoggingIn(true);
-    setAlertText("");
-    setShowAlert(false);
+  const onSubmit: SubmitHandler<LogInFormEmailData> = useCallback(
+    async (data) => {
+      setIsLoggingIn(true);
+      setAlertText("");
+      setShowAlert(false);
 
-    try {
-      await loginViaEmail.mutateAsync(data);
-    } catch (error) {
-      if (error instanceof TRPCClientError) {
-        setAlertText(error.message ?? t("loginErrorAlert"));
-        setShowAlert(true);
+      try {
+        await loginViaEmail.mutateAsync(data);
+      } catch (error) {
+        if (error instanceof TRPCClientError) {
+          setAlertText(error.message ?? t("loginErrorAlert"));
+          setShowAlert(true);
+        }
+      } finally {
+        setIsLoggingIn(false);
       }
-    } finally {
-      setIsLoggingIn(false);
-    }
-  };
+    },
+    [loginViaEmail, t],
+  );
 
   const emailField = () => {
     return (
-      <Controller
-        key={emailId}
+      <TextInputField
         name={emailId}
+        label={t("email")}
         control={control}
-        defaultValue=""
-        rules={{
-          required: t("emailError"),
-        }}
-        render={({ field }) => (
-          <TextField
-            {...field}
-            required
-            fullWidth
-            variant="filled"
-            margin={formFieldMargin}
-            label={t("email")}
-            value={email}
-            InputLabelProps={{
-              sx: { color: "text.primary" },
-            }}
-            error={!!errors.email}
-            helperText={errors.email ? (errors.email.message as string) : ""}
-          />
-        )}
+        errorMessage={t("emailError")}
+        errors={errors}
+        value={email}
       />
     );
   };
 
-  const PasswordField = () => {
-    const [showPassword, setShowPassword] = useState<boolean>(false);
-
-    const handleClickShowPassword = () => setShowPassword(!showPassword);
-
+  const passwordField = () => {
     return (
-      <Controller
-        key={passwordId}
+      <TextInputField
         name={passwordId}
+        label={t("password")}
         control={control}
-        defaultValue=""
-        rules={{
-          required: t("passwordError"),
-        }}
-        render={({ field }) => (
-          <TextField
-            {...field}
-            type={showPassword ? "text" : "password"}
-            required
-            fullWidth
-            variant="filled"
-            margin={formFieldMargin}
-            label={t("password")}
-            value={password}
-            InputLabelProps={{
-              sx: { color: "text.primary" },
-            }}
-            error={!!errors.password}
-            helperText={
-              errors.password ? (errors.password.message as string) : ""
-            }
-            InputProps={{
-              endAdornment: (
-                <InputAdornment position="end">
-                  <IconButton onClick={handleClickShowPassword} edge="end">
-                    {showPassword ? (
-                      <VisibilityOffOutlinedIcon />
-                    ) : (
-                      <VisibilityOutlinedIcon />
-                    )}
-                  </IconButton>
-                </InputAdornment>
-              ),
-            }}
-          />
-        )}
+        errorMessage={t("passwordError")}
+        errors={errors}
+        value={password}
+        isPasswordInputField={true}
       />
     );
   };
@@ -232,7 +173,8 @@ export const LogInFormEmail = ({
       }}
     >
       {emailField()}
-      {PasswordField()}
+      {/* {PasswordField()} */}
+      {passwordField()}
       <Box sx={{ display: "flex" }}>
         <PrivacyPolicyLink />
         {loginUsingPhoneNumberButton()}

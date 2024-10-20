@@ -62,15 +62,15 @@ const Navbar = () => {
       />
     );
   };
-  const dash = () => {
-    const dashSpacing: number = 0.3;
+  // const dash = () => {
+  //   const dashSpacing: number = 0.3;
 
-    return (
-      <Box sx={{ marginX: dashSpacing }}>
-        <Text text={"-"} variant={TypographyVariant.h6} bold={true} />
-      </Box>
-    );
-  };
+  //   return (
+  //     <Box sx={{ marginX: dashSpacing }}>
+  //       <Text text={"-"} variant={TypographyVariant.h6} bold={true} />
+  //     </Box>
+  //   );
+  // };
   const account = () => {
     return (
       <Box sx={{ ml: 3 }}>

@@ -5,7 +5,6 @@ import { createServerSideHelpers } from "@trpc/react-query/server";
 import mongoose from "mongoose";
 
 const ContactUs = async () => {
-  console.log("FETCHING FAQS SERVER SIDE");
   const helpers = createServerSideHelpers({
     router: appRouter,
     ctx: { mongoose },
