@@ -9,4 +9,3 @@ export const checkEmailInNewsletterSchema = {
   input: z.object({ email: z.string() }),
   output: z.boolean(),
 };
-

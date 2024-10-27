@@ -1,4 +1,3 @@
-import { trpc } from "@/app/_trpc/client";
 import {
   TypographyTextDecoration,
   TypographyVariant,
@@ -13,14 +12,10 @@ import InstagramIcon from "@mui/icons-material/Instagram";
 import LinkedInIcon from "@mui/icons-material/LinkedIn";
 import TelegramIcon from "@mui/icons-material/Telegram";
 import { Box, Divider, Grid, IconButton, Link, Stack } from "@mui/material";
-import { useSession } from "next-auth/react";
 import { useLocale, useTranslations } from "next-intl";
-import { useEffect, useState } from "react";
 import Text from "../atoms/text";
 import TikTokIcon from "../atoms/tiktok-icon";
 import StayConnectedColumn from "../molecules/footer-stay-connected-column";
-import paperPlane from "@/public/paper_plane.svg";
-import Image from "next/image";
 
 const Footer = () => {
   const t = useTranslations("footer");

@@ -6,7 +6,7 @@ import { newsletterEmailRouter } from "./newsletterEmail";
 export const appRouter = router({
   user: userRouter,
   faq: faqRouter,
-  newsletterEmail: newsletterEmailRouter
+  newsletterEmail: newsletterEmailRouter,
 });
 
 export type AppRouter = typeof appRouter;

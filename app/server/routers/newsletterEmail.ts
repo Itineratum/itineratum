@@ -1,6 +1,12 @@
-import { addEmailToNewsletter, checkEmailInNewsletter } from "@/services/database/newsletterEmails";
+import {
+  addEmailToNewsletter,
+  checkEmailInNewsletter,
+} from "@/services/database/newsletterEmails";
 import { publicProcedure, router } from "../trpc";
-import { addEmailToNewsletterSchema, checkEmailInNewsletterSchema } from "../schemas/newsletterEmail";
+import {
+  addEmailToNewsletterSchema,
+  checkEmailInNewsletterSchema,
+} from "../schemas/newsletterEmail";
 
 export const newsletterEmailRouter = router({
   addEmailToNewsletter: publicProcedure
@@ -14,7 +20,7 @@ export const newsletterEmailRouter = router({
       // false means that the email is already on the newsletter
       return addEmailToNewsletterRes.success;
     }),
-    checkEmailInNewsletter: publicProcedure
+  checkEmailInNewsletter: publicProcedure
     .input(checkEmailInNewsletterSchema.input)
     .output(checkEmailInNewsletterSchema.output)
     .query(async (data) => {

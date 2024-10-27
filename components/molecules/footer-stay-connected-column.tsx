@@ -60,7 +60,7 @@ const StayConnectedColumn = () => {
   const checkEmailInNewsletter =
     trpc.newsletterEmail.checkEmailInNewsletter.useQuery(
       { email: session?.user.email! },
-      { retry: false }
+      { retry: false },
     );
 
   useEffect(() => {
@@ -100,7 +100,7 @@ const StayConnectedColumn = () => {
 
       const handleEmailChange = async (
         event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
-        field: ControllerRenderProps<StayConnectedFormData, "email">
+        field: ControllerRenderProps<StayConnectedFormData, "email">,
       ) => {
         field.onChange(event.target.value);
         await trigger(emailId);

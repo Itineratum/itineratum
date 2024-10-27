@@ -7,7 +7,7 @@ const newsletterEmailSchema = new Schema<INewsletterEmail>(
     email: { type: String, required: true },
     created_at: { type: Date, default: Date.now() },
   },
-  { collection: constDbCollections.newsletterEmails }
+  { collection: constDbCollections.newsletterEmails },
 );
 
 export default models.NewsletterEmail ||
