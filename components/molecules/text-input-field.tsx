@@ -64,7 +64,13 @@ const TextInputField = ({
           }}
           error={!!errors[name]}
           helperText={errors[name] ? (errors[name].message as string) : ""}
-          onChange={async (event) => await onChange(event, field)}
+          onChange={async (event) => {
+            field.onChange(event);
+
+            if (onChange) {
+              await onChange(event, field);
+            }
+          }}
           FormHelperTextProps={{ sx: { whiteSpace: "pre-line" } }} // ensures that newline characters (\n) are rendered as actual line breaks
           InputProps={
             isPasswordInputField

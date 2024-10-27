@@ -10,6 +10,7 @@ import HeadsetMicOutlinedIcon from "@mui/icons-material/HeadsetMicOutlined";
 import { Box, Card, CardContent, Container, Stack } from "@mui/material";
 import { useTranslations } from "next-intl";
 import Text from "../atoms/text";
+import contactsConst from "@/constants/pages/contacts.json";
 
 const ContactUsPage = ({ faqs }: { faqs: IFAQ[] }) => {
   const t = useTranslations("contactUs");
@@ -66,11 +67,11 @@ const ContactUsPage = ({ faqs }: { faqs: IFAQ[] }) => {
       const email = () => {
         return (
           <Text
-            text={t("email")}
+            text={contactsConst.email}
             variant={TypographyVariant.h5}
             bold={true}
             textDecoration={TypographyTextDecoration.underline}
-            link={emailParser(t("email"))}
+            link={emailParser(contactsConst.email)}
           />
         );
       };
@@ -108,11 +109,11 @@ const ContactUsPage = ({ faqs }: { faqs: IFAQ[] }) => {
       const phone = () => {
         return (
           <Text
-            text={t("phone")}
+            text={contactsConst.phone}
             variant={TypographyVariant.h5}
             bold={true}
             textDecoration={TypographyTextDecoration.underline}
-            link={phoneParser(t("phone"))}
+            link={phoneParser(contactsConst.phone)}
           />
         );
       };

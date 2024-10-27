@@ -196,7 +196,7 @@ const AccountNotifications = ({
         text={isEnabled ? t("on") : t("off")}
         variant={TypographyVariant.subtitle1}
         bold={false}
-        color="grey"
+        color={colorsConst.palette.text.grey}
       />
     );
   };
@@ -327,7 +327,7 @@ const AccountNotifications = ({
           text={t("unsubAllOffersUpdatesDescription")}
           variant={TypographyVariant.subtitle1}
           bold={false}
-          color="grey"
+          color={colorsConst.palette.text.grey}
         />
       );
     };

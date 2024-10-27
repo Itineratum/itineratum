@@ -21,10 +21,12 @@ import ProfileIcon from "../molecules/profile-icon";
 import SignupLoginButtons from "../molecules/signup-login-buttons";
 
 const Navbar = () => {
-  const navBarWidth: string = "90%";
   const { data: session } = useSession();
   const t = useTranslations("navbar");
   const locale = useLocale();
+
+  const navBarWidth: string = "90%";
+  const navBarMarginBottom: string = "20px";
 
   const savedTrips = () => {
     return (
@@ -32,7 +34,7 @@ const Navbar = () => {
         name={t("savedTrips")}
         linkToPage={buildLocaleEndpoint(
           locale,
-          endpointsConst.savedTrips.endpoint,
+          endpointsConst.savedTrips.endpoint
         )}
         icon={<FavoriteBorderOutlinedIcon />}
       />
@@ -44,7 +46,7 @@ const Navbar = () => {
         name={t("aboutUs")}
         linkToPage={buildLocaleEndpoint(
           locale,
-          endpointsConst.aboutUs.endpoint,
+          endpointsConst.aboutUs.endpoint
         )}
         icon={<PeopleAltOutlinedIcon />}
       />
@@ -56,7 +58,7 @@ const Navbar = () => {
         name={t("contactUs")}
         linkToPage={buildLocaleEndpoint(
           locale,
-          endpointsConst.contactUs.endpoint,
+          endpointsConst.contactUs.endpoint
         )}
         icon={<PhoneInTalkOutlinedIcon />}
       />
@@ -95,9 +97,19 @@ const Navbar = () => {
   };
 
   return (
-    <AppBar position="static" color="transparent" elevation={0}>
+    <AppBar
+      position="sticky"
+      color="transparent"
+      elevation={0}
+      sx={{
+        marginBottom: navBarMarginBottom,
+        // for the frost background
+        backdropFilter: "blur(10px)",
+        backgroundColor: "rgba(255, 255, 255, 0.5)",
+      }}
+    >
       <Toolbar
-        disableGutters
+        disableGutters={true}
         sx={{
           justifyContent: "space-between",
           position: "relative",

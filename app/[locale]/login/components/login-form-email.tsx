@@ -173,7 +173,6 @@ export const LogInFormEmail = ({
       }}
     >
       {emailField()}
-      {/* {PasswordField()} */}
       {passwordField()}
       <Box sx={{ display: "flex" }}>
         <PrivacyPolicyLink />

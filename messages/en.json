@@ -10,7 +10,32 @@
     "contactUs": "Contact Us",
     "savedTrips": "Saved Trips"
   },
-  "home": { "header": "It's time to travel with EASE." },
+  "footer": {
+    "stayConnected": "Stay connected!",
+    "email": "Email",
+    "emailRequired": "Email is required!",
+    "letsGo": "Let's go",
+    "above18": "By checking the box, you agree that you are at least 18 years of age.",
+    "emailSuccess": "Email successfully added to newsletter!",
+    "emailExists": "Email already exists in the newsletter!",
+    "emailError": "Invalid email address!",
+    "home": "Home",
+    "savedTrips": "Saved Trips",
+    "aboutUs": "About Us",
+    "contactUs": "Contact Us",
+    "chooseCurrency": "Choose Currency",
+    "itineratumPteLtd": "Itineratum Pte. Ltd. All Rights Reserved.",
+    "termsAndConditions": "Terms & Conditions",
+    "privacyPolicy": "Privacy Policy",
+    "cookiePolicy": "Cookie Policy",
+    "copyrightNotification": "Copyright Notification",
+    "cookieSettings": "Cookie Settings"
+  },
+  "home": {
+    "title": "EXPLORE THE WORLD",
+    "tagline": "It's time to travel with EASE",
+    "callToAction": "Select a destination of your choice"
+  },
   "account": {
     "account": "Account",
     "personalInformation": {

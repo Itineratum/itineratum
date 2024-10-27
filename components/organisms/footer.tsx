@@ -1,114 +1,298 @@
-import React from "react";
+import { trpc } from "@/app/_trpc/client";
 import {
-  Box,
-  Container,
-  Grid,
-  Typography,
-  TextField,
-  Button,
-  Stack,
-  IconButton,
-} from "@mui/material";
+  TypographyTextDecoration,
+  TypographyVariant,
+} from "@/constants/enums/theme";
+import colorsConst from "@/constants/pages/colors.json";
+import contactsConst from "@/constants/pages/contacts.json";
+import endpointsConst from "@/constants/pages/endpoints.json";
+import { buildLocaleEndpoint } from "@/utils/buildLocaleEndpoint";
+import { emailParser } from "@/utils/stringParsers";
 import FacebookIcon from "@mui/icons-material/Facebook";
-import TelegramIcon from "@mui/icons-material/Telegram";
 import InstagramIcon from "@mui/icons-material/Instagram";
-import TiktokIcon from "@mui/icons-material/Movie"; // Replace with TikTok icon as needed
 import LinkedInIcon from "@mui/icons-material/LinkedIn";
+import TelegramIcon from "@mui/icons-material/Telegram";
+import { Box, Divider, Grid, IconButton, Link, Stack } from "@mui/material";
+import { useSession } from "next-auth/react";
+import { useLocale, useTranslations } from "next-intl";
+import { useEffect, useState } from "react";
+import Text from "../atoms/text";
+import TikTokIcon from "../atoms/tiktok-icon";
+import StayConnectedColumn from "../molecules/footer-stay-connected-column";
+import paperPlane from "@/public/paper_plane.svg";
+import Image from "next/image";
 
 const Footer = () => {
+  const t = useTranslations("footer");
+  const locale = useLocale();
+
+  const footerMarginTop: string = "20px";
+  const footerPaddingX: string = "40px";
+  const footerPaddingY: string = "40px";
+  const spacing: number = 0;
+  const stayConnectedColumnWidth: number = 5;
+  const pageLinksColumnWidth: number = 2;
+  const contactUsColumnWidth: number = 2;
+  const socialMediaLinksColumnWidth: number = 3;
+
+  const stayConnectedColumn = () => {
+    return (
+      <Grid
+        item
+        xs={stayConnectedColumnWidth}
+        sx={{ display: "flex", justifyContent: "center" }}
+      >
+        <StayConnectedColumn />
+      </Grid>
+    );
+  };
+
+  const pageLinksColumn = () => {
+    const spacing: number = 3;
+    const typographyVariant: TypographyVariant = TypographyVariant.subtitle1;
+
+    const homeLink = () => {
+      return (
+        <Link href={buildLocaleEndpoint(locale, endpointsConst.home.endpoint)}>
+          <Text
+            text={t("home")}
+            variant={typographyVariant}
+            bold={false}
+            color={"text.secondary"}
+          />
+        </Link>
+      );
+    };
+
+    const savedTripsLink = () => {
+      return (
+        <Link
+          href={buildLocaleEndpoint(locale, endpointsConst.savedTrips.endpoint)}
+        >
+          <Text
+            text={t("savedTrips")}
+            variant={typographyVariant}
+            bold={false}
+            color={"text.secondary"}
+          />
+        </Link>
+      );
+    };
+
+    const aboutUsLink = () => {
+      return (
+        <Link
+          href={buildLocaleEndpoint(locale, endpointsConst.aboutUs.endpoint)}
+        >
+          <Text
+            text={t("aboutUs")}
+            variant={typographyVariant}
+            bold={false}
+            color={"text.secondary"}
+          />
+        </Link>
+      );
+    };
+
+    return (
+      <Grid item xs={pageLinksColumnWidth}>
+        <Stack spacing={spacing} sx={{ display: "flex", alignItems: "center" }}>
+          {homeLink()}
+          {savedTripsLink()}
+          {aboutUsLink()}
+        </Stack>
+      </Grid>
+    );
+  };
+
+  const contactUsColumn = () => {
+    const spacing: number = 2;
+
+    const contactUsHeading = () => {
+      return (
+        <Text
+          text={t("contactUs")}
+          variant={TypographyVariant.subtitle1}
+          bold={false}
+        />
+      );
+    };
+
+    const contactDetails = () => {
+      const email = () => {
+        return (
+          <Text
+            text={contactsConst.email}
+            variant={TypographyVariant.subtitle2}
+            bold={false}
+            link={emailParser(contactsConst.email)}
+            textDecoration={TypographyTextDecoration.none}
+          />
+        );
+      };
+
+      const phone = () => {
+        return (
+          <Text
+            text={contactsConst.phone}
+            variant={TypographyVariant.subtitle2}
+            bold={false}
+            link={emailParser(contactsConst.email)}
+          />
+        );
+      };
+
+      return (
+        <Stack sx={{ display: "flex", alignItems: "center" }}>
+          {email()}
+          {phone()}
+        </Stack>
+      );
+    };
+
+    return (
+      <Grid item xs={contactUsColumnWidth}>
+        <Stack spacing={spacing} sx={{ display: "flex", alignItems: "center" }}>
+          {contactUsHeading()}
+          {contactDetails()}
+        </Stack>
+      </Grid>
+    );
+  };
+
+  const socialMediaIconsColumn = () => {
+    const spacing: number = 3;
+
+    return (
+      <Grid item xs={socialMediaLinksColumnWidth}>
+        <Stack
+          direction="row"
+          spacing={spacing}
+          sx={{ display: "flex", justifyContent: "center" }}
+        >
+          <IconButton aria-label="facebook" color="inherit">
+            <FacebookIcon />
+          </IconButton>
+          <IconButton aria-label="telegram" color="inherit">
+            <TelegramIcon />
+          </IconButton>
+          <IconButton aria-label="instagram" color="inherit">
+            <InstagramIcon />
+          </IconButton>
+          <IconButton aria-label="tiktok" color="inherit">
+            <TikTokIcon color={colorsConst.palette.text.secondary} />
+          </IconButton>
+          <IconButton aria-label="linkedin" color="inherit">
+            <LinkedInIcon />
+          </IconButton>
+        </Stack>
+      </Grid>
+    );
+  };
+
+  const divider = () => {
+    const lineThickness: number = 1;
+    const marginTop: string = "20px";
+
+    return (
+      <Divider
+        sx={{
+          flexGrow: 1,
+          borderBottomWidth: lineThickness,
+          borderBottomColor: "text.secondary",
+          marginTop: marginTop,
+        }}
+      />
+    );
+  };
+
+  const linksRow = () => {
+    const divider = () => {
+      return (
+        <Text text={"|"} variant={TypographyVariant.subtitle2} bold={false} />
+      );
+    };
+
+    return (
+      <Stack
+        direction="row"
+        spacing={2}
+        justifyContent="center"
+        sx={{ marginTop: "20px" }}
+      >
+        <Link href="" color="inherit" underline="hover">
+          <Text
+            text={t("termsAndConditions")}
+            variant={TypographyVariant.subtitle2}
+            bold={false}
+          />
+        </Link>
+        {divider()}
+        <Link href="" color="inherit" underline="hover">
+          <Text
+            text={t("privacyPolicy")}
+            variant={TypographyVariant.subtitle2}
+            bold={false}
+          />{" "}
+        </Link>
+        {divider()}
+        <Link href="" color="inherit" underline="hover">
+          <Text
+            text={t("cookiePolicy")}
+            variant={TypographyVariant.subtitle2}
+            bold={false}
+          />{" "}
+        </Link>
+        {divider()}
+        <Link href="" color="inherit" underline="hover">
+          <Text
+            text={t("copyrightNotification")}
+            variant={TypographyVariant.subtitle2}
+            bold={false}
+          />{" "}
+        </Link>
+        {divider()}
+        <Link href="" color="inherit" underline="hover">
+          <Text
+            text={t("cookieSettings")}
+            variant={TypographyVariant.subtitle2}
+            bold={false}
+          />{" "}
+        </Link>
+      </Stack>
+    );
+  };
+
   return (
     <Box
       component="footer"
-      sx={{ backgroundColor: "#1d3b50", padding: "40px 0", color: "#fff" }}
+      sx={{
+        backgroundColor: colorsConst.palette.primary.main,
+        color: colorsConst.palette.text.secondary,
+        paddingX: footerPaddingX,
+        paddingY: footerPaddingY,
+        marginTop: footerMarginTop,
+      }}
     >
-      <Container maxWidth="lg">
-        <Grid container spacing={4}>
-          {/* Stay Connected Section */}
-          <Grid item xs={12} md={4}>
-            <Typography variant="h5" gutterBottom>
-              Stay connected!
-            </Typography>
-            <Stack spacing={2}>
-              <TextField
-                label="Name"
-                variant="outlined"
-                size="small"
-                sx={{ backgroundColor: "#fff", borderRadius: "4px" }}
-              />
-              <TextField
-                label="Email Address"
-                variant="outlined"
-                size="small"
-                sx={{ backgroundColor: "#fff", borderRadius: "4px" }}
-              />
-              <Button variant="contained" color="secondary">
-                Let's go
-              </Button>
-            </Stack>
-          </Grid>
-
-          {/* Navigation Links Section */}
-          <Grid item xs={12} md={4}>
-            <Stack
-              direction="row"
-              justifyContent="flex-end"
-              alignItems="center"
-            >
-              {/* Country Selector Placeholder */}
-              <Typography variant="body1" sx={{ marginRight: "8px" }}>
-                Singapore
-              </Typography>
-            </Stack>
-            <Stack spacing={2} sx={{ marginTop: 2 }}>
-              <Typography variant="body2">Home</Typography>
-              <Typography variant="body2">Saved Trips</Typography>
-              <Typography variant="body2">About Us</Typography>
-              <Typography variant="body2">Contact Us</Typography>
-            </Stack>
-
-            {/* Social Media Icons */}
-            <Stack direction="row" spacing={2} sx={{ marginTop: 2 }}>
-              <IconButton color="inherit">
-                <FacebookIcon />
-              </IconButton>
-              <IconButton color="inherit">
-                <TelegramIcon />
-              </IconButton>
-              <IconButton color="inherit">
-                <InstagramIcon />
-              </IconButton>
-              <IconButton color="inherit">
-                <TiktokIcon />
-              </IconButton>
-              <IconButton color="inherit">
-                <LinkedInIcon />
-              </IconButton>
-            </Stack>
-          </Grid>
-
-          {/* Copyright Section */}
-          <Grid item xs={12} md={4}>
-            <Typography
-              variant="body2"
-              sx={{ textAlign: { xs: "center", md: "left" }, marginBottom: 2 }}
-            >
-              &copy; 2024 Itineratum Pte. Ltd. All Rights Reserved.
-            </Typography>
-            <Stack
-              direction="row"
-              spacing={2}
-              justifyContent={{ xs: "center", md: "flex-start" }}
-              sx={{ flexWrap: "wrap" }}
-            >
-              <Typography variant="body2">Terms & Conditions</Typography>
-              <Typography variant="body2">Privacy Policy</Typography>
-              <Typography variant="body2">Cookie Policy</Typography>
-              <Typography variant="body2">Copyright Notification</Typography>
-              <Typography variant="body2">Cookie Settings</Typography>
-            </Stack>
-          </Grid>
+      <Stack direction="column" sx={{ width: "100%" }}>
+        <Grid
+          container
+          spacing={spacing}
+          sx={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            width: "100%",
+          }}
+        >
+          {stayConnectedColumn()}
+          {pageLinksColumn()}
+          {contactUsColumn()}
+          {socialMediaIconsColumn()}
         </Grid>
-      </Container>
+        {divider()}
+        {linksRow()}
+      </Stack>
     </Box>
   );
 };
