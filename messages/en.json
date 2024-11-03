@@ -34,7 +34,18 @@
   "home": {
     "title": "EXPLORE THE WORLD",
     "tagline": "It's time to travel with EASE",
-    "callToAction": "Select a destination of your choice"
+    "callToAction": "Select a destination of your choice",
+    "itineraryGenerator": {
+      "base": {
+        "from": "From",
+        "fromDestinationDescription": "Enter the name of the city you are travelling from",
+        "to": "to",
+        "destination": "Destination",
+        "destinationDescription": "Enter the name of the destination",
+        "addLocation": "Add Location",
+        "next": "next"
+      }
+    }
   },
   "account": {
     "account": "Account",

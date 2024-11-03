@@ -2,9 +2,11 @@ import Text from "@/components/atoms/text";
 import { TypographyVariant } from "@/constants/enums/theme";
 import colorConst from "@/constants/pages/colors.json";
 import constText from "@/constants/pages/texts.json";
-import { Container, Stack } from "@mui/material";
+import arrow from "@/public/arrow.svg";
+import { Box, Container, Stack } from "@mui/material";
 import { Metadata } from "next";
 import { useTranslations } from "next-intl";
+import Image from "next/image";
 import ImageColumn from "./components/image-column";
 
 export const metadata: Metadata = {
@@ -87,12 +89,27 @@ const Home = () => {
     );
   };
 
+  const arrowImage = () => {
+    return (
+      <Box
+        sx={{
+          position: "relative",
+          bottom: "130px",
+          left: "120px",
+        }}
+      >
+        <Image src={arrow} alt={"Orange arrow"} />
+      </Box>
+    );
+  };
+
   return (
     <Container>
       <Stack direction="row">
         {textSection()}
         {imageSection()}
       </Stack>
+      {arrowImage()}
     </Container>
   );
 };

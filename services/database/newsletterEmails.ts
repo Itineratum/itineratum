@@ -9,6 +9,7 @@ export const addEmailToNewsletter = async (email: string) => {
     if (emailAlreadyInNewsletter) {
       return {
         success: false,
+        error: "Email already added to newsletter!",
       };
     } else {
       await NewsletterEmail.create({ email }).then((result) => {
@@ -17,6 +18,31 @@ export const addEmailToNewsletter = async (email: string) => {
 
       return {
         success: true,
+      };
+    }
+  } catch (error) {
+    console.error(error);
+    throw error;
+  } finally {
+    await disconnectFromDatabase();
+  }
+};
+
+export const removeEmailFromNewsletter = async (email: string) => {
+  try {
+    await connectToDatabase();
+    const emailAlreadyInNewsletter = await NewsletterEmail.findOne({ email });
+
+    if (emailAlreadyInNewsletter) {
+      await NewsletterEmail.deleteOne({ email });
+
+      return {
+        success: true,
+      };
+    } else {
+      return {
+        success: false,
+        error: "Email is not in newsletter!",
       };
     }
   } catch (error) {

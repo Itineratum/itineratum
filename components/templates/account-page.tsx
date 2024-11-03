@@ -43,7 +43,7 @@ const AccountPage = () => {
         timeout={pageTransitionDuration}
         mountOnEnter
         unmountOnExit
-        style={{ position: "absolute", width: "100%" }}
+        style={{ position: "relative", width: "100%" }}
       >
         <Container key={AccountSetting.personalInformation}>
           <AccountPersonalInformation
@@ -63,7 +63,7 @@ const AccountPage = () => {
         timeout={pageTransitionDuration}
         mountOnEnter
         unmountOnExit
-        style={{ position: "absolute", width: "100%" }}
+        style={{ position: "relative", width: "100%" }}
       >
         <Container key={AccountSetting.notifications}>
           <AccountNotifications
@@ -81,7 +81,8 @@ const AccountPage = () => {
         position: "relative",
         display: "flex",
         justifyContent: "center",
-        height: "90vh",
+        height: "auto",
+        minHeight: "90vh",
       }}
     >
       {base()}

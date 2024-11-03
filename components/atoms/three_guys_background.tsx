@@ -20,7 +20,7 @@ const ThreeGuysBackground = ({ children }: { children: React.ReactNode }) => {
       <Image
         src={orangeGuy}
         alt="Orange Guy"
-        style={{ position: "absolute", top: "0%", right: "2%", zIndex: -1 }}
+        style={{ position: "absolute", top: "0%", right: "-10%", zIndex: -1 }}
       />
       <Image
         src={darkBlueGuy}

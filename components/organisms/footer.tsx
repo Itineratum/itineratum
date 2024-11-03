@@ -25,6 +25,7 @@ const Footer = () => {
   const footerMarginTop: string = "20px";
   const footerPaddingX: string = "40px";
   const footerPaddingY: string = "40px";
+  const gridMarginBottom: string = "20px";
   const spacing: number = 0;
   const stayConnectedColumnWidth: number = 5;
   const pageLinksColumnWidth: number = 2;
@@ -266,6 +267,7 @@ const Footer = () => {
             justifyContent: "center",
             alignItems: "center",
             width: "100%",
+            marginBottom: gridMarginBottom,
           }}
         >
           {stayConnectedColumn()}
