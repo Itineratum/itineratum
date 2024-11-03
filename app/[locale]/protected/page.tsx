@@ -1,14 +1,12 @@
-"use client";
-
 import Text from "@/components/atoms/text";
+import ThreeGuysBackground from "@/components/atoms/three_guys_background";
 import { TypographyVariant } from "@/constants/enums/theme";
-import { Box, Button, Container, Stack } from "@mui/material";
+import { Box, Container, Stack } from "@mui/material";
 import { useTranslations } from "next-intl";
-import { useRouter } from "next/navigation";
+import LoginButton from "./components/login-button";
 
 const ProtectedRoute = () => {
   const t = useTranslations("protected");
-  const router = useRouter();
 
   const spacing: number = 7;
 
@@ -17,7 +15,11 @@ const ProtectedRoute = () => {
 
     return (
       <Box marginY={margin}>
-        <Text text={t("heading")} variant={TypographyVariant.h2} bold={true} />
+        <Text
+          text={t("heading").toUpperCase()}
+          variant={TypographyVariant.h1}
+          bold={true}
+        />
       </Box>
     );
   };
@@ -32,41 +34,16 @@ const ProtectedRoute = () => {
     );
   };
 
-  const recovery = () => {
-    return (
-      <Text text={t("recovery")} variant={TypographyVariant.h5} bold={false} />
-    );
-  };
-
-  const loginButton = () => {
-    const width: string = "30%";
-
-    const handleOnClick = () => {
-      router.push("/login");
-    };
-
-    return (
-      <Button
-        type="button"
-        variant="contained"
-        color="primary"
-        sx={{ maxWidth: width }}
-        onClick={handleOnClick}
-      >
-        {t("login")}
-      </Button>
-    );
-  };
-
   return (
-    <Container maxWidth="md">
-      {heading()}
-      <Stack spacing={spacing}>
-        {description()}
-        {recovery()}
-        {loginButton()}
-      </Stack>
-    </Container>
+    <ThreeGuysBackground>
+      <Container maxWidth="md" sx={{ textAlign: "center", zIndex: 1 }}>
+        {heading()}
+        <Stack spacing={spacing} sx={{ display: "flex", alignItems: "center" }}>
+          {description()}
+          <LoginButton />
+        </Stack>
+      </Container>
+    </ThreeGuysBackground>
   );
 };
 

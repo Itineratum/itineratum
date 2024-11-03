@@ -30,7 +30,13 @@ import utc from "dayjs/plugin/utc";
 import { signOut, useSession } from "next-auth/react";
 import { useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
-import { Dispatch, SetStateAction, useEffect, useState } from "react";
+import {
+  Dispatch,
+  SetStateAction,
+  useEffect,
+  useLayoutEffect,
+  useState,
+} from "react";
 import { Controller, useForm } from "react-hook-form";
 import ChangePasswordForm from "./change-password-form";
 import DeleteAccountConfirmationDialog from "./delete-account-confirmation-dialog";
@@ -45,7 +51,8 @@ const AccountPersonalInformation = ({
 }) => {
   const t = useTranslations("account.personalInformation");
   const router = useRouter();
-  const { data: session, update } = useSession();
+  const { data: session, update, status } = useSession();
+  const isLoggedIn = status === "authenticated";
   const {
     control,
     formState: { errors },
@@ -93,25 +100,30 @@ const AccountPersonalInformation = ({
     },
     {
       retry: false,
-      onError: (error) => {
-        if (error.message === "UNAUTHORIZED") router.push("/protected");
-      },
+      enabled: isLoggedIn,
+      // onError: (error) => {
+      //   if (error.message === "UNAUTHORIZED") router.push("/protected");
+      // },
     },
   );
   const deleteUserAccount = trpc.user.deleteUserAccount.useMutation({
-    onError: (error) => {
-      if (error.message === "UNAUTHORIZED") router.push("/protected");
-    },
+    // onError: (error) => {
+    //   if (error.message === "UNAUTHORIZED") router.push("/protected");
+    // },
   });
   const updateUserAccount = trpc.user.updateUserAccount.useMutation({
     onSuccess: () => {
       // update the session
       update({ name: firstName });
     },
-    onError: (error) => {
-      if (error.message === "UNAUTHORIZED") router.push("/protected");
-    },
+    // onError: (error) => {
+    //   if (error.message === "UNAUTHORIZED") router.push("/protected");
+    // },
   });
+
+  useLayoutEffect(() => {
+    if (status === "unauthenticated") router.push("/protected");
+  }, [status, router]);
 
   useEffect(() => {
     if (getUserAccountDetails.data) {

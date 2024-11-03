@@ -25,8 +25,8 @@ import Text from "../atoms/text";
 import Alert from "./alert";
 
 const StayConnectedColumn = () => {
-  const { data: session } = useSession();
-  const isLoggedIn = session?.user.email != undefined;
+  const { data: session, status } = useSession();
+  const isLoggedIn = status === "authenticated";
   const t = useTranslations("footer");
   const {
     formState: { errors },

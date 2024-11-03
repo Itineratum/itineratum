@@ -25,7 +25,12 @@ const Text = ({
       {text}
     </a>
   ) : (
-    text
+    text.split("\n").map((line, index) => (
+      <span key={index}>
+        {line}
+        {index < text.split("\n").length - 1 && <br />}
+      </span>
+    ))
   );
 
   return (
