@@ -13,6 +13,7 @@ import {
 } from "@/constants/enums/accountNotifications";
 import { updateUser } from "@/services/database/users";
 import { TRPCError } from "@trpc/server";
+import { sendNewsletterSubscribedEmail } from "@/lib/nodeMailer";
 
 export const newsletterEmailRouter = router({
   addEmailToNewsletter: publicProcedure
@@ -21,6 +22,7 @@ export const newsletterEmailRouter = router({
     .mutation(async (data) => {
       const email = data.input.email;
       const addEmailToNewsletterRes = await addEmailToNewsletter(email);
+      sendNewsletterSubscribedEmail(email);
 
       const update = {
         $set: {

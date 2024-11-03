@@ -5,6 +5,7 @@ import {
 import {
   sendAccountDeletedEmail,
   sendAccountPasswordChangedEmail,
+  sendNewsletterSubscribedEmail,
   sendSignUpVerificationEmail,
 } from "@/lib/nodeMailer";
 import {
@@ -326,6 +327,7 @@ export const userRouter = router({
       ) {
         if (value) {
           const addEmailToNewsletterRes = await addEmailToNewsletter(email);
+          sendNewsletterSubscribedEmail(email);
 
           if (!addEmailToNewsletterRes.success) {
             throw new TRPCError({
