@@ -24,9 +24,9 @@ const CurrencySwitcher = () => {
     {
       enabled: isLoggedIn,
       retry: false,
-      // onError: (error) => {
-      //   if (error.message === "UNAUTHORIZED") router.push("/protected");
-      // },
+      onError: (error) => {
+        if (error.message === "UNAUTHORIZED") router.push("/protected");
+      },
     },
   );
 

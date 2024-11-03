@@ -21,14 +21,14 @@ const AccountBase = ({
 }) => {
   const t = useTranslations("account");
   const { data: session, status } = useSession();
+  const isLoggedIn = status === "authenticated";
   const name: string | undefined | null = session?.user?.name;
   const router = useRouter();
 
   const sectionMargin: number = 7;
 
   useEffect(() => {
-    if (status === "unauthenticated" || !session || !session.user)
-      router.push("/protected");
+    if (!isLoggedIn) router.push("/protected");
   }, [status, router]);
 
   const userName = () => {
@@ -180,7 +180,7 @@ const AccountBase = ({
     );
   };
 
-  return (
+  return status === "loading" || !isLoggedIn ? null : (
     <Box
       display="flex"
       flexDirection="column"

@@ -10,7 +10,8 @@ const ThreeGuysBackground = ({ children }: { children: React.ReactNode }) => {
       sx={{
         position: "relative",
         width: "100%",
-        height: "100vh",
+        height: "auto",
+        minHeight: "90vh",
         overflow: "visible",
         display: "flex",
         alignItems: "center",
