@@ -7,10 +7,12 @@ import { StayConnectedFormData } from "@/constants/types/stayConnectedFormData";
 import paperPlane from "@/public/paper_plane.svg";
 import { isValidEmail } from "@/utils/signUpFormValidation";
 import {
+  Box,
   Button,
   Checkbox,
   CircularProgress,
   FormControlLabel,
+  Skeleton,
   Stack,
   TextField,
 } from "@mui/material";
@@ -24,6 +26,7 @@ import Alert from "./alert";
 
 const StayConnectedColumn = () => {
   const { data: session } = useSession();
+  const isLoggedIn = session?.user.email != undefined;
   const t = useTranslations("footer");
   const {
     formState: { errors },
@@ -39,7 +42,7 @@ const StayConnectedColumn = () => {
   const [alertType, setAlertType] = useState<AlertType>(AlertType.info);
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const [hasEmailInNewsletter, setHasEmailInNewsletter] =
-    useState<boolean>(false);
+    useState<boolean>(isLoggedIn);
 
   const spacing: number = 3;
 
@@ -55,19 +58,21 @@ const StayConnectedColumn = () => {
         setAlertText(response ? t("emailSuccess") : t("emailExists"));
         setShowAlert(true);
         setIsSubmitting(false);
+
+        if (isLoggedIn) setHasEmailInNewsletter(true);
       },
     });
   const checkEmailInNewsletter =
     trpc.newsletterEmail.checkEmailInNewsletter.useQuery(
       { email: session?.user.email! },
-      { retry: false },
+      { retry: false, enabled: isLoggedIn },
     );
 
   useEffect(() => {
-    if (checkEmailInNewsletter.data) {
-      setHasEmailInNewsletter(checkEmailInNewsletter.data);
+    if (checkEmailInNewsletter.isFetched) {
+      setHasEmailInNewsletter(checkEmailInNewsletter.data ?? false);
     }
-  }, [checkEmailInNewsletter.data]);
+  }, [checkEmailInNewsletter.isFetched]);
 
   const stayConnectedText = () => {
     return (
@@ -210,8 +215,21 @@ const StayConnectedColumn = () => {
     );
   };
 
+  const loadingIndicator = () => {
+    return <Skeleton variant="rounded" height="100%" width="100%" />;
+  };
+
   const planeImage = () => {
     return <Image src={paperPlane} alt={"paper plane"} />;
+  };
+
+  const stayConnectedForm = () => {
+    return (
+      <Stack spacing={spacing}>
+        {stayConnectedText()}
+        {emailRow()}
+      </Stack>
+    );
   };
 
   const itineratumRow = () => {
@@ -226,14 +244,13 @@ const StayConnectedColumn = () => {
 
   return (
     <Stack spacing={spacing}>
-      {hasEmailInNewsletter ? (
-        planeImage()
-      ) : (
-        <Stack spacing={spacing}>
-          {stayConnectedText()}
-          {emailRow()}
-        </Stack>
-      )}
+      <Box sx={{ height: "130px", width: "100%" }}>
+        {isLoggedIn && checkEmailInNewsletter.isLoading
+          ? loadingIndicator()
+          : hasEmailInNewsletter
+            ? planeImage()
+            : stayConnectedForm()}
+      </Box>
       <Alert
         showAlert={showAlert}
         setShowAlert={setShowAlert}

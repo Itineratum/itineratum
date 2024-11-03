@@ -11,8 +11,9 @@ import FacebookIcon from "@mui/icons-material/Facebook";
 import InstagramIcon from "@mui/icons-material/Instagram";
 import LinkedInIcon from "@mui/icons-material/LinkedIn";
 import TelegramIcon from "@mui/icons-material/Telegram";
-import { Box, Divider, Grid, IconButton, Link, Stack } from "@mui/material";
+import { Box, Divider, Grid, IconButton, Stack } from "@mui/material";
 import { useLocale, useTranslations } from "next-intl";
+import Link from "next/link";
 import Text from "../atoms/text";
 import TikTokIcon from "../atoms/tiktok-icon";
 import StayConnectedColumn from "../molecules/footer-stay-connected-column";
@@ -202,6 +203,17 @@ const Footer = () => {
   };
 
   const linksRow = () => {
+    // TODO: insert links here
+    const links: Record<string, string> = {
+      [t("termsAndConditions")]: "",
+      [t("privacyPolicy")]: "",
+      [t("cookiePolicy")]: "",
+      [t("copyrightNotification")]: "",
+      [t("cookieSettings")]: "",
+    };
+
+    const spacing: number = 2;
+
     const divider = () => {
       return (
         <Text text={"|"} variant={TypographyVariant.subtitle2} bold={false} />
@@ -211,49 +223,25 @@ const Footer = () => {
     return (
       <Stack
         direction="row"
-        spacing={2}
+        spacing={spacing}
         justifyContent="center"
         sx={{ marginTop: "20px" }}
       >
-        <Link href="" color="inherit" underline="hover">
-          <Text
-            text={t("termsAndConditions")}
-            variant={TypographyVariant.subtitle2}
-            bold={false}
-          />
-        </Link>
-        {divider()}
-        <Link href="" color="inherit" underline="hover">
-          <Text
-            text={t("privacyPolicy")}
-            variant={TypographyVariant.subtitle2}
-            bold={false}
-          />{" "}
-        </Link>
-        {divider()}
-        <Link href="" color="inherit" underline="hover">
-          <Text
-            text={t("cookiePolicy")}
-            variant={TypographyVariant.subtitle2}
-            bold={false}
-          />{" "}
-        </Link>
-        {divider()}
-        <Link href="" color="inherit" underline="hover">
-          <Text
-            text={t("copyrightNotification")}
-            variant={TypographyVariant.subtitle2}
-            bold={false}
-          />{" "}
-        </Link>
-        {divider()}
-        <Link href="" color="inherit" underline="hover">
-          <Text
-            text={t("cookieSettings")}
-            variant={TypographyVariant.subtitle2}
-            bold={false}
-          />{" "}
-        </Link>
+        {Object.keys(links).map((text, index) => (
+          <Stack spacing={spacing} direction="row">
+            <Link
+              href={links[text]}
+              style={{ textDecoration: "none", color: "inherit" }}
+            >
+              <Text
+                text={text}
+                variant={TypographyVariant.subtitle2}
+                bold={false}
+              />
+            </Link>
+            {index < Object.keys(links).length - 1 ? divider() : <></>}
+          </Stack>
+        ))}
       </Stack>
     );
   };

@@ -28,9 +28,9 @@ const AccountPage = () => {
         unmountOnExit
         style={{ position: "absolute", width: "100%" }}
       >
-        <div key={AccountSetting.base}>
+        <Container key={AccountSetting.base}>
           <AccountBase setAccountSetting={setAccountSetting} />
-        </div>
+        </Container>
       </Slide>
     );
   };
@@ -45,12 +45,12 @@ const AccountPage = () => {
         unmountOnExit
         style={{ position: "absolute", width: "100%" }}
       >
-        <div key={AccountSetting.personalInformation}>
+        <Container key={AccountSetting.personalInformation}>
           <AccountPersonalInformation
             accountSetting={accountSetting}
             setAccountSetting={setAccountSetting}
           />
-        </div>
+        </Container>
       </Slide>
     );
   };
@@ -65,12 +65,12 @@ const AccountPage = () => {
         unmountOnExit
         style={{ position: "absolute", width: "100%" }}
       >
-        <div key={AccountSetting.notifications}>
+        <Container key={AccountSetting.notifications}>
           <AccountNotifications
             accountSetting={accountSetting}
             setAccountSetting={setAccountSetting}
           />
-        </div>
+        </Container>
       </Slide>
     );
   };
@@ -81,7 +81,7 @@ const AccountPage = () => {
         position: "relative",
         display: "flex",
         justifyContent: "center",
-        height: "100vh",
+        height: "90vh",
       }}
     >
       {base()}
