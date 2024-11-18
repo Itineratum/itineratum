@@ -8,6 +8,7 @@ import { Metadata } from "next";
 import { useTranslations } from "next-intl";
 import Image from "next/image";
 import ImageColumn from "./components/image-column";
+import Base from "./components/itinerary-generator/base";
 
 export const metadata: Metadata = {
   title: constText.pageTitle,
@@ -110,6 +111,7 @@ const Home = () => {
         {imageSection()}
       </Stack>
       {arrowImage()}
+      <Base />
     </Container>
   );
 };

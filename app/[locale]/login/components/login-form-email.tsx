@@ -10,7 +10,7 @@ import {
   TypographyTextDecoration,
   TypographyVariant,
 } from "@/constants/enums/theme";
-import { LogInFormEmailData } from "@/constants/types/logInFormData";
+import { LogInFormEmailData } from "@/constants/types/formData/logInFormData";
 import { Box, Button, CircularProgress } from "@mui/material";
 import { TRPCClientError } from "@trpc/client";
 import { signIn } from "next-auth/react";

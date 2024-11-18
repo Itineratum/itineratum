@@ -3,7 +3,7 @@
 import { trpc } from "@/app/_trpc/client";
 import { AlertType } from "@/constants/enums/alertType";
 import { TypographyVariant } from "@/constants/enums/theme";
-import { StayConnectedFormData } from "@/constants/types/stayConnectedFormData";
+import { StayConnectedFormData } from "@/constants/types/formData/stayConnectedFormData";
 import paperPlane from "@/public/paper_plane.svg";
 import { isValidEmail } from "@/utils/signUpFormValidation";
 import {

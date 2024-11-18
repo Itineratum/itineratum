@@ -10,7 +10,7 @@ import TextInputField from "@/components/molecules/text-input-field";
 import { AlertType } from "@/constants/enums/alertType";
 import { countryInfoList } from "@/constants/enums/country";
 import { TypographyVariant } from "@/constants/enums/theme";
-import { SignUpFormData } from "@/constants/types/signUpFormData";
+import { SignUpFormData } from "@/constants/types/formData/signUpFormData";
 import { isValidEmail, isValidPassword } from "@/utils/signUpFormValidation";
 import {
   Box,

@@ -9,7 +9,7 @@ import { AlertType } from "@/constants/enums/alertType";
 import { AuthService } from "@/constants/enums/authService";
 import { TypographyVariant } from "@/constants/enums/theme";
 import colorsConst from "@/constants/pages/colors.json";
-import { AccountPersonalInformationFormData } from "@/constants/types/accountPersonalInformationData";
+import { AccountPersonalInformationFormData } from "@/constants/types/formData/accountPersonalInformationData";
 import {
   Box,
   Breadcrumbs,

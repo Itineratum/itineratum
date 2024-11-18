@@ -6,7 +6,7 @@ import Alert from "@/components/molecules/alert";
 import { AlertType } from "@/constants/enums/alertType";
 import { TypographyVariant } from "@/constants/enums/theme";
 import colorsConst from "@/constants/pages/colors.json";
-import { ChangePasswordFormData } from "@/constants/types/accountPersonalInformationData";
+import { ChangePasswordFormData } from "@/constants/types/formData/accountPersonalInformationData";
 import { isValidPassword } from "@/utils/signUpFormValidation";
 import VisibilityOffOutlinedIcon from "@mui/icons-material/VisibilityOffOutlined";
 import VisibilityOutlinedIcon from "@mui/icons-material/VisibilityOutlined";

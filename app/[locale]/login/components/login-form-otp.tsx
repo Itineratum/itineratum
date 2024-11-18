@@ -10,7 +10,7 @@ import {
   TypographyTextDecoration,
   TypographyVariant,
 } from "@/constants/enums/theme";
-import { LogInFormOtpData } from "@/constants/types/logInFormData";
+import { LogInFormOtpData } from "@/constants/types/formData/logInFormData";
 import {
   Box,
   Button,

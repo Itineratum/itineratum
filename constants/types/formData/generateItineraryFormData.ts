@@ -1,0 +1,69 @@
+import { GenerateItineraryFocus, GenerateItineraryPreferredTransport } from "@/constants/enums/generateItinerary"
+
+export interface GenerateItineraryFormData {
+  startDate: string,
+  endDate: string,
+  startLocation: string,
+  userRequestedDestinations: UserRequestedDestination[],
+  budget: number,
+  totalHotelRooms: number,
+  numPeopleTravelling: {
+    adults: number,
+    children: number
+  },
+  focus: {
+    focus1: GenerateItineraryFocus,
+    focus2: GenerateItineraryFocus,
+    focus3: GenerateItineraryFocus,
+    focus4: GenerateItineraryFocus
+  },
+  preferredTransport: GenerateItineraryPreferredTransport,
+  otherRequirements: {
+    petFriendly: boolean,
+    familyFriendly: boolean,
+    moreSustainable: boolean
+  }
+}
+
+// sample JSON
+// {
+//   "start_date": "2021-01-01",
+//   "end_date": "2021-01-14",
+//   "start_location": "Singapore",
+//   "user_requested_destinations": [
+//       {
+//           "name": "New York",
+//           "start_date": "2021-01-01",
+//           "end_date": "2021-01-03"
+//       },
+//       {
+//           "name": "Los Angeles",
+//           "start_date": "2021-01-04",
+//           "end_date": "2021-01-14"
+//       }
+//   ],
+//   "budget": 2000,
+//   "total_hotel_rooms": 2,
+//   "num_people_travelling": {
+//       "adults": 3,
+//       "children": 1
+//   },
+//   "focus": {
+//       "focus_1": "shopping",
+//       "focus_2": "attraction",
+//       "focus_3": "nature",
+//       "focus_4": "local_cuisine"
+//   },
+//   "preferred_transport": "car",
+//   "other_requirements": {
+//       "pet_friendly": true,
+//       "family_friendly": true,
+//       "more_sustainable": true
+//   }
+// }
+
+interface UserRequestedDestination {
+  name: string,
+  startDate: string,
+  endDate: string
+}
