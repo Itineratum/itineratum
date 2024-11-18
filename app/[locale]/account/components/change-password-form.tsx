@@ -101,7 +101,9 @@ const ChangePasswordForm = ({
   };
 
   const fields = () => {
-    const currentPasswordField = () => {
+    const fieldSpacing: number = 2;
+
+    const CurrentPasswordField = () => {
       const [showCurrentPassword, setShowCurrentPassword] =
         useState<boolean>(false);
 
@@ -173,7 +175,7 @@ const ChangePasswordForm = ({
       );
     };
 
-    const newPasswordField = () => {
+    const NewPasswordField = () => {
       const [showNewPassword, setShowNewPassword] = useState<boolean>(false);
 
       const handleClickShowNewPassword = () =>
@@ -251,7 +253,7 @@ const ChangePasswordForm = ({
       );
     };
 
-    const reEnterNewPasswordField = () => {
+    const ReEnterNewPasswordField = () => {
       const [showReEnterNewPassword, setShowReEnterNewPassword] =
         useState<boolean>(false);
 
@@ -336,10 +338,10 @@ const ChangePasswordForm = ({
     };
 
     return (
-      <Stack>
-        {currentPasswordField()}
-        {newPasswordField()}
-        {reEnterNewPasswordField()}
+      <Stack spacing={fieldSpacing}>
+        {CurrentPasswordField()}
+        {NewPasswordField()}
+        {ReEnterNewPasswordField()}
       </Stack>
     );
   };

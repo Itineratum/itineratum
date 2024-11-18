@@ -45,7 +45,8 @@ const AccountPersonalInformation = ({
 }) => {
   const t = useTranslations("account.personalInformation");
   const router = useRouter();
-  const { data: session, update } = useSession();
+  const { data: session, update, status } = useSession();
+  const isLoggedIn = status === "authenticated";
   const {
     control,
     formState: { errors },
@@ -93,6 +94,7 @@ const AccountPersonalInformation = ({
     },
     {
       retry: false,
+      enabled: isLoggedIn,
       onError: (error) => {
         if (error.message === "UNAUTHORIZED") router.push("/protected");
       },

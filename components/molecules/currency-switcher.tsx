@@ -5,14 +5,16 @@ import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import ButtonMenu from "./button-menu";
+import { Skeleton } from "@mui/material";
 
 const CurrencySwitcher = () => {
   const id: string = "currency-switcher";
-  const { data: session } = useSession();
+  const { data: session, status } = useSession();
+  const isLoggedIn = status === "authenticated";
   const email = session?.user.email!;
   const router = useRouter();
 
-  const [currency, setCurrency] = useState<string>(Currency.sgd);
+  const [currency, setCurrency] = useState<string>("");
 
   const switchCurrency = trpc.user.switchCurrency.useMutation();
   const getUserCurrencyLanguage = trpc.user.getUserCurrencyLanguage.useQuery(
@@ -20,7 +22,7 @@ const CurrencySwitcher = () => {
       email,
     },
     {
-      enabled: !!email,
+      enabled: isLoggedIn,
       retry: false,
       onError: (error) => {
         if (error.message === "UNAUTHORIZED") router.push("/protected");
@@ -32,7 +34,7 @@ const CurrencySwitcher = () => {
     setCookie("currency", newCurrency);
     setCurrency(newCurrency);
 
-    if (session?.user) {
+    if (isLoggedIn) {
       const data = { email, currency: newCurrency };
 
       try {
@@ -51,23 +53,35 @@ const CurrencySwitcher = () => {
   }, []);
 
   useEffect(() => {
-    const userCurrency = getUserCurrencyLanguage.data?.currency;
+    if (getUserCurrencyLanguage.isFetched) {
+      const userCurrency = getUserCurrencyLanguage.data?.currency;
 
-    if (userCurrency) {
-      setCurrency(userCurrency);
-      setCookie("currency", userCurrency);
+      if (userCurrency) {
+        setCurrency(userCurrency);
+        setCookie("currency", userCurrency);
+      }
     }
-  }, [getUserCurrencyLanguage.data?.currency]);
+  }, [getUserCurrencyLanguage.isFetched]);
 
-  return (
-    <ButtonMenu
-      id={id}
-      text={currency.toUpperCase()}
-      menuItems={currencyMap}
-      useLink={false}
-      itemChangeHandler={handleCurrencyChange}
-    />
-  );
+  const loadingIndicator = () => {
+    return <Skeleton variant="rounded" height="100%" width="100%" />;
+  };
+
+  const switcher = () => {
+    return (
+      <ButtonMenu
+        id={id}
+        text={currency.toUpperCase()}
+        menuItems={currencyMap}
+        useLink={false}
+        itemChangeHandler={handleCurrencyChange}
+      />
+    );
+  };
+
+  return isLoggedIn && getUserCurrencyLanguage.isLoading
+    ? loadingIndicator()
+    : switcher();
 };
 
 export default CurrencySwitcher;

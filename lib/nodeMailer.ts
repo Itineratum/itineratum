@@ -59,3 +59,19 @@ export const sendAccountDeletedEmail = async (toEmail: string) => {
     throw error;
   }
 };
+
+export const sendNewsletterSubscribedEmail = async (toEmail: string) => {
+  const mailOptions = {
+    from: process.env.NODEMAILER_EMAIL,
+    to: toEmail,
+    subject: "Itineratum newsletter subscribed",
+    text: `This email has been subscribed to Itineratum's newsletter!`,
+  };
+
+  try {
+    await transporter.sendMail(mailOptions);
+  } catch (error) {
+    console.error("Error sending newsletter subscribed email!", error);
+    throw error;
+  }
+};

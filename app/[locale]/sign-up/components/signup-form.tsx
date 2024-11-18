@@ -6,21 +6,18 @@ import { PrivacyPolicyLink } from "@/components/atoms/privacy-policy-link";
 import Text from "@/components/atoms/text";
 import Alert from "@/components/molecules/alert";
 import { GoogleButton } from "@/components/molecules/google-button";
+import TextInputField from "@/components/molecules/text-input-field";
 import { AlertType } from "@/constants/enums/alertType";
 import { countryInfoList } from "@/constants/enums/country";
 import { TypographyVariant } from "@/constants/enums/theme";
 import { SignUpFormData } from "@/constants/types/signUpFormData";
 import { isValidEmail, isValidPassword } from "@/utils/signUpFormValidation";
-import VisibilityOffOutlinedIcon from "@mui/icons-material/VisibilityOffOutlined";
-import VisibilityOutlinedIcon from "@mui/icons-material/VisibilityOutlined";
 import {
   Box,
   Button,
   CircularProgress,
   Collapse,
   Grid,
-  IconButton,
-  InputAdornment,
   MenuItem,
   TextField,
 } from "@mui/material";
@@ -326,41 +323,20 @@ const SignUpForm = () => {
       };
 
       return (
-        <Controller
-          key={emailId}
+        <TextInputField
           name={emailId}
+          label={t("email")}
           control={control}
-          defaultValue=""
-          rules={{
-            validate: emailValidation,
-            required: t("emailError"),
-          }}
-          render={({ field }) => (
-            <TextField
-              {...field}
-              required
-              fullWidth
-              variant="filled"
-              margin={formFieldMargin}
-              label={t("email")}
-              value={email}
-              InputLabelProps={{
-                sx: { color: "text.primary" },
-              }}
-              error={!!errors.email}
-              helperText={errors.email ? (errors.email.message as string) : ""}
-              onChange={async (event) => await handleEmailChange(event, field)}
-            />
-          )}
+          errorMessage={t("emailError")}
+          errors={errors}
+          value={email}
+          validate={emailValidation}
+          onChange={handleEmailChange}
         />
       );
     };
 
     const passwordField = () => {
-      const [showPassword, setShowPassword] = useState<boolean>(false);
-
-      const handleClickShowPassword = () => setShowPassword(!showPassword);
-
       const passwordValidation = (passwordInput: string) => {
         const isValid = isValidPassword(passwordInput);
         return isValid ? true : t("passwordError");
@@ -377,62 +353,21 @@ const SignUpForm = () => {
       };
 
       return (
-        <Controller
-          key={passwordId}
+        <TextInputField
           name={passwordId}
+          label={t("password")}
           control={control}
-          defaultValue=""
-          rules={{
-            validate: passwordValidation,
-            required: t("passwordError"),
-          }}
-          render={({ field }) => (
-            <TextField
-              {...field}
-              type={showPassword ? "text" : "password"}
-              required
-              fullWidth
-              variant="filled"
-              margin={formFieldMargin}
-              label={t("password")}
-              value={password}
-              InputLabelProps={{
-                sx: { color: "text.primary" },
-              }}
-              error={!!errors.password}
-              helperText={
-                errors.password ? (errors.password.message as string) : ""
-              }
-              onChange={async (event) =>
-                await handlePasswordChange(event, field)
-              }
-              FormHelperTextProps={{ sx: { whiteSpace: "pre-line" } }} // ensures that newline characters (\n) are rendered as actual line breaks
-              InputProps={{
-                endAdornment: (
-                  <InputAdornment position="end">
-                    <IconButton onClick={handleClickShowPassword} edge="end">
-                      {showPassword ? (
-                        <VisibilityOffOutlinedIcon />
-                      ) : (
-                        <VisibilityOutlinedIcon />
-                      )}
-                    </IconButton>
-                  </InputAdornment>
-                ),
-              }}
-            />
-          )}
+          errorMessage={t("passwordError")}
+          errors={errors}
+          value={password}
+          validate={passwordValidation}
+          isPasswordInputField={true}
+          onChange={handlePasswordChange}
         />
       );
     };
 
     const reEnterPasswordField = () => {
-      const [showReEnterPassword, setShowReEnterPassword] =
-        useState<boolean>(false);
-
-      const handleClickShowReEnterPassword = () =>
-        setShowReEnterPassword(!showReEnterPassword);
-
       const reEnterPasswordValidation = (reEnterPasswordInput: string) => {
         const isValid =
           reEnterPasswordInput === password &&
@@ -449,56 +384,16 @@ const SignUpForm = () => {
       };
 
       return (
-        <Controller
-          key={reEnterPasswordId}
+        <TextInputField
           name={reEnterPasswordId}
+          label={t("reEnterPassword")}
           control={control}
-          defaultValue=""
-          rules={{
-            validate: reEnterPasswordValidation,
-            required: t("reEnterPasswordError"),
-          }}
-          disabled={!isValidPassword(password)}
-          render={({ field }) => (
-            <TextField
-              {...field}
-              type={showReEnterPassword ? "text" : "password"}
-              required
-              fullWidth
-              variant="filled"
-              margin={formFieldMargin}
-              label={t("reEnterPassword")}
-              value={reEnterPassword}
-              InputLabelProps={{
-                sx: { color: "text.primary" },
-              }}
-              error={!!errors.reEnterPassword}
-              helperText={
-                errors.reEnterPassword
-                  ? (errors.reEnterPassword.message as string)
-                  : ""
-              }
-              onChange={async (event) =>
-                await handleReEnterPasswordChange(event, field)
-              }
-              InputProps={{
-                endAdornment: (
-                  <InputAdornment position="end">
-                    <IconButton
-                      onClick={handleClickShowReEnterPassword}
-                      edge="end"
-                    >
-                      {showReEnterPassword ? (
-                        <VisibilityOffOutlinedIcon />
-                      ) : (
-                        <VisibilityOutlinedIcon />
-                      )}
-                    </IconButton>
-                  </InputAdornment>
-                ),
-              }}
-            />
-          )}
+          errorMessage={t("reEnterPasswordError")}
+          errors={errors}
+          value={reEnterPassword}
+          validate={reEnterPasswordValidation}
+          isPasswordInputField={true}
+          onChange={handleReEnterPasswordChange}
         />
       );
     };

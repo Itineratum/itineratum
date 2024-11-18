@@ -1,9 +1,10 @@
 import { TypographyVariant } from "@/constants/enums/theme";
 import { useRouter } from "@/navigation";
 import { buildLocaleEndpoint } from "@/utils/buildLocaleEndpoint";
-import { Box, Link, MenuItem } from "@mui/material";
+import { Box, MenuItem } from "@mui/material";
 import { useLocale } from "next-intl";
 import Text from "../atoms/text";
+import Link from "next/link";
 
 const LinkMenuItem = ({
   item,
@@ -27,7 +28,10 @@ const LinkMenuItem = ({
 
   return (
     <MenuItem key={item} onClick={handleClick}>
-      <Link href={buildLocaleEndpoint(locale, item)} underline="none">
+      <Link
+        href={buildLocaleEndpoint(locale, item)}
+        style={{ textDecoration: "none" }}
+      >
         <Box sx={{ color: "text.primary" }}>
           <Text text={text} variant={TypographyVariant.body1} bold={false} />
         </Box>

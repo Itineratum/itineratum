@@ -5,8 +5,13 @@ import {
 import {
   sendAccountDeletedEmail,
   sendAccountPasswordChangedEmail,
+  sendNewsletterSubscribedEmail,
   sendSignUpVerificationEmail,
 } from "@/lib/nodeMailer";
+import {
+  addEmailToNewsletter,
+  removeEmailFromNewsletter,
+} from "@/services/database/newsletterEmails";
 import {
   credentialsLogIn,
   credentialsSignUp,
@@ -315,6 +320,33 @@ export const userRouter = router({
         fieldType === AccountNotificationsFieldType.email
           ? fieldType
           : "push_notifications";
+
+      if (
+        updateField === AccountNotificationsField.newsletter &&
+        updateFieldType === AccountNotificationsFieldType.email
+      ) {
+        if (value) {
+          const addEmailToNewsletterRes = await addEmailToNewsletter(email);
+          sendNewsletterSubscribedEmail(email);
+
+          if (!addEmailToNewsletterRes.success) {
+            throw new TRPCError({
+              code: "INTERNAL_SERVER_ERROR",
+              message: addEmailToNewsletterRes.error,
+            });
+          }
+        } else {
+          const removeEmailFromNewsletterRes =
+            await removeEmailFromNewsletter(email);
+
+          if (!removeEmailFromNewsletterRes.success) {
+            throw new TRPCError({
+              code: "INTERNAL_SERVER_ERROR",
+              message: removeEmailFromNewsletterRes.error,
+            });
+          }
+        }
+      }
 
       const update = {
         $set: {

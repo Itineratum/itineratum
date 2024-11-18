@@ -1,22 +1,19 @@
-"use client";
-
 import FAQ from "@/app/[locale]/contact-us/components/faq";
-import { trpc } from "@/app/_trpc/client";
 import {
   TypographyTextDecoration,
   TypographyVariant,
 } from "@/constants/enums/theme";
 import { IFAQ } from "@/constants/types/faq";
+import { emailParser, phoneParser } from "@/utils/stringParsers";
 import ChatBubbleOutlineOutlinedIcon from "@mui/icons-material/ChatBubbleOutlineOutlined";
 import HeadsetMicOutlinedIcon from "@mui/icons-material/HeadsetMicOutlined";
 import { Box, Card, CardContent, Container, Stack } from "@mui/material";
 import { useTranslations } from "next-intl";
-import { useEffect, useState } from "react";
 import Text from "../atoms/text";
+import contactsConst from "@/constants/pages/contacts.json";
 
-const ContactUsPage = () => {
+const ContactUsPage = ({ faqs }: { faqs: IFAQ[] }) => {
   const t = useTranslations("contactUs");
-  const [faqs, setFaqs] = useState<IFAQ[]>([]);
 
   const margin: number = 5;
   const sectionSpacing: number = 5;
@@ -41,16 +38,6 @@ const ContactUsPage = () => {
     flexDirection: "column",
     justifyContent: "space-between",
   };
-
-  const getAllFAQs = trpc.faq.getAllFAQs.useQuery();
-
-  // TODO: look into using static side generation for getting all the FAQs from MongoDB
-  useEffect(() => {
-    if (getAllFAQs.data) {
-      const faqs = getAllFAQs.data;
-      setFaqs(faqs);
-    }
-  }, [getAllFAQs.data]);
 
   const contactUsText = () => {
     return (
@@ -80,10 +67,11 @@ const ContactUsPage = () => {
       const email = () => {
         return (
           <Text
-            text={t("email")}
+            text={contactsConst.email}
             variant={TypographyVariant.h5}
             bold={true}
             textDecoration={TypographyTextDecoration.underline}
+            link={emailParser(contactsConst.email)}
           />
         );
       };
@@ -121,10 +109,11 @@ const ContactUsPage = () => {
       const phone = () => {
         return (
           <Text
-            text={t("phone")}
+            text={contactsConst.phone}
             variant={TypographyVariant.h5}
             bold={true}
             textDecoration={TypographyTextDecoration.underline}
+            link={phoneParser(contactsConst.phone)}
           />
         );
       };
@@ -168,7 +157,13 @@ const ContactUsPage = () => {
         {faqs.map((faq) => {
           const question = faq.question;
           const answer = faq.answer;
-          return <FAQ questionString={question} answerString={answer} />;
+          return (
+            <FAQ
+              key={question}
+              questionString={question}
+              answerString={answer}
+            />
+          );
         })}
       </Box>
     );

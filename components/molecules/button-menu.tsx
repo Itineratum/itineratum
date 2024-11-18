@@ -38,6 +38,7 @@ const ButtonMenu = ({
   const menuElement = Object.keys(menuItems).map((item) =>
     useLink ? (
       <LinkMenuItem
+        key={menuItems[item]}
         item={item}
         text={menuItems[item]}
         handleClose={handleClose}

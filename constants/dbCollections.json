@@ -1,5 +1,6 @@
 {
   "users": "users",
   "verificationCodes": "verification_codes",
-  "faqs": "faqs"
+  "faqs": "faqs",
+  "newsletterEmails": "newsletter_emails"
 }
