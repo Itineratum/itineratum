@@ -18,6 +18,9 @@ const ItineraryGenerator = () => {
   const fields = useForm<GenerateItineraryFormData>({
     mode: "onChange",
     reValidateMode: "onChange",
+    defaultValues: {
+      userRequestedDestinations: [],
+    },
   });
 
   const [activeStep, setActiveStep] = useState<number>(0);
@@ -30,7 +33,7 @@ const ItineraryGenerator = () => {
   const borderRadius: string = "16px";
   const padding: string = "20px";
   const marginTop: string = "20px";
-  const spacing: number = 30;
+  const spacing: number = 3;
   const variants = {
     enter: (direction: "left" | "right") => ({
       x: direction === "left" ? 1000 : -1000,
@@ -60,7 +63,10 @@ const ItineraryGenerator = () => {
     );
 
     setNavigationButtonsEnabled(
-      !hasErrors && isFormValid && requiredFieldsFilled
+      !hasErrors &&
+        isFormValid &&
+        requiredFieldsFilled &&
+        watchedFields.userRequestedDestinations.length > 0
     );
   };
   useEffect(() => {
@@ -94,7 +100,8 @@ const ItineraryGenerator = () => {
           exit="exit"
           transition={{ duration: transitionDuration }}
           style={{
-            position: "absolute",
+            maxHeight: "33vh",
+            position: "relative",
             marginTop,
           }}
         >
@@ -134,6 +141,7 @@ const ItineraryGenerator = () => {
       const handleOnClick = () => {
         setDirection("left");
         setActiveStep((prevStep) => prevStep + 1);
+        console.log(fields.getValues("userRequestedDestinations"));
       };
 
       return (

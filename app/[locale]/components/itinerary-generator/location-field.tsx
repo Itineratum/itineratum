@@ -4,26 +4,26 @@ import colorsConst from "@/constants/pages/colors.json";
 import { GenerateItineraryFormData } from "@/constants/types/formData/generateItineraryFormData";
 import SearchIcon from "@mui/icons-material/Search";
 import { Box, IconButton, TextField } from "@mui/material";
+import { useTranslations } from "next-intl";
+import { Dispatch, SetStateAction } from "react";
 import { Controller, UseFormReturn } from "react-hook-form";
 
-const LocationField = ({
-  textLabel,
-  label,
-  fieldId,
+const textLabelMarginRight: number = 2;
+
+const FromField = ({
   fields,
 }: {
-  textLabel: string;
-  label: string;
-  fieldId: any;
   fields: UseFormReturn<GenerateItineraryFormData, any, undefined>;
 }) => {
-  const textLabelMarginRight: number = 2;
+  const t = useTranslations("home.itineraryGenerator.step1");
+
+  const fieldId = "startLocation";
 
   return (
     <Box display="flex" alignItems="center" sx={{ width: "100%" }}>
       <Box mr={textLabelMarginRight}>
         <Text
-          text={textLabel + ":"}
+          text={t("from") + ":"}
           variant={TypographyVariant.h4}
           bold={true}
         />
@@ -35,7 +35,7 @@ const LocationField = ({
           <TextField
             {...fields.register(fieldId)}
             variant="outlined"
-            label={label}
+            label={t("fromDestinationDescription")}
             fullWidth
             InputLabelProps={{
               style: {
@@ -43,8 +43,8 @@ const LocationField = ({
                 fontSize: "12px",
               },
             }}
-            onChange={(value) => {
-              field.onChange(value);
+            onChange={(newValue) => {
+              field.onChange(newValue);
             }}
             InputProps={{
               endAdornment: (
@@ -60,4 +60,50 @@ const LocationField = ({
   );
 };
 
-export default LocationField;
+const DestinationField = ({
+  destination: currentDestination,
+  setDestination,
+}: {
+  destination: string,
+  setDestination: Dispatch<SetStateAction<string>>;
+}) => {
+  const t = useTranslations("home.itineraryGenerator.step1");
+
+  const textLabelMarginRight: number = 2;
+
+  return (
+    <Box display="flex" alignItems="center" sx={{ width: "100%" }}>
+      <Box mr={textLabelMarginRight}>
+        <Text
+          text={t("destination")}
+          variant={TypographyVariant.h4}
+          bold={true}
+        />
+      </Box>
+      <TextField
+        variant="outlined"
+        label={t("destinationDescription")}
+        fullWidth
+        value={currentDestination}
+        InputLabelProps={{
+          style: {
+            color: colorsConst.palette.text.grey,
+            fontSize: "12px",
+          },
+        }}
+        onChange={(e) => {
+          setDestination(e.target.value);
+        }}
+        InputProps={{
+          endAdornment: (
+            <IconButton>
+              <SearchIcon />
+            </IconButton>
+          ),
+        }}
+      />
+    </Box>
+  );
+};
+
+export { FromField, DestinationField };

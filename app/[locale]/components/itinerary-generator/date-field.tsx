@@ -6,9 +6,9 @@ import { Box, Grid, Stack } from "@mui/material";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider/LocalizationProvider";
-import dayjs, { Dayjs } from "dayjs";
+import dayjs from "dayjs";
 import { useTranslations } from "next-intl";
-import React, { useState } from "react";
+import { useState } from "react";
 import { Controller, UseFormReturn } from "react-hook-form";
 
 const DateFields = ({
@@ -63,6 +63,7 @@ const DateFields = ({
               format="DD/MM/YYYY"
               label={t("from")}
               defaultValue={dayjs()}
+              minDate={dayjs()}
               onChange={(value) => {
                 field.onChange(value);
                 fields.trigger(startDate);
@@ -116,6 +117,7 @@ const DateFields = ({
               {...field}
               format="DD/MM/YYYY"
               label={t("to")}
+              minDate={fields.getValues(startDate) ?? dayjs().add(1, "day")}
               onChange={(value) => {
                 field.onChange(value);
                 fields.trigger(startDate);

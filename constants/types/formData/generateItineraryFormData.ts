@@ -63,7 +63,7 @@ export interface GenerateItineraryFormData {
 //   }
 // }
 
-interface UserRequestedDestination {
+export interface UserRequestedDestination {
   name: string,
   startDate: Dayjs,
   endDate: Dayjs
