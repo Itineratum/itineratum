@@ -1,8 +1,9 @@
 import { GenerateItineraryFocus, GenerateItineraryPreferredTransport } from "@/constants/enums/generateItinerary"
+import { Dayjs } from "dayjs"
 
 export interface GenerateItineraryFormData {
-  startDate: string,
-  endDate: string,
+  startDate: Dayjs,
+  endDate: Dayjs,
   startLocation: string,
   userRequestedDestinations: UserRequestedDestination[],
   budget: number,
@@ -64,6 +65,6 @@ export interface GenerateItineraryFormData {
 
 interface UserRequestedDestination {
   name: string,
-  startDate: string,
-  endDate: string
+  startDate: Dayjs,
+  endDate: Dayjs
 }

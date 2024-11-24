@@ -36,13 +36,14 @@
     "tagline": "It's time to travel with EASE",
     "callToAction": "Select a destination of your choice",
     "itineraryGenerator": {
-      "base": {
+      "step1": {
         "from": "From",
         "fromDestinationDescription": "Enter the name of the city you are travelling from",
-        "to": "to",
+        "to": "To",
         "destination": "Destination",
         "destinationDescription": "Enter the name of the destination",
-        "addLocation": "Add Location"
+        "addLocation": "Add Location",
+        "dateErrorMessage": "Please ensure that the 'from' date is before the 'to' date!"
       },
       "next": "Next",
       "previous": "Previous"

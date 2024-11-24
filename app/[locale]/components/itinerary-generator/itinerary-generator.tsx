@@ -4,25 +4,33 @@ import colorsConst from "@/constants/pages/colors.json";
 import { GenerateItineraryFormData } from "@/constants/types/formData/generateItineraryFormData";
 import ArrowBackOutlinedIcon from "@mui/icons-material/ArrowBackOutlined";
 import ArrowForwardOutlinedIcon from "@mui/icons-material/ArrowForwardOutlined";
-import { Box, Button, Container } from "@mui/material";
+import { Box, Button, Container, Stack } from "@mui/material";
+import { AnimatePresence, motion } from "framer-motion";
 import { useTranslations } from "next-intl";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { FormProvider, useForm } from "react-hook-form";
-import { motion, AnimatePresence } from "framer-motion";
+import Step1 from "./step-1";
+import Step2 from "./step-2";
+import Step3 from "./step-3";
 
 const ItineraryGenerator = () => {
   const t = useTranslations("home.itineraryGenerator");
-  const fields = useForm<GenerateItineraryFormData>();
+  const fields = useForm<GenerateItineraryFormData>({
+    mode: "onChange",
+    reValidateMode: "onChange",
+  });
 
   const [activeStep, setActiveStep] = useState<number>(0);
   const [direction, setDirection] = useState<"left" | "right">("left");
+  const [navigationButtonsEnabled, setNavigationButtonsEnabled] =
+    useState<boolean>(false);
 
   const numOfSteps: number = 3;
   const border: string = `2px solid ${colorsConst.palette.secondary.main}`;
   const borderRadius: string = "16px";
   const padding: string = "20px";
   const marginTop: string = "20px";
-
+  const spacing: number = 30;
   const variants = {
     enter: (direction: "left" | "right") => ({
       x: direction === "left" ? 1000 : -1000,
@@ -38,13 +46,41 @@ const ItineraryGenerator = () => {
     }),
   };
 
+  // ensures that only when the fields in the activeStep are filled in, and have no errors, then the user will be able to use the navigation buttons
+  const fieldsAtEachStep = [
+    ["startLocation", "userRequestedDestinations", "startDate", "endDate"],
+    ["budget", "totalHotelRooms", "numPeopleTravelling"],
+  ];
+  const watchedFields = fields.watch();
+  const checkFieldsValidForActiveStep = () => {
+    const hasErrors = Object.keys(fields.formState.errors).length > 0;
+    const isFormValid = fields.formState.isValid;
+    const requiredFieldsFilled = fieldsAtEachStep[activeStep].every(
+      (field: any) => !!fields.getValues(field)
+    );
+
+    setNavigationButtonsEnabled(
+      !hasErrors && isFormValid && requiredFieldsFilled
+    );
+  };
+  useEffect(() => {
+    checkFieldsValidForActiveStep();
+  }, [watchedFields, activeStep]);
+
   const formFields = () => {
     const transitionDuration: number = 0.3;
+    const marginTop: string = "10px";
 
     const steps = [
-      <Container key={0}>STEP 1</Container>,
-      <Container key={1}>STEP 2</Container>,
-      <Container key={2}>STEP 3</Container>,
+      <Container key={0}>
+        <Step1 fields={fields} />
+      </Container>,
+      <Container key={1}>
+        <Step2 fields={fields} />
+      </Container>,
+      <Container key={2}>
+        <Step3 fields={fields} />
+      </Container>,
     ];
 
     return (
@@ -58,9 +94,7 @@ const ItineraryGenerator = () => {
           exit="exit"
           transition={{ duration: transitionDuration }}
           style={{
-            width: "100%",
             position: "absolute",
-            height: "100%",
             marginTop,
           }}
         >
@@ -84,6 +118,7 @@ const ItineraryGenerator = () => {
             variant="contained"
             color="primary"
             startIcon={<ArrowBackOutlinedIcon />}
+            disabled={!navigationButtonsEnabled}
           >
             {t("previous")}
           </Button>
@@ -108,6 +143,7 @@ const ItineraryGenerator = () => {
             variant="contained"
             color="primary"
             endIcon={<ArrowForwardOutlinedIcon />}
+            disabled={!navigationButtonsEnabled}
           >
             {t("next")}
           </Button>
@@ -132,26 +168,24 @@ const ItineraryGenerator = () => {
   };
 
   return (
-    <Container>
-      <FormProvider {...fields}>
-        <Box
-          sx={{
-            position: "relative",
-            display: "flex",
-            flexDirection: "column",
-            justifyContent: "center",
-            height: "auto",
-            overflow: "hidden",
-            border,
-            borderRadius,
-            padding,
-          }}
-        >
-          {formFields()}
-          {navigationButtons()}
-        </Box>
-      </FormProvider>
-    </Container>
+    <FormProvider {...fields}>
+      <Stack
+        direction="column"
+        spacing={spacing}
+        sx={{
+          position: "relative",
+          height: "auto",
+          width: "100%",
+          overflow: "hidden",
+          border,
+          borderRadius,
+          padding,
+        }}
+      >
+        {formFields()}
+        {navigationButtons()}
+      </Stack>
+    </FormProvider>
   );
 };
 

@@ -8,7 +8,7 @@ import { Metadata } from "next";
 import { useTranslations } from "next-intl";
 import Image from "next/image";
 import ImageColumn from "./components/image-column";
-import ItineraryGenerator from "./components/itinerary-generator";
+import ItineraryGenerator from "./components/itinerary-generator/itinerary-generator";
 
 export const metadata: Metadata = {
   title: constText.pageTitle,
@@ -97,7 +97,7 @@ const Home = () => {
         sx={{
           position: "absolute",
           top: "420px",
-          left: "140px",
+          left: "160px",
         }}
       >
         <Image src={arrow} alt={"Orange arrow"} />
