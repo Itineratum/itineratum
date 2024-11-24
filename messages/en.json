@@ -42,9 +42,10 @@
         "to": "to",
         "destination": "Destination",
         "destinationDescription": "Enter the name of the destination",
-        "addLocation": "Add Location",
-        "next": "next"
-      }
+        "addLocation": "Add Location"
+      },
+      "next": "Next",
+      "previous": "Previous"
     }
   },
   "account": {

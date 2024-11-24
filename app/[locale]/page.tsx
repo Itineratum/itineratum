@@ -8,7 +8,7 @@ import { Metadata } from "next";
 import { useTranslations } from "next-intl";
 import Image from "next/image";
 import ImageColumn from "./components/image-column";
-import Base from "./components/itinerary-generator/base";
+import ItineraryGenerator from "./components/itinerary-generator";
 
 export const metadata: Metadata = {
   title: constText.pageTitle,
@@ -18,6 +18,7 @@ const Home = () => {
   const t = useTranslations("home");
 
   const sectionWidth: string = "50%";
+  const paddingBottom: string = "20px";
 
   const textSection = () => {
     const title = () => {
@@ -94,9 +95,9 @@ const Home = () => {
     return (
       <Box
         sx={{
-          position: "relative",
-          bottom: "130px",
-          left: "120px",
+          position: "absolute",
+          top: "420px",
+          left: "140px",
         }}
       >
         <Image src={arrow} alt={"Orange arrow"} />
@@ -105,13 +106,22 @@ const Home = () => {
   };
 
   return (
-    <Container>
+    <Container
+      sx={{
+        position: "relative",
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        gap: 5,
+        paddingBottom
+      }}
+    >
       <Stack direction="row">
         {textSection()}
         {imageSection()}
       </Stack>
       {arrowImage()}
-      <Base />
+      <ItineraryGenerator />
     </Container>
   );
 };

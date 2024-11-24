@@ -38,7 +38,7 @@ const AccountPage = () => {
   const personalInformation = () => {
     return (
       <Slide
-        direction={"left"}
+        direction="left"
         in={accountSetting === AccountSetting.personalInformation}
         timeout={pageTransitionDuration}
         mountOnEnter
@@ -58,7 +58,7 @@ const AccountPage = () => {
   const notifications = () => {
     return (
       <Slide
-        direction={"left"}
+        direction="left"
         in={accountSetting === AccountSetting.notifications}
         timeout={pageTransitionDuration}
         mountOnEnter

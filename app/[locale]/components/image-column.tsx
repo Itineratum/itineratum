@@ -4,7 +4,7 @@ import { keyframes } from "@emotion/react";
 import { Box, Stack } from "@mui/material";
 import Image from "next/image";
 
-const animationDisplacement: number = 20;
+const animationDisplacement: number = 15;
 const animationPeriod: number = 4;
 const floatAnimationUp = keyframes`
   0% { transform: translateY(0px); }

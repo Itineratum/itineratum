@@ -33,6 +33,7 @@
     "cookies-next": "^4.2.1",
     "countries-list": "^3.1.1",
     "dayjs": "^1.11.13",
+    "framer-motion": "^11.11.17",
     "i18n-iso-countries": "^7.11.3",
     "jwt-decode": "^4.0.0",
     "libphonenumber-js": "^1.11.7",
