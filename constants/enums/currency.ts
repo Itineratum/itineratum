@@ -24,4 +24,4 @@ export const currencyMap = createCurrencyMap();
 
 export const getCurrencySymbol = (currency: string): string => {
   return Currency[currency as keyof typeof Currency];
-}
+};

@@ -27,7 +27,7 @@ const CurrencySwitcher = () => {
       onError: (error) => {
         if (error.message === "UNAUTHORIZED") router.push("/protected");
       },
-    }
+    },
   );
 
   const handleCurrencyChange = async (newCurrency: string) => {

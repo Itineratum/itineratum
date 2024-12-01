@@ -93,7 +93,7 @@ const Step1 = ({
       const deleteButton = (index: number) => {
         const handleOnClick = () => {
           const updatedDestinations = destinations.filter(
-            (_, i) => i !== index
+            (_, i) => i !== index,
           );
           setDestinations(updatedDestinations);
           fields.setValue(userRequestedDestinations, updatedDestinations);

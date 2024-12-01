@@ -4,7 +4,15 @@ import { TypographyVariant } from "@/constants/enums/theme";
 import colorsConst from "@/constants/pages/colors.json";
 import { GenerateItineraryFormData } from "@/constants/types/formData/generateItineraryFormData";
 import { isValidIntegerRegex } from "@/utils/itineraryGeneratorValidation";
-import { Box, Grid, MenuItem, Select, SelectChangeEvent, Stack, TextField } from "@mui/material";
+import {
+  Box,
+  Grid,
+  MenuItem,
+  Select,
+  SelectChangeEvent,
+  Stack,
+  TextField,
+} from "@mui/material";
 import { getCookie } from "cookies-next";
 import { useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
@@ -34,6 +42,8 @@ const Step2 = ({
     }, [getCookie("currency")]);
 
     const budgetField = () => {
+      const width: string = "45%";
+
       const budgetValidation = (budgetInput: number) => {
         const isValid = budgetInput > 0;
         return isValid ? true : t("budgetErrorMessage");
@@ -41,7 +51,11 @@ const Step2 = ({
 
       return (
         <Box display="flex" alignItems="center" sx={{ width: "100%" }}>
-          <Box mr={textLabelMarginRight}>
+          <Box
+            mr={textLabelMarginRight}
+            display="flex"
+            sx={{ width, flexShrink: 0 }}
+          >
             <Text
               text={t("budget") + ": " + currency?.toUpperCase()}
               variant={TypographyVariant.h4}
@@ -84,6 +98,8 @@ const Step2 = ({
     };
 
     const totalHotelRoomsField = () => {
+      const width: string = "55%";
+
       const totalHotelRoomsValidation = (totalHotelRoomsInput: number) => {
         const isValid = totalHotelRoomsInput > 0;
         return isValid ? true : t("hotelRoomsErrorMessage");
@@ -91,7 +107,7 @@ const Step2 = ({
 
       return (
         <Box display="flex" alignItems="center" sx={{ width: "100%" }}>
-          <Box mr={textLabelMarginRight}>
+          <Box display="flex" sx={{ width, flexShrink: 0 }}>
             <Text
               text={t("hotelRooms") + ":"}
               variant={TypographyVariant.h4}
@@ -199,7 +215,7 @@ const Step2 = ({
         };
 
         return (
-          <Stack spacing={spacing} direction="column" alignItems="center">
+          <Stack spacing={0} direction="column" alignItems="flex-start">
             {label()}
             {inputField()}
           </Stack>
@@ -254,7 +270,7 @@ const Step2 = ({
         };
 
         return (
-          <Stack spacing={spacing} direction="column" alignItems="center">
+          <Stack spacing={0} direction="column" alignItems="flex-start">
             {label()}
             {inputField()}
           </Stack>
@@ -262,7 +278,7 @@ const Step2 = ({
       };
 
       return (
-        <Stack spacing={spacing} direction="column" alignItems="center">
+        <Stack spacing={spacing} direction="column" alignItems="flex-start">
           {adultsField()}
           {childrenField()}
         </Stack>
@@ -270,15 +286,15 @@ const Step2 = ({
     };
 
     return (
-      <Grid container spacing={spacing} direction="row" alignItems="center">
+      <Stack spacing={spacing} direction="row" alignItems="flex-start">
         {numPeopleTravellingLabel()}
         {numPeopleTravellingFields()}
-      </Grid>
+      </Stack>
     );
   };
 
   return (
-    <Stack spacing={spacing} direction="column" alignItems="center">
+    <Stack spacing={spacing + 5} direction="column" alignItems="center">
       {budgetHotelRoomsSection()}
       {numPeopleTravellingSection()}
     </Stack>

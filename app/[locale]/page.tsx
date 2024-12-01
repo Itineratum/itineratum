@@ -113,7 +113,7 @@ const Home = () => {
         flexDirection: "column",
         alignItems: "center",
         gap: 5,
-        paddingBottom
+        paddingBottom,
       }}
     >
       <Stack direction="row">

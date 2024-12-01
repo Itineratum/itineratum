@@ -57,6 +57,10 @@
         "children": "Children (18 & below)",
         "childrenErrorMessage": "Please enter a value of at least 0."
       },
+      "step3": {
+        "tripFocus": "Select your trip focus",
+        "tripFocusHint": "(rank it in importance, with 1 as most important and 4 as least important)"
+      },
       "next": "Next",
       "previous": "Previous"
     }

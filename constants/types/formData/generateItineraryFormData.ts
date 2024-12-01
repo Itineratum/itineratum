@@ -1,29 +1,32 @@
-import { GenerateItineraryFocus, GenerateItineraryPreferredTransport } from "@/constants/enums/generateItinerary"
-import { Dayjs } from "dayjs"
+import {
+  GenerateItineraryFocus,
+  GenerateItineraryPreferredTransport,
+} from "@/constants/enums/generateItinerary";
+import { Dayjs } from "dayjs";
 
 export interface GenerateItineraryFormData {
-  startDate: Dayjs,
-  endDate: Dayjs,
-  startLocation: string,
-  userRequestedDestinations: UserRequestedDestination[],
-  budget: number,
-  totalHotelRooms: number,
+  startDate: Dayjs;
+  endDate: Dayjs;
+  startLocation: string;
+  userRequestedDestinations: UserRequestedDestination[];
+  budget: number;
+  totalHotelRooms: number;
   numPeopleTravelling: {
-    adults: number,
-    children: number
-  },
+    adults: number;
+    children: number;
+  };
   focus: {
-    focus1: GenerateItineraryFocus,
-    focus2: GenerateItineraryFocus,
-    focus3: GenerateItineraryFocus,
-    focus4: GenerateItineraryFocus
-  },
-  preferredTransport: GenerateItineraryPreferredTransport,
+    focus1: GenerateItineraryFocus;
+    focus2: GenerateItineraryFocus;
+    focus3: GenerateItineraryFocus;
+    focus4: GenerateItineraryFocus;
+  };
+  preferredTransport: GenerateItineraryPreferredTransport;
   otherRequirements: {
-    petFriendly: boolean,
-    familyFriendly: boolean,
-    moreSustainable: boolean
-  }
+    petFriendly: boolean;
+    familyFriendly: boolean;
+    moreSustainable: boolean;
+  };
 }
 
 // sample JSON
@@ -64,7 +67,7 @@ export interface GenerateItineraryFormData {
 // }
 
 export interface UserRequestedDestination {
-  name: string,
-  startDate: Dayjs,
-  endDate: Dayjs
+  name: string;
+  startDate: Dayjs;
+  endDate: Dayjs;
 }

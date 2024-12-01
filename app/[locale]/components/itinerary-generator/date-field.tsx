@@ -111,7 +111,7 @@ const DateFields = ({
                 setDateError(true);
                 return t("dateErrorMessage");
               }
-              
+
               setDateError(false);
               return true;
             },

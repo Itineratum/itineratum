@@ -64,7 +64,7 @@ const DestinationField = ({
   destination: currentDestination,
   setDestination,
 }: {
-  destination: string,
+  destination: string;
   setDestination: Dispatch<SetStateAction<string>>;
 }) => {
   const t = useTranslations("home.itineraryGenerator.step1");
