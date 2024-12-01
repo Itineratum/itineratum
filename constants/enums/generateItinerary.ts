@@ -1,8 +1,8 @@
 export enum GenerateItineraryFocus {
-  shopping = "Shopping",
   attraction = "Attraction",
+  localCuisine = "Local Cuisine",
   nature = "Nature",
-  localCuisinse = "Local Cuisine",
+  shopping = "Shopping",
 }
 
 export enum GenerateItineraryPreferredTransport {

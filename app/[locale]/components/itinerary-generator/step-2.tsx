@@ -7,11 +7,8 @@ import { isValidIntegerRegex } from "@/utils/itineraryGeneratorValidation";
 import {
   Box,
   Grid,
-  MenuItem,
-  Select,
-  SelectChangeEvent,
   Stack,
-  TextField,
+  TextField
 } from "@mui/material";
 import { getCookie } from "cookies-next";
 import { useTranslations } from "next-intl";

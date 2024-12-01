@@ -8,7 +8,7 @@ import { Box, Button, Container, Stack } from "@mui/material";
 import { AnimatePresence, motion } from "framer-motion";
 import { useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
-import { FormProvider, get, useForm } from "react-hook-form";
+import { FormProvider, useForm } from "react-hook-form";
 import Step1 from "./step-1";
 import Step2 from "./step-2";
 import Step3 from "./step-3";
@@ -27,7 +27,6 @@ const ItineraryGenerator = () => {
   const [direction, setDirection] = useState<"left" | "right">("left");
   const [nextButtonEnabled, setNextButtonEnabled] = useState<boolean>(false);
 
-  const numOfSteps: number = 3;
   const border: string = `2px solid ${colorsConst.palette.secondary.main}`;
   const borderRadius: string = "16px";
   const padding: string = "20px";
@@ -48,6 +47,21 @@ const ItineraryGenerator = () => {
     }),
   };
 
+  const steps = [
+    <Container key={0}>
+      <Step1 fields={fields} />
+    </Container>,
+    <Container key={1}>
+      <Step2 fields={fields} />
+    </Container>,
+    <Container key={2}>
+      <Step3 fields={fields} />
+    </Container>,
+    <Container key={3}>
+      <Step1 fields={fields} />
+    </Container>,
+  ];
+
   // ensures that only when the fields in the activeStep are filled in, and have no errors, then the user will be able to use the navigation buttons
   const fieldsAtEachStep = [
     ["startLocation", "userRequestedDestinations", "startDate", "endDate"],
@@ -58,20 +72,20 @@ const ItineraryGenerator = () => {
       "numPeopleTravelling.adults",
       "numPeopleTravelling.children",
     ],
-    ["focus", "focus.focus1", "focus.focus2", "focus.focus3", "focus.focus4"],
+    ["focus", "attraction", "localCuisine", "nature", "shopping"],
   ];
   const watchedFields = fields.watch();
   const checkFieldsValidForActiveStep = () => {
     const hasErrorsAtActiveStep = Object.keys(fields.formState.errors).some(
-      (errorField) => fieldsAtEachStep[activeStep].includes(errorField),
+      (errorField) => fieldsAtEachStep[activeStep].includes(errorField)
     );
     const requiredFieldsFilled = fieldsAtEachStep[activeStep].every(
-      (field: any) => !!fields.getValues(field),
+      (field: any) => !!fields.getValues(field)
     );
     setNextButtonEnabled(
       !hasErrorsAtActiveStep &&
         requiredFieldsFilled &&
-        watchedFields.userRequestedDestinations.length > 0,
+        watchedFields.userRequestedDestinations.length > 0
     );
   };
   useEffect(() => {
@@ -81,18 +95,6 @@ const ItineraryGenerator = () => {
   const formFields = () => {
     const transitionDuration: number = 0.3;
     const marginTop: string = "10px";
-
-    const steps = [
-      <Container key={0}>
-        <Step1 fields={fields} />
-      </Container>,
-      <Container key={1}>
-        <Step2 fields={fields} />
-      </Container>,
-      <Container key={2}>
-        <Step3 fields={fields} />
-      </Container>,
-    ];
 
     return (
       <motion.div
@@ -157,7 +159,7 @@ const ItineraryGenerator = () => {
       };
 
       return (
-        activeStep < numOfSteps - 1 && (
+        activeStep < steps.length - 1 && (
           <Button
             onClick={handleOnClick}
             variant="contained"

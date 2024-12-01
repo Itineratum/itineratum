@@ -1,6 +1,5 @@
 import {
-  GenerateItineraryFocus,
-  GenerateItineraryPreferredTransport,
+  GenerateItineraryPreferredTransport
 } from "@/constants/enums/generateItinerary";
 import { Dayjs } from "dayjs";
 
@@ -16,10 +15,14 @@ export interface GenerateItineraryFormData {
     children: number;
   };
   focus: {
-    focus1: GenerateItineraryFocus;
-    focus2: GenerateItineraryFocus;
-    focus3: GenerateItineraryFocus;
-    focus4: GenerateItineraryFocus;
+    attraction: number;
+    localCuisine: number;
+    nature: number;
+    shopping: number;
+    // focus1: GenerateItineraryFocus;
+    // focus2: GenerateItineraryFocus;
+    // focus3: GenerateItineraryFocus;
+    // focus4: GenerateItineraryFocus;
   };
   preferredTransport: GenerateItineraryPreferredTransport;
   otherRequirements: {
@@ -53,10 +56,10 @@ export interface GenerateItineraryFormData {
 //       "children": 1
 //   },
 //   "focus": {
-//       "focus_1": "shopping",
-//       "focus_2": "attraction",
-//       "focus_3": "nature",
-//       "focus_4": "local_cuisine"
+//       "attraction": 1,
+//       "localCuisine": 2,
+//       "nature": 3,
+//       "shopping": 4
 //   },
 //   "preferred_transport": "car",
 //   "other_requirements": {

@@ -59,7 +59,9 @@
       },
       "step3": {
         "tripFocus": "Select your trip focus",
-        "tripFocusHint": "(rank it in importance, with 1 as most important and 4 as least important)"
+        "tripFocusHint": "(rank it in importance, with 1 as most important and 4 as least important)",
+        "selectRank": "Select Rank",
+        "resetRankings": "Reset Rankings"
       },
       "next": "Next",
       "previous": "Previous"
