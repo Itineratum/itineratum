@@ -25,6 +25,7 @@ const Step1 = ({
   const t = useTranslations("home.itineraryGenerator.step1");
 
   const spacing: number = 4;
+  const userRequestedDestinations = "userRequestedDestinations";
 
   const locationFields = () => {
     const [destinations, setDestinations] = useState<
@@ -56,7 +57,7 @@ const Step1 = ({
         };
         setDestinations((prevDestinations) => {
           const updatedDestinations = [...prevDestinations, destination];
-          fields.setValue("userRequestedDestinations", updatedDestinations, {
+          fields.setValue(userRequestedDestinations, updatedDestinations, {
             shouldValidate: true,
             shouldDirty: true,
           });
@@ -95,7 +96,7 @@ const Step1 = ({
             (_, i) => i !== index
           );
           setDestinations(updatedDestinations);
-          fields.setValue("userRequestedDestinations", updatedDestinations);
+          fields.setValue(userRequestedDestinations, updatedDestinations);
         };
 
         return (
@@ -107,22 +108,24 @@ const Step1 = ({
 
       return (
         <Box sx={{ maxHeight: "20vh", overflowY: "auto" }}>
-          {destinations.map((destination, index) => (
-            <Box
-              key={index}
-              display="flex"
-              alignItems="center"
-              justifyContent="space-between"
-              sx={destinationBoxSx}
-            >
-              <Text
-                text={destination.name}
-                variant={TypographyVariant.h6}
-                bold={false}
-              />
-              {deleteButton(index)}
-            </Box>
-          ))}
+          {fields
+            .getValues(userRequestedDestinations)
+            .map((destination, index) => (
+              <Box
+                key={index}
+                display="flex"
+                alignItems="center"
+                justifyContent="space-between"
+                sx={destinationBoxSx}
+              >
+                <Text
+                  text={destination.name}
+                  variant={TypographyVariant.h6}
+                  bold={false}
+                />
+                {deleteButton(index)}
+              </Box>
+            ))}
         </Box>
       );
     };

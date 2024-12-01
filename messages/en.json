@@ -45,6 +45,18 @@
         "addLocation": "Add Location",
         "dateErrorMessage": "Please ensure that the 'from' date is before the 'to' date!"
       },
+      "step2": {
+        "budget": "Budget",
+        "budgetDescription": "Please enter a number",
+        "budgetErrorMessage": "Budget too low! Please enter a value greater than 0.",
+        "hotelRooms": "Total hotel rooms",
+        "hotelRoomsErrorMessage": "Total hotel rooms too low! Please enter a value of at least 1.",
+        "numTravellers": "Number of people travelling",
+        "adults": "Adults",
+        "adultsErrorMessage": "Please enter a value of at least 1.",
+        "children": "Children (18 & below)",
+        "childrenErrorMessage": "Please enter a value of at least 0."
+      },
       "next": "Next",
       "previous": "Previous"
     }

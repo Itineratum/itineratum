@@ -8,7 +8,7 @@ import { Box, Button, Container, Stack } from "@mui/material";
 import { AnimatePresence, motion } from "framer-motion";
 import { useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
-import { FormProvider, useForm } from "react-hook-form";
+import { FormProvider, get, useForm } from "react-hook-form";
 import Step1 from "./step-1";
 import Step2 from "./step-2";
 import Step3 from "./step-3";
@@ -25,8 +25,7 @@ const ItineraryGenerator = () => {
 
   const [activeStep, setActiveStep] = useState<number>(0);
   const [direction, setDirection] = useState<"left" | "right">("left");
-  const [navigationButtonsEnabled, setNavigationButtonsEnabled] =
-    useState<boolean>(false);
+  const [nextButtonEnabled, setNextButtonEnabled] = useState<boolean>(false);
 
   const numOfSteps: number = 3;
   const border: string = `2px solid ${colorsConst.palette.secondary.main}`;
@@ -52,19 +51,25 @@ const ItineraryGenerator = () => {
   // ensures that only when the fields in the activeStep are filled in, and have no errors, then the user will be able to use the navigation buttons
   const fieldsAtEachStep = [
     ["startLocation", "userRequestedDestinations", "startDate", "endDate"],
-    ["budget", "totalHotelRooms", "numPeopleTravelling"],
+    [
+      "budget",
+      "totalHotelRooms",
+      "numPeopleTravelling",
+      "numPeopleTravelling.adults",
+      "numPeopleTravelling.children",
+    ],
+    ["focus", "focus.focus1", "focus.focus2", "focus.focus3", "focus.focus4"],
   ];
   const watchedFields = fields.watch();
   const checkFieldsValidForActiveStep = () => {
-    const hasErrors = Object.keys(fields.formState.errors).length > 0;
-    const isFormValid = fields.formState.isValid;
+    const hasErrorsAtActiveStep = Object.keys(fields.formState.errors).some(
+      (errorField) => fieldsAtEachStep[activeStep].includes(errorField)
+    );
     const requiredFieldsFilled = fieldsAtEachStep[activeStep].every(
       (field: any) => !!fields.getValues(field)
     );
-
-    setNavigationButtonsEnabled(
-      !hasErrors &&
-        isFormValid &&
+    setNextButtonEnabled(
+      !hasErrorsAtActiveStep &&
         requiredFieldsFilled &&
         watchedFields.userRequestedDestinations.length > 0
     );
@@ -90,24 +95,33 @@ const ItineraryGenerator = () => {
     ];
 
     return (
-      <AnimatePresence custom={direction} initial={false}>
-        <motion.div
-          key={activeStep}
-          custom={direction}
-          variants={variants}
-          initial={activeStep === 0 && direction === "left" ? false : "enter"}
-          animate="center"
-          exit="exit"
-          transition={{ duration: transitionDuration }}
-          style={{
-            maxHeight: "33vh",
-            position: "relative",
-            marginTop,
-          }}
-        >
-          {steps[activeStep]}
-        </motion.div>
-      </AnimatePresence>
+      <motion.div
+        layout
+        style={{
+          position: "relative",
+          width: "100%",
+          marginTop,
+        }}
+        transition={{ duration: transitionDuration }}
+      >
+        <AnimatePresence custom={direction} initial={false} mode="wait">
+          <motion.div
+            key={activeStep}
+            custom={direction}
+            variants={variants}
+            initial="enter"
+            animate="center"
+            exit="exit"
+            transition={{ duration: transitionDuration }}
+            style={{
+              position: "relative",
+              width: "100%",
+            }}
+          >
+            {steps[activeStep]}
+          </motion.div>
+        </AnimatePresence>
+      </motion.div>
     );
   };
 
@@ -125,7 +139,6 @@ const ItineraryGenerator = () => {
             variant="contained"
             color="primary"
             startIcon={<ArrowBackOutlinedIcon />}
-            disabled={!navigationButtonsEnabled}
           >
             {t("previous")}
           </Button>
@@ -141,7 +154,6 @@ const ItineraryGenerator = () => {
       const handleOnClick = () => {
         setDirection("left");
         setActiveStep((prevStep) => prevStep + 1);
-        console.log(fields.getValues("userRequestedDestinations"));
       };
 
       return (
@@ -151,7 +163,7 @@ const ItineraryGenerator = () => {
             variant="contained"
             color="primary"
             endIcon={<ArrowForwardOutlinedIcon />}
-            disabled={!navigationButtonsEnabled}
+            disabled={!nextButtonEnabled}
           >
             {t("next")}
           </Button>

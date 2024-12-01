@@ -1,11 +1,11 @@
 import { trpc } from "@/app/_trpc/client";
-import { Currency, currencyMap } from "@/constants/enums/currency";
+import { currencyMap } from "@/constants/enums/currency";
+import { Skeleton } from "@mui/material";
 import { getCookie, setCookie } from "cookies-next";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import ButtonMenu from "./button-menu";
-import { Skeleton } from "@mui/material";
 
 const CurrencySwitcher = () => {
   const id: string = "currency-switcher";
@@ -27,7 +27,7 @@ const CurrencySwitcher = () => {
       onError: (error) => {
         if (error.message === "UNAUTHORIZED") router.push("/protected");
       },
-    },
+    }
   );
 
   const handleCurrencyChange = async (newCurrency: string) => {

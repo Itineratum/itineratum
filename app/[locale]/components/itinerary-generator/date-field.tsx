@@ -49,10 +49,12 @@ const DateFields = ({
           rules={{
             validate: (value) => {
               const isValid = validateDates(value, fields.getValues(endDate));
+
               if (!isValid) {
                 setDateError(true);
                 return t("dateErrorMessage");
               }
+
               setDateError(false);
               return true;
             },
@@ -104,10 +106,12 @@ const DateFields = ({
           rules={{
             validate: (value) => {
               const isValid = validateDates(fields.getValues(startDate), value);
+
               if (!isValid) {
                 setDateError(true);
                 return t("dateErrorMessage");
               }
+              
               setDateError(false);
               return true;
             },
