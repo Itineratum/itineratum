@@ -4,12 +4,7 @@ import { TypographyVariant } from "@/constants/enums/theme";
 import colorsConst from "@/constants/pages/colors.json";
 import { GenerateItineraryFormData } from "@/constants/types/formData/generateItineraryFormData";
 import { isValidIntegerRegex } from "@/utils/itineraryGeneratorValidation";
-import {
-  Box,
-  Grid,
-  Stack,
-  TextField
-} from "@mui/material";
+import { Box, Grid, Stack, TextField } from "@mui/material";
 import { getCookie } from "cookies-next";
 import { useTranslations } from "next-intl";
 import { useEffect, useState } from "react";

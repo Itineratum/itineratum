@@ -30,7 +30,7 @@ const Step3 = ({
 
   const getFocusKey = (focus: GenerateItineraryFocus) => {
     return Object.entries(GenerateItineraryFocus).filter(
-      (entry) => entry[1] === focus
+      (entry) => entry[1] === focus,
     )[0][0];
   };
 
@@ -94,10 +94,10 @@ const Step3 = ({
     const getAvailableRanks = (currentFocus: GenerateItineraryFocus) => {
       const selectedRanks = Object.values(focusRankings).filter(
         (focusRanking) =>
-          focusRanking !== null && focusRanking !== focusRankings[currentFocus]
+          focusRanking !== null && focusRanking !== focusRankings[currentFocus],
       );
       return rankValues.filter(
-        (rankValue) => !selectedRanks.includes(rankValue)
+        (rankValue) => !selectedRanks.includes(rankValue),
       );
     };
 

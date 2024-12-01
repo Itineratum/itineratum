@@ -72,20 +72,26 @@ const ItineraryGenerator = () => {
       "numPeopleTravelling.adults",
       "numPeopleTravelling.children",
     ],
-    ["focus", "attraction", "localCuisine", "nature", "shopping"],
+    [
+      "focus",
+      "focus.attraction",
+      "focus.localCuisine",
+      "focus.nature",
+      "focus.shopping",
+    ],
   ];
   const watchedFields = fields.watch();
   const checkFieldsValidForActiveStep = () => {
     const hasErrorsAtActiveStep = Object.keys(fields.formState.errors).some(
-      (errorField) => fieldsAtEachStep[activeStep].includes(errorField)
+      (errorField) => fieldsAtEachStep[activeStep].includes(errorField),
     );
     const requiredFieldsFilled = fieldsAtEachStep[activeStep].every(
-      (field: any) => !!fields.getValues(field)
+      (field: any) => !!fields.getValues(field),
     );
     setNextButtonEnabled(
       !hasErrorsAtActiveStep &&
         requiredFieldsFilled &&
-        watchedFields.userRequestedDestinations.length > 0
+        watchedFields.userRequestedDestinations.length > 0,
     );
   };
   useEffect(() => {

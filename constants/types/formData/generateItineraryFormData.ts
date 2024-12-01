@@ -1,6 +1,4 @@
-import {
-  GenerateItineraryPreferredTransport
-} from "@/constants/enums/generateItinerary";
+import { GenerateItineraryPreferredTransport } from "@/constants/enums/generateItinerary";
 import { Dayjs } from "dayjs";
 
 export interface GenerateItineraryFormData {
@@ -19,10 +17,6 @@ export interface GenerateItineraryFormData {
     localCuisine: number;
     nature: number;
     shopping: number;
-    // focus1: GenerateItineraryFocus;
-    // focus2: GenerateItineraryFocus;
-    // focus3: GenerateItineraryFocus;
-    // focus4: GenerateItineraryFocus;
   };
   preferredTransport: GenerateItineraryPreferredTransport;
   otherRequirements: {
