@@ -37,11 +37,12 @@
     "callToAction": "Select a destination of your choice",
     "itineraryGenerator": {
       "step1": {
+        "origin": "Origin",
+        "originDescription": "Enter the name of the city you are travelling from",
         "from": "From",
-        "fromDestinationDescription": "Enter the name of the city you are travelling from",
         "to": "To",
-        "destination": "Destination",
-        "destinationDescription": "Enter the name of the destination",
+        "destinations": "Destinations",
+        "destinationsDescription": "Enter the name of the destination",
         "addLocation": "Add Location",
         "dateErrorMessage": "Please ensure that the 'from' date is before the 'to' date!"
       },

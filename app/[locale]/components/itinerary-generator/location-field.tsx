@@ -17,13 +17,13 @@ const FromField = ({
 }) => {
   const t = useTranslations("home.itineraryGenerator.step1");
 
-  const fieldId = "startLocation";
+  const fieldId = "originCountry";
 
   return (
     <Box display="flex" alignItems="center" sx={{ width: "100%" }}>
       <Box mr={textLabelMarginRight}>
         <Text
-          text={t("from") + ":"}
+          text={t("origin") + ":"}
           variant={TypographyVariant.h4}
           bold={true}
         />
@@ -35,7 +35,7 @@ const FromField = ({
           <TextField
             {...fields.register(fieldId)}
             variant="outlined"
-            label={t("fromDestinationDescription")}
+            label={t("originDescription")}
             fullWidth
             InputLabelProps={{
               style: {
@@ -75,14 +75,14 @@ const DestinationField = ({
     <Box display="flex" alignItems="center" sx={{ width: "100%" }}>
       <Box mr={textLabelMarginRight}>
         <Text
-          text={t("destination")}
+          text={t("destinations") + ":"}
           variant={TypographyVariant.h4}
           bold={true}
         />
       </Box>
       <TextField
         variant="outlined"
-        label={t("destinationDescription")}
+        label={t("destinationsDescription")}
         fullWidth
         value={currentDestination}
         InputLabelProps={{

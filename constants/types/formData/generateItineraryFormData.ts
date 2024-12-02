@@ -4,7 +4,7 @@ import { Dayjs } from "dayjs";
 export interface GenerateItineraryFormData {
   startDate: Dayjs;
   endDate: Dayjs;
-  startLocation: string;
+  originCountry: string;
   userRequestedDestinations: UserRequestedDestination[];
   budget: number;
   totalHotelRooms: number;
@@ -24,13 +24,18 @@ export interface GenerateItineraryFormData {
     familyFriendly: boolean;
     moreSustainable: boolean;
   };
+  localisation: {
+    country: string;
+    language: string;
+    currency: string;
+  }
 }
 
 // sample JSON
 // {
 //   "start_date": "2021-01-01",
 //   "end_date": "2021-01-14",
-//   "start_location": "Singapore",
+//   "origin_country": "Singapore",
 //   "user_requested_destinations": [
 //       {
 //           "name": "New York",
@@ -60,6 +65,11 @@ export interface GenerateItineraryFormData {
 //       "pet_friendly": true,
 //       "family_friendly": true,
 //       "more_sustainable": true
+//   },
+//   "localisation": {
+//     "country": "sg",
+//     "language": "en",
+//     "currency": "sgd"
 //   }
 // }
 
