@@ -112,10 +112,12 @@ const Step3 = ({
     const resetRankingsButton = () => {
       const handleOnClick = () => {
         setFocusRankings(defaultFocusRankings);
-        fields.resetField("focus.attraction");
-        fields.resetField("focus.localCuisine");
-        fields.resetField("focus.nature");
-        fields.resetField("focus.shopping");
+        fields.setValue("focus", {
+          attraction: 0,
+          localCuisine: 0,
+          nature: 0,
+          shopping: 0,
+        });
       };
 
       return (

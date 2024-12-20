@@ -28,7 +28,7 @@ export interface GenerateItineraryFormData {
     country: string;
     language: string;
     currency: string;
-  }
+  };
 }
 
 // sample JSON

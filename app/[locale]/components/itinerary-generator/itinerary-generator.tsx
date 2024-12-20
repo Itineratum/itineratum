@@ -64,7 +64,7 @@ const ItineraryGenerator = () => {
 
   // ensures that only when the fields in the activeStep are filled in, and have no errors, then the user will be able to use the navigation buttons
   const fieldsAtEachStep = [
-    ["startLocation", "userRequestedDestinations", "startDate", "endDate"],
+    ["originCountry", "userRequestedDestinations", "startDate", "endDate"],
     [
       "budget",
       "totalHotelRooms",
@@ -88,6 +88,9 @@ const ItineraryGenerator = () => {
     const requiredFieldsFilled = fieldsAtEachStep[activeStep].every(
       (field: any) => !!fields.getValues(field),
     );
+
+    console.log("hello", fields.getValues("focus"));
+
     setNextButtonEnabled(
       !hasErrorsAtActiveStep &&
         requiredFieldsFilled &&
