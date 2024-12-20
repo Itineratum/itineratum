@@ -33,7 +33,7 @@ const Step1 = ({
     >([]);
     const [currentDestination, setCurrentDestination] = useState<string>("");
 
-    const fromField = () => {
+    const originField = () => {
       return <FromField fields={fields} />;
     };
 
@@ -133,7 +133,7 @@ const Step1 = ({
     return (
       <Grid item xs={6}>
         <Stack spacing={spacing} direction="column" alignItems="center">
-          {fromField()}
+          {originField()}
           {destinationField()}
         </Stack>
         {addLocationButton()}

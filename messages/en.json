@@ -64,6 +64,9 @@
         "selectRank": "Select Rank",
         "resetRankings": "Reset Rankings"
       },
+      "step4": {
+        "transport": "Select your preferred mode of transport"
+      },
       "next": "Next",
       "previous": "Previous"
     }

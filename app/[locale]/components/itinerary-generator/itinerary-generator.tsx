@@ -12,6 +12,7 @@ import { FormProvider, useForm } from "react-hook-form";
 import Step1 from "./step-1";
 import Step2 from "./step-2";
 import Step3 from "./step-3";
+import Step4 from "./step-4";
 
 const ItineraryGenerator = () => {
   const t = useTranslations("home.itineraryGenerator");
@@ -58,7 +59,10 @@ const ItineraryGenerator = () => {
       <Step3 fields={fields} />
     </Container>,
     <Container key={3}>
-      <Step1 fields={fields} />
+      <Step4 fields={fields} />
+    </Container>,
+    <Container key={4}>
+      <Step4 fields={fields} />
     </Container>,
   ];
 
@@ -79,6 +83,7 @@ const ItineraryGenerator = () => {
       "focus.nature",
       "focus.shopping",
     ],
+    ["preferredTransport"],
   ];
   const watchedFields = fields.watch();
   const checkFieldsValidForActiveStep = () => {
@@ -88,8 +93,6 @@ const ItineraryGenerator = () => {
     const requiredFieldsFilled = fieldsAtEachStep[activeStep].every(
       (field: any) => !!fields.getValues(field),
     );
-
-    console.log("hello", fields.getValues("focus"));
 
     setNextButtonEnabled(
       !hasErrorsAtActiveStep &&

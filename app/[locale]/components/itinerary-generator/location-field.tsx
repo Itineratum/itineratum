@@ -10,7 +10,7 @@ import { Controller, UseFormReturn } from "react-hook-form";
 
 const textLabelMarginRight: number = 2;
 
-const FromField = ({
+const OriginField = ({
   fields,
 }: {
   fields: UseFormReturn<GenerateItineraryFormData, any, undefined>;
@@ -106,4 +106,4 @@ const DestinationField = ({
   );
 };
 
-export { FromField, DestinationField };
+export { OriginField as FromField, DestinationField };

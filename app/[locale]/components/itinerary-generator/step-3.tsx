@@ -120,6 +120,14 @@ const Step3 = ({
         });
       };
 
+      const isDisabled = () => {
+        return Object.keys(focusRankings).every(
+          (key) =>
+            focusRankings[key as GenerateItineraryFocus] ===
+            defaultFocusRankings[key as GenerateItineraryFocus],
+        );
+      };
+
       return (
         <Box flexShrink={0}>
           <Button
@@ -127,6 +135,7 @@ const Step3 = ({
             variant="contained"
             color="primary"
             startIcon={<RestartAltIcon />}
+            disabled={isDisabled()}
           >
             {t("resetRankings")}
           </Button>
