@@ -1,20 +1,18 @@
-import Text from "@/components/atoms/text";
-import { TypographyVariant } from "@/constants/enums/theme";
 import colorsConst from "@/constants/pages/colors.json";
 import {
   GenerateItineraryFormData,
   UserRequestedDestination,
 } from "@/constants/types/formData/generateItineraryFormData";
 import AddCircleOutlineOutlinedIcon from "@mui/icons-material/AddCircleOutlineOutlined";
-import ClearOutlinedIcon from "@mui/icons-material/ClearOutlined";
-import { Box, Button, Grid, IconButton, Stack } from "@mui/material";
+import { Box, Button, Grid, Stack } from "@mui/material";
 import dayjs from "dayjs";
 import { useTranslations } from "next-intl";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import "react-date-range/dist/styles.css";
 import "react-date-range/dist/theme/default.css";
 import { UseFormReturn } from "react-hook-form";
 import DateFields from "./date-field";
+import DestinationItem from "./destination-item";
 import { DestinationField, OriginField } from "./location-fields";
 
 const Step1 = ({
@@ -30,8 +28,14 @@ const Step1 = ({
   const locationFields = () => {
     const [destinations, setDestinations] = useState<
       UserRequestedDestination[]
-    >([]);
+    >(fields.getValues(userRequestedDestinations) || []);
     const [currentDestination, setCurrentDestination] = useState<string>("");
+
+    useEffect(() => {
+      const formDestinations =
+        fields.getValues(userRequestedDestinations) || [];
+      setDestinations(formDestinations);
+    }, [fields]);
 
     const originField = () => {
       return <OriginField fields={fields} />;
@@ -75,6 +79,7 @@ const Step1 = ({
             startIcon={<AddCircleOutlineOutlinedIcon />}
             sx={{ color: colorsConst.palette.text.primary }}
             onClick={handleOnClick}
+            disabled={currentDestination === ""}
           >
             {t("addLocation")}
           </Button>
@@ -83,48 +88,19 @@ const Step1 = ({
     };
 
     const destinationsSection = () => {
-      const destinationBoxSx = {
-        border: `1px solid ${colorsConst.palette.primary.main}`,
-        borderRadius: "8px",
-        padding: "8px",
-        marginBottom: "8px",
-      };
-
-      const deleteButton = (index: number) => {
-        const handleOnClick = () => {
-          const updatedDestinations = destinations.filter(
-            (_, i) => i !== index,
-          );
-          setDestinations(updatedDestinations);
-          fields.setValue(userRequestedDestinations, updatedDestinations);
-        };
-
-        return (
-          <IconButton onClick={handleOnClick}>
-            <ClearOutlinedIcon />
-          </IconButton>
-        );
-      };
-
       return (
-        <Box sx={{ maxHeight: "20vh", overflowY: "auto" }}>
+        // <Box sx={{ maxHeight: "20vh", overflowY: "auto" }}>
+        <Box>
           {fields
             .getValues(userRequestedDestinations)
             .map((destination, index) => (
-              <Box
-                key={index}
-                display="flex"
-                alignItems="center"
-                justifyContent="space-between"
-                sx={destinationBoxSx}
-              >
-                <Text
-                  text={destination.name}
-                  variant={TypographyVariant.h6}
-                  bold={false}
-                />
-                {deleteButton(index)}
-              </Box>
+              <DestinationItem
+                index={index}
+                destination={destination}
+                destinations={destinations}
+                setDestinations={setDestinations}
+                fields={fields}
+              />
             ))}
         </Box>
       );

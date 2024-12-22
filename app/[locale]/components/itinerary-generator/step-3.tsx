@@ -16,13 +16,13 @@ const Step3 = ({
   const t = useTranslations("home.itineraryGenerator.step3");
 
   const defaultFocusRankings = {
-    [GenerateItineraryFocus.attraction]: null,
-    [GenerateItineraryFocus.localCuisine]: null,
-    [GenerateItineraryFocus.nature]: null,
-    [GenerateItineraryFocus.shopping]: null,
+    [GenerateItineraryFocus.attraction]: 0,
+    [GenerateItineraryFocus.localCuisine]: 0,
+    [GenerateItineraryFocus.nature]: 0,
+    [GenerateItineraryFocus.shopping]: 0,
   };
   const [focusRankings, setFocusRankings] = useState<{
-    [key in GenerateItineraryFocus]: number | null;
+    [key in GenerateItineraryFocus]: number;
   }>(defaultFocusRankings);
 
   const spacing: number = 4;
@@ -37,11 +37,13 @@ const Step3 = ({
   useEffect(() => {
     // synchronize focusRankings state with form values on initial load
     const initialFocusRankings = {
-      [GenerateItineraryFocus.attraction]: fields.getValues("focus.attraction"),
+      [GenerateItineraryFocus.attraction]:
+        fields.getValues("focus.attraction") || 0,
       [GenerateItineraryFocus.localCuisine]:
-        fields.getValues("focus.localCuisine"),
-      [GenerateItineraryFocus.nature]: fields.getValues("focus.nature"),
-      [GenerateItineraryFocus.shopping]: fields.getValues("focus.shopping"),
+        fields.getValues("focus.localCuisine") || 0,
+      [GenerateItineraryFocus.nature]: fields.getValues("focus.nature") || 0,
+      [GenerateItineraryFocus.shopping]:
+        fields.getValues("focus.shopping") || 0,
     };
     setFocusRankings(initialFocusRankings);
   }, [fields]);
@@ -79,7 +81,6 @@ const Step3 = ({
 
   const focusSection = () => {
     const rankValues = [1, 2, 3, 4];
-
     const dropdownWidth: string = "70px";
 
     const handleRankChange = (focus: GenerateItineraryFocus, rank: number) => {
@@ -120,14 +121,6 @@ const Step3 = ({
         });
       };
 
-      const isDisabled = () => {
-        return Object.keys(focusRankings).every(
-          (key) =>
-            focusRankings[key as GenerateItineraryFocus] ===
-            defaultFocusRankings[key as GenerateItineraryFocus],
-        );
-      };
-
       return (
         <Box flexShrink={0}>
           <Button
@@ -135,7 +128,15 @@ const Step3 = ({
             variant="contained"
             color="primary"
             startIcon={<RestartAltIcon />}
-            disabled={isDisabled()}
+            disabled={
+              Object.keys(focusRankings).every(
+                (key) =>
+                  focusRankings[key as GenerateItineraryFocus] ===
+                  defaultFocusRankings[key as GenerateItineraryFocus],
+              ) ||
+              JSON.stringify(focusRankings) ===
+                JSON.stringify(defaultFocusRankings)
+            }
           >
             {t("resetRankings")}
           </Button>

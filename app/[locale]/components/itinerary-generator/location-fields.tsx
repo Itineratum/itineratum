@@ -9,6 +9,30 @@ import { Dispatch, SetStateAction } from "react";
 import { Controller, UseFormReturn } from "react-hook-form";
 
 const textLabelMarginRight: number = 2;
+const inputLabelWidth: string = "80%";
+const inputLabelProps = {
+  style: {
+    color: colorsConst.palette.text.grey,
+    fontSize: "12px",
+    width: inputLabelWidth,
+    overflow: "hidden",
+    textOverflow: "ellipsis",
+    whiteSpace: "nowrap",
+  },
+  shrink: undefined,
+};
+
+const handleOnFocus = (e: any) => {
+  e.target.labels[0].style.overflow = "visible";
+  e.target.labels[0].style.whiteSpace = "normal";
+  e.target.labels[0].style.width = "100%";
+};
+const handleOnBlur = (e: any) => {
+  e.target.labels[0].style.overflow = inputLabelProps.style.overflow;
+  e.target.labels[0].style.textOverflow = inputLabelProps.style.textOverflow;
+  e.target.labels[0].style.whiteSpace = inputLabelProps.style.whiteSpace;
+  e.target.labels[0].style.width = inputLabelWidth;
+};
 
 const OriginField = ({
   fields,
@@ -37,12 +61,9 @@ const OriginField = ({
             variant="outlined"
             label={t("originDescription")}
             fullWidth
-            InputLabelProps={{
-              style: {
-                color: colorsConst.palette.text.grey,
-                fontSize: "12px",
-              },
-            }}
+            InputLabelProps={inputLabelProps}
+            onFocus={handleOnFocus}
+            onBlur={handleOnBlur}
             onChange={(newValue) => {
               field.onChange(newValue);
             }}
@@ -85,12 +106,9 @@ const DestinationField = ({
         label={t("destinationsDescription")}
         fullWidth
         value={currentDestination}
-        InputLabelProps={{
-          style: {
-            color: colorsConst.palette.text.grey,
-            fontSize: "12px",
-          },
-        }}
+        InputLabelProps={inputLabelProps}
+        onFocus={handleOnFocus}
+        onBlur={handleOnBlur}
         onChange={(e) => {
           setDestination(e.target.value);
         }}
@@ -106,4 +124,4 @@ const DestinationField = ({
   );
 };
 
-export { OriginField, DestinationField };
+export { DestinationField, OriginField };

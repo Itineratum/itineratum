@@ -20,7 +20,7 @@ const DateFields = ({
 
   const [dateError, setDateError] = useState<boolean>(false);
 
-  const spacing: number = 2;
+  const spacing: number = 4;
   const textLabelMarginRight: number = 2;
   const startDate = "startDate";
   const endDate = "endDate";
@@ -160,7 +160,7 @@ const DateFields = ({
   return (
     <Grid item xs={6} alignItems="flex-start">
       <LocalizationProvider dateAdapter={AdapterDayjs}>
-        <Stack spacing={spacing} direction="row" alignItems="center">
+        <Stack spacing={spacing} direction="column" alignItems="center">
           {fromDateField()}
           {toDateField()}
         </Stack>

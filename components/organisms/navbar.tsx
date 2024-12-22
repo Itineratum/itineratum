@@ -34,7 +34,7 @@ const Navbar = () => {
         name={t("savedTrips")}
         linkToPage={buildLocaleEndpoint(
           locale,
-          endpointsConst.savedTrips.endpoint
+          endpointsConst.savedTrips.endpoint,
         )}
         icon={<FavoriteBorderOutlinedIcon />}
       />
@@ -46,7 +46,7 @@ const Navbar = () => {
         name={t("aboutUs")}
         linkToPage={buildLocaleEndpoint(
           locale,
-          endpointsConst.aboutUs.endpoint
+          endpointsConst.aboutUs.endpoint,
         )}
         icon={<PeopleAltOutlinedIcon />}
       />
@@ -58,7 +58,7 @@ const Navbar = () => {
         name={t("contactUs")}
         linkToPage={buildLocaleEndpoint(
           locale,
-          endpointsConst.contactUs.endpoint
+          endpointsConst.contactUs.endpoint,
         )}
         icon={<PhoneInTalkOutlinedIcon />}
       />
