@@ -106,4 +106,4 @@ const DestinationField = ({
   );
 };
 
-export { OriginField as FromField, DestinationField };
+export { OriginField, DestinationField };

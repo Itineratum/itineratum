@@ -15,7 +15,7 @@ import "react-date-range/dist/styles.css";
 import "react-date-range/dist/theme/default.css";
 import { UseFormReturn } from "react-hook-form";
 import DateFields from "./date-field";
-import { DestinationField, FromField } from "./location-field";
+import { DestinationField, OriginField } from "./location-fields";
 
 const Step1 = ({
   fields,
@@ -34,7 +34,7 @@ const Step1 = ({
     const [currentDestination, setCurrentDestination] = useState<string>("");
 
     const originField = () => {
-      return <FromField fields={fields} />;
+      return <OriginField fields={fields} />;
     };
 
     const destinationField = () => {

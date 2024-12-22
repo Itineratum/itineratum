@@ -1,22 +1,27 @@
-import Text from "@/components/atoms/text";
-import { TypographyVariant } from "@/constants/enums/theme";
 import constEndpoints from "@/constants/pages/endpoints.json";
-import constTexts from "@/constants/pages/texts.json";
+import itineratumLogo from "@/public/logo.svg";
 import { buildLocaleEndpoint } from "@/utils/buildLocaleEndpoint";
 import { Button } from "@mui/material";
 import { useLocale } from "next-intl";
+import Image from "next/image";
 import Link from "next/link";
 
 const ItineratumLogo = ({}: {}) => {
   const locale = useLocale();
+  const logoHeight: string = "50px";
 
   return (
     <Link href={buildLocaleEndpoint(locale, constEndpoints.home.endpoint)}>
-      <Button key={constEndpoints.home.name} sx={{ color: "text.primary" }}>
-        <Text
-          text={constTexts.pageTitle}
-          variant={TypographyVariant.h3}
-          bold={true}
+      <Button
+        key={constEndpoints.home.name}
+        sx={{
+          color: "text.primary",
+        }}
+      >
+        <Image
+          src={itineratumLogo}
+          alt={"Itineratum Logo"}
+          style={{ height: logoHeight, width: "auto" }}
         />
       </Button>
     </Link>
