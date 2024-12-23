@@ -17,19 +17,23 @@ const DateFields = ({
   fields: UseFormReturn<GenerateItineraryFormData, any, undefined>;
 }) => {
   const t = useTranslations("home.itineraryGenerator.step1");
-
-  const [dateError, setDateError] = useState<boolean>(false);
-
   const spacing: number = 4;
   const textLabelMarginRight: number = 2;
   const startDate = "startDate";
   const endDate = "endDate";
+  const userRequestedDestinations = "userRequestedDestinations";
 
-  const validateDates = (from: dayjs.Dayjs | null, to: dayjs.Dayjs | null) => {
+  const [dateError, setDateError] = useState<boolean>(false);
+
+  const validateDates = (
+    from: dayjs.Dayjs | null,
+    to: dayjs.Dayjs | null,
+    numOfDestinations: number,
+  ) => {
     if (from && to) {
-      return from.isBefore(to);
+      return to.diff(from, "days") + 1 >= numOfDestinations;
     }
-    return true;
+    return false;
   };
 
   const fromDateField = () => {
@@ -48,7 +52,11 @@ const DateFields = ({
           defaultValue={dayjs()}
           rules={{
             validate: (value) => {
-              const isValid = validateDates(value, fields.getValues(endDate));
+              const isValid = validateDates(
+                value,
+                fields.getValues(endDate),
+                fields.getValues(userRequestedDestinations).length,
+              );
 
               if (!isValid) {
                 setDateError(true);
@@ -68,6 +76,11 @@ const DateFields = ({
               minDate={dayjs()}
               onChange={(value) => {
                 field.onChange(value);
+                fields.setValue(startDate, value?.startOf("day")!);
+                fields.setValue(
+                  endDate,
+                  fields.getValues(endDate).startOf("day"),
+                );
                 fields.trigger(startDate);
                 fields.trigger(endDate);
               }}
@@ -105,7 +118,11 @@ const DateFields = ({
           control={fields.control}
           rules={{
             validate: (value) => {
-              const isValid = validateDates(fields.getValues(startDate), value);
+              const isValid = validateDates(
+                fields.getValues(startDate),
+                value,
+                fields.getValues(userRequestedDestinations).length,
+              );
 
               if (!isValid) {
                 setDateError(true);
@@ -121,9 +138,14 @@ const DateFields = ({
               {...field}
               format="DD/MM/YYYY"
               label={t("to")}
-              minDate={fields.getValues(startDate) ?? dayjs().add(1, "day")}
+              minDate={fields.getValues(startDate) ?? dayjs()}
               onChange={(value) => {
                 field.onChange(value);
+                fields.setValue(endDate, value?.startOf("day")!);
+                fields.setValue(
+                  startDate,
+                  fields.getValues(startDate).startOf("day"),
+                );
                 fields.trigger(startDate);
                 fields.trigger(endDate);
               }}

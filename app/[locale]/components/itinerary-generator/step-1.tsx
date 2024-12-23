@@ -7,10 +7,10 @@ import AddCircleOutlineOutlinedIcon from "@mui/icons-material/AddCircleOutlineOu
 import { Box, Button, Grid, Stack } from "@mui/material";
 import dayjs from "dayjs";
 import { useTranslations } from "next-intl";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import "react-date-range/dist/styles.css";
 import "react-date-range/dist/theme/default.css";
-import { UseFormReturn } from "react-hook-form";
+import { UseFormReturn, useWatch } from "react-hook-form";
 import DateFields from "./date-field";
 import DestinationItem from "./destination-item";
 import { DestinationField, OriginField } from "./location-fields";
@@ -21,22 +21,18 @@ const Step1 = ({
   fields: UseFormReturn<GenerateItineraryFormData, any, undefined>;
 }) => {
   const t = useTranslations("home.itineraryGenerator.step1");
-
   const spacing: number = 4;
   const userRequestedDestinations = "userRequestedDestinations";
 
+  // watch form value changes for real-time updates
+  const destinations = useWatch({
+    control: fields.control,
+    name: userRequestedDestinations,
+    defaultValue: [],
+  });
+  const [currentDestination, setCurrentDestination] = useState<string>("");
+
   const locationFields = () => {
-    const [destinations, setDestinations] = useState<
-      UserRequestedDestination[]
-    >(fields.getValues(userRequestedDestinations) || []);
-    const [currentDestination, setCurrentDestination] = useState<string>("");
-
-    useEffect(() => {
-      const formDestinations =
-        fields.getValues(userRequestedDestinations) || [];
-      setDestinations(formDestinations);
-    }, [fields]);
-
     const originField = () => {
       return <OriginField fields={fields} />;
     };
@@ -56,18 +52,17 @@ const Step1 = ({
 
         const destination: UserRequestedDestination = {
           name: currentDestination,
-          startDate: dayjs(),
-          endDate: dayjs().add(1, "day"),
+          startDate: dayjs().startOf("day"),
+          endDate: dayjs().startOf("day"),
         };
-        setDestinations((prevDestinations) => {
-          const updatedDestinations = [...prevDestinations, destination];
-          fields.setValue(userRequestedDestinations, updatedDestinations, {
-            shouldValidate: true,
-            shouldDirty: true,
-          });
-          return updatedDestinations;
+        const updatedDestinations = [...destinations, destination];
+        fields.setValue(userRequestedDestinations, updatedDestinations, {
+          shouldValidate: true,
+          shouldDirty: true,
         });
         setCurrentDestination("");
+        fields.trigger("startDate");
+        fields.trigger("endDate");
       };
 
       return (
@@ -91,17 +86,15 @@ const Step1 = ({
       return (
         // <Box sx={{ maxHeight: "20vh", overflowY: "auto" }}>
         <Box>
-          {fields
-            .getValues(userRequestedDestinations)
-            .map((destination, index) => (
-              <DestinationItem
-                index={index}
-                destination={destination}
-                destinations={destinations}
-                setDestinations={setDestinations}
-                fields={fields}
-              />
-            ))}
+          {destinations.map((destination, index) => (
+            <DestinationItem
+              key={index}
+              index={index}
+              destination={destination}
+              destinations={destinations}
+              fields={fields}
+            />
+          ))}
         </Box>
       );
     };

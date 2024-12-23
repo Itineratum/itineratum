@@ -9,7 +9,7 @@ import { Dispatch, SetStateAction } from "react";
 import { Controller, UseFormReturn } from "react-hook-form";
 
 const textLabelMarginRight: number = 2;
-const inputLabelWidth: string = "80%";
+const inputLabelWidth: string = "75%";
 const inputLabelProps = {
   style: {
     color: colorsConst.palette.text.grey,

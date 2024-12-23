@@ -1,24 +1,9 @@
 import Text from "@/components/atoms/text";
-import {
-  GenerateItineraryFocus,
-  GenerateItineraryPreferredTransport,
-} from "@/constants/enums/generateItinerary";
+import { GenerateItineraryPreferredTransport } from "@/constants/enums/generateItinerary";
 import { TypographyVariant } from "@/constants/enums/theme";
 import { GenerateItineraryFormData } from "@/constants/types/formData/generateItineraryFormData";
-import RestartAltIcon from "@mui/icons-material/RestartAlt";
-import {
-  Box,
-  Button,
-  FormControlLabel,
-  Grid,
-  MenuItem,
-  Radio,
-  RadioGroup,
-  Select,
-  Stack,
-} from "@mui/material";
+import { FormControlLabel, Radio, RadioGroup, Stack } from "@mui/material";
 import { useTranslations } from "next-intl";
-import { useEffect, useState } from "react";
 import { UseFormReturn } from "react-hook-form";
 
 const Step4 = ({
@@ -28,6 +13,7 @@ const Step4 = ({
 }) => {
   const t = useTranslations("home.itineraryGenerator.step4");
   const spacing: number = 4;
+  const preferredTransport = "preferredTransport";
 
   const labelSection = () => {
     return (
@@ -43,7 +29,7 @@ const Step4 = ({
     const handleOnChange = (event: React.ChangeEvent<HTMLInputElement>) => {
       const selectedTransport = event.target
         .value as GenerateItineraryPreferredTransport;
-      fields.setValue("preferredTransport", selectedTransport);
+      fields.setValue(preferredTransport, selectedTransport);
     };
 
     const radioButton = (value: GenerateItineraryPreferredTransport) => {
@@ -57,7 +43,10 @@ const Step4 = ({
     };
 
     return (
-      <RadioGroup onChange={handleOnChange}>
+      <RadioGroup
+        onChange={handleOnChange}
+        value={fields.getValues(preferredTransport)}
+      >
         <Stack spacing={spacing} direction="row">
           <Stack spacing={spacing} direction="column">
             {radioButton(GenerateItineraryPreferredTransport.car)}
@@ -74,7 +63,7 @@ const Step4 = ({
   };
 
   return (
-    <Stack spacing={spacing} direction="row" alignItems="center">
+    <Stack spacing={spacing} direction="row" alignItems="flex-start">
       {labelSection()}
       {preferredTransportRadioSection()}
     </Stack>

@@ -13,6 +13,7 @@ import Step1 from "./step-1";
 import Step2 from "./step-2";
 import Step3 from "./step-3";
 import Step4 from "./step-4";
+import Step5 from "./step-5";
 
 const ItineraryGenerator = () => {
   const t = useTranslations("home.itineraryGenerator");
@@ -61,8 +62,8 @@ const ItineraryGenerator = () => {
     <Container key={3}>
       <Step4 fields={fields} />
     </Container>,
-    <Container key={4}>
-      <Step4 fields={fields} />
+    <Container key={5}>
+      <Step5 fields={fields} />
     </Container>,
   ];
 
@@ -84,6 +85,7 @@ const ItineraryGenerator = () => {
       "focus.shopping",
     ],
     ["preferredTransport"],
+    [], // Step5 is optional
   ];
   const watchedFields = fields.watch();
   const checkFieldsValidForActiveStep = () => {
@@ -132,7 +134,13 @@ const ItineraryGenerator = () => {
               width: "100%",
             }}
           >
-            {steps[activeStep]}
+            <Container
+              sx={{
+                display: "flex",
+              }}
+            >
+              {steps[activeStep]}
+            </Container>
           </motion.div>
         </AnimatePresence>
       </motion.div>

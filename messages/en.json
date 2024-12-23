@@ -44,7 +44,7 @@
         "destinations": "Destinations",
         "destinationsDescription": "Enter the name of the destination",
         "addLocation": "Add Location",
-        "dateErrorMessage": "Please ensure that the 'from' date is before the 'to' date!"
+        "dateErrorMessage": "Please ensure that the 'from' date is before the 'to' date, and the number of days is at least the number of destinations!"
       },
       "step2": {
         "budget": "Budget",
@@ -66,6 +66,11 @@
       },
       "step4": {
         "transport": "Select your preferred mode of transport"
+      },
+      "step5": {
+        "destination": "Destination(s)",
+        "allocation": "Days Allocation",
+        "selectDays": "Select number of days"
       },
       "next": "Next",
       "previous": "Previous"

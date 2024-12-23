@@ -148,7 +148,12 @@ const Step3 = ({
       <Stack spacing={spacing + 10} direction="row" alignItems="center">
         <Stack spacing={spacing} direction="column">
           {Object.values(GenerateItineraryFocus).map((focus) => (
-            <Box key={focus} display="flex" justifyContent="flex-start">
+            <Box
+              key={focus}
+              display="flex"
+              justifyContent="flex-start"
+              alignItems="center"
+            >
               <Select
                 value={focusRankings[focus]}
                 onChange={(event) =>

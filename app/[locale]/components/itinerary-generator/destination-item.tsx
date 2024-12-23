@@ -8,29 +8,27 @@ import {
 import ClearOutlinedIcon from "@mui/icons-material/ClearOutlined";
 import MenuIcon from "@mui/icons-material/Menu";
 import { Box, IconButton, Stack } from "@mui/material";
-import { Dispatch, SetStateAction } from "react";
 import { UseFormReturn } from "react-hook-form";
+
+export const destinationBoxSx = {
+  border: `1px solid ${colorsConst.palette.primary.main}`,
+  borderRadius: "8px",
+  padding: "8px",
+  marginBottom: "8px",
+};
 
 const DestinationItem = ({
   index,
   destination,
   destinations,
-  setDestinations,
   fields,
 }: {
   index: number;
   destination: UserRequestedDestination;
   destinations: UserRequestedDestination[];
-  setDestinations: Dispatch<SetStateAction<UserRequestedDestination[]>>;
   fields: UseFormReturn<GenerateItineraryFormData, any, undefined>;
 }) => {
   const userRequestedDestinations = "userRequestedDestinations";
-  const destinationBoxSx = {
-    border: `1px solid ${colorsConst.palette.primary.main}`,
-    borderRadius: "8px",
-    padding: "8px",
-    marginBottom: "8px",
-  };
   const spacing: number = 2;
 
   const handleDragStart = (event: React.DragEvent<HTMLDivElement>) => {
@@ -51,16 +49,15 @@ const DestinationItem = ({
     const [draggedItem] = updatedDestinations.splice(draggedIndex, 1);
 
     updatedDestinations.splice(index, 0, draggedItem);
-
-    setDestinations(updatedDestinations);
     fields.setValue(userRequestedDestinations, updatedDestinations);
   };
 
   const deleteButton = (index: number) => {
     const handleOnClick = () => {
       const updatedDestinations = destinations.filter((_, i) => i !== index);
-      setDestinations(updatedDestinations);
       fields.setValue(userRequestedDestinations, updatedDestinations);
+      fields.trigger("startDate");
+      fields.trigger("endDate");
     };
 
     return (
