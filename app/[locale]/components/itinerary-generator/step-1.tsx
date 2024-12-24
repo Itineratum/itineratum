@@ -48,14 +48,25 @@ const Step1 = ({
 
     const addLocationButton = () => {
       const handleOnClick = () => {
+        const tripStartDate =
+          fields.getValues("startDate") || dayjs().startOf("day");
+
         if (currentDestination.trim() === "") return;
 
         const destination: UserRequestedDestination = {
           name: currentDestination,
-          startDate: dayjs().startOf("day"),
-          endDate: dayjs().startOf("day"),
+          startDate: tripStartDate,
+          endDate: tripStartDate,
         };
-        const updatedDestinations = [...destinations, destination];
+        var updatedDestinations = [...destinations, destination];
+
+        // reset the startDate and endDate for all destinations
+        updatedDestinations = updatedDestinations.map((destination) => ({
+          ...destination,
+          startDate: tripStartDate,
+          endDate: tripStartDate,
+        }));
+
         fields.setValue(userRequestedDestinations, updatedDestinations, {
           shouldValidate: true,
           shouldDirty: true,

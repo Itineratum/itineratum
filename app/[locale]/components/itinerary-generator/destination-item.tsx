@@ -8,6 +8,7 @@ import {
 import ClearOutlinedIcon from "@mui/icons-material/ClearOutlined";
 import MenuIcon from "@mui/icons-material/Menu";
 import { Box, IconButton, Stack } from "@mui/material";
+import dayjs from "dayjs";
 import { UseFormReturn } from "react-hook-form";
 
 export const destinationBoxSx = {
@@ -43,18 +44,39 @@ const DestinationItem = ({
     event.preventDefault();
     const draggedIndex = parseInt(event.dataTransfer.getData("text/plain"));
 
+    const tripStartDate =
+      fields.getValues("startDate") || dayjs().startOf("day");
+
     if (draggedIndex === index) return;
 
-    const updatedDestinations = [...destinations];
+    var updatedDestinations = [...destinations];
     const [draggedItem] = updatedDestinations.splice(draggedIndex, 1);
-
     updatedDestinations.splice(index, 0, draggedItem);
+
+    // reset the startDate and endDate for all destinations
+    updatedDestinations = updatedDestinations.map((destination) => ({
+      ...destination,
+      startDate: tripStartDate,
+      endDate: tripStartDate,
+    }));
+
     fields.setValue(userRequestedDestinations, updatedDestinations);
   };
 
   const deleteButton = (index: number) => {
     const handleOnClick = () => {
-      const updatedDestinations = destinations.filter((_, i) => i !== index);
+      const tripStartDate =
+        fields.getValues("startDate") || dayjs().startOf("day");
+
+      var updatedDestinations = destinations.filter((_, i) => i !== index);
+
+      // reset the startDate and endDate of the remaining destinations
+      updatedDestinations = updatedDestinations.map((destination) => ({
+        ...destination,
+        startDate: tripStartDate,
+        endDate: tripStartDate,
+      }));
+
       fields.setValue(userRequestedDestinations, updatedDestinations);
       fields.trigger("startDate");
       fields.trigger("endDate");

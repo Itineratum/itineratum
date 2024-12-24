@@ -25,9 +25,8 @@ const Step5 = ({
   const [totalDays, setTotalDays] = useState<number>(() => {
     const startDate = fields.getValues("startDate");
     const endDate = fields.getValues("endDate");
-    return endDate.diff(startDate, "day") + 2; // inclusive of the start and end dates
+    return endDate.diff(startDate, "day") + 1;
   });
-
   const [daysAllocated, setDaysAllocated] = useState<{
     [key: string]: number;
   }>(() => {

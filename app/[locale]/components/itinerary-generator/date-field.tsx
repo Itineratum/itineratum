@@ -37,6 +37,43 @@ const DateFields = ({
   };
 
   const fromDateField = () => {
+    const validateFromDate = (value: any) => {
+      const isValid = validateDates(
+        value,
+        fields.getValues(endDate),
+        fields.getValues(userRequestedDestinations).length,
+      );
+
+      if (!isValid) {
+        setDateError(true);
+        return t("dateErrorMessage");
+      }
+
+      setDateError(false);
+      return true;
+    };
+
+    const handleOnChange = (field: any, value: any) => {
+      field.onChange(value);
+      fields.setValue(startDate, value?.startOf("day")!);
+
+      if (fields.getValues(endDate))
+        fields.setValue(endDate, fields.getValues(endDate).startOf("day"));
+
+      // reset the startDate and endDate for all destinations
+      fields.setValue(
+        userRequestedDestinations,
+        fields.getValues(userRequestedDestinations).map((destination) => ({
+          ...destination,
+          startDate: value?.startOf("day")!,
+          endDate: value?.startOf("day")!,
+        })),
+      );
+
+      fields.trigger(startDate);
+      fields.trigger(endDate);
+    };
+
     return (
       <Box display="flex" alignItems="center" sx={{ width: "100%" }}>
         <Box mr={textLabelMarginRight}>
@@ -52,19 +89,7 @@ const DateFields = ({
           defaultValue={dayjs()}
           rules={{
             validate: (value) => {
-              const isValid = validateDates(
-                value,
-                fields.getValues(endDate),
-                fields.getValues(userRequestedDestinations).length,
-              );
-
-              if (!isValid) {
-                setDateError(true);
-                return t("dateErrorMessage");
-              }
-
-              setDateError(false);
-              return true;
+              return validateFromDate(value);
             },
           }}
           render={({ field, fieldState }) => (
@@ -75,14 +100,7 @@ const DateFields = ({
               defaultValue={dayjs()}
               minDate={dayjs()}
               onChange={(value) => {
-                field.onChange(value);
-                fields.setValue(startDate, value?.startOf("day")!);
-                fields.setValue(
-                  endDate,
-                  fields.getValues(endDate).startOf("day"),
-                );
-                fields.trigger(startDate);
-                fields.trigger(endDate);
+                handleOnChange(field, value);
               }}
               slotProps={{
                 textField: {
@@ -104,6 +122,30 @@ const DateFields = ({
   };
 
   const toDateField = () => {
+    const valiidateToDate = (value: any) => {
+      const isValid = validateDates(
+        fields.getValues(startDate),
+        value,
+        fields.getValues(userRequestedDestinations).length,
+      );
+
+      if (!isValid) {
+        setDateError(true);
+        return t("dateErrorMessage");
+      }
+
+      setDateError(false);
+      return true;
+    };
+
+    const handleOnChange = (field: any, value: any) => {
+      field.onChange(value);
+      fields.setValue(endDate, value?.startOf("day")!);
+      fields.setValue(startDate, fields.getValues(startDate).startOf("day"));
+      fields.trigger(startDate);
+      fields.trigger(endDate);
+    };
+
     return (
       <Box display="flex" alignItems="center" sx={{ width: "100%" }}>
         <Box mr={textLabelMarginRight}>
@@ -118,19 +160,7 @@ const DateFields = ({
           control={fields.control}
           rules={{
             validate: (value) => {
-              const isValid = validateDates(
-                fields.getValues(startDate),
-                value,
-                fields.getValues(userRequestedDestinations).length,
-              );
-
-              if (!isValid) {
-                setDateError(true);
-                return t("dateErrorMessage");
-              }
-
-              setDateError(false);
-              return true;
+              return valiidateToDate(value);
             },
           }}
           render={({ field, fieldState }) => (
@@ -140,14 +170,7 @@ const DateFields = ({
               label={t("to")}
               minDate={fields.getValues(startDate) ?? dayjs()}
               onChange={(value) => {
-                field.onChange(value);
-                fields.setValue(endDate, value?.startOf("day")!);
-                fields.setValue(
-                  startDate,
-                  fields.getValues(startDate).startOf("day"),
-                );
-                fields.trigger(startDate);
-                fields.trigger(endDate);
+                handleOnChange(field, value);
               }}
               slotProps={{
                 textField: {
