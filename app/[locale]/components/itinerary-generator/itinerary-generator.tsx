@@ -14,6 +14,7 @@ import Step2 from "./step-2";
 import Step3 from "./step-3";
 import Step4 from "./step-4";
 import Step5 from "./step-5";
+import Step6 from "./step-6";
 
 const ItineraryGenerator = () => {
   const t = useTranslations("home.itineraryGenerator");
@@ -65,6 +66,9 @@ const ItineraryGenerator = () => {
     <Container key={5}>
       <Step5 fields={fields} />
     </Container>,
+    <Container key={6}>
+      <Step6 fields={fields} />
+    </Container>,
   ];
 
   // ensures that only when the fields in the activeStep are filled in, and have no errors, then the user will be able to use the navigation buttons
@@ -85,7 +89,8 @@ const ItineraryGenerator = () => {
       "focus.shopping",
     ],
     ["preferredTransport"],
-    [""], // Step5 is optional
+    ["userRequestedDestinations"],
+    [""], // Step6 is optional
   ];
   const watchedFields = fields.watch();
   const checkFieldsValidForActiveStep = () => {
@@ -96,10 +101,22 @@ const ItineraryGenerator = () => {
       (field: any) => !!fields.getValues(field),
     );
 
+    // checks whether the start date of the first destination is the same as the trip start date, and the end date of the last destination is the same as the trip end date
+    const step5Check =
+      activeStep === 4
+        ? watchedFields.userRequestedDestinations[0].startDate.isSame(
+            watchedFields.startDate,
+          ) &&
+          watchedFields.userRequestedDestinations[
+            watchedFields.userRequestedDestinations.length - 1
+          ].endDate.isSame(watchedFields.endDate)
+        : true;
+
     setNextButtonEnabled(
       !hasErrorsAtActiveStep &&
         requiredFieldsFilled &&
-        watchedFields.userRequestedDestinations.length > 0,
+        watchedFields.userRequestedDestinations.length > 0 &&
+        step5Check,
     );
   };
   useEffect(() => {
