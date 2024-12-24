@@ -12,3 +12,9 @@ export enum GenerateItineraryPreferredTransport {
   boat = "Boat",
   bus = "Bus",
 }
+
+export enum GenerateItineraryOtherRequirements {
+  petFriendly = "Pet Friendly",
+  familyFriendly = "Family Friendly",
+  moreSustainable = "More Sustainable",
+}

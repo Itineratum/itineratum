@@ -23,6 +23,11 @@ const ItineraryGenerator = () => {
     reValidateMode: "onChange",
     defaultValues: {
       userRequestedDestinations: [],
+      otherRequirements: {
+        petFriendly: false,
+        familyFriendly: false,
+        moreSustainable: false,
+      },
     },
   });
 
@@ -261,6 +266,26 @@ const ItineraryGenerator = () => {
       );
     };
 
+    const generateButton = () => {
+      const handleOnClick = () => {
+        // TODO: implement the logic to generate the itinrary, by sending the form data to the python backend
+        console.log("Generate button clicked", fields.getValues());
+      };
+
+      return (
+        activeStep === steps.length - 1 && (
+          <Button
+            onClick={handleOnClick}
+            variant="contained"
+            color="secondary"
+            endIcon={<ArrowForwardOutlinedIcon />}
+          >
+            {t("generate")}
+          </Button>
+        )
+      );
+    };
+
     return (
       <Box
         sx={{
@@ -273,6 +298,7 @@ const ItineraryGenerator = () => {
         {previousButton()}
         {spacing()}
         {nextButton()}
+        {generateButton()}
       </Box>
     );
   };

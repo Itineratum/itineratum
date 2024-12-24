@@ -35,7 +35,7 @@ const Step4 = ({
     const radioButton = (value: GenerateItineraryPreferredTransport) => {
       return (
         <FormControlLabel
-          value={value}
+          value={value.toLowerCase()}
           control={<Radio sx={{ color: "black" }} />}
           label={value}
         />

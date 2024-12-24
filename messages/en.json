@@ -72,8 +72,12 @@
         "allocation": "Days Allocation",
         "selectDays": "Select number of days"
       },
+      "step6": {
+        "otherRequirements": "Other Requirements"
+      },
       "next": "Next",
-      "previous": "Previous"
+      "previous": "Previous",
+      "generate": "Generate"
     }
   },
   "account": {
