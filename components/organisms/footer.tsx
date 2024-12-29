@@ -50,7 +50,10 @@ const Footer = () => {
 
     const homeLink = () => {
       return (
-        <Link href={buildLocaleEndpoint(locale, endpointsConst.home.endpoint)}>
+        <Link
+          href={buildLocaleEndpoint(locale, endpointsConst.home.endpoint)}
+          style={{ textDecoration: "none" }}
+        >
           <Text
             text={t("home")}
             variant={typographyVariant}
@@ -65,6 +68,7 @@ const Footer = () => {
       return (
         <Link
           href={buildLocaleEndpoint(locale, endpointsConst.savedTrips.endpoint)}
+          style={{ textDecoration: "none" }}
         >
           <Text
             text={t("savedTrips")}
@@ -80,6 +84,7 @@ const Footer = () => {
       return (
         <Link
           href={buildLocaleEndpoint(locale, endpointsConst.aboutUs.endpoint)}
+          style={{ textDecoration: "none" }}
         >
           <Text
             text={t("aboutUs")}

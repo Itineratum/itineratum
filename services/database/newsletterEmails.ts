@@ -1,7 +1,7 @@
 import { connectToDatabase, disconnectFromDatabase } from "@/lib/db";
 import NewsletterEmail from "@/models/NewsletterEmail";
 
-export const addEmailToNewsletter = async (email: string) => {
+export const addEmailToNewsletter = async (name: string, email: string) => {
   try {
     await connectToDatabase();
     const emailAlreadyInNewsletter = await NewsletterEmail.findOne({ email });
@@ -12,7 +12,7 @@ export const addEmailToNewsletter = async (email: string) => {
         error: "Email already added to newsletter!",
       };
     } else {
-      await NewsletterEmail.create({ email }).then((result) => {
+      await NewsletterEmail.create({ name, email }).then((result) => {
         console.log(`Newsletter email ${result.id} created!`);
       });
 

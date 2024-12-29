@@ -1,17 +1,18 @@
 "use client";
 
 import { trpc } from "@/app/_trpc/client";
+import Text from "@/components/atoms/text";
+import Alert from "@/components/molecules/alert";
 import { AlertType } from "@/constants/enums/alertType";
 import { TypographyVariant } from "@/constants/enums/theme";
+import colorsConst from "@/constants/pages/colors.json";
 import { NewsletterFormData } from "@/constants/types/formData/newsletterFormData";
-import paperPlane from "@/public/paper_plane.svg";
 import { isValidEmail } from "@/utils/signUpFormValidation";
 import {
   Box,
   Button,
-  Checkbox,
   CircularProgress,
-  FormControlLabel,
+  Grid,
   Skeleton,
   Stack,
   TextField,
@@ -21,22 +22,20 @@ import { useTranslations } from "next-intl";
 import Image from "next/image";
 import { ChangeEvent, useEffect, useState } from "react";
 import { Controller, ControllerRenderProps, useForm } from "react-hook-form";
-import Text from "../atoms/text";
-import Alert from "./alert";
+import leaningTowerOfPisa from "@/public/pisa.png";
+import noodles from "@/public/noodles.png";
 
-const StayConnectedColumn = () => {
+const NewsletterSignup = () => {
   const { data: session, status } = useSession();
   const isLoggedIn = status === "authenticated";
-  const t = useTranslations("footer");
+  const t = useTranslations("home.newsletterSignup");
   const {
     formState: { errors },
     watch,
-    register,
     trigger,
     control,
   } = useForm<NewsletterFormData>();
 
-  const [above18checked, setAbove18checked] = useState<boolean>(false);
   const [showAlert, setShowAlert] = useState<boolean>(false);
   const [alertText, setAlertText] = useState<string>("");
   const [alertType, setAlertType] = useState<AlertType>(AlertType.info);
@@ -44,12 +43,8 @@ const StayConnectedColumn = () => {
   const [hasEmailInNewsletter, setHasEmailInNewsletter] =
     useState<boolean>(isLoggedIn);
 
-  const spacing: number = 3;
-  const height: string = "150px";
-
   const nameId = "name";
   const emailId = "email";
-  const above18id = "above18";
 
   const name = watch(nameId);
   const email = watch(emailId);
@@ -77,27 +72,12 @@ const StayConnectedColumn = () => {
     }
   }, [checkEmailInNewsletter.isFetched]);
 
-  const stayConnectedText = () => {
-    return (
-      <Text
-        text={t("stayConnected")}
-        variant={TypographyVariant.subtitle1}
-        bold={false}
-      />
-    );
-  };
+  const gridSpacing: number = 4;
+  const userInputsSize: number = 6;
+  const imageSize: number = (12 - userInputsSize) / 2;
 
-  const nameAndEmailRow = () => {
-    const rowSpacing: number = 2;
-    const style = {
-      backgroundColor: "transparent",
-      input: { color: "white" },
-      "& .MuiInput-underline:before": { borderBottomColor: "#FFFFFF" },
-      "& .MuiInput-underline:hover:before": {
-        borderBottomColor: "#FFFFFF",
-      },
-      "& .MuiInput-underline:after": { borderBottomColor: "#FFFFFF" },
-    };
+  const userInputs = () => {
+    const spacing: number = 4;
 
     const nameTextInput = () => {
       return (
@@ -113,12 +93,11 @@ const StayConnectedColumn = () => {
             <TextField
               {...field}
               required
-              variant="standard"
-              sx={style}
+              variant="filled"
               label={t("name")}
               value={name}
               InputLabelProps={{
-                sx: { color: "text.secondary" },
+                sx: { color: "text.primary" },
               }}
               error={!!errors.name}
               helperText={errors.name ? (errors.name.message as string) : ""}
@@ -156,12 +135,11 @@ const StayConnectedColumn = () => {
             <TextField
               {...field}
               required
-              variant="standard"
-              sx={style}
+              variant="filled"
               label={t("email")}
               value={email}
               InputLabelProps={{
-                sx: { color: "text.secondary" },
+                sx: { color: "text.primary" },
               }}
               error={!!errors.email}
               helperText={errors.email ? (errors.email.message as string) : ""}
@@ -175,11 +153,7 @@ const StayConnectedColumn = () => {
     const letsGoButton = () => {
       const loadingAnimationSize: number = 24;
       const canSubmit = () =>
-        !(email && isValidEmail(email) && name
-          ? above18checked
-            ? true
-            : false
-          : false);
+        !(email && isValidEmail(email) && name ? true : false);
 
       const handleOnClick = async () => {
         const isEmailValid = await trigger(emailId);
@@ -192,62 +166,58 @@ const StayConnectedColumn = () => {
       };
 
       return (
-        <Button
-          variant="contained"
-          color="secondary"
-          type="submit"
-          disabled={canSubmit()}
-          onClick={handleOnClick}
-        >
-          {isSubmitting ? (
-            <CircularProgress size={loadingAnimationSize} />
-          ) : (
-            <Text
-              text={t("letsGo")}
-              variant={TypographyVariant.subtitle1}
-              bold={false}
-              color="text.secondary"
-            />
-          )}
-        </Button>
-      );
-    };
-
-    const above18checkbox = () => {
-      const handleOnClick = () => {
-        setAbove18checked(!above18checked);
-      };
-
-      return (
-        <FormControlLabel
-          control={
-            <Checkbox
-              {...register(above18id, { required: true })}
-              onClick={handleOnClick}
-              checked={above18checked}
-              color="default"
-            />
-          }
-          label={
-            <Text
-              text={t("above18")}
-              variant={TypographyVariant.subtitle2}
-              bold={false}
-            />
-          }
-        />
+        <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
+          <Button
+            variant="contained"
+            color="secondary"
+            type="submit"
+            disabled={canSubmit()}
+            onClick={handleOnClick}
+          >
+            {isSubmitting ? (
+              <CircularProgress size={loadingAnimationSize} />
+            ) : (
+              <Text
+                text={t("letsGo")}
+                variant={TypographyVariant.subtitle1}
+                bold={false}
+                color="text.secondary"
+              />
+            )}
+          </Button>
+        </Box>
       );
     };
 
     return (
-      <Stack>
-        <Stack direction="row" spacing={rowSpacing} alignItems="center">
-          {nameTextInput()}
-          {emailTextInput()}
-          {letsGoButton()}
-        </Stack>
-        {above18checkbox()}
+      <Stack direction="column" spacing={spacing} justifyContent={"center"}>
+        <Box sx={{ display: "flex", textAlign: "center" }}>
+          <Text
+            text={t("header")}
+            variant={TypographyVariant.h4}
+            bold={false}
+          />
+        </Box>
+        {nameTextInput()}
+        {emailTextInput()}
+        {letsGoButton()}
       </Stack>
+    );
+  };
+
+  const leftImage = () => {
+    return (
+      <Box sx={{ position: "relative", top: "0%", left: "-25%" }}>
+        <Image src={leaningTowerOfPisa} alt={"The Leaning Tower of Pisa"} />
+      </Box>
+    );
+  };
+
+  const rightImage = () => {
+    return (
+      <Box sx={{ position: "relative", top: "-17%", right: "0%" }}>
+        <Image src={noodles} alt={"A bowl of noodles"} />
+      </Box>
     );
   };
 
@@ -255,47 +225,49 @@ const StayConnectedColumn = () => {
     return <Skeleton variant="rounded" height="100%" width="100%" />;
   };
 
-  const planeImage = () => {
-    return <Image src={paperPlane} alt={"paper plane"} />;
-  };
+  const signUpForm = () => {
+    const signUpFormSx = {
+      background: `linear-gradient(90deg, ${colorsConst.components.newsletterSignup.color1}, ${colorsConst.components.newsletterSignup.color2})`,
+      padding: gridSpacing,
+      borderRadius: 6,
+      color: colorsConst.palette.text.secondary,
+      overflow: "hidden",
+      height: "40vh",
+      width: "100%",
+    };
 
-  const stayConnectedForm = () => {
     return (
-      <Stack spacing={spacing}>
-        {stayConnectedText()}
-        {nameAndEmailRow()}
-      </Stack>
-    );
-  };
-
-  const itineratumRow = () => {
-    return (
-      <Text
-        text={`© ${new Date().getFullYear()} ${t("itineratumPteLtd")}`}
-        variant={TypographyVariant.subtitle2}
-        bold={false}
-      />
-    );
-  };
-
-  return (
-    <Stack spacing={spacing}>
-      <Box sx={{ height, width: "100%" }}>
-        {isLoggedIn && checkEmailInNewsletter.isLoading
-          ? loadingIndicator()
-          : hasEmailInNewsletter
-            ? planeImage()
-            : stayConnectedForm()}
+      <Box sx={signUpFormSx}>
+        <Grid container spacing={gridSpacing}>
+          <Grid item xs={imageSize}>
+            {leftImage()}
+          </Grid>
+          <Grid item xs={userInputsSize}>
+            <Stack spacing={gridSpacing - 1}>
+              {userInputs()}
+              <Alert
+                showAlert={showAlert}
+                setShowAlert={setShowAlert}
+                alertType={alertType}
+                alertText={alertText}
+              />
+            </Stack>
+          </Grid>
+          <Grid item xs={imageSize}>
+            {rightImage()}
+          </Grid>
+        </Grid>
       </Box>
-      <Alert
-        showAlert={showAlert}
-        setShowAlert={setShowAlert}
-        alertType={alertType}
-        alertText={alertText}
-      />
-      {itineratumRow()}
-    </Stack>
+    );
+  };
+
+  return isLoggedIn && checkEmailInNewsletter.isLoading ? (
+    loadingIndicator()
+  ) : hasEmailInNewsletter ? (
+    <div></div>
+  ) : (
+    signUpForm()
   );
 };
 
-export default StayConnectedColumn;
+export default NewsletterSignup;

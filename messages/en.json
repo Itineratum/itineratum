@@ -12,6 +12,8 @@
   },
   "footer": {
     "stayConnected": "Stay connected!",
+    "name": "Name",
+    "nameRequired": "Name is required!",
     "email": "Email",
     "emailRequired": "Email is required!",
     "letsGo": "Let's go",
@@ -78,6 +80,15 @@
       "next": "Next",
       "previous": "Previous",
       "generate": "Generate"
+    },
+    "newsletterSignup": {
+      "header": "Stay updated on your next adventure with us",
+      "name": "Name",
+      "email": "Email Address",
+      "emailError": "Invalid email address!",
+      "letsGo": "Let's go",
+      "emailExists": "Email already exists in the newsletter!",
+      "emailSuccess": "Email successfully added to newsletter!"
     }
   },
   "account": {

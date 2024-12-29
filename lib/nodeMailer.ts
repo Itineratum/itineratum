@@ -60,12 +60,15 @@ export const sendAccountDeletedEmail = async (toEmail: string) => {
   }
 };
 
-export const sendNewsletterSubscribedEmail = async (toEmail: string) => {
+export const sendNewsletterSubscribedEmail = async (
+  toEmail: string,
+  name: string,
+) => {
   const mailOptions = {
     from: process.env.NODEMAILER_EMAIL,
     to: toEmail,
     subject: "Itineratum newsletter subscribed",
-    text: `This email has been subscribed to Itineratum's newsletter!`,
+    text: `Dear ${name},\n\nThis email has been subscribed to Itineratum's newsletter!`,
   };
 
   try {

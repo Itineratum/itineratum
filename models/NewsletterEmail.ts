@@ -4,6 +4,7 @@ import mongoose, { models, Schema } from "mongoose";
 
 const newsletterEmailSchema = new Schema<INewsletterEmail>(
   {
+    name: { type: String, required: true },
     email: { type: String, required: true },
     created_at: { type: Date, default: Date.now() },
   },

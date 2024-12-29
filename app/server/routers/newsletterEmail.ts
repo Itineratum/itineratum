@@ -20,9 +20,10 @@ export const newsletterEmailRouter = router({
     .input(addEmailToNewsletterSchema.input)
     .output(addEmailToNewsletterSchema.output)
     .mutation(async (data) => {
+      const name = data.input.name;
       const email = data.input.email;
-      const addEmailToNewsletterRes = await addEmailToNewsletter(email);
-      sendNewsletterSubscribedEmail(email);
+      const addEmailToNewsletterRes = await addEmailToNewsletter(name, email);
+      sendNewsletterSubscribedEmail(email, name);
 
       const update = {
         $set: {

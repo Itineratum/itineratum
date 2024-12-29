@@ -16,6 +16,10 @@
     "textField": {
       "color": "#000000",
       "backgroundColor": "#E7E2E2"
+    },
+    "newsletterSignup": {
+      "color1": "#378CBB",
+      "color2": "#1C4358"
     }
   },
   "continueWithGoogleButton": {
@@ -23,7 +27,7 @@
     "textColor": "#757575"
   },
   "breadcrumbNavigator": {
-    "unselected": "#c9c9c9",
+    "unselected": "#C9C9C9",
     "selected": "#000000"
   }
 }

@@ -9,6 +9,7 @@ import { useTranslations } from "next-intl";
 import Image from "next/image";
 import ImageColumn from "./components/image-column";
 import ItineraryGenerator from "./components/itinerary-generator/itinerary-generator";
+import NewsletterSignup from "./components/newsletter-sign-up";
 
 export const metadata: Metadata = {
   title: constText.pageTitle,
@@ -122,6 +123,7 @@ const Home = () => {
       </Stack>
       {arrowImage()}
       <ItineraryGenerator />
+      <NewsletterSignup />
     </Container>
   );
 };
