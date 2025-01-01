@@ -2,9 +2,10 @@
 
 import colorsConst from "@/constants/pages/colors.json";
 import { GenerateItineraryFormData } from "@/constants/types/formData/generateItineraryFormData";
+import { generateItinerary } from "@/lib/pythonBackend/pythonBackend";
 import ArrowBackOutlinedIcon from "@mui/icons-material/ArrowBackOutlined";
 import ArrowForwardOutlinedIcon from "@mui/icons-material/ArrowForwardOutlined";
-import { Box, Button, Container, Stack } from "@mui/material";
+import { Box, Button, CircularProgress, Container, Stack } from "@mui/material";
 import { AnimatePresence, motion } from "framer-motion";
 import { useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
@@ -34,6 +35,8 @@ const ItineraryGenerator = () => {
   const [activeStep, setActiveStep] = useState<number>(0);
   const [direction, setDirection] = useState<"left" | "right">("left");
   const [nextButtonEnabled, setNextButtonEnabled] = useState<boolean>(false);
+  const [generatingItinerary, setGeneratingItinerary] =
+    useState<boolean>(false);
 
   const border: string = `2px solid ${colorsConst.palette.secondary.main}`;
   const borderRadius: string = "16px";
@@ -100,17 +103,17 @@ const ItineraryGenerator = () => {
   const watchedFields = fields.watch();
   const checkFieldsValidForActiveStep = () => {
     const hasErrorsAtActiveStep = Object.keys(fields.formState.errors).some(
-      (errorField) => fieldsAtEachStep[activeStep].includes(errorField),
+      (errorField) => fieldsAtEachStep[activeStep].includes(errorField)
     );
     const requiredFieldsFilled = fieldsAtEachStep[activeStep].every(
-      (field: any) => !!fields.getValues(field),
+      (field: any) => !!fields.getValues(field)
     );
 
     // checks whether the start date of the first destination is the same as the trip start date, and the end date of the last destination is the same as the trip end date
     const step5Check =
       activeStep === 4
         ? watchedFields.userRequestedDestinations[0].startDate.isSame(
-            watchedFields.startDate,
+            watchedFields.startDate
           ) &&
           watchedFields.userRequestedDestinations[
             watchedFields.userRequestedDestinations.length - 1
@@ -121,7 +124,7 @@ const ItineraryGenerator = () => {
       !hasErrorsAtActiveStep &&
         requiredFieldsFilled &&
         watchedFields.userRequestedDestinations.length > 0 &&
-        step5Check,
+        step5Check
     );
   };
   useEffect(() => {
@@ -210,7 +213,7 @@ const ItineraryGenerator = () => {
           fields.setValue(
             //@ts-ignore
             `userRequestedDestinations[0].startDate`,
-            tripStartDate,
+            tripStartDate
           );
           //@ts-ignore
           fields.setValue(`userRequestedDestinations[0].endDate`, tripEndDate);
@@ -229,13 +232,13 @@ const ItineraryGenerator = () => {
             fields.setValue(
               //@ts-ignore
               `userRequestedDestinations[${index}].startDate`,
-              currentDate,
+              currentDate
             );
             const endDate = currentDate.add(daysToAllocate - 1, "day");
             fields.setValue(
               //@ts-ignore
               `userRequestedDestinations[${index}].endDate`,
-              endDate,
+              endDate
             );
 
             currentDate = endDate.add(1, "day");
@@ -267,9 +270,23 @@ const ItineraryGenerator = () => {
     };
 
     const generateButton = () => {
-      const handleOnClick = () => {
-        // TODO: implement the logic to generate the itinrary, by sending the form data to the python backend
-        console.log("Generate button clicked", fields.getValues());
+      const loadingAnimationSize: number = 24;
+
+      const handleOnClick = async () => {
+        setGeneratingItinerary(true);
+
+        try {
+          const itineraryForm = fields.getValues() as GenerateItineraryFormData;
+          const itinerary = await generateItinerary(itineraryForm);
+
+          // TODO: handle the logic for the generated itinerary
+          console.log(itinerary);
+
+        } catch (error) {
+          console.error(error);
+        } finally {
+          setGeneratingItinerary(false);
+        }
       };
 
       return (
@@ -278,9 +295,14 @@ const ItineraryGenerator = () => {
             onClick={handleOnClick}
             variant="contained"
             color="secondary"
-            endIcon={<ArrowForwardOutlinedIcon />}
+            endIcon={generatingItinerary ? null : <ArrowForwardOutlinedIcon />}
+            disabled={generatingItinerary}
           >
-            {t("generate")}
+            {generatingItinerary ? (
+              <CircularProgress size={loadingAnimationSize} />
+            ) : (
+              t("generate")
+            )}
           </Button>
         )
       );

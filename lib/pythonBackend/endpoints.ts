@@ -1,0 +1,6 @@
+export enum PythonBackendEndpoints {
+  generateItinerary = "/api/generate_itinerary",
+  validatePlan = "/api/validate_plan",
+  searchHotels = "/api/search_hotels",
+  searchFlights = "/api/search_flights",
+}

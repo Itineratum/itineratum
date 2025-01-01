@@ -1,4 +1,6 @@
+import { Currency } from "@/constants/enums/currency";
 import { GenerateItineraryPreferredTransport } from "@/constants/enums/generateItinerary";
+import { Language } from "@/constants/enums/language";
 import { Dayjs } from "dayjs";
 
 export interface GenerateItineraryFormData {
@@ -26,8 +28,8 @@ export interface GenerateItineraryFormData {
   };
   localisation: {
     country: string;
-    language: string;
-    currency: string;
+    language: keyof typeof Language;
+    currency: keyof typeof Currency;
   };
 }
 
