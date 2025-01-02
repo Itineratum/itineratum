@@ -103,17 +103,17 @@ const ItineraryGenerator = () => {
   const watchedFields = fields.watch();
   const checkFieldsValidForActiveStep = () => {
     const hasErrorsAtActiveStep = Object.keys(fields.formState.errors).some(
-      (errorField) => fieldsAtEachStep[activeStep].includes(errorField)
+      (errorField) => fieldsAtEachStep[activeStep].includes(errorField),
     );
     const requiredFieldsFilled = fieldsAtEachStep[activeStep].every(
-      (field: any) => !!fields.getValues(field)
+      (field: any) => !!fields.getValues(field),
     );
 
     // checks whether the start date of the first destination is the same as the trip start date, and the end date of the last destination is the same as the trip end date
     const step5Check =
       activeStep === 4
         ? watchedFields.userRequestedDestinations[0].startDate.isSame(
-            watchedFields.startDate
+            watchedFields.startDate,
           ) &&
           watchedFields.userRequestedDestinations[
             watchedFields.userRequestedDestinations.length - 1
@@ -124,7 +124,7 @@ const ItineraryGenerator = () => {
       !hasErrorsAtActiveStep &&
         requiredFieldsFilled &&
         watchedFields.userRequestedDestinations.length > 0 &&
-        step5Check
+        step5Check,
     );
   };
   useEffect(() => {
@@ -214,7 +214,7 @@ const ItineraryGenerator = () => {
           fields.setValue(
             //@ts-ignore
             `userRequestedDestinations[0].startDate`,
-            tripStartDate
+            tripStartDate,
           );
           //@ts-ignore
           fields.setValue(`userRequestedDestinations[0].endDate`, tripEndDate);
@@ -233,13 +233,13 @@ const ItineraryGenerator = () => {
             fields.setValue(
               //@ts-ignore
               `userRequestedDestinations[${index}].startDate`,
-              currentDate
+              currentDate,
             );
             const endDate = currentDate.add(daysToAllocate - 1, "day");
             fields.setValue(
               //@ts-ignore
               `userRequestedDestinations[${index}].endDate`,
-              endDate
+              endDate,
             );
 
             currentDate = endDate.add(1, "day");
@@ -281,6 +281,8 @@ const ItineraryGenerator = () => {
           const itinerary = await generateItinerary(itineraryForm);
 
           // TODO: handle the logic for the generated itinerary
+          // to store the itinerary in the MongoDB, under the Itineraries collection, and get a unique ID for the itinerary
+          // then redirect the user to the /itinerary page with the unique Itinerary ID; need to create a new next.js route and component to display the itinerary properly and nicely
           console.log(itinerary);
         } catch (error) {
           console.error(error);

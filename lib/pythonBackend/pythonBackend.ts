@@ -8,7 +8,7 @@ import { PythonBackendEndpoints } from "./endpoints";
 import { GenerateItineraryJSON } from "./types";
 
 export const generateItinerary = async (
-  itineraryForm: GenerateItineraryFormData
+  itineraryForm: GenerateItineraryFormData,
 ) => {
   try {
     itineraryForm.localisation = {
@@ -34,7 +34,7 @@ export const generateItinerary = async (
             "Content-Type": "application/json",
           },
           body: JSON.stringify(itineraryJson),
-        }
+        },
       ).then((res) => {
         if (!res.ok) {
           throw new Error("Network response was not ok!");
@@ -65,7 +65,7 @@ const validatePlan = async (itineraryJson: GenerateItineraryJSON) => {
           "Content-Type": "application/json",
         },
         body: JSON.stringify(itineraryJson),
-      }
+      },
     );
 
     if (!response.ok) {
@@ -88,7 +88,7 @@ const searchHotels = async (itineraryJson: GenerateItineraryJSON) => {
           "Content-Type": "application/json",
         },
         body: JSON.stringify(itineraryJson),
-      }
+      },
     );
 
     if (!response.ok) {
@@ -111,7 +111,7 @@ const searchFlights = async (itineraryJson: GenerateItineraryJSON) => {
           "Content-Type": "application/json",
         },
         body: JSON.stringify(itineraryJson),
-      }
+      },
     );
 
     if (!response.ok) {
@@ -125,14 +125,14 @@ const searchFlights = async (itineraryJson: GenerateItineraryJSON) => {
 };
 
 const generateItineraryJson = (
-  itineraryForm: GenerateItineraryFormData
+  itineraryForm: GenerateItineraryFormData,
 ): GenerateItineraryJSON => {
   const userRequestedDestinations = itineraryForm.userRequestedDestinations.map(
     (destination: UserRequestedDestination) => ({
       name: destination.name,
       start_date: destination.startDate.format("YYYY-MM-DD"),
       end_date: destination.endDate.format("YYYY-MM-DD"),
-    })
+    }),
   );
   const otherRequirements = {
     pet_friendly: itineraryForm.otherRequirements.petFriendly,

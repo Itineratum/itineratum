@@ -326,7 +326,10 @@ export const userRouter = router({
         updateFieldType === AccountNotificationsFieldType.email
       ) {
         if (value) {
-          const addEmailToNewsletterRes = await addEmailToNewsletter(email, name);
+          const addEmailToNewsletterRes = await addEmailToNewsletter(
+            email,
+            name,
+          );
           sendNewsletterSubscribedEmail(email, name);
 
           if (!addEmailToNewsletterRes.success) {
