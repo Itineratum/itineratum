@@ -22,6 +22,10 @@ export const newsletterEmailRouter = router({
     .mutation(async (data) => {
       const name = data.input.name;
       const email = data.input.email;
+      const checkEmailInNewsletterRes = await checkEmailInNewsletter(email);
+
+      if (checkEmailInNewsletterRes.success) return false;
+
       const addEmailToNewsletterRes = await addEmailToNewsletter(name, email);
       sendNewsletterSubscribedEmail(email, name);
 
