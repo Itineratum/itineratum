@@ -186,6 +186,7 @@ const ItineraryGenerator = () => {
             variant="contained"
             color="primary"
             startIcon={<ArrowBackOutlinedIcon />}
+            disabled={generatingItinerary}
           >
             {t("previous")}
           </Button>
@@ -281,7 +282,6 @@ const ItineraryGenerator = () => {
 
           // TODO: handle the logic for the generated itinerary
           console.log(itinerary);
-
         } catch (error) {
           console.error(error);
         } finally {

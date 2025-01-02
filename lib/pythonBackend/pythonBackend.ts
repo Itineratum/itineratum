@@ -25,30 +25,31 @@ export const generateItinerary = async (
       throw new Error(validatePlanResponse.invalid_reason);
     }
 
-    const response = await fetch(
-      `${process.env.NEXT_PUBLIC_PYTHON_BACKEND_URL}${PythonBackendEndpoints.generateItinerary}`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(itineraryJson),
-      }
-    );
+    const [itineraryResponse, hotels, flights] = await Promise.all([
+      fetch(
+        `${process.env.NEXT_PUBLIC_PYTHON_BACKEND_URL}${PythonBackendEndpoints.generateItinerary}`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(itineraryJson),
+        }
+      ).then((res) => {
+        if (!res.ok) {
+          throw new Error("Network response was not ok!");
+        }
+        return res.json();
+      }),
+      searchHotels(itineraryJson),
+      searchFlights(itineraryJson),
+    ]);
 
-    const hotels = await searchHotels(itineraryJson);
-
-    // TODO: to confirm with Oscar, seems like there is some obstacle with the backend
-    const flights = await searchFlights(itineraryJson);
-
-    console.log("hotels", hotels);
-    console.log("flights", flights);
-
-    if (!response.ok) {
-      throw new Error("Network response was not ok!");
-    }
-
-    return await response.json();
+    return {
+      itinerary: itineraryResponse,
+      hotels,
+      flights,
+    };
   } catch (error: any) {
     throw new Error(error);
   }
