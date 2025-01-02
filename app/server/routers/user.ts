@@ -307,7 +307,7 @@ export const userRouter = router({
     .input(updateUserNotificationsSettingsSchema.input)
     .output(updateUserNotificationsSettingsSchema.output)
     .mutation(async (data) => {
-      const { email, field, fieldType, value } = data.input;
+      const { email, name, field, fieldType, value } = data.input;
 
       let updateField: string;
       let updateFieldType: string;
@@ -326,8 +326,8 @@ export const userRouter = router({
         updateFieldType === AccountNotificationsFieldType.email
       ) {
         if (value) {
-          const addEmailToNewsletterRes = await addEmailToNewsletter(email);
-          sendNewsletterSubscribedEmail(email);
+          const addEmailToNewsletterRes = await addEmailToNewsletter(email, name);
+          sendNewsletterSubscribedEmail(email, name);
 
           if (!addEmailToNewsletterRes.success) {
             throw new TRPCError({

@@ -1,7 +1,7 @@
 import { connectToDatabase, disconnectFromDatabase } from "@/lib/db";
 import NewsletterEmail from "@/models/NewsletterEmail";
 
-export const addEmailToNewsletter = async (name: string, email: string) => {
+export const addEmailToNewsletter = async (email: string, name: string) => {
   try {
     await connectToDatabase();
     const emailAlreadyInNewsletter = await NewsletterEmail.findOne({ email });

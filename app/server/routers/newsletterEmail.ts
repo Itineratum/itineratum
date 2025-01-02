@@ -26,7 +26,7 @@ export const newsletterEmailRouter = router({
 
       if (checkEmailInNewsletterRes.success) return false;
 
-      const addEmailToNewsletterRes = await addEmailToNewsletter(name, email);
+      const addEmailToNewsletterRes = await addEmailToNewsletter(email, name);
       sendNewsletterSubscribedEmail(email, name);
 
       const update = {

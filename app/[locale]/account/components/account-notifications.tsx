@@ -119,6 +119,7 @@ const AccountNotifications = ({
 
         const data = {
           email: session?.user.email!,
+          name: session?.user.name!,
           field,
           fieldType,
           value: newValue,

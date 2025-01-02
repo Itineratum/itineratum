@@ -127,6 +127,7 @@ export const getUserNotificationsSettingsSchema = {
 export const updateUserNotificationsSettingsSchema = {
   input: z.object({
     email: z.string(),
+    name: z.string(),
     field: z.enum(enumToZod(AccountNotificationsField)),
     fieldType: z.enum(enumToZod(AccountNotificationsFieldType)),
     value: z.boolean(),
