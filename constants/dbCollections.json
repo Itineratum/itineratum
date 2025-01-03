@@ -2,5 +2,6 @@
   "users": "users",
   "verificationCodes": "verification_codes",
   "faqs": "faqs",
-  "newsletterEmails": "newsletter_emails"
+  "newsletterEmails": "newsletter_emails",
+  "itineraries": "itineraries"
 }

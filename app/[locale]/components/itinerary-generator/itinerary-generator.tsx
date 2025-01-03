@@ -1,5 +1,8 @@
 "use client";
 
+import { trpc } from "@/app/_trpc/client";
+import Alert from "@/components/molecules/alert";
+import { AlertType } from "@/constants/enums/alertType";
 import colorsConst from "@/constants/pages/colors.json";
 import { GenerateItineraryFormData } from "@/constants/types/formData/generateItineraryFormData";
 import { generateItinerary } from "@/lib/pythonBackend/pythonBackend";
@@ -7,6 +10,7 @@ import ArrowBackOutlinedIcon from "@mui/icons-material/ArrowBackOutlined";
 import ArrowForwardOutlinedIcon from "@mui/icons-material/ArrowForwardOutlined";
 import { Box, Button, CircularProgress, Container, Stack } from "@mui/material";
 import { AnimatePresence, motion } from "framer-motion";
+import { useSession } from "next-auth/react";
 import { useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
 import { FormProvider, useForm } from "react-hook-form";
@@ -18,6 +22,7 @@ import Step5 from "./step-5";
 import Step6 from "./step-6";
 
 const ItineraryGenerator = () => {
+  const { data: session } = useSession();
   const t = useTranslations("home.itineraryGenerator");
   const fields = useForm<GenerateItineraryFormData>({
     mode: "onChange",
@@ -37,6 +42,8 @@ const ItineraryGenerator = () => {
   const [nextButtonEnabled, setNextButtonEnabled] = useState<boolean>(false);
   const [generatingItinerary, setGeneratingItinerary] =
     useState<boolean>(false);
+  const [showAlert, setShowAlert] = useState<boolean>(false);
+  const [alertText, setAlertText] = useState<string>("");
 
   const border: string = `2px solid ${colorsConst.palette.secondary.main}`;
   const borderRadius: string = "16px";
@@ -57,6 +64,8 @@ const ItineraryGenerator = () => {
       opacity: 0,
     }),
   };
+
+  const saveItinerary = trpc.itinerary.saveItinerary.useMutation();
 
   const steps = [
     <Container key={0}>
@@ -275,17 +284,27 @@ const ItineraryGenerator = () => {
 
       const handleOnClick = async () => {
         setGeneratingItinerary(true);
+        setShowAlert(false);
+        setAlertText("");
 
         try {
           const itineraryForm = fields.getValues() as GenerateItineraryFormData;
           const itinerary = await generateItinerary(itineraryForm);
 
+          const email = session?.user?.email || null;
+          const data = {
+            email,
+            itinerary: itinerary.itinerary,
+            hotels: itinerary.hotels || [],
+            flights: itinerary.flights || [],
+          };
+          const itineraryId = await saveItinerary.mutateAsync(data);
           // TODO: handle the logic for the generated itinerary
-          // to store the itinerary in the MongoDB, under the Itineraries collection, and get a unique ID for the itinerary
           // then redirect the user to the /itinerary page with the unique Itinerary ID; need to create a new next.js route and component to display the itinerary properly and nicely
-          console.log(itinerary);
-        } catch (error) {
+        } catch (error: any) {
           console.error(error);
+          setAlertText(error.message);
+          setShowAlert(true);
         } finally {
           setGeneratingItinerary(false);
         }
@@ -343,6 +362,12 @@ const ItineraryGenerator = () => {
         }}
       >
         {formFields()}
+        <Alert
+          showAlert={showAlert}
+          setShowAlert={setShowAlert}
+          alertText={alertText}
+          alertType={AlertType.error}
+        />
         {navigationButtons()}
       </Stack>
     </FormProvider>

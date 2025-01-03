@@ -2,6 +2,7 @@ import { Currency } from "@/constants/enums/currency";
 import { GenerateItineraryPreferredTransport } from "@/constants/enums/generateItinerary";
 import { Language } from "@/constants/enums/language";
 import { UserRequestedDestination } from "@/constants/types/formData/generateItineraryFormData";
+import { ObjectId } from "mongodb";
 
 export interface GenerateItineraryJSON {
   use_dummy_data: boolean;

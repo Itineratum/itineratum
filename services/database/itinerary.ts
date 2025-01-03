@@ -1,22 +1,30 @@
 import { connectToDatabase, disconnectFromDatabase } from "@/lib/db";
 import Itinerary from "@/models/Itinerary";
 
-export const retrieveFAQs = async () => {
+export const saveItinerary = async (
+  email: string | null,
+  itinerary: any,
+  hotels: any,
+  flights: any,
+) => {
   try {
     await connectToDatabase();
-    const faqs = await Itinerary.find({});
+    const itineraryDocument = {
+      generated_by: "",
+      generated_at: new Date(),
+      itinerary,
+      hotels,
+      flights,
+    };
 
-    if (faqs && faqs.length > 0) {
-      return {
-        success: true,
-        data: faqs,
-      };
-    } else {
-      return {
-        sucess: false,
-        error: "Retrieval of FAQs failed!",
-      };
-    }
+    if (email) itineraryDocument.generated_by = email;
+
+    const result = await Itinerary.create(itineraryDocument);
+
+    return {
+      success: true,
+      itineraryId: result.id,
+    };
   } catch (error) {
     console.error(error);
     throw error;

@@ -23,6 +23,10 @@
     "name": "Sign Up",
     "endpoint": "sign-up"
   },
+  "itinerary": {
+    "name": "Itinerary",
+    "endpoint": "itinerary"
+  },
   "emailVerification": {
     "name": "Email Verification",
     "endpoint": "email-verification"
