@@ -46,7 +46,8 @@ export const generateItinerary = async (
     ]);
 
     return {
-      itinerary: itineraryResponse,
+      request: itineraryJson,
+      itinerary: itineraryResponse.itinerary,
       hotels,
       flights,
     };
@@ -124,7 +125,7 @@ const searchFlights = async (itineraryJson: GenerateItineraryJSON) => {
   }
 };
 
-const generateItineraryJson = (
+export const generateItineraryJson = (
   itineraryForm: GenerateItineraryFormData,
 ): GenerateItineraryJSON => {
   const userRequestedDestinations = itineraryForm.userRequestedDestinations.map(

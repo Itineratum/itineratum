@@ -294,6 +294,7 @@ const ItineraryGenerator = () => {
           const email = session?.user?.email || null;
           const data = {
             email,
+            request: itinerary.request,
             itinerary: itinerary.itinerary,
             hotels: itinerary.hotels || [],
             flights: itinerary.flights || [],

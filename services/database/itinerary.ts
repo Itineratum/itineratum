@@ -3,6 +3,7 @@ import Itinerary from "@/models/Itinerary";
 
 export const saveItinerary = async (
   email: string | null,
+  request: any,
   itinerary: any,
   hotels: any,
   flights: any,
@@ -12,6 +13,7 @@ export const saveItinerary = async (
     const itineraryDocument = {
       generated_by: "",
       generated_at: new Date(),
+      request,
       itinerary,
       hotels,
       flights,
