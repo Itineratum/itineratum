@@ -15,10 +15,10 @@ export const saveItinerary = async (
 
     itineraryRaw.map((locationItinerary: any) => {
       const days = getDays(locationItinerary.day);
-      const city = locationItinerary.location;
+      const destination = locationItinerary.location;
       locationItinerary.plan.map((rawDayPlan: any, index: number) => {
         const dayPlan = {
-          city,
+          destination,
           day: days[index],
           morning: rawDayPlan.morning,
           afternoon: rawDayPlan.afternoon,

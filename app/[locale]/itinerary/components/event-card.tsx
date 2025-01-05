@@ -10,12 +10,12 @@ import { useTranslations } from "next-intl";
 const EventCard = ({
   date,
   location,
-  city,
+  destination,
   timeOfDay,
 }: {
   date: Dayjs;
   location: string;
-  city: string;
+  destination: string;
   timeOfDay: EventCardTimeOfDay;
 }) => {
   const t = useTranslations("itinerary.eventCard");
@@ -93,7 +93,7 @@ const EventCard = ({
         <Stack direction="row" alignItems="center" spacing={spacing}>
           <LocationOnIcon sx={{ color, width: iconSize, height: iconSize }} />
           <Text
-            text={`${location}, ${city}`}
+            text={`${location}, ${destination}`}
             variant={TypographyVariant.h6}
             bold={false}
           />

@@ -35,7 +35,7 @@ const Itinerary = ({ params }: { params: { id: string } }) => {
         setError(error.message);
         setIsLoading(false);
       },
-    },
+    }
   );
 
   useEffect(() => {
@@ -48,7 +48,7 @@ const Itinerary = ({ params }: { params: { id: string } }) => {
 
   if (isLoading)
     return (
-      <Container>
+      <Container sx={{ display: "flex", justifyContent: "center" }}>
         <CircularProgress />
       </Container>
     );
@@ -70,26 +70,20 @@ const Itinerary = ({ params }: { params: { id: string } }) => {
     );
 
   const itinerarySummaryText = () => {
-    let cities = "";
-    let currentCity = "";
-    itineraryData.itinerary.map((locationItinerary, index) => {
-      const city = locationItinerary.city;
+    let destinations = "";
+    const userRequestedDestinations =
+      itineraryData.request.payload.user_requested_destinations;
 
-      if (city !== currentCity) {
-        cities += city;
-        currentCity = city;
-      } else return;
+    userRequestedDestinations.map((userRequestedDestination, index) => {
+      destinations += userRequestedDestination.name;
 
-      if (index < itineraryData.itinerary.length - 2) {
-        cities += ", ";
-      } else if (
-        itineraryData.itinerary.length > 1 &&
-        index == itineraryData.itinerary.length - 2
-      ) {
-        cities += " and ";
+      if (index < userRequestedDestinations.length - 2) {
+        destinations += ", ";
+      } else if (index === userRequestedDestinations.length - 2) {
+        destinations += " and ";
       }
     });
-    const text = `${numDays} ${numDays > 1 ? t("days") : t("day")} ${numDays} ${numDays > 1 ? t("nights") : t("night")} ${t("to")} ${cities}`;
+    const text = `${numDays} ${numDays > 1 ? t("days") : t("day")} ${numDays} ${numDays > 1 ? t("nights") : t("night")} ${t("to")} ${destinations}`;
 
     return (
       <Text
@@ -139,7 +133,7 @@ const Itinerary = ({ params }: { params: { id: string } }) => {
 
     const eventCards = () => {
       const dayPlan = itineraryData.itinerary.filter(
-        (dayPlan) => dayPlan.day === dayNum,
+        (dayPlan) => dayPlan.day === dayNum
       )[0];
       const startDate = dayjs(itineraryData.request.payload.start_date);
       const date = dayNum === 1 ? startDate : startDate.add(dayNum - 1, "day");
@@ -149,7 +143,7 @@ const Itinerary = ({ params }: { params: { id: string } }) => {
           <EventCard
             date={date}
             location={dayPlan.morning.location_name}
-            city={dayPlan.city}
+            destination={dayPlan.destination}
             timeOfDay={EventCardTimeOfDay.morning}
           />
         ) : null;
@@ -160,7 +154,7 @@ const Itinerary = ({ params }: { params: { id: string } }) => {
           <EventCard
             date={date}
             location={dayPlan.afternoon.location_name}
-            city={dayPlan.city}
+            destination={dayPlan.destination}
             timeOfDay={EventCardTimeOfDay.afternoon}
           />
         ) : null;
@@ -171,7 +165,7 @@ const Itinerary = ({ params }: { params: { id: string } }) => {
           <EventCard
             date={date}
             location={dayPlan.evening.location_name}
-            city={dayPlan.city}
+            destination={dayPlan.destination}
             timeOfDay={EventCardTimeOfDay.evening}
           />
         ) : null;
