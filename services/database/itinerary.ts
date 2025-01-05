@@ -7,7 +7,7 @@ export const saveItinerary = async (
   request: any,
   itineraryRaw: any,
   hotels: any,
-  flights: any
+  flights: any,
 ) => {
   try {
     await connectToDatabase();
@@ -15,10 +15,10 @@ export const saveItinerary = async (
 
     itineraryRaw.map((locationItinerary: any) => {
       const days = getDays(locationItinerary.day);
-      const location = locationItinerary.location;
+      const city = locationItinerary.location;
       locationItinerary.plan.map((rawDayPlan: any, index: number) => {
         const dayPlan = {
-          location,
+          city,
           day: days[index],
           morning: rawDayPlan.morning,
           afternoon: rawDayPlan.afternoon,

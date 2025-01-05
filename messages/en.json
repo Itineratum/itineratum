@@ -92,6 +92,25 @@
       "emailSuccess": "Email successfully added to newsletter!"
     }
   },
+  "itinerary": {
+    "noItinerary": "No itinerary found!",
+    "budgetCap": "Budget Cap",
+    "minPrice": "Min Price",
+    "maxPrice": "Max Price",
+    "dayCap": "Day",
+    "day": "day",
+    "days": "days",
+    "night": "night",
+    "nights": "nights",
+    "to": "to",
+    "itineraryGenerated": "Itinerary Generated",
+    "details": "Details",
+    "eventCard": {
+      "morning": "Morning",
+      "afternoon": "Afternoon",
+      "evening": "Evening"
+    }
+  },
   "account": {
     "account": "Account",
     "personalInformation": {

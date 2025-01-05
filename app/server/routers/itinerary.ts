@@ -1,6 +1,10 @@
-import { saveItinerary } from "@/services/database/itinerary";
-import { saveItinerarySchema } from "../schemas/itinerary";
+import {
+  retrieveItinerary,
+  saveItinerary,
+} from "@/services/database/itinerary";
+import { getItinerarySchema, saveItinerarySchema } from "../schemas/itinerary";
 import { publicProcedure, router } from "../trpc";
+import { TRPCError } from "@trpc/server";
 
 export const itineraryRouter = router({
   saveItinerary: publicProcedure
@@ -20,5 +24,21 @@ export const itineraryRouter = router({
         flights,
       );
       return saveItineraryRes.itineraryId;
+    }),
+  getItinerary: publicProcedure
+    .input(getItinerarySchema.input)
+    .output(getItinerarySchema.output)
+    .query(async (data) => {
+      const itineraryId = data.input.itineraryId;
+      const retrieveItineraryRes = await retrieveItinerary(itineraryId);
+
+      if (!retrieveItineraryRes.success) {
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message: retrieveItineraryRes?.error!,
+        });
+      }
+
+      return retrieveItineraryRes.data;
     }),
 });

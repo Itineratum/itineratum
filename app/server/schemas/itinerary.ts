@@ -10,3 +10,8 @@ export const saveItinerarySchema = {
   }),
   output: z.string(),
 };
+
+export const getItinerarySchema = {
+  input: z.object({ itineraryId: z.string() }),
+  output: z.any(),
+};

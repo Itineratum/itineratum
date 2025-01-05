@@ -20,6 +20,12 @@
     "newsletterSignup": {
       "color1": "#378CBB",
       "color2": "#1C4358"
+    },
+    "eventCard": {
+      "morning": "#ff8161",
+      "afternoon": "#1e90ff",
+      "evening": "#7b198b",
+      "background": "#f6f4f4"
     }
   },
   "continueWithGoogleButton": {

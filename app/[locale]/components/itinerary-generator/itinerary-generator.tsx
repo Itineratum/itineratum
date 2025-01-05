@@ -4,6 +4,7 @@ import { trpc } from "@/app/_trpc/client";
 import Alert from "@/components/molecules/alert";
 import { AlertType } from "@/constants/enums/alertType";
 import colorsConst from "@/constants/pages/colors.json";
+import endpointsConst from "@/constants/pages/endpoints.json";
 import { GenerateItineraryFormData } from "@/constants/types/formData/generateItineraryFormData";
 import { generateItinerary } from "@/lib/pythonBackend/pythonBackend";
 import ArrowBackOutlinedIcon from "@mui/icons-material/ArrowBackOutlined";
@@ -12,6 +13,7 @@ import { Box, Button, CircularProgress, Container, Stack } from "@mui/material";
 import { AnimatePresence, motion } from "framer-motion";
 import { useSession } from "next-auth/react";
 import { useTranslations } from "next-intl";
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { FormProvider, useForm } from "react-hook-form";
 import Step1 from "./step-1";
@@ -23,6 +25,7 @@ import Step6 from "./step-6";
 
 const ItineraryGenerator = () => {
   const { data: session } = useSession();
+  const router = useRouter();
   const t = useTranslations("home.itineraryGenerator");
   const fields = useForm<GenerateItineraryFormData>({
     mode: "onChange",
@@ -290,18 +293,16 @@ const ItineraryGenerator = () => {
         try {
           const itineraryForm = fields.getValues() as GenerateItineraryFormData;
           const itinerary = await generateItinerary(itineraryForm);
-
           const email = session?.user?.email || null;
           const data = {
             email,
             request: itinerary.request,
-            itinerary: itinerary.itinerary,
+            itinerary: itinerary.itinerary || [],
             hotels: itinerary.hotels || [],
             flights: itinerary.flights || [],
           };
           const itineraryId = await saveItinerary.mutateAsync(data);
-          // TODO: handle the logic for the generated itinerary
-          // then redirect the user to the /itinerary page with the unique Itinerary ID; need to create a new next.js route and component to display the itinerary properly and nicely
+          router.push(`${endpointsConst.itinerary.endpoint}/${itineraryId}`);
         } catch (error: any) {
           console.error(error);
           setAlertText(error.message);
