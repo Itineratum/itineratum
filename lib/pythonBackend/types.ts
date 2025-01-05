@@ -40,3 +40,18 @@ export interface GenerateItineraryJSON {
     };
   };
 }
+
+export interface DayPlan {
+  day: number;
+  morning: Event;
+  afternoon: Event;
+  evening: Event;
+  destination: string;
+}
+
+export interface Event {
+  location_name: string;
+  location_address: string;
+  description: string;
+  ori_text: string;
+}

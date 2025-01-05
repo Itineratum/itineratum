@@ -7,12 +7,17 @@ import {
   TypographyVariant,
 } from "@/constants/enums/theme";
 import { IItinerary } from "@/constants/types/itinerary";
-import { CircularProgress, Container, Stack } from "@mui/material";
+import { DayPlan } from "@/lib/pythonBackend/types";
+import { Box, CircularProgress, Container, Stack } from "@mui/material";
 import dayjs from "dayjs";
 import { useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
 import DayButton from "../components/day-button";
 import EventCard, { EventCardTimeOfDay } from "../components/event-card";
+import EventDetailsCard, {
+  eventDetailsCardHeight,
+  eventDetailsCardOverlapOffset,
+} from "../components/event-details-card";
 
 const Itinerary = ({ params }: { params: { id: string } }) => {
   const t = useTranslations("itinerary");
@@ -22,6 +27,7 @@ const Itinerary = ({ params }: { params: { id: string } }) => {
   const [error, setError] = useState<string | null>(null);
   const [dayNum, setDayNum] = useState<number>(1);
   const [numDays, setNumDays] = useState<number>(1);
+  const [dayPlan, setDayPlan] = useState<DayPlan | null>(null);
 
   const gap = 6;
   const paddingBottom = "20px";
@@ -35,16 +41,28 @@ const Itinerary = ({ params }: { params: { id: string } }) => {
         setError(error.message);
         setIsLoading(false);
       },
-    }
+    },
   );
+
+  const getCorrectDayPlan = () =>
+    getItinerary.data.itinerary.filter(
+      (dayPlan: DayPlan) => dayPlan.day === dayNum,
+    )[0];
 
   useEffect(() => {
     if (getItinerary.data) {
       setItineraryData(getItinerary.data);
       setNumDays(getItinerary.data.itinerary.length);
+      setDayPlan(getCorrectDayPlan());
       setIsLoading(false);
     }
   }, [getItinerary.data]);
+
+  useEffect(() => {
+    if (getItinerary.data) {
+      setDayPlan(getCorrectDayPlan());
+    }
+  }, [dayNum]);
 
   if (isLoading)
     return (
@@ -102,7 +120,7 @@ const Itinerary = ({ params }: { params: { id: string } }) => {
       <Stack
         direction="row"
         spacing={spacing}
-        sx={{ overflow: "scroll", maxWidth: "100%" }}
+        sx={{ overflow: "auto", maxWidth: "100%" }}
       >
         {Array(numDays)
           .fill(0)
@@ -118,7 +136,7 @@ const Itinerary = ({ params }: { params: { id: string } }) => {
   };
 
   const itineraryGeneratedSection = () => {
-    const spacing: number = 2;
+    const spacing = 2;
 
     const heading = () => {
       return (
@@ -132,40 +150,37 @@ const Itinerary = ({ params }: { params: { id: string } }) => {
     };
 
     const eventCards = () => {
-      const dayPlan = itineraryData.itinerary.filter(
-        (dayPlan) => dayPlan.day === dayNum
-      )[0];
       const startDate = dayjs(itineraryData.request.payload.start_date);
       const date = dayNum === 1 ? startDate : startDate.add(dayNum - 1, "day");
 
       const morningEventCard = () => {
-        return dayPlan.morning ? (
+        return dayPlan!.morning ? (
           <EventCard
             date={date}
-            location={dayPlan.morning.location_name}
-            destination={dayPlan.destination}
+            location={dayPlan!.morning.location_name}
+            destination={dayPlan!.destination}
             timeOfDay={EventCardTimeOfDay.morning}
           />
         ) : null;
       };
 
       const afternoonEventCard = () => {
-        return dayPlan.afternoon ? (
+        return dayPlan!.afternoon ? (
           <EventCard
             date={date}
-            location={dayPlan.afternoon.location_name}
-            destination={dayPlan.destination}
+            location={dayPlan!.afternoon.location_name}
+            destination={dayPlan!.destination}
             timeOfDay={EventCardTimeOfDay.afternoon}
           />
         ) : null;
       };
 
       const eveningEventCard = () => {
-        return dayPlan.evening ? (
+        return dayPlan!.evening ? (
           <EventCard
             date={date}
-            location={dayPlan.evening.location_name}
-            destination={dayPlan.destination}
+            location={dayPlan!.evening.location_name}
+            destination={dayPlan!.destination}
             timeOfDay={EventCardTimeOfDay.evening}
           />
         ) : null;
@@ -188,7 +203,73 @@ const Itinerary = ({ params }: { params: { id: string } }) => {
     );
   };
 
-  const detailsSection = () => {};
+  const detailsSection = () => {
+    const spacing = 2;
+    let numOfCards = Object.values(dayPlan!).filter(
+      (value) => value !== null && typeof value === "object",
+    ).length;
+
+    const heading = () => {
+      return (
+        <Text
+          text={t("details") + "*"}
+          variant={TypographyVariant.h5}
+          bold={true}
+          textDecoration={TypographyTextDecoration.underline}
+        />
+      );
+    };
+
+    const morningEventDetailsCard = () => {
+      return dayPlan!.morning ? (
+        <EventDetailsCard event={dayPlan!.morning} index={0} />
+      ) : null;
+    };
+
+    const afternoonEventDetailsCard = () => {
+      return dayPlan!.afternoon ? (
+        <EventDetailsCard event={dayPlan!.afternoon} index={1} />
+      ) : null;
+    };
+
+    const eveningEventDetailsCard = () => {
+      return dayPlan!.evening ? (
+        <EventDetailsCard event={dayPlan!.evening} index={2} />
+      ) : null;
+    };
+
+    const detailsSectionNote = () => {
+      return (
+        <Box sx={{ marginTop: "16px" }}>
+          <Text
+            text={"*" + t("eventDetailsCard.details")}
+            variant={TypographyVariant.body1}
+            bold={true}
+          />
+        </Box>
+      );
+    };
+
+    return (
+      <Stack direction="column" spacing={spacing}>
+        {heading()}
+        <Box
+          sx={{
+            position: "relative",
+            height:
+              eventDetailsCardHeight +
+              (numOfCards - 1) * eventDetailsCardOverlapOffset,
+            marginBottom: "16px",
+          }}
+        >
+          {morningEventDetailsCard()}
+          {afternoonEventDetailsCard()}
+          {eveningEventDetailsCard()}
+        </Box>
+        {detailsSectionNote()}
+      </Stack>
+    );
+  };
 
   return (
     <Container
@@ -204,6 +285,7 @@ const Itinerary = ({ params }: { params: { id: string } }) => {
       {dayButtons()}
       <Stack direction="row" spacing={gap}>
         {itineraryGeneratedSection()}
+        {detailsSection()}
       </Stack>
     </Container>
   );

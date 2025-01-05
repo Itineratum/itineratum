@@ -73,12 +73,12 @@ const EventCard = ({
           <Stack direction="column" spacing={0}>
             <Text
               text={date.format("DD MMM YYYY")}
-              variant={TypographyVariant.h6}
+              variant={TypographyVariant.h5}
               bold={false}
             />
             <Text
               text={timeOfDay}
-              variant={TypographyVariant.h6}
+              variant={TypographyVariant.h5}
               bold={false}
             />
           </Stack>
@@ -94,7 +94,7 @@ const EventCard = ({
           <LocationOnIcon sx={{ color, width: iconSize, height: iconSize }} />
           <Text
             text={`${location}, ${destination}`}
-            variant={TypographyVariant.h6}
+            variant={TypographyVariant.h5}
             bold={false}
           />
         </Stack>
@@ -115,7 +115,7 @@ const EventCard = ({
         display: "flex",
         alignItems: "center",
         padding,
-        border: "1px solid black",
+        border: "2px solid black",
         borderRadius,
         maxWidth,
       }}
