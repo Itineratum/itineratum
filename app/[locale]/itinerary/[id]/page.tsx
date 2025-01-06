@@ -18,6 +18,7 @@ import EventDetailsCard, {
   eventDetailsCardHeight,
   eventDetailsCardOverlapOffset,
 } from "../components/event-details-card";
+import MapSection from "../components/map-section";
 
 const Itinerary = ({ params }: { params: { id: string } }) => {
   const t = useTranslations("itinerary");
@@ -287,6 +288,9 @@ const Itinerary = ({ params }: { params: { id: string } }) => {
         {itineraryGeneratedSection()}
         {detailsSection()}
       </Stack>
+      <MapSection
+        events={[dayPlan!.morning, dayPlan!.afternoon, dayPlan!.evening]}
+      />
     </Container>
   );
 };
