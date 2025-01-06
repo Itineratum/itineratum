@@ -105,11 +105,6 @@
     "to": "to",
     "itineraryGenerated": "Itinerary Generated",
     "details": "Details",
-    "eventCard": {
-      "morning": "Morning",
-      "afternoon": "Afternoon",
-      "evening": "Evening"
-    },
     "eventDetailsCard": {
       "learnMore": "Learn More",
       "details": "Click on each box to view the detailed content and make your bookings"

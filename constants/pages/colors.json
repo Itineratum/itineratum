@@ -26,6 +26,12 @@
       "afternoon": "#1e90ff",
       "evening": "#7b198b",
       "background": "#f6f4f4"
+    },
+    "mapSection": {
+      "glyphColor": "#ffffff",
+      "morning": "#ff8161",
+      "afternoon": "#1e90ff",
+      "evening": "#7b198b"
     }
   },
   "continueWithGoogleButton": {

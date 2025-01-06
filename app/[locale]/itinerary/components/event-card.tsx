@@ -1,25 +1,27 @@
 import Text from "@/components/atoms/text";
 import { TypographyVariant } from "@/constants/enums/theme";
 import colorsConst from "@/constants/pages/colors.json";
+import { Event } from "@/lib/pythonBackend/types";
 import CalendarTodayIcon from "@mui/icons-material/CalendarToday";
 import LocationOnIcon from "@mui/icons-material/LocationOn";
-import { Box, Stack } from "@mui/material";
+import { Box, Button, Stack } from "@mui/material";
 import { Dayjs } from "dayjs";
-import { useTranslations } from "next-intl";
 
 const EventCard = ({
   date,
-  location,
   destination,
   timeOfDay,
+  setSelectedEvent,
+  event,
+  selected,
 }: {
   date: Dayjs;
-  location: string;
   destination: string;
   timeOfDay: EventCardTimeOfDay;
+  setSelectedEvent: any;
+  event: Event;
+  selected: boolean;
 }) => {
-  const t = useTranslations("itinerary.eventCard");
-
   const color =
     timeOfDay === EventCardTimeOfDay.morning
       ? colorsConst.components.eventCard.morning
@@ -30,6 +32,7 @@ const EventCard = ({
   const padding = 4;
   const borderRadius = "30px";
   const maxWidth = "515px";
+  const border = selected ? `2px solid ${color}` : "2px solid black";
 
   const leftAvatar = () => {
     const size = 90;
@@ -93,7 +96,7 @@ const EventCard = ({
         <Stack direction="row" alignItems="center" spacing={spacing}>
           <LocationOnIcon sx={{ color, width: iconSize, height: iconSize }} />
           <Text
-            text={`${location}, ${destination}`}
+            text={`${event.location_name}, ${destination}`}
             variant={TypographyVariant.h5}
             bold={false}
           />
@@ -109,20 +112,25 @@ const EventCard = ({
     );
   };
 
+  const handleOnClick = () => {
+    setSelectedEvent(event);
+  };
+
   return (
-    <Box
+    <Button
+      onClick={handleOnClick}
       sx={{
         display: "flex",
         alignItems: "center",
         padding,
-        border: "2px solid black",
+        border,
         borderRadius,
         maxWidth,
       }}
     >
       {leftAvatar()}
       {eventDetails()}
-    </Box>
+    </Button>
   );
 };
 

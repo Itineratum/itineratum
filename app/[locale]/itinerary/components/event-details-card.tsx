@@ -14,9 +14,13 @@ export const eventDetailsCardOverlapOffset = 190;
 const EventDetailsCard = ({
   event,
   index,
+  setSelectedEvent,
+  selected,
 }: {
   event: Event;
   index: number;
+  setSelectedEvent: any;
+  selected: boolean;
 }) => {
   const t = useTranslations("itinerary.eventDetailsCard");
 
@@ -25,6 +29,12 @@ const EventDetailsCard = ({
   const borderRadius = "20px";
   const overlapOffset = eventDetailsCardOverlapOffset;
   const hoverAnimationDuration = "0.3s";
+  const hoverSx = {
+    transform: "scale(1.05)",
+    zIndex: 3, // Bring the hovered card to the front
+  };
+  const transform = selected ? hoverSx.transform : "";
+  const zIndex = selected ? hoverSx.zIndex : 3 - index;
 
   const overlay = () => {
     const width = "85%";
@@ -113,22 +123,25 @@ const EventDetailsCard = ({
     );
   };
 
+  const handleOnClick = () => {
+    setSelectedEvent(event);
+  };
+
   return (
-    <Box
+    <Button
       key={index}
+      onClick={handleOnClick}
       sx={{
         position: "absolute",
         top: `${index * overlapOffset}px`,
-        zIndex: 3 - index,
+        zIndex,
         transition: `transform ${hoverAnimationDuration}`,
-        "&:hover": {
-          transform: "scale(1.05)",
-          zIndex: 3, // Bring the hovered card to the front
-        },
+        transform,
+        "&:hover": hoverSx,
       }}
     >
       {card()}
-    </Box>
+    </Button>
   );
 };
 
