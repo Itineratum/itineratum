@@ -43,15 +43,29 @@ export interface GenerateItineraryJSON {
 
 export interface DayPlan {
   day: number;
-  morning: Event;
-  afternoon: Event;
-  evening: Event;
+  morning: Event[];
+  afternoon: Event[];
+  evening: Event[];
   destination: string;
 }
 
 export interface Event {
+  event_name: string;
   location_name: string;
   location_address: string;
   description: string;
-  ori_text: string;
+  rating: number;
+  website_uri: string;
+  // price_range: PriceRange;
+  photo: string; // to get this using Google Place Photo (New)
+}
+
+export interface PriceRange {
+  startPrice: Price;
+  endPrice: Price;
+}
+
+export interface Price {
+  currencyCode: string;
+  units: string;
 }

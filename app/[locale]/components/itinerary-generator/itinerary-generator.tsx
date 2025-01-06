@@ -6,7 +6,10 @@ import { AlertType } from "@/constants/enums/alertType";
 import colorsConst from "@/constants/pages/colors.json";
 import endpointsConst from "@/constants/pages/endpoints.json";
 import { GenerateItineraryFormData } from "@/constants/types/formData/generateItineraryFormData";
-import { generateItinerary } from "@/lib/pythonBackend/pythonBackend";
+import {
+  generateItinerary,
+  runPipeline,
+} from "@/lib/pythonBackend/pythonBackend";
 import ArrowBackOutlinedIcon from "@mui/icons-material/ArrowBackOutlined";
 import ArrowForwardOutlinedIcon from "@mui/icons-material/ArrowForwardOutlined";
 import { Box, Button, CircularProgress, Container, Stack } from "@mui/material";
@@ -292,14 +295,15 @@ const ItineraryGenerator = () => {
 
         try {
           const itineraryForm = fields.getValues() as GenerateItineraryFormData;
-          const itinerary = await generateItinerary(itineraryForm);
+          // const itinerary = await generateItinerary(itineraryForm);
+          const itinerary = await runPipeline(itineraryForm);
           const email = session?.user?.email || null;
           const data = {
             email,
             request: itinerary.request,
-            itinerary: itinerary.itinerary || [],
-            hotels: itinerary.hotels || [],
-            flights: itinerary.flights || [],
+            itinerary: itinerary.detailed_itinerary || [],
+            hotels: itinerary.hotel_search_results || [],
+            flights: itinerary.flight_search_results || [],
           };
           const itineraryId = await saveItinerary.mutateAsync(data);
           router.push(`${endpointsConst.itinerary.endpoint}/${itineraryId}`);

@@ -156,56 +156,86 @@ const Itinerary = ({ params }: { params: { id: string } }) => {
       const date = dayNum === 1 ? startDate : startDate.add(dayNum - 1, "day");
       const destination = dayPlan!.destination;
 
-      const morningEventCard = () => {
-        const event = dayPlan!.morning;
+      const morningEventCards = () => {
+        const events = dayPlan!.morning;
 
-        return event ? (
-          <EventCard
-            date={date}
-            destination={destination}
-            timeOfDay={EventCardTimeOfDay.morning}
-            setSelectedEvent={setSelectedEvent}
-            event={event}
-            selected={JSON.stringify(event) === JSON.stringify(selectedEvent)}
-          />
-        ) : null;
+        return (
+          <Stack direction="column" spacing={spacing}>
+            {events.map((event) => {
+              if (!event) return null;
+
+              return (
+                <EventCard
+                  date={date}
+                  destination={destination}
+                  timeOfDay={EventCardTimeOfDay.morning}
+                  setSelectedEvent={setSelectedEvent}
+                  event={event}
+                  selected={
+                    JSON.stringify(event) === JSON.stringify(selectedEvent)
+                  }
+                />
+              );
+            })}
+          </Stack>
+        );
       };
 
-      const afternoonEventCard = () => {
-        const event = dayPlan!.afternoon;
+      const afternoonEventCards = () => {
+        const events = dayPlan!.afternoon;
 
-        return event ? (
-          <EventCard
-            date={date}
-            destination={destination}
-            timeOfDay={EventCardTimeOfDay.afternoon}
-            setSelectedEvent={setSelectedEvent}
-            event={event}
-            selected={JSON.stringify(event) === JSON.stringify(selectedEvent)}
-          />
-        ) : null;
+        return (
+          <Stack direction="column" spacing={spacing}>
+            {events.map((event) => {
+              if (!event) return null;
+
+              return (
+                <EventCard
+                  date={date}
+                  destination={destination}
+                  timeOfDay={EventCardTimeOfDay.afternoon}
+                  setSelectedEvent={setSelectedEvent}
+                  event={event}
+                  selected={
+                    JSON.stringify(event) === JSON.stringify(selectedEvent)
+                  }
+                />
+              );
+            })}
+          </Stack>
+        );
       };
 
-      const eveningEventCard = () => {
-        const event = dayPlan!.evening;
+      const eveningEventCards = () => {
+        const events = dayPlan!.evening;
 
-        return event ? (
-          <EventCard
-            date={date}
-            destination={destination}
-            timeOfDay={EventCardTimeOfDay.evening}
-            setSelectedEvent={setSelectedEvent}
-            event={event}
-            selected={JSON.stringify(event) === JSON.stringify(selectedEvent)}
-          />
-        ) : null;
+        return (
+          <Stack direction="column" spacing={spacing}>
+            {events.map((event) => {
+              if (!event) return null;
+
+              return (
+                <EventCard
+                  date={date}
+                  destination={destination}
+                  timeOfDay={EventCardTimeOfDay.evening}
+                  setSelectedEvent={setSelectedEvent}
+                  event={event}
+                  selected={
+                    JSON.stringify(event) === JSON.stringify(selectedEvent)
+                  }
+                />
+              );
+            })}
+          </Stack>
+        );
       };
 
       return (
         <Stack direction="column" spacing={spacing}>
-          {morningEventCard()}
-          {afternoonEventCard()}
-          {eveningEventCard()}
+          {morningEventCards()}
+          {afternoonEventCards()}
+          {eveningEventCards()}
         </Stack>
       );
     };
@@ -220,9 +250,11 @@ const Itinerary = ({ params }: { params: { id: string } }) => {
 
   const detailsSection = () => {
     const spacing = 2;
-    let numOfCards = Object.values(dayPlan!).filter(
-      (value) => value !== null && typeof value === "object",
-    ).length;
+
+    const events = dayPlan!.morning
+      .concat(dayPlan!.afternoon)
+      .concat(dayPlan!.evening);
+    let numOfCards = events.length;
 
     const heading = () => {
       return (
@@ -233,45 +265,6 @@ const Itinerary = ({ params }: { params: { id: string } }) => {
           textDecoration={TypographyTextDecoration.underline}
         />
       );
-    };
-
-    const morningEventDetailsCard = () => {
-      const event = dayPlan!.morning;
-
-      return event ? (
-        <EventDetailsCard
-          event={event}
-          index={0}
-          setSelectedEvent={setSelectedEvent}
-          selected={JSON.stringify(event) === JSON.stringify(selectedEvent)}
-        />
-      ) : null;
-    };
-
-    const afternoonEventDetailsCard = () => {
-      const event = dayPlan!.afternoon;
-
-      return event ? (
-        <EventDetailsCard
-          event={event}
-          index={1}
-          setSelectedEvent={setSelectedEvent}
-          selected={JSON.stringify(event) === JSON.stringify(selectedEvent)}
-        />
-      ) : null;
-    };
-
-    const eveningEventDetailsCard = () => {
-      const event = dayPlan!.evening;
-
-      return event ? (
-        <EventDetailsCard
-          event={event}
-          index={2}
-          setSelectedEvent={setSelectedEvent}
-          selected={JSON.stringify(event) === JSON.stringify(selectedEvent)}
-        />
-      ) : null;
     };
 
     const detailsSectionNote = () => {
@@ -298,9 +291,21 @@ const Itinerary = ({ params }: { params: { id: string } }) => {
             marginBottom: "16px",
           }}
         >
-          {morningEventDetailsCard()}
-          {afternoonEventDetailsCard()}
-          {eveningEventDetailsCard()}
+          {events.map((event, index) => {
+            if (!event) return null;
+
+            return (
+              <EventDetailsCard
+                event={event}
+                index={index}
+                setSelectedEvent={setSelectedEvent}
+                selected={
+                  JSON.stringify(event) === JSON.stringify(selectedEvent)
+                }
+                numOfCards={numOfCards}
+              />
+            );
+          })}
         </Box>
         {detailsSectionNote()}
       </Stack>
@@ -324,7 +329,11 @@ const Itinerary = ({ params }: { params: { id: string } }) => {
         {detailsSection()}
       </Stack>
       <MapSection
-        events={[dayPlan!.morning, dayPlan!.afternoon, dayPlan!.evening]}
+        dayPlanWithTimeOfDay={{
+          morning: dayPlan!.morning,
+          afternoon: dayPlan!.afternoon,
+          evening: dayPlan!.evening,
+        }}
         setSelectedEvent={setSelectedEvent}
         selectedEvent={selectedEvent}
       />

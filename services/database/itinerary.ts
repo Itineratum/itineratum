@@ -1,34 +1,16 @@
 import { connectToDatabase, disconnectFromDatabase } from "@/lib/db";
 import { DayPlan } from "@/lib/pythonBackend/types";
 import Itinerary from "@/models/Itinerary";
-import { getDays } from "@/utils/itinerary";
 
 export const saveItinerary = async (
   email: string | null,
   request: any,
-  itineraryRaw: any,
+  itinerary: DayPlan[],
   hotels: any,
   flights: any,
 ) => {
   try {
     await connectToDatabase();
-    const itinerary: DayPlan[] = [];
-
-    itineraryRaw.map((locationItinerary: any) => {
-      const days = getDays(locationItinerary.day);
-      const destination = locationItinerary.location;
-      locationItinerary.plan.map((rawDayPlan: any, index: number) => {
-        const dayPlan: DayPlan = {
-          destination,
-          day: days[index],
-          morning: rawDayPlan.morning,
-          afternoon: rawDayPlan.afternoon,
-          evening: rawDayPlan.evening,
-        };
-        itinerary.push(dayPlan);
-      });
-    });
-
     const itineraryDocument = {
       generated_by: "",
       generated_at: new Date(),

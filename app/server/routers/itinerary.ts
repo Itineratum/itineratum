@@ -1,10 +1,13 @@
+import { DayPlan, Event } from "@/lib/pythonBackend/types";
 import {
   retrieveItinerary,
   saveItinerary,
 } from "@/services/database/itinerary";
+import { getDays } from "@/utils/itinerary";
+import { TRPCError } from "@trpc/server";
 import { getItinerarySchema, saveItinerarySchema } from "../schemas/itinerary";
 import { publicProcedure, router } from "../trpc";
-import { TRPCError } from "@trpc/server";
+import { getTimePeriodPlan } from "@/lib/pythonBackend/utils";
 
 export const itineraryRouter = router({
   saveItinerary: publicProcedure
@@ -13,9 +16,26 @@ export const itineraryRouter = router({
     .mutation(async (data) => {
       const email = data.input.email;
       const request = data.input.request;
-      const itinerary = data.input.itinerary;
       const hotels = data.input.hotels;
       const flights = data.input.flights;
+
+      const itineraryRaw = data.input.itinerary;
+      const itinerary: DayPlan[] = [];
+      itineraryRaw.map((destinationPlan: any) => {
+        const days = getDays(destinationPlan.day);
+        const destination = destinationPlan.location;
+        destinationPlan.plan.map((rawDayPlan: any, index: number) => {
+          const dayPlan: DayPlan = {
+            destination,
+            day: days[index],
+            morning: getTimePeriodPlan(rawDayPlan.morning),
+            afternoon: getTimePeriodPlan(rawDayPlan.afternoon),
+            evening: getTimePeriodPlan(rawDayPlan.evening),
+          };
+          itinerary.push(dayPlan);
+        });
+      });
+
       const saveItineraryRes = await saveItinerary(
         email,
         request,

@@ -3,4 +3,5 @@ export enum PythonBackendEndpoints {
   validatePlan = "/api/validate_plan",
   searchHotels = "/api/search_hotels",
   searchFlights = "/api/search_flights",
+  runPipeline = "/api/run_pipeline",
 }

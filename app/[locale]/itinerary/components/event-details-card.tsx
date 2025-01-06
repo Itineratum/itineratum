@@ -5,22 +5,26 @@ import {
 } from "@/constants/enums/theme";
 import colorsConst from "@/constants/pages/colors.json";
 import { Event } from "@/lib/pythonBackend/types";
-import { Box, Button } from "@mui/material";
+import { getGooglePlacePhotoEndpoint } from "@/lib/pythonBackend/utils";
+import { Box, Button, CircularProgress, Container } from "@mui/material";
 import { useTranslations } from "next-intl";
+import { useEffect, useState } from "react";
 
 export const eventDetailsCardHeight = 300;
-export const eventDetailsCardOverlapOffset = 190;
+export const eventDetailsCardOverlapOffset = 250;
 
 const EventDetailsCard = ({
   event,
   index,
   setSelectedEvent,
   selected,
+  numOfCards,
 }: {
   event: Event;
   index: number;
   setSelectedEvent: any;
   selected: boolean;
+  numOfCards: number;
 }) => {
   const t = useTranslations("itinerary.eventDetailsCard");
 
@@ -31,10 +35,62 @@ const EventDetailsCard = ({
   const hoverAnimationDuration = "0.3s";
   const hoverSx = {
     transform: "scale(1.05)",
-    zIndex: 3, // Bring the hovered card to the front
+    zIndex: numOfCards, // Bring the hovered card to the front
   };
   const transform = selected ? hoverSx.transform : "";
-  const zIndex = selected ? hoverSx.zIndex : 3 - index;
+  const zIndex = selected ? hoverSx.zIndex : numOfCards - index;
+  const defaultEventImageSrc =
+    "https://plus.unsplash.com/premium_photo-1664368832311-7fe635e32c7c?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D";
+
+  const [imageSrc, setImageSrc] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+
+  useEffect(() => {
+    const fetchEventImage = async () => {
+      const maxHeight = 400;
+      const maxWidth = 400;
+
+      try {
+        const placePhotoEndpoint = getGooglePlacePhotoEndpoint(
+          event.photo,
+          maxHeight,
+          maxWidth,
+        );
+        const response = await fetch(placePhotoEndpoint);
+
+        if (!response.ok) {
+          throw new Error("Failed to fetch image");
+        }
+
+        const blob = await response.blob();
+        const objectUrl = URL.createObjectURL(blob);
+        setImageSrc(objectUrl);
+      } catch (error) {
+        console.error("Error fetching image:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchEventImage();
+
+    // Cleanup function to revoke the object URL
+    return () => {
+      if (imageSrc) {
+        URL.revokeObjectURL(imageSrc);
+      }
+    };
+  }, [event.photo]);
+
+  if (isLoading) {
+    return (
+      <Container>
+        <CircularProgress />
+      </Container>
+    );
+  }
+
+  if (!imageSrc) setImageSrc(defaultEventImageSrc);
 
   const overlay = () => {
     const width = "85%";
@@ -51,7 +107,7 @@ const EventDetailsCard = ({
           }}
         >
           <Text
-            text={event.location_name.toUpperCase()}
+            text={event.event_name.toUpperCase()}
             variant={TypographyVariant.h3}
             bold={false}
           />
@@ -109,10 +165,11 @@ const EventDetailsCard = ({
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
-          backgroundImage: `url(${
-            // TODO: ensure the event has image url, this is only a placeholder
-            "https://boutiquejapan.com/wp-content/uploads/2019/07/yasaka-pagoda-higashiyama-kyoto-japan.jpg"
-          })`,
+          // backgroundImage: `url(${
+          //   // TODO: ensure the event has image url, this is only a placeholder
+          //   "https://boutiquejapan.com/wp-content/uploads/2019/07/yasaka-pagoda-higashiyama-kyoto-japan.jpg"
+          // })`,
+          backgroundImage: `url(${imageSrc})`,
           backgroundSize: "cover",
           backgroundPosition: "center",
           border: "2px solid black",

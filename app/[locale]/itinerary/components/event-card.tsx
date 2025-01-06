@@ -96,7 +96,7 @@ const EventCard = ({
         <Stack direction="row" alignItems="center" spacing={spacing}>
           <LocationOnIcon sx={{ color, width: iconSize, height: iconSize }} />
           <Text
-            text={`${event.location_name}, ${destination}`}
+            text={`${event.event_name}, ${destination}`}
             variant={TypographyVariant.h5}
             bold={false}
           />
