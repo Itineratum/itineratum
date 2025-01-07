@@ -6,8 +6,9 @@ import {
 import colorsConst from "@/constants/pages/colors.json";
 import { defaultEventImageSrc } from "@/constants/pages/components/itineraryGenerator";
 import { Event } from "@/lib/pythonBackend/types";
-import { getGooglePlacePhotoEndpoint } from "@/lib/pythonBackend/utils";
+import { extractPlaceId } from "@/lib/pythonBackend/utils";
 import { Box, Button, CircularProgress, Container } from "@mui/material";
+import { useMap, useMapsLibrary } from "@vis.gl/react-google-maps";
 import { useTranslations } from "next-intl";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
 
@@ -42,13 +43,16 @@ const EventDetailsCard = ({
   };
   const transform = selected ? hoverSx.transform : "";
   const zIndex = selected ? hoverSx.zIndex : numOfCards - index;
-  const maxFetchImageHeight = 400;
-  const maxFetchImageWidth = 400;
 
   const [imageSrc, setImageSrc] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
+  const placesLibrary = useMapsLibrary("places");
+  const map = useMap();
+
   useEffect(() => {
+    if (!placesLibrary || !map) return;
+
     const fetchEventImage = async () => {
       if (!event) {
         setImageSrc(null);
@@ -60,21 +64,26 @@ const EventDetailsCard = ({
         return;
       }
 
+      const placeId = extractPlaceId(event.photo);
+
+      if (!placeId) {
+        setImageSrc(null);
+        setIsLoading(false);
+        return;
+      }
+
       try {
-        const placePhotoEndpoint = getGooglePlacePhotoEndpoint(
-          event.photo,
-          maxFetchImageHeight,
-          maxFetchImageWidth,
-        );
-        const response = await fetch(placePhotoEndpoint);
+        const service = new placesLibrary.PlacesService(map);
+        const request = {
+          placeId: placeId,
+          fields: ["photos"],
+        };
 
-        if (!response.ok) {
-          throw new Error("Failed to fetch image");
-        }
-
-        const blob = await response.blob();
-        const objectUrl = URL.createObjectURL(blob);
-        setImageSrc(objectUrl);
+        service.getDetails(request, (place) => {
+          if (place && place.photos) {
+            setImageSrc(place?.photos[0].getUrl());
+          }
+        });
       } catch (error) {
         console.error("Error fetching image:", error);
       } finally {
@@ -85,14 +94,7 @@ const EventDetailsCard = ({
     setImageSrc(null);
     setIsLoading(true);
     fetchEventImage();
-
-    // Cleanup function to revoke the object URL
-    return () => {
-      if (imageSrc) {
-        URL.revokeObjectURL(imageSrc);
-      }
-    };
-  }, [event.photo]);
+  }, [event.photo, placesLibrary, map]);
 
   if (isLoading) {
     return (

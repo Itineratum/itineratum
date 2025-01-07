@@ -23,10 +23,16 @@ export const getTimePeriodPlan = (rawTimePeriodPlan: any[]): Event[] => {
   return timePeriodPlan;
 };
 
-export const getGooglePlacePhotoEndpoint = (
-  photoString: string,
-  maxHeight: number,
-  maxWidth: number,
-): string => {
-  return `https://places.googleapis.com/v1/${photoString}/media?maxHeightPx=${maxHeight}&maxWidthPx=${maxWidth}&key=${process.env.NEXT_PUBLIC_GOOGLE_PLACES_API_KEY}`;
+export const extractPlaceId = (input: string): string | null => {
+  const start = "places/";
+  const end = "/photos";
+
+  const startIndex = input.indexOf(start) + start.length;
+  const endIndex = input.indexOf(end);
+
+  if (startIndex >= 0 && endIndex > startIndex) {
+    return input.substring(startIndex, endIndex);
+  }
+
+  return null;
 };

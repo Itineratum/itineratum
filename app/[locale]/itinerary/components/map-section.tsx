@@ -2,7 +2,7 @@
 
 import { Event } from "@/lib/pythonBackend/types";
 import { CircularProgress, Container } from "@mui/material";
-import { APIProvider, Map } from "@vis.gl/react-google-maps";
+import { Map } from "@vis.gl/react-google-maps";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { fromAddress, OutputFormat, setDefaults } from "react-geocode";
 import { EventCardTimeOfDay } from "./event-card";
@@ -82,38 +82,36 @@ const MapSection = ({
   }
 
   return (
-    <APIProvider apiKey={process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY!}>
-      <Map
-        key={JSON.stringify(mapMarkersData)}
-        mapId={process.env.NEXT_PUBLIC_GOOGLE_MAPS_ID}
-        style={{
-          height,
-          width,
-          border: "2px solid black",
-          borderRadius,
-          overflow: "hidden",
-        }}
-        defaultCenter={mapMarkersData[0].position}
-        defaultZoom={11}
-        gestureHandling={"greedy"}
-        disableDefaultUI={true}
-      >
-        {mapMarkersData.map((mapMarkerData, index) => (
-          <MapMarker
-            key={index}
-            position={mapMarkerData.position}
-            timeOfDay={mapMarkerData.timeOfDay}
-            setSelectedEvent={setSelectedEvent}
-            event={mapMarkerData.event}
-            selected={
-              JSON.stringify(selectedEvent) ===
-              JSON.stringify(mapMarkerData.event)
-            }
-            setEventDetailsDialogOpen={setEventDetailsDialogOpen}
-          />
-        ))}
-      </Map>
-    </APIProvider>
+    <Map
+      key={JSON.stringify(mapMarkersData)}
+      mapId={process.env.NEXT_PUBLIC_GOOGLE_MAPS_ID}
+      style={{
+        height,
+        width,
+        border: "2px solid black",
+        borderRadius,
+        overflow: "hidden",
+      }}
+      defaultCenter={mapMarkersData[0].position}
+      defaultZoom={11}
+      gestureHandling={"greedy"}
+      disableDefaultUI={true}
+    >
+      {mapMarkersData.map((mapMarkerData, index) => (
+        <MapMarker
+          key={index}
+          position={mapMarkerData.position}
+          timeOfDay={mapMarkerData.timeOfDay}
+          setSelectedEvent={setSelectedEvent}
+          event={mapMarkerData.event}
+          selected={
+            JSON.stringify(selectedEvent) ===
+            JSON.stringify(mapMarkerData.event)
+          }
+          setEventDetailsDialogOpen={setEventDetailsDialogOpen}
+        />
+      ))}
+    </Map>
   );
 };
 

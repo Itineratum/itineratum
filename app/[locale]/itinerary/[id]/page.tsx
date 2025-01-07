@@ -20,6 +20,7 @@ import EventDetailsCard, {
 } from "../components/event-details-card";
 import EventDetailsDialog from "../components/event-details-dialog";
 import MapSection from "../components/map-section";
+import { APIProvider } from "@vis.gl/react-google-maps";
 
 const Itinerary = ({ params }: { params: { id: string } }) => {
   const t = useTranslations("itinerary");
@@ -317,37 +318,39 @@ const Itinerary = ({ params }: { params: { id: string } }) => {
   };
 
   return (
-    <Container
-      sx={{
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "flex-start",
-        gap: gap,
-        paddingBottom,
-      }}
-    >
-      {itinerarySummaryText()}
-      {dayButtons()}
-      <Stack direction="row" spacing={gap}>
-        {itineraryGeneratedSection()}
-        {detailsSection()}
-      </Stack>
-      <MapSection
-        dayPlanWithTimeOfDay={{
-          morning: dayPlan!.morning,
-          afternoon: dayPlan!.afternoon,
-          evening: dayPlan!.evening,
+    <APIProvider apiKey={process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY!}>
+      <Container
+        sx={{
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "flex-start",
+          gap: gap,
+          paddingBottom,
         }}
-        setSelectedEvent={setSelectedEvent}
-        selectedEvent={selectedEvent}
-        setEventDetailsDialogOpen={setEventDetailsDialogOpen}
-      />
-      <EventDetailsDialog
-        open={eventDetailsDialogOpen}
-        setOpen={setEventDetailsDialogOpen}
-        event={selectedEvent}
-      />
-    </Container>
+      >
+        {itinerarySummaryText()}
+        {dayButtons()}
+        <Stack direction="row" spacing={gap}>
+          {itineraryGeneratedSection()}
+          {detailsSection()}
+        </Stack>
+        <MapSection
+          dayPlanWithTimeOfDay={{
+            morning: dayPlan!.morning,
+            afternoon: dayPlan!.afternoon,
+            evening: dayPlan!.evening,
+          }}
+          setSelectedEvent={setSelectedEvent}
+          selectedEvent={selectedEvent}
+          setEventDetailsDialogOpen={setEventDetailsDialogOpen}
+        />
+        <EventDetailsDialog
+          open={eventDetailsDialogOpen}
+          setOpen={setEventDetailsDialogOpen}
+          event={selectedEvent}
+        />
+      </Container>
+    </APIProvider>
   );
 };
 
