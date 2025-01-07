@@ -43,8 +43,6 @@ const EventDetailsDialog = ({
   const maxWidth = 1087;
 
   useEffect(() => {
-    setIsLoading(true);
-
     if (!placesLibrary || !map) return;
 
     const fetchEventImage = async () => {
@@ -86,16 +84,11 @@ const EventDetailsDialog = ({
     };
 
     setImageSrc(null);
-    setIsLoading(true);
     fetchEventImage();
   }, [event, placesLibrary, map]);
 
   if (isLoading || !imageSrc) {
-    return (
-      <Container>
-        <CircularProgress />
-      </Container>
-    );
+    return null;
   }
 
   const handleClose = () => {

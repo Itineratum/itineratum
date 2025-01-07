@@ -11,6 +11,7 @@ import { NextIntlClientProvider, useMessages } from "next-intl";
 import { notFound } from "next/navigation";
 import { use } from "react";
 import TRPCProvider from "../_trpc/Provider";
+import { APIProvider } from "@vis.gl/react-google-maps";
 
 const HomeLayout = ({
   children,
