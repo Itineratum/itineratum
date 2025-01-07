@@ -69,22 +69,20 @@ const EventCard = ({
 
     const timeSection = () => {
       return (
-        <Stack direction="row" alignItems="center" spacing={spacing}>
+        <Stack
+          direction="row"
+          alignItems="center"
+          textAlign="left"
+          spacing={spacing}
+        >
           <CalendarTodayIcon
             sx={{ color, width: iconSize, height: iconSize }}
           />
-          <Stack direction="column" spacing={0}>
-            <Text
-              text={date.format("DD MMM YYYY")}
-              variant={TypographyVariant.h5}
-              bold={false}
-            />
-            <Text
-              text={timeOfDay}
-              variant={TypographyVariant.h5}
-              bold={false}
-            />
-          </Stack>
+          <Text
+            text={`${date.format("DD MMM YYYY")}\n${timeOfDay}`}
+            variant={TypographyVariant.h5}
+            bold={false}
+          />
         </Stack>
       );
     };
@@ -93,7 +91,12 @@ const EventCard = ({
       const spacing: number = 2;
 
       return (
-        <Stack direction="row" alignItems="center" spacing={spacing}>
+        <Stack
+          direction="row"
+          alignItems="center"
+          spacing={spacing}
+          textAlign="left"
+        >
           <LocationOnIcon sx={{ color, width: iconSize, height: iconSize }} />
           <Text
             text={`${event.event_name}, ${destination}`}
