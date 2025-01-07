@@ -107,7 +107,12 @@
     "details": "Details",
     "eventDetailsCard": {
       "learnMore": "Learn More",
-      "details": "Click on each box to view the detailed content and make your bookings"
+      "details": "Click on each box to view the detailed content and make your bookings",
+      "address": "Address",
+      "rating": "Rating",
+      "website": "Website",
+      "openingHours": "Opening Hours",
+      "clickHere": "Click Here"
     }
   },
   "account": {

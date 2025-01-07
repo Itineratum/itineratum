@@ -32,7 +32,7 @@ const EventCard = ({
   const padding = 4;
   const borderRadius = "30px";
   const maxWidth = "515px";
-  const border = selected ? `2px solid ${color}` : "2px solid black";
+  const border = selected ? `6px solid ${color}` : "2px solid black";
 
   const leftAvatar = () => {
     const size = 90;

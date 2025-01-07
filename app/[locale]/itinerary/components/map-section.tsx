@@ -3,7 +3,7 @@
 import { Event } from "@/lib/pythonBackend/types";
 import { CircularProgress, Container } from "@mui/material";
 import { APIProvider, Map } from "@vis.gl/react-google-maps";
-import { useEffect, useState } from "react";
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { fromAddress, OutputFormat, setDefaults } from "react-geocode";
 import { EventCardTimeOfDay } from "./event-card";
 import MapMarker from "./map-marker";
@@ -12,10 +12,12 @@ const MapSection = ({
   dayPlanWithTimeOfDay,
   setSelectedEvent,
   selectedEvent,
+  setEventDetailsDialogOpen,
 }: {
   dayPlanWithTimeOfDay: DayPlanWithTimeOfDay;
   setSelectedEvent: any;
   selectedEvent: Event | null;
+  setEventDetailsDialogOpen: Dispatch<SetStateAction<boolean>>;
 }) => {
   setDefaults({
     key: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY,
@@ -107,6 +109,7 @@ const MapSection = ({
               JSON.stringify(selectedEvent) ===
               JSON.stringify(mapMarkerData.event)
             }
+            setEventDetailsDialogOpen={setEventDetailsDialogOpen}
           />
         ))}
       </Map>

@@ -18,6 +18,7 @@ import EventDetailsCard, {
   eventDetailsCardHeight,
   eventDetailsCardOverlapOffset,
 } from "../components/event-details-card";
+import EventDetailsDialog from "../components/event-details-dialog";
 import MapSection from "../components/map-section";
 
 const Itinerary = ({ params }: { params: { id: string } }) => {
@@ -30,6 +31,8 @@ const Itinerary = ({ params }: { params: { id: string } }) => {
   const [numDays, setNumDays] = useState<number>(1);
   const [dayPlan, setDayPlan] = useState<DayPlan | null>(null);
   const [selectedEvent, setSelectedEvent] = useState<Event | null>(null);
+  const [eventDetailsDialogOpen, setEventDetailsDialogOpen] =
+    useState<boolean>(false);
 
   const gap = 6;
   const paddingBottom = "20px";
@@ -303,6 +306,7 @@ const Itinerary = ({ params }: { params: { id: string } }) => {
                   JSON.stringify(event) === JSON.stringify(selectedEvent)
                 }
                 numOfCards={numOfCards}
+                setEventDetailsDialogOpen={setEventDetailsDialogOpen}
               />
             );
           })}
@@ -336,6 +340,12 @@ const Itinerary = ({ params }: { params: { id: string } }) => {
         }}
         setSelectedEvent={setSelectedEvent}
         selectedEvent={selectedEvent}
+        setEventDetailsDialogOpen={setEventDetailsDialogOpen}
+      />
+      <EventDetailsDialog
+        open={eventDetailsDialogOpen}
+        setOpen={setEventDetailsDialogOpen}
+        event={selectedEvent}
       />
     </Container>
   );

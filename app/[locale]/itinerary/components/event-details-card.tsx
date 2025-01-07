@@ -4,11 +4,12 @@ import {
   TypographyVariant,
 } from "@/constants/enums/theme";
 import colorsConst from "@/constants/pages/colors.json";
+import { defaultEventImageSrc } from "@/constants/pages/components/itineraryGenerator";
 import { Event } from "@/lib/pythonBackend/types";
 import { getGooglePlacePhotoEndpoint } from "@/lib/pythonBackend/utils";
 import { Box, Button, CircularProgress, Container } from "@mui/material";
 import { useTranslations } from "next-intl";
-import { useEffect, useState } from "react";
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
 
 export const eventDetailsCardHeight = 300;
 export const eventDetailsCardOverlapOffset = 250;
@@ -19,12 +20,14 @@ const EventDetailsCard = ({
   setSelectedEvent,
   selected,
   numOfCards,
+  setEventDetailsDialogOpen,
 }: {
   event: Event;
   index: number;
   setSelectedEvent: any;
   selected: boolean;
   numOfCards: number;
+  setEventDetailsDialogOpen: Dispatch<SetStateAction<boolean>>;
 }) => {
   const t = useTranslations("itinerary.eventDetailsCard");
 
@@ -39,22 +42,29 @@ const EventDetailsCard = ({
   };
   const transform = selected ? hoverSx.transform : "";
   const zIndex = selected ? hoverSx.zIndex : numOfCards - index;
-  const defaultEventImageSrc =
-    "https://plus.unsplash.com/premium_photo-1664368832311-7fe635e32c7c?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D";
+  const maxFetchImageHeight = 400;
+  const maxFetchImageWidth = 400;
 
   const [imageSrc, setImageSrc] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
   useEffect(() => {
     const fetchEventImage = async () => {
-      const maxHeight = 400;
-      const maxWidth = 400;
+      if (!event) {
+        setImageSrc(null);
+        setIsLoading(false);
+        return;
+      } else if (event.photo === "") {
+        setImageSrc(defaultEventImageSrc);
+        setIsLoading(false);
+        return;
+      }
 
       try {
         const placePhotoEndpoint = getGooglePlacePhotoEndpoint(
           event.photo,
-          maxHeight,
-          maxWidth,
+          maxFetchImageHeight,
+          maxFetchImageWidth,
         );
         const response = await fetch(placePhotoEndpoint);
 
@@ -72,6 +82,8 @@ const EventDetailsCard = ({
       }
     };
 
+    setImageSrc(null);
+    setIsLoading(true);
     fetchEventImage();
 
     // Cleanup function to revoke the object URL
@@ -89,8 +101,6 @@ const EventDetailsCard = ({
       </Container>
     );
   }
-
-  if (!imageSrc) setImageSrc(defaultEventImageSrc);
 
   const overlay = () => {
     const width = "85%";
@@ -117,7 +127,7 @@ const EventDetailsCard = ({
 
     const learnMoreButton = () => {
       const handleOnClick = () => {
-        // TODO:
+        setEventDetailsDialogOpen(true);
       };
 
       return (
@@ -165,10 +175,6 @@ const EventDetailsCard = ({
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
-          // backgroundImage: `url(${
-          //   // TODO: ensure the event has image url, this is only a placeholder
-          //   "https://boutiquejapan.com/wp-content/uploads/2019/07/yasaka-pagoda-higashiyama-kyoto-japan.jpg"
-          // })`,
           backgroundImage: `url(${imageSrc})`,
           backgroundSize: "cover",
           backgroundPosition: "center",

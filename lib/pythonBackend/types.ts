@@ -58,6 +58,7 @@ export interface Event {
   website_uri: string;
   // price_range: PriceRange;
   photo: string; // to get this using Google Place Photo (New)
+  openingHours: string[];
 }
 
 export interface PriceRange {

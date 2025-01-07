@@ -4,6 +4,7 @@ import { OutputFormat, setDefaults } from "react-geocode";
 import { EventCardTimeOfDay } from "./event-card";
 import { Position } from "./map-section";
 import { Event } from "@/lib/pythonBackend/types";
+import { Dispatch, SetStateAction } from "react";
 
 const MapMarker = ({
   key,
@@ -12,6 +13,7 @@ const MapMarker = ({
   setSelectedEvent,
   event,
   selected,
+  setEventDetailsDialogOpen,
 }: {
   key: number;
   position: Position;
@@ -19,6 +21,7 @@ const MapMarker = ({
   setSelectedEvent: any;
   event: Event;
   selected: boolean;
+  setEventDetailsDialogOpen: Dispatch<SetStateAction<boolean>>;
 }) => {
   setDefaults({
     key: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY,
@@ -37,6 +40,7 @@ const MapMarker = ({
 
   const handleOnClick = () => {
     setSelectedEvent(event);
+    setEventDetailsDialogOpen(true);
   };
 
   return (

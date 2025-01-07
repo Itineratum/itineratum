@@ -21,7 +21,7 @@ const Text = ({
   link?: string | undefined;
 }) => {
   const textElement = link ? (
-    <a href={link} style={{ color: color }}>
+    <a href={link} style={{ color: color }} target="_blank">
       {text}
     </a>
   ) : (
