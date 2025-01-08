@@ -21,6 +21,6 @@ export const retrieveFAQs = async () => {
     console.error(error);
     throw error;
   } finally {
-    await disconnectFromDatabase();
+    // await disconnectFromDatabase();
   }
 };

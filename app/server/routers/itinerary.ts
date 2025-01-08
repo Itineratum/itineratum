@@ -24,8 +24,13 @@ export const itineraryRouter = router({
       const hotels = data.input.hotels;
       const flights = data.input.flights;
 
-      const itineraryRaw = data.input.itinerary;
+      let itineraryRaw = data.input.itinerary;
       const itinerary: DayPlan[] = [];
+      itineraryRaw = itineraryRaw.filter(
+        (destinationPlan: any) =>
+          destinationPlan.plan && destinationPlan.plan.length > 0,
+      );
+
       itineraryRaw.map((destinationPlan: any) => {
         const days = getDays(destinationPlan.day);
         const destination = destinationPlan.location;
@@ -75,8 +80,13 @@ export const itineraryRouter = router({
       const hotels = data.input.hotels;
       const flights = data.input.flights;
 
-      const itineraryRaw = data.input.itinerary;
+      let itineraryRaw = data.input.itinerary;
       const itinerary: DayPlan[] = [];
+      itineraryRaw = itineraryRaw.filter(
+        (destinationPlan: any) =>
+          destinationPlan.plan && destinationPlan.plan.length > 0,
+      );
+
       itineraryRaw.map((destinationPlan: any) => {
         const days = getDays(destinationPlan.day);
         const destination = destinationPlan.location;

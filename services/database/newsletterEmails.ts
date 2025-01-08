@@ -24,7 +24,7 @@ export const addEmailToNewsletter = async (email: string, name: string) => {
     console.error(error);
     throw error;
   } finally {
-    await disconnectFromDatabase();
+    // await disconnectFromDatabase();
   }
 };
 
@@ -49,7 +49,7 @@ export const removeEmailFromNewsletter = async (email: string) => {
     console.error(error);
     throw error;
   } finally {
-    await disconnectFromDatabase();
+    // await disconnectFromDatabase();
   }
 };
 
@@ -71,6 +71,6 @@ export const checkEmailInNewsletter = async (email: string) => {
     console.error(error);
     throw error;
   } finally {
-    await disconnectFromDatabase();
+    // await disconnectFromDatabase();
   }
 };

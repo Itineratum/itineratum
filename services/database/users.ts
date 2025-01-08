@@ -314,7 +314,7 @@ export const deleteUser = async (email: string) => {
     console.error(error);
     throw error;
   } finally {
-    await disconnectFromDatabase();
+    // await disconnectFromDatabase();
   }
 };
 

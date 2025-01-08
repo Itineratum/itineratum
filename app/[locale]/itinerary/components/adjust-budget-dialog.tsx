@@ -150,6 +150,7 @@ const AdjustBudgetDialog = ({
   const adjustBudgetButton = () => {
     const width = "45%";
     const loadingAnimationSize: number = 24;
+    const spacing = 2;
 
     const handleOnClick = async () => {
       setAdjustingBudget(true);
@@ -158,9 +159,6 @@ const AdjustBudgetDialog = ({
         // validate the itinerary request with the adjusted budget
         itineraryRequest.payload.budget = Number(fields.getValues(budget));
         const newItinerary = await runPipeline(itineraryRequest);
-
-        console.log(itineraryRequest);
-
         const data = {
           itineraryId,
           request: newItinerary.request,
@@ -191,7 +189,15 @@ const AdjustBudgetDialog = ({
           disabled={adjustingBudget}
         >
           {adjustingBudget ? (
-            <CircularProgress size={loadingAnimationSize} />
+            <Stack
+              direction="row"
+              spacing={spacing}
+              display="flex"
+              alignItems="center"
+            >
+              <CircularProgress size={loadingAnimationSize} />
+              {t("adjusting")}
+            </Stack>
           ) : (
             t("adjustBudget")
           )}

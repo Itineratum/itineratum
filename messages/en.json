@@ -79,7 +79,8 @@
       },
       "next": "Next",
       "previous": "Previous",
-      "generate": "Generate"
+      "generate": "Generate",
+      "generating": "Generating your itinerary"
     },
     "newsletterSignup": {
       "header": "Stay updated on your next adventure with us",
@@ -106,12 +107,14 @@
     "itineraryGenerated": "Itinerary Generated",
     "details": "Details",
     "budget": "Budget",
+    "noTravelTimes": "Travel time and distance unavailable",
     "adjustBudgetDialog": {
       "adjustBudget": "Adjust Budget",
       "description": "Adjust the budget for your trip.",
       "budgetErrorMessage": "Budget too low! Please enter a value greater than 0.",
       "budgetDescription": "Please enter a number",
-      "budget": "Budget"
+      "budget": "Budget",
+      "adjusting": "Adjusting and Regenerating"
     },
     "eventDetailsCard": {
       "learnMore": "Learn More",

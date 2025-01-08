@@ -314,6 +314,8 @@ const ItineraryGenerator = () => {
             flights: itinerary.flight_search_results || [],
           };
           const itineraryId = await saveItinerary.mutateAsync(data);
+
+          // redirect to the ItineraryPage component
           router.push(`${endpointsConst.itinerary.endpoint}/${itineraryId}`);
         } catch (error: any) {
           console.error(error);
@@ -334,7 +336,11 @@ const ItineraryGenerator = () => {
             disabled={generatingItinerary}
           >
             {generatingItinerary ? (
-              <CircularProgress size={loadingAnimationSize} />
+              <Stack direction="row" display="flex" alignItems="center">
+                <CircularProgress size={loadingAnimationSize} />
+                <Box sx={{ width: "20px" }} />
+                {t("generating")}
+              </Stack>
             ) : (
               t("generate")
             )}

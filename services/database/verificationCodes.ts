@@ -42,7 +42,7 @@ export const generateAndSaveVerificationCode = async (email: string) => {
   } catch (error) {
     console.error(error);
   } finally {
-    await disconnectFromDatabase();
+    // await disconnectFromDatabase();
   }
 };
 
@@ -81,6 +81,6 @@ export const verifyVerificationCode = async (
     console.error(error);
     throw error;
   } finally {
-    await disconnectFromDatabase();
+    // await disconnectFromDatabase();
   }
 };

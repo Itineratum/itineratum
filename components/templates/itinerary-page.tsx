@@ -50,6 +50,7 @@ const ItineraryPage = ({ params }: { params: { id: string } }) => {
   const [travelTimes, setTravelTimes] = useState<any[]>([]);
   const [adjustBudgetDialogOpen, setAdjustBudgetDialogOpen] =
     useState<boolean>(false);
+  const [travelTimesLoading, setTravelTimesLoading] = useState<boolean>(true);
 
   const routesLibrary = useMapsLibrary("routes");
   const map = useMap();
@@ -101,7 +102,16 @@ const ItineraryPage = ({ params }: { params: { id: string } }) => {
     if (getItinerary.data) {
       setDayPlan(getCorrectDayPlan());
       setTravelTimes([]);
+      setTravelTimesLoading(true);
     }
+  }, [dayNum]);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setTravelTimesLoading(false);
+    }, 8000);
+
+    return () => clearTimeout(timer);
   }, [dayNum]);
 
   useEffect(() => {
@@ -142,6 +152,7 @@ const ItineraryPage = ({ params }: { params: { id: string } }) => {
       }
 
       setTravelTimes(newTravelTimes);
+      setTravelTimesLoading(false);
     };
 
     fetchTravelTimes();
@@ -293,6 +304,18 @@ const ItineraryPage = ({ params }: { params: { id: string } }) => {
         );
       };
 
+      const noTravelTimes = () => {
+        return (
+          <Box display="flex" justifyContent="center">
+            <Text
+              text={t("noTravelTimes")}
+              variant={TypographyVariant.body1}
+              bold={false}
+            />
+          </Box>
+        );
+      };
+
       return (
         <Stack direction="column" spacing={spacing}>
           {events.map((event, index) => (
@@ -314,15 +337,17 @@ const ItineraryPage = ({ params }: { params: { id: string } }) => {
                   JSON.stringify(event) === JSON.stringify(selectedEvent)
                 }
               />
-              {travelTimes.length < 1
+              {travelTimes.length < 1 && travelTimesLoading
                 ? skeletonForTravelCard()
-                : index < events.length - 1 &&
-                  travelTimes[index] && (
-                    <TravelCard
-                      duration={travelTimes[index].duration}
-                      distance={travelTimes[index].distance}
-                    />
-                  )}
+                : !travelTimesLoading && travelTimes.length < 1
+                  ? noTravelTimes()
+                  : index < events.length - 1 &&
+                    travelTimes[index] && (
+                      <TravelCard
+                        duration={travelTimes[index].duration}
+                        distance={travelTimes[index].distance}
+                      />
+                    )}
             </Stack>
           ))}
         </Stack>
