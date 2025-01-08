@@ -12,12 +12,10 @@ const MapSection = ({
   dayPlanWithTimeOfDay,
   setSelectedEvent,
   selectedEvent,
-  setEventDetailsDialogOpen,
 }: {
   dayPlanWithTimeOfDay: DayPlanWithTimeOfDay;
   setSelectedEvent: any;
   selectedEvent: Event | null;
-  setEventDetailsDialogOpen: Dispatch<SetStateAction<boolean>>;
 }) => {
   setDefaults({
     key: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY,
@@ -108,7 +106,6 @@ const MapSection = ({
             JSON.stringify(selectedEvent) ===
             JSON.stringify(mapMarkerData.event)
           }
-          setEventDetailsDialogOpen={setEventDetailsDialogOpen}
         />
       ))}
     </Map>

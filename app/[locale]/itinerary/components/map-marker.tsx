@@ -1,10 +1,17 @@
+import Text from "@/components/atoms/text";
+import { TypographyVariant } from "@/constants/enums/theme";
 import colorsConst from "@/constants/pages/colors.json";
-import { AdvancedMarker, Pin } from "@vis.gl/react-google-maps";
+import { Event } from "@/lib/pythonBackend/types";
+import {
+  AdvancedMarker,
+  InfoWindow,
+  Pin,
+  useAdvancedMarkerRef,
+} from "@vis.gl/react-google-maps";
+import { useState } from "react";
 import { OutputFormat, setDefaults } from "react-geocode";
 import { EventCardTimeOfDay } from "./event-card";
 import { Position } from "./map-section";
-import { Event } from "@/lib/pythonBackend/types";
-import { Dispatch, SetStateAction } from "react";
 
 const MapMarker = ({
   key,
@@ -13,7 +20,6 @@ const MapMarker = ({
   setSelectedEvent,
   event,
   selected,
-  setEventDetailsDialogOpen,
 }: {
   key: number;
   position: Position;
@@ -21,7 +27,6 @@ const MapMarker = ({
   setSelectedEvent: any;
   event: Event;
   selected: boolean;
-  setEventDetailsDialogOpen: Dispatch<SetStateAction<boolean>>;
 }) => {
   setDefaults({
     key: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY,
@@ -29,6 +34,9 @@ const MapMarker = ({
     region: "sg",
     outputFormat: OutputFormat.JSON,
   });
+
+  const [markerRef, marker] = useAdvancedMarkerRef();
+  const [popUpShown, setPopUpShown] = useState<boolean>(false);
 
   const color =
     timeOfDay === EventCardTimeOfDay.morning
@@ -40,16 +48,41 @@ const MapMarker = ({
 
   const handleOnClick = () => {
     setSelectedEvent(event);
-    setEventDetailsDialogOpen(true);
+    setPopUpShown(true);
+  };
+
+  const popUp = () => {
+    const handleOnClose = () => {
+      setPopUpShown(false);
+    };
+
+    return (
+      popUpShown && (
+        <InfoWindow anchor={marker} onClose={handleOnClose}>
+          <Text
+            text={event.event_name}
+            variant={TypographyVariant.body1}
+            bold={false}
+          />
+          <Text
+            text={event.location_name}
+            variant={TypographyVariant.body2}
+            bold={false}
+          />
+        </InfoWindow>
+      )
+    );
   };
 
   return (
     <AdvancedMarker
       key={key}
+      ref={markerRef}
       position={position}
       clickable={true}
       onClick={handleOnClick}
     >
+      {popUp()}
       <Pin
         background={color}
         borderColor={color}

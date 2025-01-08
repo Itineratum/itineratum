@@ -7,6 +7,8 @@ import LocationOnIcon from "@mui/icons-material/LocationOn";
 import { Box, Button, Stack } from "@mui/material";
 import { Dayjs } from "dayjs";
 
+export const eventCardMaxWidth = 515;
+
 const EventCard = ({
   date,
   destination,
@@ -28,15 +30,16 @@ const EventCard = ({
       : timeOfDay === EventCardTimeOfDay.afternoon
         ? colorsConst.components.eventCard.afternoon
         : colorsConst.components.eventCard.evening;
-  const iconSize = 48;
-  const padding = 4;
+  const iconSize = 36;
+  const padding = 2;
   const borderRadius = "30px";
-  const maxWidth = "515px";
+  const maxWidth = eventCardMaxWidth;
+  const maxHeight = "230px";
   const border = selected ? `6px solid ${color}` : "2px solid black";
 
   const leftAvatar = () => {
-    const size = 90;
-    const circleSize = 30;
+    const size = 70;
+    const circleSize = 24;
 
     return (
       <Box sx={{ position: "relative", marginRight: 2 }}>
@@ -80,7 +83,7 @@ const EventCard = ({
           />
           <Text
             text={`${date.format("DD MMM YYYY")}\n${timeOfDay}`}
-            variant={TypographyVariant.h5}
+            variant={TypographyVariant.h6}
             bold={false}
           />
         </Stack>
@@ -100,7 +103,7 @@ const EventCard = ({
           <LocationOnIcon sx={{ color, width: iconSize, height: iconSize }} />
           <Text
             text={`${event.event_name}, ${destination}`}
-            variant={TypographyVariant.h5}
+            variant={TypographyVariant.h6}
             bold={false}
           />
         </Stack>
@@ -129,6 +132,7 @@ const EventCard = ({
         border,
         borderRadius,
         maxWidth,
+        maxHeight,
       }}
     >
       {leftAvatar()}

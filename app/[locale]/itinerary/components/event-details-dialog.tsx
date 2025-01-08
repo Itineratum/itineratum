@@ -6,8 +6,6 @@ import { Event } from "@/lib/pythonBackend/types";
 import { extractPlaceId } from "@/lib/pythonBackend/utils";
 import {
   Box,
-  CircularProgress,
-  Container,
   Dialog,
   DialogContent,
   DialogContentText,
@@ -39,8 +37,8 @@ const EventDetailsDialog = ({
   const placesLibrary = useMapsLibrary("places");
   const map = useMap();
 
-  const maxHeight = 442;
-  const maxWidth = 1087;
+  const height = 442;
+  const width = 1087;
 
   useEffect(() => {
     if (!placesLibrary || !map) return;
@@ -107,8 +105,8 @@ const EventDetailsDialog = ({
           }}
           src={imageSrc!}
           alt={"Event image"}
-          width={maxWidth}
-          height={maxHeight}
+          width={width}
+          height={height}
           priority
         />
       </Suspense>

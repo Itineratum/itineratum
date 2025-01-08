@@ -7,7 +7,13 @@ import colorsConst from "@/constants/pages/colors.json";
 import { defaultEventImageSrc } from "@/constants/pages/components/itineraryGenerator";
 import { Event } from "@/lib/pythonBackend/types";
 import { extractPlaceId } from "@/lib/pythonBackend/utils";
-import { Box, Button, CircularProgress, Container } from "@mui/material";
+import {
+  Box,
+  Button,
+  CircularProgress,
+  Container,
+  Skeleton,
+} from "@mui/material";
 import { useMap, useMapsLibrary } from "@vis.gl/react-google-maps";
 import { useTranslations } from "next-intl";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
@@ -98,9 +104,12 @@ const EventDetailsCard = ({
 
   if (isLoading) {
     return (
-      <Container>
-        <CircularProgress />
-      </Container>
+      <Skeleton
+        height={height}
+        width={width}
+        variant="rounded"
+        animation="wave"
+      />
     );
   }
 

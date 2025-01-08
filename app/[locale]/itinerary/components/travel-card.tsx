@@ -21,8 +21,8 @@ const TravelCard = ({
         {icon()}
         <Text
           text={`${duration} (${distance})`}
-          variant={TypographyVariant.h6}
-          bold={false}
+          variant={TypographyVariant.body1}
+          bold={true}
         />
       </Stack>
       {"|"}
