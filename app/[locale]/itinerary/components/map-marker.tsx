@@ -8,7 +8,7 @@ import {
   Pin,
   useAdvancedMarkerRef,
 } from "@vis.gl/react-google-maps";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { OutputFormat, setDefaults } from "react-geocode";
 import { EventCardTimeOfDay } from "./event-card";
 import { Position } from "./map-section";
@@ -35,6 +35,7 @@ const MapMarker = ({
     outputFormat: OutputFormat.JSON,
   });
 
+  const [scale, setScale] = useState<number>(1);
   const [markerRef, marker] = useAdvancedMarkerRef();
   const [popUpShown, setPopUpShown] = useState<boolean>(false);
 
@@ -44,11 +45,34 @@ const MapMarker = ({
       : timeOfDay === EventCardTimeOfDay.afternoon
         ? colorsConst.components.mapSection.afternoon
         : colorsConst.components.mapSection.evening;
-  const scale = selected ? 2 : 1;
+  const defaultScale = 1;
+  const selectedScale = 2;
+  const hoveredScale = 1.5;
+  const hoveredSelectedScale = 2.5;
+
+  useEffect(() => {
+    setScale(selected ? selectedScale : defaultScale);
+  }, [selected]);
 
   const handleOnClick = () => {
     setSelectedEvent(event);
     setPopUpShown(true);
+  };
+
+  const handleOnMouseEnter = () => {
+    if (!selected) {
+      setScale(hoveredScale);
+    } else {
+      setScale(hoveredSelectedScale);
+    }
+  };
+
+  const handleOnMouseLeave = () => {
+    if (!selected) {
+      setScale(defaultScale);
+    } else {
+      setScale(selectedScale);
+    }
   };
 
   const popUp = () => {
@@ -81,6 +105,8 @@ const MapMarker = ({
       position={position}
       clickable={true}
       onClick={handleOnClick}
+      onMouseEnter={handleOnMouseEnter}
+      onMouseLeave={handleOnMouseLeave}
     >
       {popUp()}
       <Pin

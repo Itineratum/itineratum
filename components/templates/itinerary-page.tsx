@@ -1,5 +1,6 @@
 "use client";
 
+import AdjustBudgetDialog from "@/app/[locale]/itinerary/components/adjust-budget-dialog";
 import DayButton from "@/app/[locale]/itinerary/components/day-button";
 import EventCard, {
   eventCardMaxWidth,
@@ -14,6 +15,7 @@ import MapSection from "@/app/[locale]/itinerary/components/map-section";
 import TravelCard from "@/app/[locale]/itinerary/components/travel-card";
 import { trpc } from "@/app/_trpc/client";
 import Text from "@/components/atoms/text";
+import { Currency } from "@/constants/enums/currency";
 import {
   TypographyTextDecoration,
   TypographyVariant,
@@ -22,6 +24,7 @@ import { IItinerary } from "@/constants/types/itinerary";
 import { DayPlan, Event } from "@/lib/pythonBackend/types";
 import {
   Box,
+  Button,
   CircularProgress,
   Container,
   Skeleton,
@@ -45,6 +48,8 @@ const ItineraryPage = ({ params }: { params: { id: string } }) => {
   const [eventDetailsDialogOpen, setEventDetailsDialogOpen] =
     useState<boolean>(false);
   const [travelTimes, setTravelTimes] = useState<any[]>([]);
+  const [adjustBudgetDialogOpen, setAdjustBudgetDialogOpen] =
+    useState<boolean>(false);
 
   const routesLibrary = useMapsLibrary("routes");
   const map = useMap();
@@ -56,17 +61,20 @@ const ItineraryPage = ({ params }: { params: { id: string } }) => {
     { itineraryId: params.id },
     {
       enabled: true,
-      retry: false,
+      refetchOnWindowFocus: true,
+      refetchOnMount: true,
+      refetchOnReconnect: true,
+      retry: adjustBudgetDialogOpen,
       onError: (error) => {
         setError(error.message);
         setIsLoading(false);
       },
-    }
+    },
   );
 
   const getCorrectDayPlan = () =>
     getItinerary.data.itinerary.filter(
-      (dayPlan: DayPlan) => dayPlan.day === dayNum
+      (dayPlan: DayPlan) => dayPlan.day === dayNum,
     )[0];
 
   const getTravelOriginDestinations = (list: string[]): string[][] => {
@@ -84,6 +92,7 @@ const ItineraryPage = ({ params }: { params: { id: string } }) => {
       setItineraryData(getItinerary.data);
       setNumDays(getItinerary.data.itinerary.length);
       setDayPlan(getCorrectDayPlan());
+      setTravelTimes([]);
       setIsLoading(false);
     }
   }, [getItinerary.data]);
@@ -113,7 +122,7 @@ const ItineraryPage = ({ params }: { params: { id: string } }) => {
         const request: google.maps.DistanceMatrixRequest = {
           origins: [originDestinationPair[0]],
           destinations: [originDestinationPair[1]],
-          travelMode: google.maps.TravelMode.DRIVING, // using the driving travel mode for now, can't seem to use transit travel mode
+          travelMode: google.maps.TravelMode.DRIVING, // TODO: using the driving travel mode for now, can't seem to use transit travel mode
           unitSystem: google.maps.UnitSystem.METRIC,
           avoidHighways: false,
           avoidTolls: false,
@@ -123,8 +132,6 @@ const ItineraryPage = ({ params }: { params: { id: string } }) => {
           const response =
             await distanceMatrixService.getDistanceMatrix(request);
           const travelTime = {
-            // origin: originDestinationPair[0],
-            // destination: originDestinationPair[1],
             distance: response.rows[0].elements[0].distance.text,
             duration: response.rows[0].elements[0].duration.text,
           };
@@ -134,7 +141,6 @@ const ItineraryPage = ({ params }: { params: { id: string } }) => {
         }
       }
 
-      console.log(newTravelTimes);
       setTravelTimes(newTravelTimes);
     };
 
@@ -190,6 +196,43 @@ const ItineraryPage = ({ params }: { params: { id: string } }) => {
     );
   };
 
+  const budgetSection = () => {
+    const spacing = 4;
+
+    const text = () => {
+      return (
+        <Text
+          text={`${t("budget")}: ${Currency[itineraryData.request.payload.localisation.currency]}${itineraryData.request.payload.budget}`}
+          variant={TypographyVariant.h4}
+          bold={true}
+        />
+      );
+    };
+
+    const adjustBudgetButton = () => {
+      const handleOnClick = () => {
+        setAdjustBudgetDialogOpen(true);
+      };
+
+      return (
+        <Button variant="contained" onClick={handleOnClick}>
+          <Text
+            text={t("adjustBudgetDialog.adjustBudget")}
+            variant={TypographyVariant.button}
+            bold={true}
+          />
+        </Button>
+      );
+    };
+
+    return (
+      <Stack direction="row" spacing={spacing} alignItems="center">
+        {text()}
+        {adjustBudgetButton()}
+      </Stack>
+    );
+  };
+
   const dayButtons = () => {
     const spacing: number = 4;
 
@@ -241,7 +284,7 @@ const ItineraryPage = ({ params }: { params: { id: string } }) => {
         return (
           <Box display="flex" justifyContent="center">
             <Skeleton
-              height={64.8}
+              height={64.8} // do not change; this was gotten from the inspector tool on the browser
               width={eventCardMaxWidth * 0.5}
               variant="rounded"
               animation="wave"
@@ -370,6 +413,7 @@ const ItineraryPage = ({ params }: { params: { id: string } }) => {
         paddingBottom,
       }}
     >
+      {budgetSection()}
       {itinerarySummaryText()}
       {dayButtons()}
       <Stack direction="row" spacing={gap}>
@@ -389,6 +433,12 @@ const ItineraryPage = ({ params }: { params: { id: string } }) => {
         open={eventDetailsDialogOpen}
         setOpen={setEventDetailsDialogOpen}
         event={selectedEvent}
+      />
+      <AdjustBudgetDialog
+        open={adjustBudgetDialogOpen}
+        setOpen={setAdjustBudgetDialogOpen}
+        itineraryRequest={itineraryData.request}
+        itineraryId={params.id}
       />
     </Container>
   );

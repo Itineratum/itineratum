@@ -85,31 +85,32 @@ const EventDetailsDialog = ({
     fetchEventImage();
   }, [event, placesLibrary, map]);
 
-  if (isLoading || !imageSrc) {
-    return null;
-  }
-
-  const handleClose = () => {
+  const handleOnClose = () => {
     setOpen(false);
   };
 
   const image = () => {
-    return (
-      <Suspense fallback={<Skeleton />}>
-        <Image
-          key={JSON.stringify(event)}
-          style={{
-            borderRadius: "20px",
-            border: "2px solid black",
-            objectFit: "cover",
-          }}
-          src={imageSrc!}
-          alt={"Event image"}
-          width={width}
-          height={height}
-          priority
-        />
-      </Suspense>
+    return isLoading || !imageSrc ? (
+      <Skeleton
+        variant="rounded"
+        height={height}
+        width={width}
+        animation="wave"
+      />
+    ) : (
+      <Image
+        key={JSON.stringify(event)}
+        style={{
+          borderRadius: "20px",
+          border: "2px solid black",
+          objectFit: "cover",
+        }}
+        src={imageSrc!}
+        alt={"Event image"}
+        width={width}
+        height={height}
+        priority
+      />
     );
   };
 
@@ -303,7 +304,7 @@ const EventDetailsDialog = ({
       key={JSON.stringify(event)}
       fullScreen={false}
       open={open}
-      onClose={handleClose}
+      onClose={handleOnClose}
       maxWidth={false}
     >
       <Box sx={{ padding: "16px" }}>

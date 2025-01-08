@@ -44,7 +44,7 @@ const EventDetailsCard = ({
   const overlapOffset = eventDetailsCardOverlapOffset;
   const hoverAnimationDuration = "0.3s";
   const hoverSx = {
-    transform: "scale(1.05)",
+    transform: "scale(1.1)",
     zIndex: numOfCards, // Bring the hovered card to the front
   };
   const transform = selected ? hoverSx.transform : "";

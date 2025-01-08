@@ -3,16 +3,18 @@
 import { trpc } from "@/app/_trpc/client";
 import Alert from "@/components/molecules/alert";
 import { AlertType } from "@/constants/enums/alertType";
+import { Currency } from "@/constants/enums/currency";
 import colorsConst from "@/constants/pages/colors.json";
 import endpointsConst from "@/constants/pages/endpoints.json";
 import { GenerateItineraryFormData } from "@/constants/types/formData/generateItineraryFormData";
 import {
-  generateItinerary,
+  generateItineraryJson,
   runPipeline,
 } from "@/lib/pythonBackend/pythonBackend";
 import ArrowBackOutlinedIcon from "@mui/icons-material/ArrowBackOutlined";
 import ArrowForwardOutlinedIcon from "@mui/icons-material/ArrowForwardOutlined";
 import { Box, Button, CircularProgress, Container, Stack } from "@mui/material";
+import { getCookie } from "cookies-next";
 import { AnimatePresence, motion } from "framer-motion";
 import { useSession } from "next-auth/react";
 import { useTranslations } from "next-intl";
@@ -295,8 +297,14 @@ const ItineraryGenerator = () => {
 
         try {
           const itineraryForm = fields.getValues() as GenerateItineraryFormData;
-          // const itinerary = await generateItinerary(itineraryForm);
-          const itinerary = await runPipeline(itineraryForm);
+          itineraryForm.localisation = {
+            // TODO: hardcoded for now
+            country: "sg",
+            language: "en",
+            currency: getCookie("currency") as keyof typeof Currency,
+          };
+          const itineraryJson = generateItineraryJson(itineraryForm);
+          const itinerary = await runPipeline(itineraryJson);
           const email = session?.user?.email || null;
           const data = {
             email,

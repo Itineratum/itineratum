@@ -105,6 +105,14 @@
     "to": "to",
     "itineraryGenerated": "Itinerary Generated",
     "details": "Details",
+    "budget": "Budget",
+    "adjustBudgetDialog": {
+      "adjustBudget": "Adjust Budget",
+      "description": "Adjust the budget for your trip.",
+      "budgetErrorMessage": "Budget too low! Please enter a value greater than 0.",
+      "budgetDescription": "Please enter a number",
+      "budget": "Budget"
+    },
     "eventDetailsCard": {
       "learnMore": "Learn More",
       "details": "Click on each box to view the detailed content and make your bookings",

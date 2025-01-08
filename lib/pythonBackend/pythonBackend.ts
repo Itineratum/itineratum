@@ -1,21 +1,12 @@
-import { Currency } from "@/constants/enums/currency";
 import {
   GenerateItineraryFormData,
   UserRequestedDestination,
 } from "@/constants/types/formData/generateItineraryFormData";
-import { getCookie } from "cookies-next";
 import { PythonBackendEndpoints } from "./endpoints";
 import { GenerateItineraryJSON } from "./types";
 
-export const runPipeline = async (itineraryForm: GenerateItineraryFormData) => {
+export const runPipeline = async (itineraryJson: GenerateItineraryJSON) => {
   try {
-    itineraryForm.localisation = {
-      // TODO: hardcoded for now
-      country: "sg",
-      language: "en",
-      currency: getCookie("currency") as keyof typeof Currency,
-    };
-    const itineraryJson = generateItineraryJson(itineraryForm);
     const response = await fetch(
       `${process.env.NEXT_PUBLIC_PYTHON_BACKEND_URL}${PythonBackendEndpoints.runPipeline}`,
       {
@@ -66,56 +57,7 @@ export const generateItinerary = async (
   }
 };
 
-// export const generateItinerary = async (
-//   itineraryForm: GenerateItineraryFormData
-// ) => {
-//   try {
-//     itineraryForm.localisation = {
-//       // TODO: hardcoded for now
-//       country: "sg",
-//       language: "en",
-//       currency: getCookie("currency") as keyof typeof Currency,
-//     };
-//     const itineraryJson = generateItineraryJson(itineraryForm);
-//     const validatePlanResponse = await validatePlan(itineraryJson);
-//     const isValidPlan = validatePlanResponse.plan_is_valid;
-
-//     if (!isValidPlan) {
-//       throw new Error(validatePlanResponse.invalid_reason);
-//     }
-
-//     const [itineraryResponse, hotels, flights] = await Promise.all([
-//       fetch(
-//         `${process.env.NEXT_PUBLIC_PYTHON_BACKEND_URL}${PythonBackendEndpoints.generateItinerary}`,
-//         {
-//           method: "POST",
-//           headers: {
-//             "Content-Type": "application/json",
-//           },
-//           body: JSON.stringify(itineraryJson),
-//         }
-//       ).then((res) => {
-//         if (!res.ok) {
-//           throw new Error("Network response was not ok!");
-//         }
-//         return res.json();
-//       }),
-//       searchHotels(itineraryJson),
-//       searchFlights(itineraryJson),
-//     ]);
-
-//     return {
-//       request: itineraryJson,
-//       itinerary: itineraryResponse.itinerary,
-//       hotels,
-//       flights,
-//     };
-//   } catch (error: any) {
-//     throw new Error(error);
-//   }
-// };
-
-const validatePlan = async (itineraryJson: GenerateItineraryJSON) => {
+export const validatePlan = async (itineraryJson: GenerateItineraryJSON) => {
   try {
     const response = await fetch(
       `${process.env.NEXT_PUBLIC_PYTHON_BACKEND_URL}${PythonBackendEndpoints.validatePlan}`,
@@ -138,7 +80,7 @@ const validatePlan = async (itineraryJson: GenerateItineraryJSON) => {
   }
 };
 
-const searchHotels = async (itineraryJson: GenerateItineraryJSON) => {
+export const searchHotels = async (itineraryJson: GenerateItineraryJSON) => {
   try {
     const response = await fetch(
       `${process.env.NEXT_PUBLIC_PYTHON_BACKEND_URL}${PythonBackendEndpoints.searchHotels}`,
@@ -161,7 +103,7 @@ const searchHotels = async (itineraryJson: GenerateItineraryJSON) => {
   }
 };
 
-const searchFlights = async (itineraryJson: GenerateItineraryJSON) => {
+export const searchFlights = async (itineraryJson: GenerateItineraryJSON) => {
   try {
     const response = await fetch(
       `${process.env.NEXT_PUBLIC_PYTHON_BACKEND_URL}${PythonBackendEndpoints.searchFlights}`,
