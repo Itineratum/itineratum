@@ -234,7 +234,7 @@ const Footer = () => {
         sx={{ marginTop: "20px" }}
       >
         {Object.keys(links).map((text, index) => (
-          <Stack spacing={spacing} direction="row">
+          <Stack key={index} spacing={spacing} direction="row">
             <Link
               href={links[text]}
               style={{ textDecoration: "none", color: "inherit" }}

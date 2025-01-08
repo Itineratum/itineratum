@@ -24,15 +24,15 @@ const Step2 = ({
   const numAdults = "numPeopleTravelling.adults";
   const numChildren = "numPeopleTravelling.children";
 
+  const [currency, setCurrency] = useState<string | undefined>("");
+
+  useEffect(() => {
+    // TODO: to see how to change currency automatically based on the selected currency in the CurrencySwitcher component
+    const storedCurrency = getCookie("currency");
+    setCurrency(getCurrencySymbol(storedCurrency!));
+  }, [getCookie("currency")]);
+
   const budgetHotelRoomsSection = () => {
-    const [currency, setCurrency] = useState<string | undefined>("");
-
-    useEffect(() => {
-      // TODO: to see how to change currency automatically based on the selected currency in the CurrencySwitcher component
-      const storedCurrency = getCookie("currency");
-      setCurrency(getCurrencySymbol(storedCurrency!));
-    }, [getCookie("currency")]);
-
     const budgetField = () => {
       const width: string = "45%";
 

@@ -61,12 +61,12 @@ const ItineraryPage = ({ params }: { params: { id: string } }) => {
         setError(error.message);
         setIsLoading(false);
       },
-    },
+    }
   );
 
   const getCorrectDayPlan = () =>
     getItinerary.data.itinerary.filter(
-      (dayPlan: DayPlan) => dayPlan.day === dayNum,
+      (dayPlan: DayPlan) => dayPlan.day === dayNum
     )[0];
 
   const getTravelOriginDestinations = (list: string[]): string[][] => {
@@ -201,11 +201,12 @@ const ItineraryPage = ({ params }: { params: { id: string } }) => {
       >
         {Array(numDays)
           .fill(0)
-          .map((_, i) => (
+          .map((_, index) => (
             <DayButton
-              dayNum={i + 1}
+              key={index}
+              dayNum={index + 1}
               setDayNum={setDayNum}
-              selected={i + 1 === dayNum}
+              selected={index + 1 === dayNum}
             />
           ))}
       </Stack>
@@ -341,6 +342,7 @@ const ItineraryPage = ({ params }: { params: { id: string } }) => {
 
             return (
               <EventDetailsCard
+                key={index}
                 event={event}
                 index={index}
                 setSelectedEvent={setSelectedEvent}

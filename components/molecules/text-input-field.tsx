@@ -29,9 +29,7 @@ const TextInputField = ({
   formFieldMargin?: "dense" | "normal" | "none" | undefined;
   onChange?: any;
 }) => {
-  const [showPassword, setShowPassword] = isPasswordInputField
-    ? useState<boolean>(false)
-    : [false, () => {}];
+  const [showPassword, setShowPassword] = useState<boolean>(false);
 
   const handleClickShowPassword = isPasswordInputField
     ? () => setShowPassword(!showPassword)
