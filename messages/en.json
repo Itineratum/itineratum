@@ -116,6 +116,9 @@
       "budget": "Budget",
       "adjusting": "Adjusting and Regenerating"
     },
+    "hotelSelectorDialog": {
+      "selectHotel": "Select your hotel for"
+    },
     "eventDetailsCard": {
       "learnMore": "Learn More",
       "details": "Click on each box to view the detailed content and make your bookings",

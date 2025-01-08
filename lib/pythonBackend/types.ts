@@ -70,3 +70,23 @@ export interface Price {
   currencyCode: string;
   units: string;
 }
+
+export interface Hotel {
+  type: string;
+  name: string;
+  description: string;
+  url: string;
+  coordinates: {
+    latitude: number;
+    longitude: number;
+  };
+  check_in_time: string;
+  check_out_time: string;
+  rate_per_night: number;
+  hotel_class: number;
+  images: string[];
+  rating: number;
+  num_reviews: number;
+  location_rating: number;
+  amenities: string[];
+}

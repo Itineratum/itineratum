@@ -11,6 +11,7 @@ import EventDetailsCard, {
   eventDetailsCardOverlapOffset,
 } from "@/app/[locale]/itinerary/components/event-details-card";
 import EventDetailsDialog from "@/app/[locale]/itinerary/components/event-details-dialog";
+import HotelSelectorDialog from "@/app/[locale]/itinerary/components/hotel-selector-dialog";
 import MapSection from "@/app/[locale]/itinerary/components/map-section";
 import TravelCard from "@/app/[locale]/itinerary/components/travel-card";
 import { trpc } from "@/app/_trpc/client";
@@ -34,7 +35,6 @@ import { useMap, useMapsLibrary } from "@vis.gl/react-google-maps";
 import dayjs from "dayjs";
 import { useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
-
 const ItineraryPage = ({ params }: { params: { id: string } }) => {
   const t = useTranslations("itinerary");
 
@@ -51,6 +51,9 @@ const ItineraryPage = ({ params }: { params: { id: string } }) => {
   const [adjustBudgetDialogOpen, setAdjustBudgetDialogOpen] =
     useState<boolean>(false);
   const [travelTimesLoading, setTravelTimesLoading] = useState<boolean>(true);
+  const [destinations, setDestinations] = useState<string[]>([]);
+  const [hotelSelectorDialogOpen, setHotelSelectorDialogOpen] =
+    useState<boolean>(false);
 
   const routesLibrary = useMapsLibrary("routes");
   const map = useMap();
@@ -71,12 +74,12 @@ const ItineraryPage = ({ params }: { params: { id: string } }) => {
         setError(error.message);
         setIsLoading(false);
       },
-    }
+    },
   );
 
   const getCorrectDayPlan = () =>
     getItinerary.data.itinerary.filter(
-      (dayPlan: DayPlan) => dayPlan.day === dayNum
+      (dayPlan: DayPlan) => dayPlan.day === dayNum,
     )[0];
 
   const getTravelOriginDestinations = (list: string[]): string[][] => {
@@ -89,12 +92,25 @@ const ItineraryPage = ({ params }: { params: { id: string } }) => {
     return result;
   };
 
+  const getDestinations = () => {
+    const newDestinations: string[] = [];
+
+    getItinerary.data.itinerary.forEach((dayPlan: DayPlan) => {
+      if (newDestinations.indexOf(dayPlan.destination) === -1) {
+        newDestinations.push(dayPlan.destination);
+      }
+    });
+
+    return newDestinations;
+  };
+
   useEffect(() => {
     if (getItinerary.data) {
       setItineraryData(getItinerary.data);
       setNumDays(getItinerary.data.itinerary.length);
       setDayPlan(getCorrectDayPlan());
       setTravelTimes([]);
+      setDestinations(getDestinations());
       setIsLoading(false);
     }
   }, [getItinerary.data]);
@@ -183,20 +199,21 @@ const ItineraryPage = ({ params }: { params: { id: string } }) => {
     );
 
   const itinerarySummaryText = () => {
-    let destinations = "";
-    const userRequestedDestinations =
-      itineraryData.request.payload.user_requested_destinations;
+    const getDestinationsString = (): string => {
+      let output = "";
+      destinations.map((destination, index) => {
+        output += destination;
 
-    userRequestedDestinations.map((userRequestedDestination, index) => {
-      destinations += userRequestedDestination.name;
+        if (index < destinations.length - 2) {
+          output += ", ";
+        } else if (index === destinations.length - 2) {
+          output += " and ";
+        }
+      });
+      return output;
+    };
 
-      if (index < userRequestedDestinations.length - 2) {
-        destinations += ", ";
-      } else if (index === userRequestedDestinations.length - 2) {
-        destinations += " and ";
-      }
-    });
-    const text = `${numDays} ${numDays > 1 ? t("days") : t("day")} ${numDays} ${numDays > 1 ? t("nights") : t("night")} ${t("to")} ${destinations}`;
+    const text = `${numDays} ${numDays > 1 ? t("days") : t("day")} ${numDays} ${numDays > 1 ? t("nights") : t("night")} ${t("to")} ${getDestinationsString()}`;
 
     return (
       <Text
@@ -265,6 +282,22 @@ const ItineraryPage = ({ params }: { params: { id: string } }) => {
             />
           ))}
       </Stack>
+    );
+  };
+
+  const selectHotelButton = () => {
+    const handleOnClick = () => {
+      setHotelSelectorDialogOpen(true);
+    };
+
+    return (
+      <Button variant="contained" onClick={handleOnClick}>
+        <Text
+          text={`${t("hotelSelectorDialog.selectHotel")} ${dayPlan?.destination}`}
+          variant={TypographyVariant.button}
+          bold={true}
+        />
+      </Button>
     );
   };
 
@@ -442,6 +475,7 @@ const ItineraryPage = ({ params }: { params: { id: string } }) => {
       {budgetSection()}
       {itinerarySummaryText()}
       {dayButtons()}
+      {selectHotelButton()}
       <Stack direction="row" spacing={gap}>
         {itineraryGeneratedSection()}
         {detailsSection()}
@@ -455,16 +489,23 @@ const ItineraryPage = ({ params }: { params: { id: string } }) => {
         setSelectedEvent={setSelectedEvent}
         selectedEvent={selectedEvent}
       />
-      <EventDetailsDialog
-        open={eventDetailsDialogOpen}
-        setOpen={setEventDetailsDialogOpen}
-        event={selectedEvent}
-      />
       <AdjustBudgetDialog
         open={adjustBudgetDialogOpen}
         setOpen={setAdjustBudgetDialogOpen}
         itineraryRequest={itineraryData.request}
         itineraryId={params.id}
+      />
+      <HotelSelectorDialog
+        open={hotelSelectorDialogOpen}
+        setOpen={setHotelSelectorDialogOpen}
+        hotels={
+          itineraryData.hotels[destinations.indexOf(dayPlan!.destination) ?? []]
+        }
+      />
+      <EventDetailsDialog
+        open={eventDetailsDialogOpen}
+        setOpen={setEventDetailsDialogOpen}
+        event={selectedEvent}
       />
     </Container>
   );
