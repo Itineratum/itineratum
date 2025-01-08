@@ -116,7 +116,7 @@ const EventDetailsDialog = ({
 
   const title = () => {
     return (
-      <DialogTitle>
+      <DialogTitle maxWidth={width - 80}>
         <Text
           text={event ? event.event_name : ""}
           variant={TypographyVariant.h4}
@@ -128,7 +128,7 @@ const EventDetailsDialog = ({
 
   const description = () => {
     return (
-      <DialogContentText>
+      <DialogContentText maxWidth={width - 80}>
         <Text
           text={event ? event.description : ""}
           variant={TypographyVariant.h6}

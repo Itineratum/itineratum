@@ -57,6 +57,7 @@ const ItineraryPage = ({ params }: { params: { id: string } }) => {
 
   const gap = 6;
   const paddingBottom = "20px";
+  const travelTimesLoadingTime = 8000; // in milliseconds
 
   const getItinerary = trpc.itinerary.getItinerary.useQuery(
     { itineraryId: params.id },
@@ -70,12 +71,12 @@ const ItineraryPage = ({ params }: { params: { id: string } }) => {
         setError(error.message);
         setIsLoading(false);
       },
-    },
+    }
   );
 
   const getCorrectDayPlan = () =>
     getItinerary.data.itinerary.filter(
-      (dayPlan: DayPlan) => dayPlan.day === dayNum,
+      (dayPlan: DayPlan) => dayPlan.day === dayNum
     )[0];
 
   const getTravelOriginDestinations = (list: string[]): string[][] => {
@@ -109,7 +110,7 @@ const ItineraryPage = ({ params }: { params: { id: string } }) => {
   useEffect(() => {
     const timer = setTimeout(() => {
       setTravelTimesLoading(false);
-    }, 8000);
+    }, travelTimesLoadingTime);
 
     return () => clearTimeout(timer);
   }, [dayNum]);
