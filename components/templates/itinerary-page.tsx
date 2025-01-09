@@ -111,7 +111,7 @@ const ItineraryPage = ({ params }: { params: { id: string } }) => {
       setDayPlan(getCorrectDayPlan());
       setTravelTimes([]);
       setDestinations(getDestinations());
-      setSelectedHotels(Array(getDestinations().length).fill(null));
+      // setSelectedHotels(Array(getDestinations().length).fill(null));
       setIsLoading(false);
     }
   }, [getItinerary.data]);
@@ -136,10 +136,14 @@ const ItineraryPage = ({ params }: { params: { id: string } }) => {
     if (!map || !routesLibrary || !dayPlan) return;
 
     const distanceMatrixService = new routesLibrary.DistanceMatrixService();
-    const eventLocations: string[] = dayPlan.morning
+    const eventLocations: any[] = dayPlan.morning
       .concat(dayPlan.afternoon)
       .concat(dayPlan.evening)
-      .map((event) => event.location_address);
+      .map((event) =>
+        event.location_address === ""
+          ? event.coordinates
+          : event.location_address,
+      );
 
     const originDestinationPairs = getTravelOriginDestinations(eventLocations);
 
@@ -512,6 +516,7 @@ const ItineraryPage = ({ params }: { params: { id: string } }) => {
         currency={
           itineraryData.request.payload.localisation.currency as Currency
         }
+        itineraryId={params.id}
       />
       <EventDetailsDialog
         open={eventDetailsDialogOpen}

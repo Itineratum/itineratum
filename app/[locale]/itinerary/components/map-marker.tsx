@@ -39,8 +39,9 @@ const MapMarker = ({
   const [markerRef, marker] = useAdvancedMarkerRef();
   const [popUpShown, setPopUpShown] = useState<boolean>(false);
 
-  const color =
-    timeOfDay === EventCardTimeOfDay.morning
+  const color = event.is_hotel
+    ? colorsConst.components.mapSection.hotel
+    : timeOfDay === EventCardTimeOfDay.morning
       ? colorsConst.components.mapSection.morning
       : timeOfDay === EventCardTimeOfDay.afternoon
         ? colorsConst.components.mapSection.afternoon

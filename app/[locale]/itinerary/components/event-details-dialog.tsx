@@ -18,7 +18,8 @@ import {
 import { useMap, useMapsLibrary } from "@vis.gl/react-google-maps";
 import { useTranslations } from "next-intl";
 import Image from "next/image";
-import { Dispatch, SetStateAction, Suspense, useEffect, useState } from "react";
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
+import { setDefaults, OutputFormat, fromLatLng } from "react-geocode";
 
 const EventDetailsDialog = ({
   open,
@@ -31,8 +32,16 @@ const EventDetailsDialog = ({
 }) => {
   const t = useTranslations("itinerary.eventDetailsCard");
 
+  setDefaults({
+    key: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY,
+    language: "en",
+    region: "sg",
+    outputFormat: OutputFormat.JSON,
+  });
+
   const [imageSrc, setImageSrc] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [hotelAddress, setHotelAddress] = useState<string>("");
 
   const placesLibrary = useMapsLibrary("places");
   const map = useMap();
@@ -50,6 +59,10 @@ const EventDetailsDialog = ({
         return;
       } else if (event.photo === "") {
         setImageSrc(defaultEventImageSrc);
+        setIsLoading(false);
+        return;
+      } else if (event.is_hotel) {
+        setImageSrc(event.photo);
         setIsLoading(false);
         return;
       }
@@ -84,6 +97,23 @@ const EventDetailsDialog = ({
     setImageSrc(null);
     fetchEventImage();
   }, [event, placesLibrary, map]);
+
+  useEffect(() => {
+    const getHotelAddress = async () => {
+      if (!event?.is_hotel || !event.coordinates) return;
+
+      const { results } = await fromLatLng(
+        event?.coordinates?.lat,
+        event?.coordinates?.lng,
+      );
+
+      setHotelAddress(results[0].formatted_address);
+    };
+
+    if (event && event.is_hotel) {
+      getHotelAddress();
+    }
+  }, [event]);
 
   const handleOnClose = () => {
     setOpen(false);
@@ -128,14 +158,16 @@ const EventDetailsDialog = ({
 
   const description = () => {
     return (
-      <DialogContentText maxWidth={width - 80}>
-        <Text
-          text={event ? event.description : ""}
-          variant={TypographyVariant.h6}
-          bold={false}
-          color={colorsConst.palette.text.primary}
-        />
-      </DialogContentText>
+      event?.description && (
+        <DialogContentText maxWidth={width - 80}>
+          <Text
+            text={event ? event.description : ""}
+            variant={TypographyVariant.h6}
+            bold={false}
+            color={colorsConst.palette.text.primary}
+          />
+        </DialogContentText>
+      )
     );
   };
 
@@ -154,7 +186,13 @@ const EventDetailsDialog = ({
             color={colorsConst.palette.text.primary}
           />
           <Text
-            text={event ? event.location_address : ""}
+            text={
+              event
+                ? event?.is_hotel
+                  ? hotelAddress
+                  : event?.location_address
+                : ""
+            }
             variant={typographyVariant}
             bold={false}
             color={colorsConst.palette.text.primary}
@@ -290,11 +328,67 @@ const EventDetailsDialog = ({
       }
     };
 
+    const checkInCheckOutTime = () => {
+      const checkInTime = () => {
+        return (
+          <Stack direction="row" spacing={spacing}>
+            <Text
+              text={t("checkInTime") + ": "}
+              variant={typographyVariant}
+              bold={true}
+              color={colorsConst.palette.text.primary}
+            />
+            <Text
+              text={event?.checkInTime ?? ""}
+              variant={typographyVariant}
+              bold={false}
+              color={colorsConst.palette.text.primary}
+            />
+          </Stack>
+        );
+      };
+
+      const checkOutTime = () => {
+        return (
+          <Stack direction="row" spacing={spacing}>
+            <Text
+              text={t("checkOutTime") + ": "}
+              variant={typographyVariant}
+              bold={true}
+              color={colorsConst.palette.text.primary}
+            />
+            <Text
+              text={event?.checkOutTime ?? ""}
+              variant={typographyVariant}
+              bold={false}
+              color={colorsConst.palette.text.primary}
+            />
+          </Stack>
+        );
+      };
+
+      return (
+        event?.is_hotel &&
+        event.checkInTime &&
+        event.checkOutTime && (
+          <Grid container>
+            <Grid item xs={6}>
+              {checkInTime()}
+            </Grid>
+            <Grid item xs={6}>
+              {checkOutTime()}
+            </Grid>
+          </Grid>
+        )
+      );
+    };
+
     return (
       <Stack direction="column" spacing={spacing} paddingTop={padding}>
         {address()}
         {website()}
         {openingHoursRatingSection()}
+        {checkInCheckOutTime()}
       </Stack>
     );
   };

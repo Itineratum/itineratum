@@ -58,7 +58,8 @@ const AdjustBudgetDialog = ({
   const spacing = 4;
   const width = "300px";
 
-  const updateItinerary = trpc.itinerary.updateItinerary.useMutation();
+  const adjustItineraryBudget =
+    trpc.itinerary.adjustItineraryBudget.useMutation();
   const utils = trpc.useUtils();
 
   const handleOnClose = () => {
@@ -162,11 +163,11 @@ const AdjustBudgetDialog = ({
         const data = {
           itineraryId,
           request: newItinerary.request,
-          itinerary: newItinerary.detailed_itinerary || [],
-          hotels: newItinerary.hotel_search_results || [],
-          flights: newItinerary.flight_search_results || [],
+          itinerary: newItinerary.detailed_itinerary ?? [],
+          hotels: newItinerary.hotel_search_results ?? [],
+          flights: newItinerary.flight_search_results ?? [],
         };
-        await updateItinerary.mutateAsync(data);
+        await adjustItineraryBudget.mutateAsync(data);
         utils.itinerary.getItinerary.invalidate();
         setAdjustingBudget(false);
         setOpen(false);

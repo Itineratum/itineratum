@@ -68,6 +68,10 @@ const EventDetailsCard = ({
         setImageSrc(defaultEventImageSrc);
         setIsLoading(false);
         return;
+      } else if (event.is_hotel) {
+        setImageSrc(event.photo);
+        setIsLoading(false);
+        return;
       }
 
       const placeId = extractPlaceId(event.photo);
@@ -186,7 +190,7 @@ const EventDetailsCard = ({
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
-          backgroundImage: `url(${imageSrc})`,
+          backgroundImage: `url('${imageSrc}')`,
           backgroundSize: "cover",
           backgroundPosition: "center",
           border: "2px solid black",

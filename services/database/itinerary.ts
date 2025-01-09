@@ -61,7 +61,7 @@ export const retrieveItinerary = async (itineraryId: string) => {
   }
 };
 
-export const updateItinerary = async (
+export const adjustItineraryBudget = async (
   itineraryId: string,
   request: any,
   itinerary: DayPlan[],
@@ -87,7 +87,36 @@ export const updateItinerary = async (
     if (result.acknowledged) {
       return { success: true };
     } else {
-      return { success: false, error: "Itinerary update failed" };
+      return { success: false, error: "Itinerary budget adjustment failed" };
+    }
+  } catch (error) {
+    console.error(error);
+    throw error;
+  } finally {
+    // await disconnectFromDatabase();
+  }
+};
+
+export const adjustItineraryHotels = async (
+  itineraryId: string,
+  itinerary: DayPlan[],
+) => {
+  try {
+    await connectToDatabase();
+    const update = {
+      $set: {
+        itinerary,
+      },
+    };
+    const result = await Itinerary.updateOne(
+      { _id: new ObjectId(itineraryId) },
+      update,
+    );
+
+    if (result.acknowledged) {
+      return { success: true };
+    } else {
+      return { success: false, error: "Itinerary hotel adjustment failed" };
     }
   } catch (error) {
     console.error(error);

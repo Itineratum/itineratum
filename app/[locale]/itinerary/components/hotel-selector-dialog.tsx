@@ -1,4 +1,7 @@
+import { trpc } from "@/app/_trpc/client";
 import Text from "@/components/atoms/text";
+import Alert from "@/components/molecules/alert";
+import { AlertType } from "@/constants/enums/alertType";
 import { Currency } from "@/constants/enums/currency";
 import {
   TypographyTextDecoration,
@@ -37,6 +40,7 @@ import RoomServiceIcon from "@mui/icons-material/RoomService";
 import ThumbUpAltIcon from "@mui/icons-material/ThumbUpAlt";
 import {
   Box,
+  Button,
   Dialog,
   DialogContent,
   DialogTitle,
@@ -49,6 +53,7 @@ import {
 import { AdvancedMarker, Map, Pin } from "@vis.gl/react-google-maps";
 import { useTranslations } from "next-intl";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import React, { Dispatch, SetStateAction, useEffect, useState } from "react";
 import Carousel from "react-material-ui-carousel";
 import { Position } from "./map-section";
@@ -62,6 +67,7 @@ const HotelSelectorDialog = ({
   destinationIndex,
   destination,
   currency,
+  itineraryId,
 }: {
   open: boolean;
   setOpen: Dispatch<SetStateAction<boolean>>;
@@ -71,63 +77,99 @@ const HotelSelectorDialog = ({
   destinationIndex: number;
   destination: string;
   currency: Currency;
+  itineraryId: string;
 }) => {
   const t = useTranslations("itinerary.hotelSelectorDialog");
+  const router = useRouter();
 
   const [hotelTabValue, setHotelTabValue] = useState<number>(0);
   const [hotel, setHotel] = useState<Hotel | null>(null);
+  const [showAlert, setShowAlert] = useState<boolean>(false);
+  const [alertText, setAlertText] = useState<string>("");
+  const [alertType, setAlertType] = useState<AlertType>(AlertType.info);
 
   const ratingSpacing = 2;
+  const spacing = 4;
+
+  const adjustItineraryHotels =
+    trpc.itinerary.adjustItineraryHotels.useMutation();
+  const utils = trpc.useUtils();
 
   useEffect(() => {
     setHotel(hotels[hotelTabValue]);
+    setShowAlert(false);
   }, [hotelTabValue]);
+
+  useEffect(() => {
+    if (open) {
+      setHotelTabValue(0);
+      setHotel(hotels[0]);
+      setShowAlert(false);
+      setAlertText("");
+      setAlertType(AlertType.info);
+    }
+  }, [open, destinationIndex, destination, hotels]);
 
   const handleOnClose = () => {
     setOpen(false);
+    router.refresh();
   };
 
-  const title = () => {
-    return (
-      <DialogTitle>
+  const titleHotelTabs = () => {
+    const spacing = 2;
+
+    const title = () => {
+      return (
         <Text
           text={`${t("selectHotel")} ${destination}`}
           variant={TypographyVariant.h4}
           bold={false}
         />
-      </DialogTitle>
-    );
-  };
-
-  const hotelTabs = () => {
-    const width = "100%";
-
-    const handleOnChange = (event: React.SyntheticEvent, newValue: number) => {
-      setHotelTabValue(newValue);
+      );
     };
 
-    const tabLabels = () => {
+    const hotelTabs = () => {
+      const width = "1100px";
+
+      const handleOnChange = (
+        event: React.SyntheticEvent,
+        newValue: number,
+      ) => {
+        setHotelTabValue(newValue);
+      };
+
+      const tabLabels = () => {
+        return (
+          <Tabs value={hotelTabValue} onChange={handleOnChange}>
+            {hotels.map((hotel) => (
+              <Tab
+                label={hotel.name}
+                sx={{
+                  color: colorsConst.palette.text.primary,
+                  width: 1 / hotels.length,
+                }}
+              />
+            ))}
+          </Tabs>
+        );
+      };
+
       return (
-        <Tabs value={hotelTabValue} onChange={handleOnChange}>
-          {hotels.map((hotel) => (
-            <Tab
-              label={hotel.name}
-              sx={{
-                color: colorsConst.palette.text.primary,
-                width: 1 / hotels.length,
-              }}
-            />
-          ))}
-        </Tabs>
+        <Box sx={{ width }}>
+          <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
+            {tabLabels()}
+          </Box>
+        </Box>
       );
     };
 
     return (
-      <Box sx={{ width }}>
-        <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
-          {tabLabels()}
-        </Box>
-      </Box>
+      <DialogTitle>
+        <Stack direction="column" spacing={spacing}>
+          {title()}
+          {hotelTabs()}
+        </Stack>
+      </DialogTitle>
     );
   };
 
@@ -909,18 +951,58 @@ const HotelSelectorDialog = ({
     );
   };
 
+  const selectHotelButton = () => {
+    const handleOnClick = async () => {
+      if (hotel) {
+        const newSelectedHotels = [...selectedHotels];
+        newSelectedHotels[destinationIndex] = hotel;
+        setSelectedHotels(newSelectedHotels);
+        const data = {
+          itineraryId,
+          selectedHotels: newSelectedHotels ?? [],
+        };
+        await adjustItineraryHotels.mutateAsync(data);
+        utils.itinerary.getItinerary.invalidate();
+        setAlertText(`${t("selected")} ${destination}`);
+        setAlertType(AlertType.success);
+      } else {
+        setAlertText(t("selectedFailed"));
+        setAlertType(AlertType.error);
+      }
+
+      setShowAlert(true);
+    };
+
+    return (
+      <Box display="flex" justifyContent="flex-end">
+        <Button onClick={handleOnClick} variant="contained">
+          {t("select")}
+        </Button>
+      </Box>
+    );
+  };
+
   return (
     <Dialog
+      key={destinationIndex}
       open={open}
       fullScreen={false}
       onClose={handleOnClose}
-      maxWidth={false}
+      maxWidth="lg"
       sx={{ overflow: "scroll" }}
     >
-      {title()}
+      {titleHotelTabs()}
       <DialogContent>
-        {hotelTabs()}
-        {hotelContent()}
+        <Stack key={destinationIndex} direction="column" spacing={spacing}>
+          {hotelContent()}
+          {selectHotelButton()}
+          <Alert
+            showAlert={showAlert}
+            setShowAlert={setShowAlert}
+            alertText={alertText}
+            alertType={alertType}
+          />
+        </Stack>
       </DialogContent>
     </Dialog>
   );

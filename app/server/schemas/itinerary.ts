@@ -16,13 +16,21 @@ export const getItinerarySchema = {
   output: z.any(),
 };
 
-export const updateItinerarySchema = {
+export const adjustItineraryBudgetSchema = {
   input: z.object({
     itineraryId: z.string(),
     request: z.any(),
     itinerary: z.any(),
     hotels: z.any(),
     flights: z.any(),
+  }),
+  output: z.void(),
+};
+
+export const adjustItineraryHotelsSchema = {
+  input: z.object({
+    itineraryId: z.string(),
+    selectedHotels: z.any(),
   }),
   output: z.void(),
 };

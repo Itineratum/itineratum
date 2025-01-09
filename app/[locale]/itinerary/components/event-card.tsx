@@ -24,8 +24,9 @@ const EventCard = ({
   event: Event;
   selected: boolean;
 }) => {
-  const color =
-    timeOfDay === EventCardTimeOfDay.morning
+  const color = event.is_hotel
+    ? colorsConst.components.mapSection.hotel
+    : timeOfDay === EventCardTimeOfDay.morning
       ? colorsConst.components.eventCard.morning
       : timeOfDay === EventCardTimeOfDay.afternoon
         ? colorsConst.components.eventCard.afternoon

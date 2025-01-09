@@ -1,71 +1,53 @@
-import { DayPlan, Hotel } from "@/lib/pythonBackend/types";
-import { getTimePeriodPlan } from "@/lib/pythonBackend/utils";
+import { EventCardTimeOfDay } from "@/app/[locale]/itinerary/components/event-card";
+import { DayPlan, Event, Hotel } from "@/lib/pythonBackend/types";
 import {
+  clearHotelEvents,
+  formatHotels,
+  formatItinerary,
+  noHotelEvents,
+} from "@/lib/pythonBackend/utils";
+import {
+  adjustItineraryBudget,
+  adjustItineraryHotels,
   retrieveItinerary,
   saveItinerary,
-  updateItinerary,
 } from "@/services/database/itinerary";
-import { getDays } from "@/utils/itinerary";
 import { TRPCError } from "@trpc/server";
+import dayjs from "dayjs";
+import utc from "dayjs/plugin/utc";
 import {
+  adjustItineraryBudgetSchema,
+  adjustItineraryHotelsSchema,
   getItinerarySchema,
   saveItinerarySchema,
-  updateItinerarySchema,
 } from "../schemas/itinerary";
 import { publicProcedure, router } from "../trpc";
 
-const formatItinerary = (itineraryRaw: any): DayPlan[] => {
-  const itinerary: DayPlan[] = [];
-  itineraryRaw = itineraryRaw.filter(
-    (destinationPlan: any) =>
-      destinationPlan.plan && destinationPlan.plan.length > 0,
-  );
-  itineraryRaw.forEach((destinationPlan: any) => {
-    const days = getDays(destinationPlan.day);
-    const destination = destinationPlan.location;
-    destinationPlan.plan.forEach((rawDayPlan: any, index: number) => {
-      const dayPlan: DayPlan = {
-        destination,
-        day: days[index],
-        morning: getTimePeriodPlan(rawDayPlan.morning),
-        afternoon: getTimePeriodPlan(rawDayPlan.afternoon),
-        evening: getTimePeriodPlan(rawDayPlan.evening),
-      };
-      itinerary.push(dayPlan);
-    });
-  });
-  return itinerary;
-};
+dayjs.extend(utc);
 
-const formatHotels = (hotelsRaw: any): Hotel[][] => {
-  const hotels: Hotel[][] = [];
-  hotelsRaw.forEach((destinationHotelsRaw: any[]) => {
-    const destinationHotels: Hotel[] = [];
-    destinationHotelsRaw.forEach((hotelRaw: any) => {
-      const hotel: Hotel = {
-        type: hotelRaw.type,
-        name: hotelRaw.name,
-        description: hotelRaw.description,
-        url: hotelRaw.link,
-        coordinates: {
-          latitude: hotelRaw.gps_coordinates.latitude,
-          longitude: hotelRaw.gps_coordinates.longitude,
-        },
-        check_in_time: hotelRaw.check_in_time,
-        check_out_time: hotelRaw.check_out_time,
-        rate_per_night: hotelRaw.rate_per_night.extracted_lowest,
-        hotel_class: hotelRaw.extracted_hotel_class,
-        images: hotelRaw.images.map((image: any) => image.original_image),
-        rating: hotelRaw.overall_rating,
-        num_reviews: hotelRaw.reviews,
-        location_rating: hotelRaw.location_rating,
-        amenities: hotelRaw.amenities,
-      };
-      destinationHotels.push(hotel);
-    });
-    hotels.push(destinationHotels);
-  });
-  return hotels;
+const getTimeOfDay = (time: string | null | undefined): EventCardTimeOfDay => {
+  if (!time) return EventCardTimeOfDay.morning;
+
+  const [hour, minutePart] = time.toLowerCase().split(":");
+  const period = minutePart.slice(-2);
+
+  let hour24 = parseInt(hour);
+  if (period === "pm" && hour24 !== 12) {
+    hour24 += 12;
+  }
+  if (period === "am" && hour24 === 12) {
+    hour24 = 0;
+  }
+
+  if (hour24 >= 6 && hour24 < 12) {
+    return EventCardTimeOfDay.morning;
+  } else if (hour24 >= 12 && hour24 < 18) {
+    return EventCardTimeOfDay.afternoon;
+  } else if (hour24 >= 18 && hour24 < 24) {
+    return EventCardTimeOfDay.evening;
+  } else {
+    return EventCardTimeOfDay.morning;
+  }
 };
 
 export const itineraryRouter = router({
@@ -107,9 +89,9 @@ export const itineraryRouter = router({
 
       return retrieveItineraryRes.data;
     }),
-  updateItinerary: publicProcedure
-    .input(updateItinerarySchema.input)
-    .output(updateItinerarySchema.output)
+  adjustItineraryBudget: publicProcedure
+    .input(adjustItineraryBudgetSchema.input)
+    .output(adjustItineraryBudgetSchema.output)
     .mutation(async (data) => {
       const itineraryId = data.input.itineraryId;
       const request = data.input.request;
@@ -120,7 +102,7 @@ export const itineraryRouter = router({
       const hotelsRaw = data.input.hotels;
       const hotels: Hotel[][] = formatHotels(hotelsRaw);
 
-      const updateItineraryRes = await updateItinerary(
+      const adjustItineraryBudgetRes = await adjustItineraryBudget(
         itineraryId,
         request,
         itinerary,
@@ -128,10 +110,158 @@ export const itineraryRouter = router({
         flights,
       );
 
-      if (!updateItineraryRes.success) {
+      if (!adjustItineraryBudgetRes.success) {
         throw new TRPCError({
           code: "INTERNAL_SERVER_ERROR",
-          message: updateItineraryRes?.error!,
+          message: adjustItineraryBudgetRes?.error!,
+        });
+      }
+    }),
+  adjustItineraryHotels: publicProcedure
+    .input(adjustItineraryHotelsSchema.input)
+    .output(adjustItineraryHotelsSchema.output)
+    .mutation(async (data) => {
+      const itineraryId = data.input.itineraryId;
+      const retrieveItineraryRes = await retrieveItinerary(itineraryId);
+      let itinerary = retrieveItineraryRes.data.itinerary;
+      const userRequestedDestinations =
+        retrieveItineraryRes.data.request.payload.user_requested_destinations;
+      const tripStartDate = dayjs(
+        retrieveItineraryRes.data.request.payload.start_date,
+      ).utc(true);
+      const tripEndDate = dayjs(
+        retrieveItineraryRes.data.request.payload.end_date,
+      ).utc(true);
+      const selectedHotels = data.input.selectedHotels;
+      const tripCheckInCheckOutDays: number[][] = [];
+
+      for (const userRequestedDestination of userRequestedDestinations) {
+        const destinationCheckInCheckOutDays: number[] = [];
+        const destinationStartDate = dayjs(
+          userRequestedDestination.start_date,
+        ).utc(true);
+        const destinationEndDate = dayjs(userRequestedDestination.end_date).utc(
+          true,
+        );
+
+        if (destinationStartDate.isSame(tripStartDate)) {
+          destinationCheckInCheckOutDays.push(1);
+        } else {
+          const dayOfTripOfDestinationStartDate =
+            destinationStartDate.diff(tripStartDate, "day") + 1;
+          destinationCheckInCheckOutDays.push(dayOfTripOfDestinationStartDate);
+        }
+
+        if (destinationEndDate.isSame(tripEndDate)) {
+          destinationCheckInCheckOutDays.push(
+            tripEndDate.diff(tripStartDate, "day") + 1,
+          );
+        } else {
+          const dayOfTripOfDestinationEndDate =
+            destinationEndDate.diff(tripStartDate, "day") + 1;
+          destinationCheckInCheckOutDays.push(dayOfTripOfDestinationEndDate);
+        }
+
+        tripCheckInCheckOutDays.push(destinationCheckInCheckOutDays);
+      }
+
+      selectedHotels.forEach(
+        (hotel: Hotel | null, destinationIndex: number) => {
+          if (!hotel) return;
+
+          const hotelCheckInDay = tripCheckInCheckOutDays[destinationIndex][0];
+          const hotelCheckOutDay = tripCheckInCheckOutDays[destinationIndex][1];
+          const hotelCheckInTimePeriod = getTimeOfDay(hotel.check_in_time);
+          const hotelCheckOutTimePeriod = getTimeOfDay(hotel.check_out_time);
+          const hotelCheckInEvent: Event = {
+            is_hotel: true,
+            event_name: `Check in to ${hotel.name}`,
+            location_name: "",
+            location_address: "",
+            coordinates: {
+              lat: hotel.coordinates.latitude,
+              lng: hotel.coordinates.longitude,
+            },
+            description: hotel.description,
+            rating: hotel.rating,
+            website_uri: hotel.url,
+            photo: hotel.images[0],
+            openingHours: [],
+            checkInTime: hotel.check_in_time,
+            checkOutTime: hotel.check_out_time,
+          };
+          const hotelCheckOutEvent: Event = {
+            ...hotelCheckInEvent,
+            event_name: `Check out from ${hotel.name}`,
+          };
+
+          itinerary.forEach((dayPlan: DayPlan) => {
+            const day = dayPlan.day;
+
+            if (hotelCheckInDay === day) {
+              if (hotelCheckInTimePeriod === EventCardTimeOfDay.morning) {
+                if (noHotelEvents(dayPlan)) {
+                  dayPlan.morning.unshift(hotelCheckInEvent);
+                } else {
+                  clearHotelEvents(dayPlan);
+                  dayPlan.morning.unshift(hotelCheckInEvent);
+                }
+              } else if (
+                hotelCheckInTimePeriod === EventCardTimeOfDay.afternoon
+              ) {
+                if (noHotelEvents(dayPlan)) {
+                  dayPlan.afternoon.unshift(hotelCheckInEvent);
+                } else {
+                  clearHotelEvents(dayPlan);
+                  dayPlan.afternoon.unshift(hotelCheckInEvent);
+                }
+              } else {
+                if (noHotelEvents(dayPlan)) {
+                  dayPlan.evening.unshift(hotelCheckInEvent);
+                } else {
+                  clearHotelEvents(dayPlan);
+                  dayPlan.evening.unshift(hotelCheckInEvent);
+                }
+              }
+            } else if (hotelCheckOutDay === day) {
+              if (hotelCheckOutTimePeriod === EventCardTimeOfDay.morning) {
+                if (noHotelEvents(dayPlan)) {
+                  dayPlan.morning.unshift(hotelCheckOutEvent);
+                } else {
+                  clearHotelEvents(dayPlan);
+                  dayPlan.morning.unshift(hotelCheckOutEvent);
+                }
+              } else if (
+                hotelCheckOutTimePeriod === EventCardTimeOfDay.afternoon
+              ) {
+                if (noHotelEvents(dayPlan)) {
+                  dayPlan.afternoon.unshift(hotelCheckOutEvent);
+                } else {
+                  clearHotelEvents(dayPlan);
+                  dayPlan.afternoon.unshift(hotelCheckOutEvent);
+                }
+              } else {
+                if (noHotelEvents(dayPlan)) {
+                  dayPlan.evening.unshift(hotelCheckOutEvent);
+                } else {
+                  clearHotelEvents(dayPlan);
+                  dayPlan.evening.unshift(hotelCheckOutEvent);
+                }
+              }
+            }
+          });
+        },
+      );
+
+      const adjustItineraryHotelsRes = await adjustItineraryHotels(
+        itineraryId,
+        itinerary,
+      );
+
+      if (!adjustItineraryHotelsRes.success) {
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message: adjustItineraryHotelsRes?.error!,
         });
       }
     }),

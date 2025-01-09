@@ -3,7 +3,7 @@
 import { Event } from "@/lib/pythonBackend/types";
 import { CircularProgress, Container } from "@mui/material";
 import { Map } from "@vis.gl/react-google-maps";
-import { Dispatch, SetStateAction, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { fromAddress, OutputFormat, setDefaults } from "react-geocode";
 import { EventCardTimeOfDay } from "./event-card";
 import MapMarker from "./map-marker";
@@ -46,20 +46,34 @@ const MapSection = ({
         for (const event of events) {
           if (!event) continue;
 
-          try {
-            const { results } = await fromAddress(event.location_address);
-            const { lat, lng } = results[0].geometry.location;
-            const newMapMarkerData: MapMarkerData = {
+          if (event.is_hotel) {
+            newMapMarkersData.push({
               timeOfDay:
                 EventCardTimeOfDay[
                   timeOfDay as keyof typeof EventCardTimeOfDay
                 ],
               event,
-              position: { lat, lng },
-            };
-            newMapMarkersData.push(newMapMarkerData);
-          } catch (error) {
-            console.error(error);
+              position: {
+                lat: event.coordinates!.lat ?? 0,
+                lng: event.coordinates!.lng ?? 0,
+              },
+            });
+          } else {
+            try {
+              const { results } = await fromAddress(event.location_address);
+              const { lat, lng } = results[0].geometry.location;
+              const newMapMarkerData: MapMarkerData = {
+                timeOfDay:
+                  EventCardTimeOfDay[
+                    timeOfDay as keyof typeof EventCardTimeOfDay
+                  ],
+                event,
+                position: { lat, lng },
+              };
+              newMapMarkersData.push(newMapMarkerData);
+            } catch (error) {
+              console.error(error);
+            }
           }
         }
       }

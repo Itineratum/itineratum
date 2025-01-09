@@ -48,15 +48,22 @@ export interface DayPlan {
 }
 
 export interface Event {
+  is_hotel: boolean; // indicates whether the current event is a hotel check in/check out event
   event_name: string;
   location_name: string;
   location_address: string;
+  coordinates: {
+    lat: number;
+    lng: number;
+  } | null;
   description: string;
   rating: number;
   website_uri: string;
   // price_range: PriceRange;
   photo: string; // to get this using Google Place Photo (New)
   openingHours: string[];
+  checkInTime: string | null;
+  checkOutTime: string | null;
 }
 
 export interface PriceRange {

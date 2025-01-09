@@ -131,7 +131,11 @@
       "website": "Website",
       "clickHere": "Click Here",
       "amenities": "Amenities",
-      "location": "Location in"
+      "location": "Location in",
+      "select": "Select Hotel",
+      "selected": "This hotel was successfully selected for",
+      "selectedFailed": "Failed to select this hotel, please try again!",
+      "alreadySelected": "Hotel already selected!"
     },
     "eventDetailsCard": {
       "learnMore": "Learn More",
@@ -140,7 +144,9 @@
       "rating": "Rating",
       "website": "Website",
       "openingHours": "Opening Hours",
-      "clickHere": "Click Here"
+      "clickHere": "Click Here",
+      "checkInTime": "Check In Time",
+      "checkOutTime": "Check Out Time"
     }
   },
   "account": {
