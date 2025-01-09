@@ -1,8 +1,6 @@
 import { Currency } from "@/constants/enums/currency";
 import { GenerateItineraryPreferredTransport } from "@/constants/enums/generateItinerary";
 import { Language } from "@/constants/enums/language";
-import { UserRequestedDestination } from "@/constants/types/formData/generateItineraryFormData";
-import { ObjectId } from "mongodb";
 
 export interface GenerateItineraryJSON {
   use_dummy_data: boolean;
@@ -89,4 +87,49 @@ export interface Hotel {
   num_reviews: number;
   location_rating: number;
   amenities: string[];
+}
+
+export enum HotelType {
+  "vacation rental" = "Vacation Rental",
+  hotel = "Hotel",
+}
+
+// from https://serpapi.com/google-hotels-amenities
+export enum HotelAmenity {
+  "Free parking" = "Free parking",
+  "Parking" = "Parking",
+  "Indoor pool" = "Indoor pool",
+  "Outdoor pool" = "Outdoor pool",
+  "Pool" = "Pool",
+  "Fitness center" = "Fitness center",
+  "Restaurant" = "Restaurant",
+  "Free breakfast" = "Free breakfast",
+  "Spa" = "Spa",
+  "Beach access" = "Beach access",
+  "Child-friendly" = "Child-friendly",
+  "Bar" = "Bar",
+  "Pet-friendly" = "Pet-friendly",
+  "Room service" = "Room service",
+  "Free Wi-Fi" = "Free Wi-Fi",
+  "Air-conditioned" = "Air-conditioned",
+  "All-inclusive available" = "All-inclusive available",
+  "Wheelchair accessible" = "Wheelchair accessible",
+  "EV charger" = "EV charger",
+}
+
+// from https://serpapi.com/google-hotels-vacation-rentals-amenities
+export enum VacationRentalAmenity {
+  "Hot tub" = "Hot tub",
+  "Air-conditioned" = "Air-conditioned",
+  "Outdoor grill" = "Outdoor grill",
+  "Fireplace" = "Fireplace",
+  "Patio or deck" = "Patio or deck",
+  "Kitchen" = "Kitchen",
+  "Fitness centre" = "Fitness centre",
+  "Cot" = "Cot",
+  "Beach access" = "Beach access",
+  "Child-friendly" = "Child-friendly",
+  "Pet-friendly" = "Pet-friendly",
+  "Free Wi-Fi" = "Free Wi-Fi",
+  "Pool" = "Pool",
 }

@@ -117,7 +117,21 @@
       "adjusting": "Adjusting and Regenerating"
     },
     "hotelSelectorDialog": {
-      "selectHotel": "Select your hotel for"
+      "selectHotel": "Select your hotel for",
+      "na": "Not Available",
+      "ratePerNight": "Rate per Night",
+      "hotelClass": "Hotel Class",
+      "stars": "Stars",
+      "type": "Type",
+      "rating": "Rating",
+      "numReviews": "Number of Reviews",
+      "locationRating": "Location Rating",
+      "checkInTime": "Check In Time",
+      "checkOutTime": "Check Out Time",
+      "website": "Website",
+      "clickHere": "Click Here",
+      "amenities": "Amenities",
+      "location": "Location in"
     },
     "eventDetailsCard": {
       "learnMore": "Learn More",

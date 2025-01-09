@@ -22,7 +22,7 @@ import {
   TypographyVariant,
 } from "@/constants/enums/theme";
 import { IItinerary } from "@/constants/types/itinerary";
-import { DayPlan, Event } from "@/lib/pythonBackend/types";
+import { DayPlan, Event, Hotel } from "@/lib/pythonBackend/types";
 import {
   Box,
   Button,
@@ -35,6 +35,7 @@ import { useMap, useMapsLibrary } from "@vis.gl/react-google-maps";
 import dayjs from "dayjs";
 import { useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
+
 const ItineraryPage = ({ params }: { params: { id: string } }) => {
   const t = useTranslations("itinerary");
 
@@ -42,7 +43,6 @@ const ItineraryPage = ({ params }: { params: { id: string } }) => {
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const [dayNum, setDayNum] = useState<number>(1);
-  const [numDays, setNumDays] = useState<number>(1);
   const [dayPlan, setDayPlan] = useState<DayPlan | null>(null);
   const [selectedEvent, setSelectedEvent] = useState<Event | null>(null);
   const [eventDetailsDialogOpen, setEventDetailsDialogOpen] =
@@ -54,6 +54,7 @@ const ItineraryPage = ({ params }: { params: { id: string } }) => {
   const [destinations, setDestinations] = useState<string[]>([]);
   const [hotelSelectorDialogOpen, setHotelSelectorDialogOpen] =
     useState<boolean>(false);
+  const [selectedHotels, setSelectedHotels] = useState<Hotel[]>([]);
 
   const routesLibrary = useMapsLibrary("routes");
   const map = useMap();
@@ -107,10 +108,10 @@ const ItineraryPage = ({ params }: { params: { id: string } }) => {
   useEffect(() => {
     if (getItinerary.data) {
       setItineraryData(getItinerary.data);
-      setNumDays(getItinerary.data.itinerary.length);
       setDayPlan(getCorrectDayPlan());
       setTravelTimes([]);
       setDestinations(getDestinations());
+      setSelectedHotels(Array(getDestinations().length).fill(null));
       setIsLoading(false);
     }
   }, [getItinerary.data]);
@@ -199,6 +200,8 @@ const ItineraryPage = ({ params }: { params: { id: string } }) => {
     );
 
   const itinerarySummaryText = () => {
+    const numDays = itineraryData.itinerary.length;
+
     const getDestinationsString = (): string => {
       let output = "";
       destinations.map((destination, index) => {
@@ -271,7 +274,7 @@ const ItineraryPage = ({ params }: { params: { id: string } }) => {
         spacing={spacing}
         sx={{ overflow: "auto", maxWidth: "100%" }}
       >
-        {Array(numDays)
+        {Array(itineraryData.itinerary.length)
           .fill(0)
           .map((_, index) => (
             <DayButton
@@ -398,6 +401,7 @@ const ItineraryPage = ({ params }: { params: { id: string } }) => {
 
   const detailsSection = () => {
     const spacing = 2;
+    const margin = "16px";
 
     const events = dayPlan!.morning
       .concat(dayPlan!.afternoon)
@@ -417,7 +421,7 @@ const ItineraryPage = ({ params }: { params: { id: string } }) => {
 
     const detailsSectionNote = () => {
       return (
-        <Box sx={{ marginTop: "16px" }}>
+        <Box sx={{ marginTop: margin }}>
           <Text
             text={"*" + t("eventDetailsCard.details")}
             variant={TypographyVariant.body1}
@@ -436,7 +440,7 @@ const ItineraryPage = ({ params }: { params: { id: string } }) => {
             height:
               eventDetailsCardHeight +
               (numOfCards - 1) * eventDetailsCardOverlapOffset,
-            marginBottom: "16px",
+            marginBottom: margin,
           }}
         >
           {events.map((event, index) => {
@@ -500,6 +504,13 @@ const ItineraryPage = ({ params }: { params: { id: string } }) => {
         setOpen={setHotelSelectorDialogOpen}
         hotels={
           itineraryData.hotels[destinations.indexOf(dayPlan!.destination) ?? []]
+        }
+        selectedHotels={selectedHotels}
+        setSelectedHotels={setSelectedHotels}
+        destinationIndex={destinations.indexOf(dayPlan!.destination)}
+        destination={dayPlan!.destination}
+        currency={
+          itineraryData.request.payload.localisation.currency as Currency
         }
       />
       <EventDetailsDialog

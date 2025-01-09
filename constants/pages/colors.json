@@ -31,7 +31,8 @@
       "glyphColor": "#ffffff",
       "morning": "#ff8161",
       "afternoon": "#1e90ff",
-      "evening": "#7b198b"
+      "evening": "#7b198b",
+      "hotel": "#34c759"
     }
   },
   "continueWithGoogleButton": {
