@@ -6,15 +6,7 @@ import {
 import colorsConst from "@/constants/pages/colors.json";
 import { defaultEventImageSrc } from "@/constants/pages/components/itineraryGenerator";
 import { Event } from "@/lib/pythonBackend/types";
-import { extractPlaceId } from "@/lib/pythonBackend/utils";
-import {
-  Box,
-  Button,
-  CircularProgress,
-  Container,
-  Skeleton,
-} from "@mui/material";
-import { useMap, useMapsLibrary } from "@vis.gl/react-google-maps";
+import { Box, Button, Skeleton } from "@mui/material";
 import { useTranslations } from "next-intl";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
 
@@ -53,58 +45,17 @@ const EventDetailsCard = ({
   const [imageSrc, setImageSrc] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
-  const placesLibrary = useMapsLibrary("places");
-  const map = useMap();
-
   useEffect(() => {
-    if (!placesLibrary || !map) return;
-
-    const fetchEventImage = async () => {
-      if (!event) {
-        setImageSrc(null);
-        setIsLoading(false);
-        return;
-      } else if (event.photo === "") {
-        setImageSrc(defaultEventImageSrc);
-        setIsLoading(false);
-        return;
-      } else if (event.is_hotel) {
-        setImageSrc(event.photo);
-        setIsLoading(false);
-        return;
-      }
-
-      const placeId = extractPlaceId(event.photo);
-
-      if (!placeId) {
-        setImageSrc(null);
-        setIsLoading(false);
-        return;
-      }
-
-      try {
-        const service = new placesLibrary.PlacesService(map);
-        const request = {
-          placeId: placeId,
-          fields: ["photos"],
-        };
-
-        service.getDetails(request, (place) => {
-          if (place && place.photos) {
-            setImageSrc(place?.photos[0].getUrl());
-          }
-        });
-      } catch (error) {
-        console.error("Error fetching image:", error);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    setImageSrc(null);
     setIsLoading(true);
-    fetchEventImage();
-  }, [event.photo, placesLibrary, map]);
+
+    if (event.photo === "" || !event.photo) {
+      setImageSrc(defaultEventImageSrc);
+    } else {
+      setImageSrc(event.photo);
+    }
+
+    setIsLoading(false);
+  }, [event.photo]);
 
   if (isLoading) {
     return (

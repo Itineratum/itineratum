@@ -43,7 +43,7 @@ export const itineraryRouter = router({
         request,
         itinerary,
         hotels,
-        flights
+        flights,
       );
       return saveItineraryRes.itineraryId;
     }),
@@ -81,7 +81,7 @@ export const itineraryRouter = router({
         request,
         itinerary,
         hotels,
-        flights
+        flights,
       );
 
       if (!adjustItineraryBudgetRes.success) {
@@ -101,26 +101,26 @@ export const itineraryRouter = router({
       const userRequestedDestinations =
         retrieveItineraryRes.data.request.payload.user_requested_destinations;
       const tripStartDate = dayjs(
-        retrieveItineraryRes.data.request.payload.start_date
+        retrieveItineraryRes.data.request.payload.start_date,
       ).utc(true);
       const tripEndDate = dayjs(
-        retrieveItineraryRes.data.request.payload.end_date
+        retrieveItineraryRes.data.request.payload.end_date,
       ).utc(true);
       const selectedHotels = data.input.selectedHotels;
       const tripCheckInCheckOutDays: number[][] = getTripCheckInCheckOutDays(
         userRequestedDestinations,
         tripStartDate,
-        tripEndDate
+        tripEndDate,
       );
-      adjustItineraryWithSelectedHotels(
+      await adjustItineraryWithSelectedHotels(
         selectedHotels,
         tripCheckInCheckOutDays,
-        itinerary
+        itinerary,
       );
 
       const adjustItineraryHotelsRes = await adjustItineraryHotels(
         itineraryId,
-        itinerary
+        itinerary,
       );
 
       if (!adjustItineraryHotelsRes.success) {

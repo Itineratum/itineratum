@@ -35,9 +35,17 @@ import { useMap, useMapsLibrary } from "@vis.gl/react-google-maps";
 import dayjs from "dayjs";
 import { useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
+import { OutputFormat, setDefaults } from "react-geocode";
 
 const ItineraryPage = ({ params }: { params: { id: string } }) => {
   const t = useTranslations("itinerary");
+
+  setDefaults({
+    key: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY,
+    language: "en",
+    region: "sg",
+    outputFormat: OutputFormat.JSON,
+  });
 
   const [itineraryData, setItineraryData] = useState<IItinerary | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
@@ -61,7 +69,7 @@ const ItineraryPage = ({ params }: { params: { id: string } }) => {
 
   const gap = 6;
   const paddingBottom = "20px";
-  const travelTimesLoadingTime = 8000; // in milliseconds
+  const maxTravelTimesLoadingTime = 8000; // in milliseconds
 
   const getItinerary = trpc.itinerary.getItinerary.useQuery(
     { itineraryId: params.id },
@@ -111,7 +119,7 @@ const ItineraryPage = ({ params }: { params: { id: string } }) => {
       setDayPlan(getCorrectDayPlan());
       setTravelTimes([]);
       setDestinations(getDestinations());
-      // setSelectedHotels(Array(getDestinations().length).fill(null));
+      setSelectedHotels(Array(getDestinations().length).fill(null));
       setIsLoading(false);
     }
   }, [getItinerary.data]);
@@ -121,13 +129,14 @@ const ItineraryPage = ({ params }: { params: { id: string } }) => {
       setDayPlan(getCorrectDayPlan());
       setTravelTimes([]);
       setTravelTimesLoading(true);
+      setSelectedEvent(null);
     }
   }, [dayNum]);
 
   useEffect(() => {
     const timer = setTimeout(() => {
       setTravelTimesLoading(false);
-    }, travelTimesLoadingTime);
+    }, maxTravelTimesLoadingTime);
 
     return () => clearTimeout(timer);
   }, [dayNum]);

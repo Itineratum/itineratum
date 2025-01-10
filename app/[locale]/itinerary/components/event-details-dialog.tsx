@@ -3,7 +3,6 @@ import { TypographyVariant } from "@/constants/enums/theme";
 import colorsConst from "@/constants/pages/colors.json";
 import { defaultEventImageSrc } from "@/constants/pages/components/itineraryGenerator";
 import { Event } from "@/lib/pythonBackend/types";
-import { extractPlaceId } from "@/lib/pythonBackend/utils";
 import {
   Box,
   Dialog,
@@ -15,7 +14,6 @@ import {
   Skeleton,
   Stack,
 } from "@mui/material";
-import { useMap, useMapsLibrary } from "@vis.gl/react-google-maps";
 import { useTranslations } from "next-intl";
 import Image from "next/image";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
@@ -43,60 +41,22 @@ const EventDetailsDialog = ({
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [hotelAddress, setHotelAddress] = useState<string>("");
 
-  const placesLibrary = useMapsLibrary("places");
-  const map = useMap();
-
   const height = 442;
   const width = 1087;
 
   useEffect(() => {
-    if (!placesLibrary || !map) return;
+    if (!event) return;
 
-    const fetchEventImage = async () => {
-      if (!event) {
-        setImageSrc(null);
-        setIsLoading(false);
-        return;
-      } else if (event.photo === "") {
-        setImageSrc(defaultEventImageSrc);
-        setIsLoading(false);
-        return;
-      } else if (event.is_hotel) {
-        setImageSrc(event.photo);
-        setIsLoading(false);
-        return;
-      }
+    setIsLoading(true);
 
-      const placeId = extractPlaceId(event.photo);
+    if (event.photo === "" || !event.photo) {
+      setImageSrc(defaultEventImageSrc);
+    } else {
+      setImageSrc(event.photo);
+    }
 
-      if (!placeId) {
-        setImageSrc(null);
-        setIsLoading(false);
-        return;
-      }
-
-      try {
-        const service = new placesLibrary.PlacesService(map);
-        const request = {
-          placeId: placeId,
-          fields: ["photos"],
-        };
-
-        service.getDetails(request, (place) => {
-          if (place && place.photos) {
-            setImageSrc(place?.photos[0].getUrl());
-          }
-        });
-      } catch (error) {
-        console.error("Error fetching image:", error);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    setImageSrc(null);
-    fetchEventImage();
-  }, [event, placesLibrary, map]);
+    setIsLoading(false);
+  }, [event?.photo]);
 
   useEffect(() => {
     if (event && event.is_hotel) {

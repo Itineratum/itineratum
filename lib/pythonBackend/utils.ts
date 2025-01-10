@@ -21,6 +21,21 @@ export const getEvents = async (rawTimePeriodPlan: any[]): Promise<Event[]> => {
   for (const item of rawTimePeriodPlan) {
     const { results } = await fromAddress(item.location_address);
     const { lat, lng } = results[0].geometry.location;
+    let photo =
+      item.photos && item.photos.length > 0 ? item.photos[0].name : "";
+
+    if (photo.startsWith("places/")) {
+      const googlePlacePhotoEndpoint = getGooglePlacePhotoEndpoint(photo);
+      const response = await fetch(googlePlacePhotoEndpoint);
+
+      if (!response.ok) {
+        throw new Error("Network response was not ok!");
+      }
+
+      const photoJson = await response.json();
+      photo = photoJson.photoUri;
+    }
+
     events.push({
       is_hotel: item.is_hotel ? item.is_hotel : false,
       event_name: item.location_name,
@@ -33,7 +48,7 @@ export const getEvents = async (rawTimePeriodPlan: any[]): Promise<Event[]> => {
       description: item.description,
       rating: item.rating ? item.rating : 0,
       website_uri: item.website_uri ? item.website_uri : "",
-      photo: item.photos && item.photos.length > 0 ? item.photos[0].name : "",
+      photo,
       openingHours:
         item.opening_hours &&
         item.opening_hours.weekdayDescriptions &&
@@ -48,27 +63,19 @@ export const getEvents = async (rawTimePeriodPlan: any[]): Promise<Event[]> => {
   return events;
 };
 
-export const extractPlaceId = (input: string): string | null => {
-  const start = "places/";
-  const end = "/photos";
+export const getGooglePlacePhotoEndpoint = (photoString: string): string => {
+  const maxWidth = 1087;
 
-  const startIndex = input.indexOf(start) + start.length;
-  const endIndex = input.indexOf(end);
-
-  if (startIndex >= 0 && endIndex > startIndex) {
-    return input.substring(startIndex, endIndex);
-  }
-
-  return null;
+  return `https://places.googleapis.com/v1/${photoString}/media?maxWidthPx=${maxWidth}&key=${process.env.NEXT_PUBLIC_GOOGLE_PLACES_API_KEY}&skipHttpRedirect=true`;
 };
 
 export const formatItinerary = async (
-  itineraryRaw: any
+  itineraryRaw: any,
 ): Promise<DayPlan[]> => {
   const itinerary: DayPlan[] = [];
   itineraryRaw = itineraryRaw.filter(
     (destinationPlan: any) =>
-      destinationPlan.plan && destinationPlan.plan.length > 0
+      destinationPlan.plan && destinationPlan.plan.length > 0,
   );
 
   for (const destinationPlan of itineraryRaw) {
@@ -94,7 +101,7 @@ export const formatItinerary = async (
 };
 
 export const getTimeOfDay = (
-  time: string | null | undefined
+  time: string | null | undefined,
 ): EventCardTimeOfDay => {
   if (!time) return EventCardTimeOfDay.morning;
 
@@ -193,7 +200,7 @@ interface Coordinates {
 }
 
 export const getHotelLocationAddress = async (
-  coordinates: Coordinates
+  coordinates: Coordinates,
 ): Promise<string> => {
   setDefaults({
     key: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY,
@@ -209,17 +216,17 @@ export const getHotelLocationAddress = async (
 export const getTripCheckInCheckOutDays = (
   userRequestedDestinations: any,
   tripStartDate: dayjs.Dayjs,
-  tripEndDate: dayjs.Dayjs
+  tripEndDate: dayjs.Dayjs,
 ): number[][] => {
   const tripCheckInCheckOutDays: number[][] = [];
 
   for (const userRequestedDestination of userRequestedDestinations) {
     const destinationCheckInCheckOutDays: number[] = [];
     const destinationStartDate = dayjs(userRequestedDestination.start_date).utc(
-      true
+      true,
     );
     const destinationEndDate = dayjs(userRequestedDestination.end_date).utc(
-      true
+      true,
     );
 
     if (destinationStartDate.isSame(tripStartDate)) {
@@ -232,7 +239,7 @@ export const getTripCheckInCheckOutDays = (
 
     if (destinationEndDate.isSame(tripEndDate)) {
       destinationCheckInCheckOutDays.push(
-        tripEndDate.diff(tripStartDate, "day") + 1
+        tripEndDate.diff(tripStartDate, "day") + 1,
       );
     } else {
       const dayOfTripOfDestinationEndDate =
@@ -249,7 +256,7 @@ export const getTripCheckInCheckOutDays = (
 export const adjustItineraryWithSelectedHotels = async (
   selectedHotels: Hotel[],
   tripCheckInCheckOutDays: number[][],
-  itinerary: DayPlan[]
+  itinerary: DayPlan[],
 ) => {
   for (
     let destinationIndex = 0;
