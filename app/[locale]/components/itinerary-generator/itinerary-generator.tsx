@@ -10,7 +10,7 @@ import { GenerateItineraryFormData } from "@/constants/types/formData/generateIt
 import { backupItineraryJson } from "@/lib/pythonBackend/backupItineraryJson";
 import {
   generateItineraryJson,
-  runPipeline
+  runPipeline,
 } from "@/lib/pythonBackend/pythonBackend";
 import ArrowBackOutlinedIcon from "@mui/icons-material/ArrowBackOutlined";
 import ArrowForwardOutlinedIcon from "@mui/icons-material/ArrowForwardOutlined";

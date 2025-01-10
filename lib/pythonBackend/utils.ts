@@ -1,13 +1,13 @@
 import { EventCardTimeOfDay } from "@/app/[locale]/itinerary/components/event-card";
 import { getDays } from "@/utils/itinerary";
-import { DayPlan, Event, Hotel } from "./types";
+import dayjs from "dayjs";
 import {
-  setDefaults,
   OutputFormat,
   fromAddress,
   fromLatLng,
+  setDefaults,
 } from "react-geocode";
-
+import { DayPlan, Event, Hotel } from "./types";
 export const getEvents = async (rawTimePeriodPlan: any[]): Promise<Event[]> => {
   setDefaults({
     key: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY,
@@ -63,12 +63,12 @@ export const extractPlaceId = (input: string): string | null => {
 };
 
 export const formatItinerary = async (
-  itineraryRaw: any,
+  itineraryRaw: any
 ): Promise<DayPlan[]> => {
   const itinerary: DayPlan[] = [];
   itineraryRaw = itineraryRaw.filter(
     (destinationPlan: any) =>
-      destinationPlan.plan && destinationPlan.plan.length > 0,
+      destinationPlan.plan && destinationPlan.plan.length > 0
   );
 
   for (const destinationPlan of itineraryRaw) {
@@ -94,7 +94,7 @@ export const formatItinerary = async (
 };
 
 export const getTimeOfDay = (
-  time: string | null | undefined,
+  time: string | null | undefined
 ): EventCardTimeOfDay => {
   if (!time) return EventCardTimeOfDay.morning;
 
@@ -193,7 +193,7 @@ interface Coordinates {
 }
 
 export const getHotelLocationAddress = async (
-  coordinates: Coordinates,
+  coordinates: Coordinates
 ): Promise<string> => {
   setDefaults({
     key: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY,
@@ -204,4 +204,142 @@ export const getHotelLocationAddress = async (
 
   const { results } = await fromLatLng(coordinates.lat, coordinates.lng);
   return results[0].formatted_address;
+};
+
+export const getTripCheckInCheckOutDays = (
+  userRequestedDestinations: any,
+  tripStartDate: dayjs.Dayjs,
+  tripEndDate: dayjs.Dayjs
+): number[][] => {
+  const tripCheckInCheckOutDays: number[][] = [];
+
+  for (const userRequestedDestination of userRequestedDestinations) {
+    const destinationCheckInCheckOutDays: number[] = [];
+    const destinationStartDate = dayjs(userRequestedDestination.start_date).utc(
+      true
+    );
+    const destinationEndDate = dayjs(userRequestedDestination.end_date).utc(
+      true
+    );
+
+    if (destinationStartDate.isSame(tripStartDate)) {
+      destinationCheckInCheckOutDays.push(1);
+    } else {
+      const dayOfTripOfDestinationStartDate =
+        destinationStartDate.diff(tripStartDate, "day") + 1;
+      destinationCheckInCheckOutDays.push(dayOfTripOfDestinationStartDate);
+    }
+
+    if (destinationEndDate.isSame(tripEndDate)) {
+      destinationCheckInCheckOutDays.push(
+        tripEndDate.diff(tripStartDate, "day") + 1
+      );
+    } else {
+      const dayOfTripOfDestinationEndDate =
+        destinationEndDate.diff(tripStartDate, "day") + 1;
+      destinationCheckInCheckOutDays.push(dayOfTripOfDestinationEndDate);
+    }
+
+    tripCheckInCheckOutDays.push(destinationCheckInCheckOutDays);
+  }
+
+  return tripCheckInCheckOutDays;
+};
+
+export const adjustItineraryWithSelectedHotels = async (
+  selectedHotels: Hotel[],
+  tripCheckInCheckOutDays: number[][],
+  itinerary: DayPlan[]
+) => {
+  for (
+    let destinationIndex = 0;
+    destinationIndex < selectedHotels.length;
+    destinationIndex++
+  ) {
+    const hotel: Hotel | null = selectedHotels[destinationIndex];
+
+    if (!hotel) continue;
+
+    const hotelCheckInDay = tripCheckInCheckOutDays[destinationIndex][0];
+    const hotelCheckOutDay = tripCheckInCheckOutDays[destinationIndex][1];
+    const hotelCheckInTimePeriod = getTimeOfDay(hotel.check_in_time);
+    const hotelCheckOutTimePeriod = getTimeOfDay(hotel.check_out_time);
+    const hotelLocationAddress = await getHotelLocationAddress({
+      lat: hotel.coordinates.latitude,
+      lng: hotel.coordinates.longitude,
+    });
+    const hotelCheckInEvent: Event = {
+      is_hotel: true,
+      event_name: `Check in to ${hotel.name}`,
+      location_name: "",
+      location_address: hotelLocationAddress,
+      coordinates: {
+        lat: hotel.coordinates.latitude,
+        lng: hotel.coordinates.longitude,
+      },
+      description: hotel.description,
+      rating: hotel.rating,
+      website_uri: hotel.url,
+      photo: hotel.images[0],
+      openingHours: [],
+      checkInTime: hotel.check_in_time,
+      checkOutTime: hotel.check_out_time,
+    };
+    const hotelCheckOutEvent: Event = {
+      ...hotelCheckInEvent,
+      event_name: `Check out from ${hotel.name}`,
+    };
+
+    itinerary.forEach((dayPlan: DayPlan) => {
+      const day = dayPlan.day;
+
+      if (hotelCheckInDay === day) {
+        if (hotelCheckInTimePeriod === EventCardTimeOfDay.morning) {
+          if (noHotelEvents(dayPlan)) {
+            dayPlan.morning.unshift(hotelCheckInEvent);
+          } else {
+            clearHotelEvents(dayPlan);
+            dayPlan.morning.unshift(hotelCheckInEvent);
+          }
+        } else if (hotelCheckInTimePeriod === EventCardTimeOfDay.afternoon) {
+          if (noHotelEvents(dayPlan)) {
+            dayPlan.afternoon.unshift(hotelCheckInEvent);
+          } else {
+            clearHotelEvents(dayPlan);
+            dayPlan.afternoon.unshift(hotelCheckInEvent);
+          }
+        } else {
+          if (noHotelEvents(dayPlan)) {
+            dayPlan.evening.unshift(hotelCheckInEvent);
+          } else {
+            clearHotelEvents(dayPlan);
+            dayPlan.evening.unshift(hotelCheckInEvent);
+          }
+        }
+      } else if (hotelCheckOutDay === day) {
+        if (hotelCheckOutTimePeriod === EventCardTimeOfDay.morning) {
+          if (noHotelEvents(dayPlan)) {
+            dayPlan.morning.unshift(hotelCheckOutEvent);
+          } else {
+            clearHotelEvents(dayPlan);
+            dayPlan.morning.unshift(hotelCheckOutEvent);
+          }
+        } else if (hotelCheckOutTimePeriod === EventCardTimeOfDay.afternoon) {
+          if (noHotelEvents(dayPlan)) {
+            dayPlan.afternoon.unshift(hotelCheckOutEvent);
+          } else {
+            clearHotelEvents(dayPlan);
+            dayPlan.afternoon.unshift(hotelCheckOutEvent);
+          }
+        } else {
+          if (noHotelEvents(dayPlan)) {
+            dayPlan.evening.unshift(hotelCheckOutEvent);
+          } else {
+            clearHotelEvents(dayPlan);
+            dayPlan.evening.unshift(hotelCheckOutEvent);
+          }
+        }
+      }
+    });
+  }
 };
