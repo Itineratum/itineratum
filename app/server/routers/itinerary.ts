@@ -4,6 +4,7 @@ import {
   clearHotelEvents,
   formatHotels,
   formatItinerary,
+  getTimeOfDay,
   noHotelEvents,
 } from "@/lib/pythonBackend/utils";
 import {
@@ -24,31 +25,6 @@ import {
 import { publicProcedure, router } from "../trpc";
 
 dayjs.extend(utc);
-
-const getTimeOfDay = (time: string | null | undefined): EventCardTimeOfDay => {
-  if (!time) return EventCardTimeOfDay.morning;
-
-  const [hour, minutePart] = time.toLowerCase().split(":");
-  const period = minutePart.slice(-2);
-
-  let hour24 = parseInt(hour);
-  if (period === "pm" && hour24 !== 12) {
-    hour24 += 12;
-  }
-  if (period === "am" && hour24 === 12) {
-    hour24 = 0;
-  }
-
-  if (hour24 >= 6 && hour24 < 12) {
-    return EventCardTimeOfDay.morning;
-  } else if (hour24 >= 12 && hour24 < 18) {
-    return EventCardTimeOfDay.afternoon;
-  } else if (hour24 >= 18 && hour24 < 24) {
-    return EventCardTimeOfDay.evening;
-  } else {
-    return EventCardTimeOfDay.morning;
-  }
-};
 
 export const itineraryRouter = router({
   saveItinerary: publicProcedure

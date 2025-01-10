@@ -1,9 +1,9 @@
+import { EventCardTimeOfDay } from "@/app/[locale]/itinerary/components/event-card";
 import { getDays } from "@/utils/itinerary";
 import { DayPlan, Event, Hotel } from "./types";
 
 export const getEvents = (rawTimePeriodPlan: any[]): Event[] => {
   const events: Event[] = [];
-
   rawTimePeriodPlan.map((item) => {
     events.push({
       is_hotel: item.is_hotel ? item.is_hotel : false,
@@ -46,7 +46,7 @@ export const formatItinerary = (itineraryRaw: any): DayPlan[] => {
   const itinerary: DayPlan[] = [];
   itineraryRaw = itineraryRaw.filter(
     (destinationPlan: any) =>
-      destinationPlan.plan && destinationPlan.plan.length > 0,
+      destinationPlan.plan && destinationPlan.plan.length > 0
   );
   itineraryRaw.forEach((destinationPlan: any) => {
     const days = getDays(destinationPlan.day);
@@ -63,6 +63,33 @@ export const formatItinerary = (itineraryRaw: any): DayPlan[] => {
     });
   });
   return itinerary;
+};
+
+export const getTimeOfDay = (
+  time: string | null | undefined
+): EventCardTimeOfDay => {
+  if (!time) return EventCardTimeOfDay.morning;
+
+  const [hour, minutePart] = time.toLowerCase().split(":");
+  const period = minutePart.slice(-2);
+
+  let hour24 = parseInt(hour);
+  if (period === "pm" && hour24 !== 12) {
+    hour24 += 12;
+  }
+  if (period === "am" && hour24 === 12) {
+    hour24 = 0;
+  }
+
+  if (hour24 >= 6 && hour24 < 12) {
+    return EventCardTimeOfDay.morning;
+  } else if (hour24 >= 12 && hour24 < 18) {
+    return EventCardTimeOfDay.afternoon;
+  } else if (hour24 >= 18 && hour24 < 24) {
+    return EventCardTimeOfDay.evening;
+  } else {
+    return EventCardTimeOfDay.morning;
+  }
 };
 
 export const formatHotels = (hotelsRaw: any): Hotel[][] => {
