@@ -278,7 +278,7 @@ export const adjustItineraryWithSelectedHotels = async (
     const hotelCheckInEvent: Event = {
       is_hotel: true,
       event_name: `Check in to ${hotel.name}`,
-      location_name: "",
+      location_name: hotel.name,
       location_address: hotelLocationAddress,
       coordinates: {
         lat: hotel.coordinates.latitude,
@@ -295,6 +295,7 @@ export const adjustItineraryWithSelectedHotels = async (
     const hotelCheckOutEvent: Event = {
       ...hotelCheckInEvent,
       event_name: `Check out from ${hotel.name}`,
+      location_name: hotel.name,
     };
 
     itinerary.forEach((dayPlan: DayPlan) => {

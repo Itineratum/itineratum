@@ -133,7 +133,8 @@
       "amenities": "Amenities",
       "location": "Location in",
       "select": "Select Hotel",
-      "selected": "This hotel was successfully selected for",
+      "selected": "Selected",
+      "hotelSelected": "This hotel was successfully selected for",
       "selectedFailed": "Failed to select this hotel, please try again!",
       "alreadySelected": "Hotel already selected!"
     },

@@ -9,6 +9,7 @@ export interface IItinerary {
   generated_at: Date;
   request: GenerateItineraryJSON;
   itinerary: DayPlan[];
+  selected_hotels: Hotel[];
   hotels: Hotel[][];
   flights: any[];
 }

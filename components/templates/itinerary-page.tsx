@@ -119,7 +119,7 @@ const ItineraryPage = ({ params }: { params: { id: string } }) => {
       setDayPlan(getCorrectDayPlan());
       setTravelTimes([]);
       setDestinations(getDestinations());
-      setSelectedHotels(Array(getDestinations().length).fill(null));
+      setSelectedHotels(getItinerary.data.selected_hotels ?? []);
       setIsLoading(false);
     }
   }, [getItinerary.data]);

@@ -121,6 +121,7 @@ export const itineraryRouter = router({
       const adjustItineraryHotelsRes = await adjustItineraryHotels(
         itineraryId,
         itinerary,
+        selectedHotels,
       );
 
       if (!adjustItineraryHotelsRes.success) {

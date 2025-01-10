@@ -43,6 +43,7 @@ const EventDetailsDialog = ({
 
   const height = 442;
   const width = 1087;
+  const contentMaxWidth = width - 80;
 
   useEffect(() => {
     if (!event) return;
@@ -95,7 +96,7 @@ const EventDetailsDialog = ({
 
   const title = () => {
     return (
-      <DialogTitle maxWidth={width - 80}>
+      <DialogTitle maxWidth={contentMaxWidth}>
         <Text
           text={event ? event.event_name : ""}
           variant={TypographyVariant.h4}
@@ -108,7 +109,7 @@ const EventDetailsDialog = ({
   const description = () => {
     return (
       event?.description && (
-        <DialogContentText maxWidth={width - 80}>
+        <DialogContentText maxWidth={contentMaxWidth}>
           <Text
             text={event ? event.description : ""}
             variant={TypographyVariant.h6}
@@ -127,7 +128,7 @@ const EventDetailsDialog = ({
 
     const address = () => {
       return (
-        <Stack direction="row" spacing={spacing}>
+        <Stack direction="row" spacing={spacing} maxWidth={contentMaxWidth}>
           <Text
             text={t("address") + ": "}
             variant={typographyVariant}
@@ -152,7 +153,7 @@ const EventDetailsDialog = ({
 
     const website = () => {
       return event && event.website_uri && event.website_uri !== "N/A" ? (
-        <Stack direction="row" spacing={spacing}>
+        <Stack direction="row" spacing={spacing} maxWidth={contentMaxWidth}>
           <Text
             text={t("website") + ": "}
             variant={typographyVariant}

@@ -1,5 +1,5 @@
 import { connectToDatabase } from "@/lib/db";
-import { DayPlan } from "@/lib/pythonBackend/types";
+import { DayPlan, Hotel } from "@/lib/pythonBackend/types";
 import Itinerary from "@/models/Itinerary";
 import { ObjectId } from "mongodb";
 
@@ -17,6 +17,7 @@ export const saveItinerary = async (
       generated_at: new Date(),
       request,
       itinerary,
+      selected_hotels: [],
       hotels,
       flights,
     };
@@ -100,12 +101,14 @@ export const adjustItineraryBudget = async (
 export const adjustItineraryHotels = async (
   itineraryId: string,
   itinerary: DayPlan[],
+  selectedHotels: Hotel[],
 ) => {
   try {
     await connectToDatabase();
     const update = {
       $set: {
         itinerary,
+        selected_hotels: selectedHotels,
       },
     };
     const result = await Itinerary.updateOne(

@@ -112,7 +112,17 @@ const HotelSelectorDialog = ({
 
   const handleOnClose = () => {
     setOpen(false);
-    router.refresh();
+  };
+
+  const hotelSelected = (hotel: Hotel | null) => {
+    return selectedHotels.some(
+      (selectedHotel: Hotel | null) =>
+        selectedHotel &&
+        hotel &&
+        selectedHotel.name === hotel.name &&
+        JSON.stringify(selectedHotel.coordinates) ===
+          JSON.stringify(hotel.coordinates),
+    );
   };
 
   const titleHotelTabs = () => {
@@ -143,7 +153,7 @@ const HotelSelectorDialog = ({
           <Tabs value={hotelTabValue} onChange={handleOnChange}>
             {hotels.map((hotel) => (
               <Tab
-                label={hotel.name}
+                label={`${hotel.name} ${hotelSelected(hotel) ? `(${t("selected")})` : ""}`}
                 sx={{
                   color: colorsConst.palette.text.primary,
                   width: 1 / hotels.length,
@@ -952,6 +962,8 @@ const HotelSelectorDialog = ({
   };
 
   const selectHotelButton = () => {
+    const autoCloseDialogTimeout = 2000; // this dialog should automaticlly close by this time in milliseconds
+
     const handleOnClick = async () => {
       if (hotel) {
         const newSelectedHotels = [...selectedHotels];
@@ -963,7 +975,7 @@ const HotelSelectorDialog = ({
         };
         await adjustItineraryHotels.mutateAsync(data);
         utils.itinerary.getItinerary.invalidate();
-        setAlertText(`${t("selected")} ${destination}`);
+        setAlertText(`${t("hotelSelected")} ${destination}`);
         setAlertType(AlertType.success);
       } else {
         setAlertText(t("selectedFailed"));
@@ -971,12 +983,23 @@ const HotelSelectorDialog = ({
       }
 
       setShowAlert(true);
+
+      const timer = setTimeout(() => {
+        setOpen(false);
+        router.refresh();
+      }, autoCloseDialogTimeout);
+
+      return () => clearTimeout(timer);
     };
 
     return (
       <Box display="flex" justifyContent="flex-end">
-        <Button onClick={handleOnClick} variant="contained">
-          {t("select")}
+        <Button
+          onClick={handleOnClick}
+          variant="contained"
+          disabled={hotelSelected(hotel!)}
+        >
+          {hotelSelected(hotel!) ? t("alreadySelected") : t("select")}
         </Button>
       </Box>
     );
