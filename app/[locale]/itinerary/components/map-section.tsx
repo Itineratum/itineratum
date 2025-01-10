@@ -4,7 +4,6 @@ import { Event } from "@/lib/pythonBackend/types";
 import { CircularProgress, Container } from "@mui/material";
 import { Map } from "@vis.gl/react-google-maps";
 import { useEffect, useState } from "react";
-import { fromAddress, OutputFormat, setDefaults } from "react-geocode";
 import { EventCardTimeOfDay } from "./event-card";
 import MapMarker from "./map-marker";
 
@@ -17,13 +16,6 @@ const MapSection = ({
   setSelectedEvent: any;
   selectedEvent: Event | null;
 }) => {
-  setDefaults({
-    key: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY,
-    language: "en",
-    region: "sg",
-    outputFormat: OutputFormat.JSON,
-  });
-
   const [mapMarkersData, setMapMarkersData] = useState<MapMarkerData[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
@@ -32,57 +24,33 @@ const MapSection = ({
   const borderRadius = "20px";
 
   useEffect(() => {
-    const fetchPositions = async () => {
-      const newMapMarkersData: MapMarkerData[] = [];
+    const newMapMarkersData: MapMarkerData[] = [];
 
-      for (const timeOfDay in dayPlanWithTimeOfDay) {
-        if (
-          !Object.prototype.hasOwnProperty.call(dayPlanWithTimeOfDay, timeOfDay)
-        )
-          continue;
-        const events =
-          dayPlanWithTimeOfDay[timeOfDay as keyof typeof dayPlanWithTimeOfDay];
+    for (const timeOfDay in dayPlanWithTimeOfDay) {
+      if (
+        !Object.prototype.hasOwnProperty.call(dayPlanWithTimeOfDay, timeOfDay)
+      )
+        continue;
+      const events =
+        dayPlanWithTimeOfDay[timeOfDay as keyof typeof dayPlanWithTimeOfDay];
 
-        for (const event of events) {
-          if (!event) continue;
+      for (const event of events) {
+        if (!event) continue;
 
-          if (event.is_hotel) {
-            newMapMarkersData.push({
-              timeOfDay:
-                EventCardTimeOfDay[
-                  timeOfDay as keyof typeof EventCardTimeOfDay
-                ],
-              event,
-              position: {
-                lat: event.coordinates!.lat ?? 0,
-                lng: event.coordinates!.lng ?? 0,
-              },
-            });
-          } else {
-            try {
-              const { results } = await fromAddress(event.location_address);
-              const { lat, lng } = results[0].geometry.location;
-              const newMapMarkerData: MapMarkerData = {
-                timeOfDay:
-                  EventCardTimeOfDay[
-                    timeOfDay as keyof typeof EventCardTimeOfDay
-                  ],
-                event,
-                position: { lat, lng },
-              };
-              newMapMarkersData.push(newMapMarkerData);
-            } catch (error) {
-              console.error(error);
-            }
-          }
-        }
+        newMapMarkersData.push({
+          timeOfDay:
+            EventCardTimeOfDay[timeOfDay as keyof typeof EventCardTimeOfDay],
+          event,
+          position: {
+            lat: event.coordinates!.lat ?? 0,
+            lng: event.coordinates!.lng ?? 0,
+          },
+        });
       }
 
       setMapMarkersData(newMapMarkersData);
       setIsLoading(false);
-    };
-
-    fetchPositions();
+    }
   }, [dayPlanWithTimeOfDay]);
 
   if (isLoading) {

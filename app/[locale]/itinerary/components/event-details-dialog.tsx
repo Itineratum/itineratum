@@ -19,7 +19,7 @@ import { useMap, useMapsLibrary } from "@vis.gl/react-google-maps";
 import { useTranslations } from "next-intl";
 import Image from "next/image";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
-import { setDefaults, OutputFormat, fromLatLng } from "react-geocode";
+import { OutputFormat, setDefaults } from "react-geocode";
 
 const EventDetailsDialog = ({
   open,
@@ -99,19 +99,8 @@ const EventDetailsDialog = ({
   }, [event, placesLibrary, map]);
 
   useEffect(() => {
-    const getHotelAddress = async () => {
-      if (!event?.is_hotel || !event.coordinates) return;
-
-      const { results } = await fromLatLng(
-        event?.coordinates?.lat,
-        event?.coordinates?.lng,
-      );
-
-      setHotelAddress(results[0].formatted_address);
-    };
-
     if (event && event.is_hotel) {
-      getHotelAddress();
+      setHotelAddress(event?.location_address);
     }
   }, [event]);
 

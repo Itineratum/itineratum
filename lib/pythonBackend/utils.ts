@@ -1,16 +1,35 @@
 import { EventCardTimeOfDay } from "@/app/[locale]/itinerary/components/event-card";
 import { getDays } from "@/utils/itinerary";
 import { DayPlan, Event, Hotel } from "./types";
+import {
+  setDefaults,
+  OutputFormat,
+  fromAddress,
+  fromLatLng,
+} from "react-geocode";
 
-export const getEvents = (rawTimePeriodPlan: any[]): Event[] => {
+export const getEvents = async (rawTimePeriodPlan: any[]): Promise<Event[]> => {
+  setDefaults({
+    key: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY,
+    language: "en",
+    region: "sg",
+    outputFormat: OutputFormat.JSON,
+  });
+
   const events: Event[] = [];
-  rawTimePeriodPlan.map((item) => {
+
+  for (const item of rawTimePeriodPlan) {
+    const { results } = await fromAddress(item.location_address);
+    const { lat, lng } = results[0].geometry.location;
     events.push({
       is_hotel: item.is_hotel ? item.is_hotel : false,
       event_name: item.location_name,
       location_name: item.display_name ? item.display_name.text : "",
       location_address: item.location_address,
-      coordinates: null,
+      coordinates: {
+        lat,
+        lng,
+      },
       description: item.description,
       rating: item.rating ? item.rating : 0,
       website_uri: item.website_uri ? item.website_uri : "",
@@ -24,7 +43,8 @@ export const getEvents = (rawTimePeriodPlan: any[]): Event[] => {
       checkInTime: null,
       checkOutTime: null,
     });
-  });
+  }
+
   return events;
 };
 
@@ -42,31 +62,39 @@ export const extractPlaceId = (input: string): string | null => {
   return null;
 };
 
-export const formatItinerary = (itineraryRaw: any): DayPlan[] => {
+export const formatItinerary = async (
+  itineraryRaw: any,
+): Promise<DayPlan[]> => {
   const itinerary: DayPlan[] = [];
   itineraryRaw = itineraryRaw.filter(
     (destinationPlan: any) =>
-      destinationPlan.plan && destinationPlan.plan.length > 0
+      destinationPlan.plan && destinationPlan.plan.length > 0,
   );
-  itineraryRaw.forEach((destinationPlan: any) => {
+
+  for (const destinationPlan of itineraryRaw) {
     const days = getDays(destinationPlan.day);
     const destination = destinationPlan.location;
-    destinationPlan.plan.forEach((rawDayPlan: any, index: number) => {
+
+    for (let index = 0; index < destinationPlan.plan.length; index++) {
+      const rawDayPlan = destinationPlan.plan[index];
+      const morning = await getEvents(rawDayPlan.morning);
+      const afternoon = await getEvents(rawDayPlan.afternoon);
+      const evening = await getEvents(rawDayPlan.evening);
       const dayPlan: DayPlan = {
         destination,
         day: days[index],
-        morning: getEvents(rawDayPlan.morning),
-        afternoon: getEvents(rawDayPlan.afternoon),
-        evening: getEvents(rawDayPlan.evening),
+        morning,
+        afternoon,
+        evening,
       };
       itinerary.push(dayPlan);
-    });
-  });
+    }
+  }
   return itinerary;
 };
 
 export const getTimeOfDay = (
-  time: string | null | undefined
+  time: string | null | undefined,
 ): EventCardTimeOfDay => {
   if (!time) return EventCardTimeOfDay.morning;
 
@@ -157,4 +185,23 @@ export const clearHotelEvents = (dayPlan: DayPlan) => {
       else if (index === 2) dayPlan.evening.shift();
     }
   });
+};
+
+interface Coordinates {
+  lat: number;
+  lng: number;
+}
+
+export const getHotelLocationAddress = async (
+  coordinates: Coordinates,
+): Promise<string> => {
+  setDefaults({
+    key: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY,
+    language: "en",
+    region: "sg",
+    outputFormat: OutputFormat.JSON,
+  });
+
+  const { results } = await fromLatLng(coordinates.lat, coordinates.lng);
+  return results[0].formatted_address;
 };
