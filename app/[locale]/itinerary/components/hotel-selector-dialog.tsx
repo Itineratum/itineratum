@@ -50,13 +50,21 @@ import {
   Tab,
   Tabs,
 } from "@mui/material";
-import { AdvancedMarker, Map, Pin } from "@vis.gl/react-google-maps";
+import {
+  AdvancedMarker,
+  InfoWindow,
+  Map,
+  Pin,
+  useAdvancedMarkerRef,
+} from "@vis.gl/react-google-maps";
 import { useTranslations } from "next-intl";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import React, { Dispatch, SetStateAction, useEffect, useState } from "react";
 import Carousel from "react-material-ui-carousel";
-import { Position } from "./map-section";
+import { EventCardTimeOfDay } from "./event-card";
+import { DayPlanWithTimeOfDay, MapMarkerData, Position } from "./map-section";
+import MapMarker from "./map-marker";
 
 const HotelSelectorDialog = ({
   open,
@@ -68,6 +76,7 @@ const HotelSelectorDialog = ({
   destination,
   currency,
   itineraryId,
+  dayPlanWithTimeOfDay,
 }: {
   open: boolean;
   setOpen: Dispatch<SetStateAction<boolean>>;
@@ -78,6 +87,7 @@ const HotelSelectorDialog = ({
   destination: string;
   currency: Currency;
   itineraryId: string;
+  dayPlanWithTimeOfDay: DayPlanWithTimeOfDay;
 }) => {
   const t = useTranslations("itinerary.hotelSelectorDialog");
   const router = useRouter();
@@ -87,6 +97,10 @@ const HotelSelectorDialog = ({
   const [showAlert, setShowAlert] = useState<boolean>(false);
   const [alertText, setAlertText] = useState<string>("");
   const [alertType, setAlertType] = useState<AlertType>(AlertType.info);
+  const [mapMarkersData, setMapMarkersData] = useState<MapMarkerData[]>([]);
+  const [hotelMarkerPopupShown, setHotelMarkerPopupShown] =
+    useState<boolean>(false);
+  const [hotelMarkerRef, hotelMarker] = useAdvancedMarkerRef();
 
   const ratingSpacing = 2;
   const spacing = 4;
@@ -109,6 +123,35 @@ const HotelSelectorDialog = ({
       setAlertType(AlertType.info);
     }
   }, [open, destinationIndex, destination, hotels]);
+
+  useEffect(() => {
+    const newMapMarkersData: MapMarkerData[] = [];
+
+    for (const timeOfDay in dayPlanWithTimeOfDay) {
+      if (
+        !Object.prototype.hasOwnProperty.call(dayPlanWithTimeOfDay, timeOfDay)
+      )
+        continue;
+      const events =
+        dayPlanWithTimeOfDay[timeOfDay as keyof typeof dayPlanWithTimeOfDay];
+
+      for (const event of events) {
+        if (!event) continue;
+
+        newMapMarkersData.push({
+          timeOfDay:
+            EventCardTimeOfDay[timeOfDay as keyof typeof EventCardTimeOfDay],
+          event,
+          position: {
+            lat: event.coordinates!.lat ?? 0,
+            lng: event.coordinates!.lng ?? 0,
+          },
+        });
+      }
+
+      setMapMarkersData(newMapMarkersData);
+    }
+  }, [dayPlanWithTimeOfDay]);
 
   const handleOnClose = () => {
     setOpen(false);
@@ -878,11 +921,69 @@ const HotelSelectorDialog = ({
           const height = "400px";
           const width = "700px";
           const borderRadius = "20px";
-          const position: Position = {
+          const hotelPosition: Position = {
             lat: hotel?.coordinates.latitude ?? 0,
             lng: hotel?.coordinates.longitude ?? 0,
           };
-          const color = colorsConst.components.mapSection.hotel;
+
+          const eventMapMarker = (mapMarkerData: MapMarkerData) => {
+            return (
+              <MapMarker
+                key={0}
+                position={mapMarkerData.position}
+                timeOfDay={mapMarkerData.timeOfDay}
+                setSelectedEvent={undefined}
+                event={mapMarkerData.event}
+                selected={null}
+              />
+            );
+          };
+
+          const hotelMapMarker = () => {
+            const color = colorsConst.components.mapSection.hotel;
+
+            const handleOnClick = () => {
+              setHotelMarkerPopupShown(true);
+            };
+
+            const popUp = () => {
+              const handleOnClose = () => {
+                setHotelMarkerPopupShown(false);
+              };
+
+              return (
+                hotelMarkerPopupShown && (
+                  <InfoWindow anchor={hotelMarker} onClose={handleOnClose}>
+                    <Text
+                      text={hotel?.name!}
+                      variant={TypographyVariant.body1}
+                      bold={false}
+                    />
+                  </InfoWindow>
+                )
+              );
+            };
+
+            return (
+              hotel && (
+                <AdvancedMarker
+                  key={JSON.stringify(hotelPosition)}
+                  ref={hotelMarkerRef}
+                  position={hotelPosition}
+                  onClick={handleOnClick}
+                  clickable={true}
+                >
+                  {popUp()}
+                  <Pin
+                    background={color}
+                    borderColor={color}
+                    glyphColor={colorsConst.components.mapSection.glyphColor}
+                    scale={2}
+                  />
+                </AdvancedMarker>
+              )
+            );
+          };
 
           return (
             hotel?.coordinates && (
@@ -896,19 +997,15 @@ const HotelSelectorDialog = ({
                   borderRadius,
                   overflow: "hidden",
                 }}
-                defaultCenter={position}
-                defaultZoom={13}
+                defaultCenter={hotelPosition}
+                defaultZoom={11}
                 gestureHandling={"greedy"}
                 disableDefaultUI={true}
               >
-                <AdvancedMarker position={position}>
-                  <Pin
-                    background={color}
-                    borderColor={color}
-                    glyphColor={colorsConst.components.mapSection.glyphColor}
-                    scale={2}
-                  />
-                </AdvancedMarker>
+                {mapMarkersData.map((mapMarkerData: MapMarkerData) =>
+                  eventMapMarker(mapMarkerData),
+                )}
+                {hotelMapMarker()}
               </Map>
             )
           );

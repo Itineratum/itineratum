@@ -526,6 +526,11 @@ const ItineraryPage = ({ params }: { params: { id: string } }) => {
           itineraryData.request.payload.localisation.currency as Currency
         }
         itineraryId={params.id}
+        dayPlanWithTimeOfDay={{
+          morning: dayPlan!.morning,
+          afternoon: dayPlan!.afternoon,
+          evening: dayPlan!.evening,
+        }}
       />
       <EventDetailsDialog
         open={eventDetailsDialogOpen}

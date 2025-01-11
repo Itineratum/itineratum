@@ -26,7 +26,7 @@ const MapMarker = ({
   timeOfDay: EventCardTimeOfDay;
   setSelectedEvent: any;
   event: Event;
-  selected: boolean;
+  selected: boolean | null;
 }) => {
   setDefaults({
     key: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY,
@@ -56,7 +56,8 @@ const MapMarker = ({
   }, [selected]);
 
   const handleOnClick = () => {
-    setSelectedEvent(event);
+    if (setSelectedEvent) setSelectedEvent(event);
+
     setPopUpShown(true);
   };
 
