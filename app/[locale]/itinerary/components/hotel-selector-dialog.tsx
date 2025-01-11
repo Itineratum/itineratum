@@ -12,6 +12,7 @@ import {
   Hotel,
   HotelAmenity,
   HotelType,
+  Position,
   VacationRentalAmenity,
 } from "@/lib/pythonBackend/types";
 import AccessibleIcon from "@mui/icons-material/Accessible";
@@ -63,7 +64,7 @@ import { useRouter } from "next/navigation";
 import React, { Dispatch, SetStateAction, useEffect, useState } from "react";
 import Carousel from "react-material-ui-carousel";
 import { EventCardTimeOfDay } from "./event-card";
-import { DayPlanWithTimeOfDay, MapMarkerData, Position } from "./map-section";
+import { DayPlanWithTimeOfDay, MapMarkerData } from "./map-section";
 import MapMarker from "./map-marker";
 
 const HotelSelectorDialog = ({

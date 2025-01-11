@@ -7,7 +7,8 @@ import {
   fromLatLng,
   setDefaults,
 } from "react-geocode";
-import { DayPlan, Event, Hotel } from "./types";
+import { DayPlan, Event, Hotel, Position } from "./types";
+
 export const getEvents = async (rawTimePeriodPlan: any[]): Promise<Event[]> => {
   setDefaults({
     key: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY,
@@ -194,13 +195,8 @@ export const clearHotelEvents = (dayPlan: DayPlan) => {
   });
 };
 
-interface Coordinates {
-  lat: number;
-  lng: number;
-}
-
 export const getHotelLocationAddress = async (
-  coordinates: Coordinates,
+  coordinates: Position,
 ): Promise<string> => {
   setDefaults({
     key: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY,

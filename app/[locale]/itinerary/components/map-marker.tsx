@@ -1,7 +1,7 @@
 import Text from "@/components/atoms/text";
 import { TypographyVariant } from "@/constants/enums/theme";
 import colorsConst from "@/constants/pages/colors.json";
-import { Event } from "@/lib/pythonBackend/types";
+import { Event, Position } from "@/lib/pythonBackend/types";
 import {
   AdvancedMarker,
   InfoWindow,
@@ -11,7 +11,6 @@ import {
 import { useEffect, useState } from "react";
 import { OutputFormat, setDefaults } from "react-geocode";
 import { EventCardTimeOfDay } from "./event-card";
-import { Position } from "./map-section";
 
 const MapMarker = ({
   key,

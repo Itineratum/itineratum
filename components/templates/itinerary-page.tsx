@@ -22,7 +22,7 @@ import {
   TypographyVariant,
 } from "@/constants/enums/theme";
 import { IItinerary } from "@/constants/types/itinerary";
-import { DayPlan, Event, Hotel } from "@/lib/pythonBackend/types";
+import { DayPlan, Event, Hotel, TravelTime } from "@/lib/pythonBackend/types";
 import {
   Box,
   Button,
@@ -31,7 +31,7 @@ import {
   Skeleton,
   Stack,
 } from "@mui/material";
-import { useMap, useMapsLibrary } from "@vis.gl/react-google-maps";
+import { useMapsLibrary, useMap } from "@vis.gl/react-google-maps";
 import dayjs from "dayjs";
 import { useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
@@ -55,7 +55,7 @@ const ItineraryPage = ({ params }: { params: { id: string } }) => {
   const [selectedEvent, setSelectedEvent] = useState<Event | null>(null);
   const [eventDetailsDialogOpen, setEventDetailsDialogOpen] =
     useState<boolean>(false);
-  const [travelTimes, setTravelTimes] = useState<any[]>([]);
+  const [travelTimes, setTravelTimes] = useState<TravelTime[]>([]);
   const [adjustBudgetDialogOpen, setAdjustBudgetDialogOpen] =
     useState<boolean>(false);
   const [travelTimesLoading, setTravelTimesLoading] = useState<boolean>(true);
@@ -393,10 +393,7 @@ const ItineraryPage = ({ params }: { params: { id: string } }) => {
                   ? noTravelTimes()
                   : index < events.length - 1 &&
                     travelTimes[index] && (
-                      <TravelCard
-                        duration={travelTimes[index].duration}
-                        distance={travelTimes[index].distance}
-                      />
+                      <TravelCard travelTime={travelTimes[index]} />
                     )}
             </Stack>
           ))}

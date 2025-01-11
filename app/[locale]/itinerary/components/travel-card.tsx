@@ -1,15 +1,10 @@
 import Text from "@/components/atoms/text";
 import { TypographyVariant } from "@/constants/enums/theme";
+import { TravelTime } from "@/lib/pythonBackend/types";
 import DirectionsCarIcon from "@mui/icons-material/DirectionsCar";
 import { Stack } from "@mui/material";
 
-const TravelCard = ({
-  duration,
-  distance,
-}: {
-  duration: string;
-  distance: string;
-}) => {
+const TravelCard = ({ travelTime }: { travelTime: TravelTime }) => {
   const spacing = 2;
 
   const icon = () => <DirectionsCarIcon />;
@@ -20,7 +15,7 @@ const TravelCard = ({
       <Stack direction="row" alignItems="center" spacing={spacing}>
         {icon()}
         <Text
-          text={`${duration} (${distance})`}
+          text={`${travelTime.duration} (${travelTime.distance})`}
           variant={TypographyVariant.body1}
           bold={true}
         />

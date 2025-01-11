@@ -1,4 +1,4 @@
-import { DayPlan, Hotel } from "@/lib/pythonBackend/types";
+import { DayPlan, Hotel, TravelTime } from "@/lib/pythonBackend/types";
 import {
   adjustItineraryWithSelectedHotels,
   formatHotels,
@@ -32,7 +32,6 @@ export const itineraryRouter = router({
       const email = data.input.email;
       const request = data.input.request;
       const flights = data.input.flights;
-
       const itineraryRaw = data.input.itinerary;
       const itinerary: DayPlan[] = await formatItinerary(itineraryRaw);
       const hotelsRaw = data.input.hotels;
@@ -97,7 +96,7 @@ export const itineraryRouter = router({
     .mutation(async (data) => {
       const itineraryId = data.input.itineraryId;
       const retrieveItineraryRes = await retrieveItinerary(itineraryId);
-      let itinerary = retrieveItineraryRes.data.itinerary;
+      let itinerary: DayPlan[] = retrieveItineraryRes.data.itinerary;
       const userRequestedDestinations =
         retrieveItineraryRes.data.request.payload.user_requested_destinations;
       const tripStartDate = dayjs(
@@ -117,7 +116,6 @@ export const itineraryRouter = router({
         tripCheckInCheckOutDays,
         itinerary,
       );
-
       const adjustItineraryHotelsRes = await adjustItineraryHotels(
         itineraryId,
         itinerary,

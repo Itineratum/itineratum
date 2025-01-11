@@ -1,6 +1,6 @@
 "use client";
 
-import { Event } from "@/lib/pythonBackend/types";
+import { Event, Position } from "@/lib/pythonBackend/types";
 import { CircularProgress, Container } from "@mui/material";
 import { Map } from "@vis.gl/react-google-maps";
 import { useEffect, useState } from "react";
@@ -95,11 +95,6 @@ const MapSection = ({
 };
 
 export default MapSection;
-
-export interface Position {
-  lat: number;
-  lng: number;
-}
 
 export interface DayPlanWithTimeOfDay {
   morning: Event[];

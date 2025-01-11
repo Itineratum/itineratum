@@ -52,28 +52,24 @@ export interface Event {
   event_name: string;
   location_name: string;
   location_address: string;
-  coordinates: {
-    lat: number;
-    lng: number;
-  } | null;
+  coordinates: Position | null;
   description: string;
   rating: number;
   website_uri: string;
-  // price_range: PriceRange;
   photo: string; // to get this using Google Place Photo (New)
   openingHours: string[];
   checkInTime: string | null;
   checkOutTime: string | null;
 }
 
-export interface PriceRange {
-  startPrice: Price;
-  endPrice: Price;
+export interface Position {
+  lat: number;
+  lng: number;
 }
 
-export interface Price {
-  currencyCode: string;
-  units: string;
+export interface TravelTime {
+  duration: string;
+  distance: string;
 }
 
 export interface Hotel {
