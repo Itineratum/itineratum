@@ -33,6 +33,7 @@ import {
 } from "@mui/material";
 import { useMapsLibrary, useMap } from "@vis.gl/react-google-maps";
 import dayjs from "dayjs";
+import { get } from "lodash";
 import { useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
 import { OutputFormat, setDefaults } from "react-geocode";
@@ -58,18 +59,13 @@ const ItineraryPage = ({ params }: { params: { id: string } }) => {
   const [travelTimes, setTravelTimes] = useState<TravelTime[]>([]);
   const [adjustBudgetDialogOpen, setAdjustBudgetDialogOpen] =
     useState<boolean>(false);
-  const [travelTimesLoading, setTravelTimesLoading] = useState<boolean>(true);
   const [destinations, setDestinations] = useState<string[]>([]);
   const [hotelSelectorDialogOpen, setHotelSelectorDialogOpen] =
     useState<boolean>(false);
   const [selectedHotels, setSelectedHotels] = useState<Hotel[]>([]);
 
-  const routesLibrary = useMapsLibrary("routes");
-  const map = useMap();
-
   const gap = 6;
   const paddingBottom = "20px";
-  const maxTravelTimesLoadingTime = 8000; // in milliseconds
 
   const getItinerary = trpc.itinerary.getItinerary.useQuery(
     { itineraryId: params.id },
@@ -91,16 +87,6 @@ const ItineraryPage = ({ params }: { params: { id: string } }) => {
       (dayPlan: DayPlan) => dayPlan.day === dayNum,
     )[0];
 
-  const getTravelOriginDestinations = (list: string[]): string[][] => {
-    const result: string[][] = [];
-
-    for (let i = 0; i < list.length - 1; i++) {
-      result.push([list[i], list[i + 1]]);
-    }
-
-    return result;
-  };
-
   const getDestinations = () => {
     const newDestinations: string[] = [];
 
@@ -117,9 +103,9 @@ const ItineraryPage = ({ params }: { params: { id: string } }) => {
     if (getItinerary.data) {
       setItineraryData(getItinerary.data);
       setDayPlan(getCorrectDayPlan());
-      setTravelTimes([]);
       setDestinations(getDestinations());
       setSelectedHotels(getItinerary.data.selected_hotels ?? []);
+      setTravelTimes(getItinerary.data.travel_times[0]);
       setIsLoading(false);
     }
   }, [getItinerary.data]);
@@ -127,67 +113,10 @@ const ItineraryPage = ({ params }: { params: { id: string } }) => {
   useEffect(() => {
     if (getItinerary.data) {
       setDayPlan(getCorrectDayPlan());
-      setTravelTimes([]);
-      setTravelTimesLoading(true);
+      setTravelTimes(getItinerary.data.travel_times[dayNum - 1]);
       setSelectedEvent(null);
     }
   }, [dayNum]);
-
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setTravelTimesLoading(false);
-    }, maxTravelTimesLoadingTime);
-
-    return () => clearTimeout(timer);
-  }, [dayNum]);
-
-  useEffect(() => {
-    if (!map || !routesLibrary || !dayPlan) return;
-
-    const distanceMatrixService = new routesLibrary.DistanceMatrixService();
-    const eventLocations: any[] = dayPlan.morning
-      .concat(dayPlan.afternoon)
-      .concat(dayPlan.evening)
-      .map((event) =>
-        event.location_address === ""
-          ? event.coordinates
-          : event.location_address,
-      );
-
-    const originDestinationPairs = getTravelOriginDestinations(eventLocations);
-
-    const fetchTravelTimes = async () => {
-      const newTravelTimes: any[] = [];
-
-      for (const originDestinationPair of originDestinationPairs) {
-        const request: google.maps.DistanceMatrixRequest = {
-          origins: [originDestinationPair[0]],
-          destinations: [originDestinationPair[1]],
-          travelMode: google.maps.TravelMode.DRIVING, // TODO: using the driving travel mode for now, can't seem to use transit travel mode
-          unitSystem: google.maps.UnitSystem.METRIC,
-          avoidHighways: false,
-          avoidTolls: false,
-        };
-
-        try {
-          const response =
-            await distanceMatrixService.getDistanceMatrix(request);
-          const travelTime = {
-            distance: response.rows[0].elements[0].distance.text,
-            duration: response.rows[0].elements[0].duration.text,
-          };
-          newTravelTimes.push(travelTime);
-        } catch (error) {
-          console.error("Error fetching distance matrix:", error);
-        }
-      }
-
-      setTravelTimes(newTravelTimes);
-      setTravelTimesLoading(false);
-    };
-
-    fetchTravelTimes();
-  }, [map, routesLibrary]);
 
   if (isLoading)
     return (
@@ -341,19 +270,6 @@ const ItineraryPage = ({ params }: { params: { id: string } }) => {
         .concat(dayPlan!.afternoon)
         .concat(dayPlan!.evening);
 
-      const skeletonForTravelCard = () => {
-        return (
-          <Box display="flex" justifyContent="center">
-            <Skeleton
-              height={64.8} // do not change; this was gotten from the inspector tool on the browser
-              width={eventCardMaxWidth * 0.5}
-              variant="rounded"
-              animation="wave"
-            />
-          </Box>
-        );
-      };
-
       const noTravelTimes = () => {
         return (
           <Box display="flex" justifyContent="center">
@@ -387,14 +303,12 @@ const ItineraryPage = ({ params }: { params: { id: string } }) => {
                   JSON.stringify(event) === JSON.stringify(selectedEvent)
                 }
               />
-              {travelTimes.length < 1 && travelTimesLoading
-                ? skeletonForTravelCard()
-                : !travelTimesLoading && travelTimes.length < 1
-                  ? noTravelTimes()
-                  : index < events.length - 1 &&
-                    travelTimes[index] && (
-                      <TravelCard travelTime={travelTimes[index]} />
-                    )}
+              {travelTimes.length < 1
+                ? noTravelTimes()
+                : index < events.length - 1 &&
+                  travelTimes[index] && (
+                    <TravelCard travelTime={travelTimes[index]} />
+                  )}
             </Stack>
           ))}
         </Stack>

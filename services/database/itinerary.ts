@@ -7,6 +7,7 @@ export const saveItinerary = async (
   email: string | null,
   request: any,
   itinerary: DayPlan[],
+  travelTimes: TravelTime[][],
   hotels: any,
   flights: any,
 ) => {
@@ -17,7 +18,7 @@ export const saveItinerary = async (
       generated_at: new Date(),
       request,
       itinerary,
-      travel_times: [],
+      travel_times: travelTimes,
       selected_hotels: [],
       hotels,
       flights,
@@ -67,6 +68,7 @@ export const adjustItineraryBudget = async (
   itineraryId: string,
   request: any,
   itinerary: DayPlan[],
+  travelTimes: TravelTime[][],
   hotels: any,
   flights: any,
 ) => {
@@ -77,7 +79,7 @@ export const adjustItineraryBudget = async (
         generated_at: new Date(),
         request,
         itinerary,
-        travel_times: [],
+        travel_times: travelTimes,
         selected_hotels: [],
         hotels,
         flights,
@@ -105,6 +107,7 @@ export const adjustItineraryHotels = async (
   itineraryId: string,
   itinerary: DayPlan[],
   selectedHotels: Hotel[],
+  travelTimes: TravelTime[][],
 ) => {
   try {
     await connectToDatabase();
@@ -112,6 +115,7 @@ export const adjustItineraryHotels = async (
       $set: {
         itinerary,
         selected_hotels: selectedHotels,
+        travel_times: travelTimes,
       },
     };
     const result = await Itinerary.updateOne(

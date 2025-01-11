@@ -8,6 +8,7 @@ import { defaultEventImageSrc } from "@/constants/pages/components/itineraryGene
 import { Event } from "@/lib/pythonBackend/types";
 import { Box, Button, Skeleton } from "@mui/material";
 import { useTranslations } from "next-intl";
+import Image from "next/image";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
 
 export const eventDetailsCardHeight = 300;
@@ -141,12 +142,19 @@ const EventDetailsCard = ({
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
-          backgroundImage: `url('${imageSrc}')`,
-          backgroundSize: "cover",
-          backgroundPosition: "center",
           border: "2px solid black",
         }}
       >
+        {imageSrc && (
+          <Image
+            key={imageSrc}
+            src={imageSrc}
+            alt="Event image"
+            layout="fill"
+            objectFit="cover"
+            priority
+          />
+        )}
         {overlay()}
       </Box>
     );

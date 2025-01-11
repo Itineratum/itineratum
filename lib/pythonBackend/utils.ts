@@ -7,7 +7,7 @@ import {
   fromLatLng,
   setDefaults,
 } from "react-geocode";
-import { DayPlan, Event, Hotel, Position } from "./types";
+import { DayPlan, Event, Hotel, Position, TravelTime } from "./types";
 
 export const getEvents = async (rawTimePeriodPlan: any[]): Promise<Event[]> => {
   setDefaults({
@@ -66,8 +66,67 @@ export const getEvents = async (rawTimePeriodPlan: any[]): Promise<Event[]> => {
 
 export const getGooglePlacePhotoEndpoint = (photoString: string): string => {
   const maxWidth = 1087;
-
   return `https://places.googleapis.com/v1/${photoString}/media?maxWidthPx=${maxWidth}&key=${process.env.NEXT_PUBLIC_GOOGLE_PLACES_API_KEY}&skipHttpRedirect=true`;
+};
+
+export const getGoogleDistanceMatrixEndpoint = (
+  origin: Position,
+  destination: Position,
+): string => {
+  const formattedOrigin = `${origin.lat}%2C${origin.lng}`;
+  const formattedDestination = `${destination.lat}%2C${destination.lng}`;
+  const mode = "driving";
+  return `https://maps.googleapis.com/maps/api/distancematrix/json?origins=${formattedOrigin}&destinations=${formattedDestination}&mode=${mode}&key=${process.env.NEXT_PUBLIC_GOOGLE_PLACES_API_KEY}`;
+};
+
+export const getTravelOriginDestinations = (list: Position[]): Position[][] => {
+  const result: Position[][] = [];
+
+  for (let i = 0; i < list.length - 1; i++) {
+    result.push([list[i], list[i + 1]]);
+  }
+
+  return result;
+};
+
+export const getTravelTimes = async (
+  itinerary: DayPlan[],
+): Promise<TravelTime[][]> => {
+  const itineraryTravelTimes: TravelTime[][] = [];
+
+  for (const dayPlan of itinerary) {
+    const eventCoordinates: Position[] = dayPlan.morning
+      .concat(dayPlan.afternoon)
+      .concat(dayPlan.evening)
+      .map((event) => event.coordinates ?? { lat: 0, lng: 0 });
+    const originDestinationPairs =
+      getTravelOriginDestinations(eventCoordinates);
+    const dayPlanTravelTimes: TravelTime[] = [];
+
+    for (const originDestinationPair of originDestinationPairs) {
+      const googleDistanceMatrixEndpoint = getGoogleDistanceMatrixEndpoint(
+        originDestinationPair[0],
+        originDestinationPair[1],
+      );
+      const response = await fetch(googleDistanceMatrixEndpoint);
+
+      if (!response.ok) {
+        throw new Error("Network response was not ok!");
+      }
+
+      const distanceMatrixJson = await response.json();
+
+      const travelTime: TravelTime = {
+        distance: distanceMatrixJson.rows[0].elements[0].distance.text,
+        duration: distanceMatrixJson.rows[0].elements[0].duration.text,
+      };
+      dayPlanTravelTimes.push(travelTime);
+    }
+
+    itineraryTravelTimes.push(dayPlanTravelTimes);
+  }
+
+  return itineraryTravelTimes;
 };
 
 export const formatItinerary = async (

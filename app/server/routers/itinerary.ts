@@ -3,6 +3,7 @@ import {
   adjustItineraryWithSelectedHotels,
   formatHotels,
   formatItinerary,
+  getTravelTimes,
   getTripCheckInCheckOutDays,
 } from "@/lib/pythonBackend/utils";
 import {
@@ -34,6 +35,7 @@ export const itineraryRouter = router({
       const flights = data.input.flights;
       const itineraryRaw = data.input.itinerary;
       const itinerary: DayPlan[] = await formatItinerary(itineraryRaw);
+      const travelTimes: TravelTime[][] = await getTravelTimes(itinerary);
       const hotelsRaw = data.input.hotels;
       const hotels: Hotel[][] = formatHotels(hotelsRaw);
 
@@ -41,6 +43,7 @@ export const itineraryRouter = router({
         email,
         request,
         itinerary,
+        travelTimes,
         hotels,
         flights,
       );
@@ -69,9 +72,9 @@ export const itineraryRouter = router({
       const itineraryId = data.input.itineraryId;
       const request = data.input.request;
       const flights = data.input.flights;
-
       const itineraryRaw = data.input.itinerary;
       const itinerary: DayPlan[] = await formatItinerary(itineraryRaw);
+      const travelTimes: TravelTime[][] = await getTravelTimes(itinerary);
       const hotelsRaw = data.input.hotels;
       const hotels: Hotel[][] = formatHotels(hotelsRaw);
 
@@ -79,6 +82,7 @@ export const itineraryRouter = router({
         itineraryId,
         request,
         itinerary,
+        travelTimes,
         hotels,
         flights,
       );
@@ -116,10 +120,12 @@ export const itineraryRouter = router({
         tripCheckInCheckOutDays,
         itinerary,
       );
+      const travelTimes: TravelTime[][] = await getTravelTimes(itinerary);
       const adjustItineraryHotelsRes = await adjustItineraryHotels(
         itineraryId,
         itinerary,
         selectedHotels,
+        travelTimes,
       );
 
       if (!adjustItineraryHotelsRes.success) {
