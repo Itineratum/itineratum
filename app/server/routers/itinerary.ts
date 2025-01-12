@@ -1,14 +1,17 @@
-import { DayPlan, Hotel, TravelTime } from "@/lib/pythonBackend/types";
+import { DayPlan, Event, Hotel, TravelTime } from "@/lib/pythonBackend/types";
 import {
   adjustItineraryWithSelectedHotels,
+  deleteCorrespondingHotelEvents,
   formatHotels,
   formatItinerary,
   getTravelTimes,
   getTripCheckInCheckOutDays,
+  hasHotelEdits,
 } from "@/lib/pythonBackend/utils";
 import {
   adjustItineraryBudget,
   adjustItineraryHotels,
+  editItinerary,
   retrieveItinerary,
   saveItinerary,
 } from "@/services/database/itinerary";
@@ -18,10 +21,12 @@ import utc from "dayjs/plugin/utc";
 import {
   adjustItineraryBudgetSchema,
   adjustItineraryHotelsSchema,
+  editItinerarySchema,
   getItinerarySchema,
   saveItinerarySchema,
 } from "../schemas/itinerary";
 import { publicProcedure, router } from "../trpc";
+import { ItineraryEditAction } from "@/components/templates/itinerary-page";
 
 dayjs.extend(utc);
 
@@ -132,6 +137,43 @@ export const itineraryRouter = router({
         throw new TRPCError({
           code: "INTERNAL_SERVER_ERROR",
           message: adjustItineraryHotelsRes?.error!,
+        });
+      }
+    }),
+  // only handles event deletes for now
+  editItinerary: publicProcedure
+    .input(editItinerarySchema.input)
+    .output(editItinerarySchema.output)
+    .mutation(async (data) => {
+      const itineraryId = data.input.itineraryId;
+      const retrieveItineraryRes = await retrieveItinerary(itineraryId);
+      const itinerary: DayPlan[] = retrieveItineraryRes.data.itinerary;
+      const dayNum = data.input.dayNum;
+      const newEvents = data.input.newEvents;
+      const travelTimes: TravelTime[][] = await getTravelTimes(itinerary);
+      const edits: Record<ItineraryEditAction, Event[]> = data.input.edits;
+      const eventsToDelete: Event[] = edits.delete;
+      itinerary[dayNum - 1].events = newEvents;
+
+      if (hasHotelEdits(eventsToDelete)) {
+        const selectedHotels = retrieveItineraryRes.data.selected_hotels;
+        deleteCorrespondingHotelEvents(
+          eventsToDelete,
+          retrieveItineraryRes.data.request,
+          selectedHotels,
+          itinerary,
+        );
+      }
+      const editItineraryRes = await editItinerary(
+        itineraryId,
+        itinerary,
+        travelTimes,
+      );
+
+      if (!editItineraryRes.success) {
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message: editItineraryRes?.error!,
         });
       }
     }),

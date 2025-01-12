@@ -48,7 +48,7 @@ export interface DayPlan {
 export interface Event {
   is_hotel: boolean; // indicates whether the current event is a hotel check in/check out event
   event_name: string;
-  time_of_day: EventTimeOfDay
+  time_of_day: EventTimeOfDay;
   location_name: string;
   location_address: string;
   coordinates: Position | null;

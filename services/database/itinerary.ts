@@ -135,3 +135,34 @@ export const adjustItineraryHotels = async (
     // await disconnectFromDatabase();
   }
 };
+
+export const editItinerary = async (
+  itineraryId: string,
+  itinerary: DayPlan[],
+  travelTimes: TravelTime[][],
+) => {
+  try {
+    await connectToDatabase();
+    const update = {
+      $set: {
+        itinerary,
+        travel_times: travelTimes,
+      },
+    };
+    const result = await Itinerary.updateOne(
+      { _id: new ObjectId(itineraryId) },
+      update,
+    );
+
+    if (result.acknowledged) {
+      return { success: true };
+    } else {
+      return { success: false, error: "Itinerary edit failed" };
+    }
+  } catch (error) {
+    console.error(error);
+    throw error;
+  } finally {
+    // await disconnectFromDatabase();
+  }
+};

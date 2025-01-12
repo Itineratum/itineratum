@@ -22,8 +22,7 @@ const EventCard = ({
   event,
   selected,
   isEditing,
-  edits,
-  setEdits,
+  setEdit,
   index,
 }: {
   date: Dayjs;
@@ -33,10 +32,7 @@ const EventCard = ({
   event: Event;
   selected: boolean;
   isEditing: boolean;
-  edits: Record<ItineraryEditAction, number[]> | null;
-  setEdits: Dispatch<
-    SetStateAction<Record<ItineraryEditAction, number[]> | null>
-  >;
+  setEdit: Dispatch<SetStateAction<Record<ItineraryEditAction, number> | null>>;
   index: number;
 }) => {
   const color = event.is_hotel
@@ -57,21 +53,10 @@ const EventCard = ({
     const iconSize = 37;
 
     const handleOnClick = () => {
-      let newEdits: Record<ItineraryEditAction, number[]>;
-
-      if (edits) {
-        newEdits = { ...edits };
-
-        if (edits.delete) {
-          newEdits.delete.push(index);
-        } else {
-          newEdits.delete = [index];
-        }
-      } else {
-        newEdits = { [ItineraryEditAction.delete]: [index] };
-      }
-
-      setEdits(newEdits);
+      const newEdit: Record<ItineraryEditAction, number> = {
+        [ItineraryEditAction.delete]: index,
+      };
+      setEdit(newEdit);
     };
 
     return (

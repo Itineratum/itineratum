@@ -43,6 +43,7 @@ import ThumbUpAltIcon from "@mui/icons-material/ThumbUpAlt";
 import {
   Box,
   Button,
+  CircularProgress,
   Dialog,
   DialogContent,
   DialogTitle,
@@ -61,7 +62,6 @@ import {
 } from "@vis.gl/react-google-maps";
 import { useTranslations } from "next-intl";
 import Image from "next/image";
-import { useRouter } from "next/navigation";
 import React, { Dispatch, SetStateAction, useEffect, useState } from "react";
 import Carousel from "react-material-ui-carousel";
 import MapMarker from "./map-marker";
@@ -91,7 +91,6 @@ const HotelSelectorDialog = ({
   events: Event[];
 }) => {
   const t = useTranslations("itinerary.hotelSelectorDialog");
-  const router = useRouter();
 
   const [hotelTabValue, setHotelTabValue] = useState<number>(0);
   const [hotel, setHotel] = useState<Hotel | null>(null);
@@ -102,6 +101,7 @@ const HotelSelectorDialog = ({
   const [hotelMarkerPopupShown, setHotelMarkerPopupShown] =
     useState<boolean>(false);
   const [hotelMarkerRef, hotelMarker] = useAdvancedMarkerRef();
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const ratingSpacing = 2;
   const spacing = 4;
@@ -145,7 +145,7 @@ const HotelSelectorDialog = ({
   }, [events]);
 
   const handleOnClose = () => {
-    setOpen(false);
+    if (!isLoading) setOpen(false);
   };
 
   const hotelSelected = (hotel: Hotel | null) => {
@@ -155,7 +155,7 @@ const HotelSelectorDialog = ({
         hotel &&
         selectedHotel.name === hotel.name &&
         JSON.stringify(selectedHotel.coordinates) ===
-          JSON.stringify(hotel.coordinates)
+          JSON.stringify(hotel.coordinates),
     );
   };
 
@@ -177,7 +177,7 @@ const HotelSelectorDialog = ({
 
       const handleOnChange = (
         event: React.SyntheticEvent,
-        newValue: number
+        newValue: number,
       ) => {
         setHotelTabValue(newValue);
       };
@@ -690,7 +690,7 @@ const HotelSelectorDialog = ({
       const amenities = () => {
         const getIcon = (
           hotelType: HotelType,
-          amenity: HotelAmenity | VacationRentalAmenity
+          amenity: HotelAmenity | VacationRentalAmenity,
         ) => {
           let icon = null;
 
@@ -994,7 +994,7 @@ const HotelSelectorDialog = ({
                 disableDefaultUI={true}
               >
                 {mapMarkersData.map((mapMarkerData: MapMarkerData) =>
-                  eventMapMarker(mapMarkerData)
+                  eventMapMarker(mapMarkerData),
                 )}
                 {hotelMapMarker()}
               </Map>
@@ -1050,7 +1050,7 @@ const HotelSelectorDialog = ({
   };
 
   const selectHotelButton = () => {
-    const autoCloseDialogTimeout = 2000; // this dialog should automaticlly close by this time in milliseconds
+    const loadingAnimationSize: number = 24;
 
     const handleOnClick = async () => {
       if (hotel) {
@@ -1061,23 +1061,18 @@ const HotelSelectorDialog = ({
           itineraryId,
           selectedHotels: newSelectedHotels ?? [],
         };
+        setIsLoading(true);
         await adjustItineraryHotels.mutateAsync(data);
-        utils.itinerary.getItinerary.invalidate();
         setAlertText(`${t("hotelSelected")} ${destination}`);
         setAlertType(AlertType.success);
+        setIsLoading(false);
+        utils.itinerary.getItinerary.invalidate();
       } else {
         setAlertText(t("selectedFailed"));
         setAlertType(AlertType.error);
       }
 
       setShowAlert(true);
-
-      const timer = setTimeout(() => {
-        setOpen(false);
-        router.refresh();
-      }, autoCloseDialogTimeout);
-
-      return () => clearTimeout(timer);
     };
 
     return (
@@ -1085,9 +1080,24 @@ const HotelSelectorDialog = ({
         <Button
           onClick={handleOnClick}
           variant="contained"
-          disabled={hotelSelected(hotel!)}
+          disabled={hotelSelected(hotel!) || isLoading}
         >
-          {hotelSelected(hotel!) ? t("alreadySelected") : t("select")}
+          {isLoading ? (
+            <Stack direction="row" spacing={spacing - 2}>
+              <CircularProgress size={loadingAnimationSize} />
+              <Text
+                text={t("selecting")}
+                variant={TypographyVariant.button}
+                bold={true}
+              />
+            </Stack>
+          ) : (
+            <Text
+              text={hotelSelected(hotel!) ? t("alreadySelected") : t("select")}
+              variant={TypographyVariant.button}
+              bold={true}
+            />
+          )}
         </Button>
       </Box>
     );

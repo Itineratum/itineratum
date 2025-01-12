@@ -111,6 +111,7 @@
     "edit": "Edit Itinerary",
     "save": "Save Edits",
     "cancel": "Cancel Edits",
+    "saving": "Saving Edits",
     "adjustBudgetDialog": {
       "adjustBudget": "Adjust Budget",
       "description": "Adjust the budget for your trip.",
@@ -137,6 +138,7 @@
       "location": "Location in",
       "select": "Select Hotel",
       "selected": "Selected",
+      "selecting": "Selecting",
       "hotelSelected": "This hotel was successfully selected for",
       "selectedFailed": "Failed to select this hotel, please try again!",
       "alreadySelected": "Hotel already selected!"

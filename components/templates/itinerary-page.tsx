@@ -18,15 +18,18 @@ import {
   TypographyTextDecoration,
   TypographyVariant,
 } from "@/constants/enums/theme";
+import colorsConst from "@/constants/pages/colors.json";
 import { IItinerary } from "@/constants/types/itinerary";
 import { DayPlan, Event, Hotel, TravelTime } from "@/lib/pythonBackend/types";
 import { Box, Button, CircularProgress, Container, Stack } from "@mui/material";
 import dayjs from "dayjs";
 import { useTranslations } from "next-intl";
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
 const ItineraryPage = ({ params }: { params: { id: string } }) => {
   const t = useTranslations("itinerary");
+  const router = useRouter();
 
   const [itineraryData, setItineraryData] = useState<IItinerary | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
@@ -46,10 +49,14 @@ const ItineraryPage = ({ params }: { params: { id: string } }) => {
   const [events, setEvents] = useState<Event[]>([]);
   const [backupEvents, setBackupEvents] = useState<Event[]>([]);
   const [isEditing, setIsEditing] = useState<boolean>(false);
+  const [edit, setEdit] = useState<Record<ItineraryEditAction, number> | null>(
+    null,
+  ); // only one edit at a time, since we want to reflect the edits in real-time
   const [edits, setEdits] = useState<Record<
     ItineraryEditAction,
-    number[]
+    Event[]
   > | null>(null);
+  const [isSavingEdits, setIsSavingEdits] = useState<boolean>(false);
 
   const gap = 6;
   const paddingBottom = "20px";
@@ -66,12 +73,14 @@ const ItineraryPage = ({ params }: { params: { id: string } }) => {
         setError(error.message);
         setIsLoading(false);
       },
-    }
+    },
   );
+  const editItinerary = trpc.itinerary.editItinerary.useMutation();
+  const utils = trpc.useUtils();
 
-  const getCorrectDayPlan = () =>
+  const getCorrectDayPlan = (): DayPlan =>
     getItinerary.data.itinerary.filter(
-      (dayPlan: DayPlan) => dayPlan.day === dayNum
+      (dayPlan: DayPlan) => dayPlan.day === dayNum,
     )[0];
 
   const getDestinations = () => {
@@ -92,7 +101,7 @@ const ItineraryPage = ({ params }: { params: { id: string } }) => {
       setDayPlan(getCorrectDayPlan());
       setDestinations(getDestinations());
       setSelectedHotels(getItinerary.data.selected_hotels ?? []);
-      setTravelTimes(getItinerary.data.travel_times[0]);
+      setTravelTimes(getItinerary.data.travel_times[dayNum - 1]);
       setIsLoading(false);
     }
   }, [getItinerary.data]);
@@ -101,6 +110,8 @@ const ItineraryPage = ({ params }: { params: { id: string } }) => {
     if (getItinerary.data) {
       setDayPlan(getCorrectDayPlan());
       setTravelTimes(getItinerary.data.travel_times[dayNum - 1]);
+      setEvents(getCorrectDayPlan().events);
+      setBackupEvents(getCorrectDayPlan().events);
       setSelectedEvent(null);
     }
   }, [dayNum]);
@@ -115,19 +126,25 @@ const ItineraryPage = ({ params }: { params: { id: string } }) => {
   }, [dayPlan]);
 
   useEffect(() => {
-    if (edits) {
-      // handle event deletes
-      if (edits.delete) {
+    if (edit) {
+      // handle event delete
+      if (edit.delete || edit.delete === 0) {
         const newEvents: Event[] = [...events];
-
-        edits.delete.forEach((eventIndex) => {
-          newEvents.splice(eventIndex, 1);
-        });
-
+        const indexOfEventToDelete: number = edit.delete;
+        newEvents.splice(indexOfEventToDelete, 1);
         setEvents(newEvents);
+        const eventToDelete = events[indexOfEventToDelete];
+
+        if (edits) {
+          const newEdits = { ...edits };
+          newEdits.delete.push(eventToDelete);
+          setEdits(newEdits!);
+        } else {
+          setEdits({ [ItineraryEditAction.delete]: [eventToDelete] });
+        }
       }
     }
-  }, [edits]);
+  }, [edit]);
 
   if (isLoading)
     return (
@@ -304,16 +321,16 @@ const ItineraryPage = ({ params }: { params: { id: string } }) => {
                   JSON.stringify(event) === JSON.stringify(selectedEvent)
                 }
                 isEditing={isEditing}
-                edits={edits}
-                setEdits={setEdits}
+                setEdit={setEdit}
                 index={index}
               />
-              {travelTimes.length < 1
-                ? noTravelTimes()
-                : index < events.length - 1 &&
-                  travelTimes[index] && (
-                    <TravelCard travelTime={travelTimes[index]} />
-                  )}
+              {!isEditing &&
+                (travelTimes.length < 1
+                  ? noTravelTimes()
+                  : index < events.length - 1 &&
+                    travelTimes[index] && (
+                      <TravelCard travelTime={travelTimes[index]} />
+                    ))}
             </Stack>
           ))}
         </Stack>
@@ -396,18 +413,25 @@ const ItineraryPage = ({ params }: { params: { id: string } }) => {
 
     const cancelButton = () => {
       const handleOnClick = () => {
+        setEdit(null);
         setEdits(null);
         setIsEditing(!isEditing);
         setEvents(backupEvents);
       };
 
       return (
-        edits && (
-          <Button variant="contained" onClick={handleOnClick} color={"info"}>
+        isEditing && (
+          <Button
+            variant="contained"
+            onClick={handleOnClick}
+            sx={{ backgroundColor: colorsConst.palette.text.secondary }}
+            disabled={isSavingEdits}
+          >
             <Text
               text={t("cancel")}
               variant={TypographyVariant.button}
               bold={true}
+              color={colorsConst.palette.text.primary}
             />
           </Button>
         )
@@ -415,12 +439,27 @@ const ItineraryPage = ({ params }: { params: { id: string } }) => {
     };
 
     const editSaveButton = () => {
-      const handleOnClick = () => {
-        setIsEditing(!isEditing);
+      const loadingAnimationSize: number = 24;
+      const spacing = 2;
 
-        if (isEditing) {
-        } else {
+      const handleOnClick = async () => {
+        if (isEditing && edits) {
+          // save the edits
+          setIsSavingEdits(true);
+          const data = {
+            itineraryId: params.id,
+            dayNum,
+            newEvents: events,
+            edits,
+          };
+          await editItinerary.mutateAsync(data);
         }
+
+        setIsEditing(!isEditing);
+        setIsSavingEdits(false);
+        setEdits(null);
+        utils.itinerary.getItinerary.invalidate();
+        router.refresh();
       };
 
       return (
@@ -428,12 +467,24 @@ const ItineraryPage = ({ params }: { params: { id: string } }) => {
           variant="contained"
           onClick={handleOnClick}
           color={isEditing ? "secondary" : "primary"}
+          disabled={(isEditing && !edit) || isSavingEdits}
         >
-          <Text
-            text={isEditing ? t("save") : t("edit")}
-            variant={TypographyVariant.button}
-            bold={true}
-          />
+          {isSavingEdits ? (
+            <Stack direction="row" spacing={spacing}>
+              <CircularProgress size={loadingAnimationSize} />
+              <Text
+                text={t("saving")}
+                variant={TypographyVariant.button}
+                bold={true}
+              />
+            </Stack>
+          ) : (
+            <Text
+              text={isEditing ? t("save") : t("edit")}
+              variant={TypographyVariant.button}
+              bold={true}
+            />
+          )}
         </Button>
       );
     };
