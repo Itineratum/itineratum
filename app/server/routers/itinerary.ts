@@ -1,3 +1,4 @@
+import { ItineraryEditAction } from "@/components/templates/itinerary-page";
 import { DayPlan, Event, Hotel, TravelTime } from "@/lib/pythonBackend/types";
 import {
   adjustItineraryWithSelectedHotels,
@@ -26,7 +27,6 @@ import {
   saveItinerarySchema,
 } from "../schemas/itinerary";
 import { publicProcedure, router } from "../trpc";
-import { ItineraryEditAction } from "@/components/templates/itinerary-page";
 
 dayjs.extend(utc);
 
@@ -50,7 +50,7 @@ export const itineraryRouter = router({
         itinerary,
         travelTimes,
         hotels,
-        flights,
+        flights
       );
       return saveItineraryRes.itineraryId;
     }),
@@ -89,7 +89,7 @@ export const itineraryRouter = router({
         itinerary,
         travelTimes,
         hotels,
-        flights,
+        flights
       );
 
       if (!adjustItineraryBudgetRes.success) {
@@ -109,28 +109,28 @@ export const itineraryRouter = router({
       const userRequestedDestinations =
         retrieveItineraryRes.data.request.payload.user_requested_destinations;
       const tripStartDate = dayjs(
-        retrieveItineraryRes.data.request.payload.start_date,
+        retrieveItineraryRes.data.request.payload.start_date
       ).utc(true);
       const tripEndDate = dayjs(
-        retrieveItineraryRes.data.request.payload.end_date,
+        retrieveItineraryRes.data.request.payload.end_date
       ).utc(true);
       const selectedHotels = data.input.selectedHotels;
       const tripCheckInCheckOutDays: number[][] = getTripCheckInCheckOutDays(
         userRequestedDestinations,
         tripStartDate,
-        tripEndDate,
+        tripEndDate
       );
       await adjustItineraryWithSelectedHotels(
         selectedHotels,
         tripCheckInCheckOutDays,
-        itinerary,
+        itinerary
       );
       const travelTimes: TravelTime[][] = await getTravelTimes(itinerary);
       const adjustItineraryHotelsRes = await adjustItineraryHotels(
         itineraryId,
         itinerary,
         selectedHotels,
-        travelTimes,
+        travelTimes
       );
 
       if (!adjustItineraryHotelsRes.success) {
@@ -154,20 +154,21 @@ export const itineraryRouter = router({
       const edits: Record<ItineraryEditAction, Event[]> = data.input.edits;
       const eventsToDelete: Event[] = edits.delete;
       itinerary[dayNum - 1].events = newEvents;
+      let selectedHotels = retrieveItineraryRes.data.selected_hotels;
 
       if (hasHotelEdits(eventsToDelete)) {
-        const selectedHotels = retrieveItineraryRes.data.selected_hotels;
-        deleteCorrespondingHotelEvents(
+        selectedHotels = deleteCorrespondingHotelEvents(
           eventsToDelete,
           retrieveItineraryRes.data.request,
           selectedHotels,
-          itinerary,
+          itinerary
         );
       }
       const editItineraryRes = await editItinerary(
         itineraryId,
         itinerary,
         travelTimes,
+        selectedHotels
       );
 
       if (!editItineraryRes.success) {

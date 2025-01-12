@@ -112,6 +112,7 @@
     "save": "Save Edits",
     "cancel": "Cancel Edits",
     "saving": "Saving Edits",
+    "editInstructions": "Click on 'Save Edits' to save your edits and see the updated itinerary.",
     "adjustBudgetDialog": {
       "adjustBudget": "Adjust Budget",
       "description": "Adjust the budget for your trip.",

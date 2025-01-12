@@ -19,7 +19,9 @@ export const saveItinerary = async (
       request,
       itinerary,
       travel_times: travelTimes,
-      selected_hotels: [],
+      selected_hotels: Array(
+        request.payload.user_requested_destinations.length,
+      ).fill(null),
       hotels,
       flights,
     };
@@ -140,13 +142,18 @@ export const editItinerary = async (
   itineraryId: string,
   itinerary: DayPlan[],
   travelTimes: TravelTime[][],
+  selectedHotels: Hotel[],
 ) => {
   try {
     await connectToDatabase();
+
+    console.log("SELECTED HOTELS", selectedHotels);
+
     const update = {
       $set: {
         itinerary,
         travel_times: travelTimes,
+        selected_hotels: selectedHotels,
       },
     };
     const result = await Itinerary.updateOne(

@@ -50,7 +50,7 @@ const ItineraryPage = ({ params }: { params: { id: string } }) => {
   const [backupEvents, setBackupEvents] = useState<Event[]>([]);
   const [isEditing, setIsEditing] = useState<boolean>(false);
   const [edit, setEdit] = useState<Record<ItineraryEditAction, number> | null>(
-    null,
+    null
   ); // only one edit at a time, since we want to reflect the edits in real-time
   const [edits, setEdits] = useState<Record<
     ItineraryEditAction,
@@ -73,14 +73,14 @@ const ItineraryPage = ({ params }: { params: { id: string } }) => {
         setError(error.message);
         setIsLoading(false);
       },
-    },
+    }
   );
   const editItinerary = trpc.itinerary.editItinerary.useMutation();
   const utils = trpc.useUtils();
 
   const getCorrectDayPlan = (): DayPlan =>
     getItinerary.data.itinerary.filter(
-      (dayPlan: DayPlan) => dayPlan.day === dayNum,
+      (dayPlan: DayPlan) => dayPlan.day === dayNum
     )[0];
 
   const getDestinations = () => {
@@ -252,6 +252,7 @@ const ItineraryPage = ({ params }: { params: { id: string } }) => {
               dayNum={index + 1}
               setDayNum={setDayNum}
               selected={index + 1 === dayNum}
+              disabled={isEditing}
             />
           ))}
       </Stack>
@@ -489,10 +490,30 @@ const ItineraryPage = ({ params }: { params: { id: string } }) => {
       );
     };
 
+    const instructions = () => {
+      return (
+        isEditing && (
+          <Text
+            text={t("editInstructions")}
+            variant={TypographyVariant.body1}
+            bold={true}
+          />
+        )
+      );
+    };
+
     return (
-      <Stack direction="row" spacing={spacing}>
-        {cancelButton()}
-        {editSaveButton()}
+      <Stack direction="column" spacing={spacing}>
+        <Stack
+          direction="row"
+          spacing={spacing}
+          display="flex"
+          justifyContent="flex-end"
+        >
+          {cancelButton()}
+          {editSaveButton()}
+        </Stack>
+        {instructions()}
       </Stack>
     );
   };

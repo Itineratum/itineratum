@@ -18,7 +18,7 @@ import {
 
 export const getEvents = async (
   rawTimePeriodPlan: any[],
-  timeOfDay: EventTimeOfDay,
+  timeOfDay: EventTimeOfDay
 ): Promise<Event[]> => {
   setDefaults({
     key: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY,
@@ -82,7 +82,7 @@ export const getGooglePlacePhotoEndpoint = (photoString: string): string => {
 
 export const getGoogleDistanceMatrixEndpoint = (
   origin: Position,
-  destination: Position,
+  destination: Position
 ): string => {
   const formattedOrigin = `${origin.lat}%2C${origin.lng}`;
   const formattedDestination = `${destination.lat}%2C${destination.lng}`;
@@ -101,13 +101,13 @@ export const getTravelOriginDestinations = (list: Position[]): Position[][] => {
 };
 
 export const getTravelTimes = async (
-  itinerary: DayPlan[],
+  itinerary: DayPlan[]
 ): Promise<TravelTime[][]> => {
   const itineraryTravelTimes: TravelTime[][] = [];
 
   for (const dayPlan of itinerary) {
     const eventCoordinates: Position[] = dayPlan.events.map(
-      (event) => event.coordinates ?? { lat: 0, lng: 0 },
+      (event) => event.coordinates ?? { lat: 0, lng: 0 }
     );
     const originDestinationPairs =
       getTravelOriginDestinations(eventCoordinates);
@@ -116,7 +116,7 @@ export const getTravelTimes = async (
     for (const originDestinationPair of originDestinationPairs) {
       const googleDistanceMatrixEndpoint = getGoogleDistanceMatrixEndpoint(
         originDestinationPair[0],
-        originDestinationPair[1],
+        originDestinationPair[1]
       );
       const response = await fetch(googleDistanceMatrixEndpoint);
 
@@ -140,12 +140,12 @@ export const getTravelTimes = async (
 };
 
 export const formatItinerary = async (
-  itineraryRaw: any,
+  itineraryRaw: any
 ): Promise<DayPlan[]> => {
   const itinerary: DayPlan[] = [];
   itineraryRaw = itineraryRaw.filter(
     (destinationPlan: any) =>
-      destinationPlan.plan && destinationPlan.plan.length > 0,
+      destinationPlan.plan && destinationPlan.plan.length > 0
   );
 
   for (const destinationPlan of itineraryRaw) {
@@ -156,15 +156,15 @@ export const formatItinerary = async (
       const rawDayPlan = destinationPlan.plan[index];
       const morningEvents = await getEvents(
         rawDayPlan.morning,
-        EventTimeOfDay.morning,
+        EventTimeOfDay.morning
       );
       const afternoonEvents = await getEvents(
         rawDayPlan.afternoon,
-        EventTimeOfDay.afternoon,
+        EventTimeOfDay.afternoon
       );
       const eveningEvents = await getEvents(
         rawDayPlan.evening,
-        EventTimeOfDay.evening,
+        EventTimeOfDay.evening
       );
       const dayPlan: DayPlan = {
         destination,
@@ -178,7 +178,7 @@ export const formatItinerary = async (
 };
 
 export const getTimeOfDay = (
-  time: string | null | undefined,
+  time: string | null | undefined
 ): EventTimeOfDay => {
   if (!time) return EventTimeOfDay.morning;
 
@@ -243,7 +243,7 @@ export const clearHotelEvents = (dayPlan: DayPlan) => {
 };
 
 export const getHotelLocationAddress = async (
-  coordinates: Position,
+  coordinates: Position
 ): Promise<string> => {
   setDefaults({
     key: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY,
@@ -259,17 +259,17 @@ export const getHotelLocationAddress = async (
 export const getTripCheckInCheckOutDays = (
   userRequestedDestinations: any,
   tripStartDate: dayjs.Dayjs,
-  tripEndDate: dayjs.Dayjs,
+  tripEndDate: dayjs.Dayjs
 ): number[][] => {
   const tripCheckInCheckOutDays: number[][] = [];
 
   for (const userRequestedDestination of userRequestedDestinations) {
     const destinationCheckInCheckOutDays: number[] = [];
     const destinationStartDate = dayjs(userRequestedDestination.start_date).utc(
-      true,
+      true
     );
     const destinationEndDate = dayjs(userRequestedDestination.end_date).utc(
-      true,
+      true
     );
 
     if (destinationStartDate.isSame(tripStartDate)) {
@@ -282,7 +282,7 @@ export const getTripCheckInCheckOutDays = (
 
     if (destinationEndDate.isSame(tripEndDate)) {
       destinationCheckInCheckOutDays.push(
-        tripEndDate.diff(tripStartDate, "day") + 1,
+        tripEndDate.diff(tripStartDate, "day") + 1
       );
     } else {
       const dayOfTripOfDestinationEndDate =
@@ -299,7 +299,7 @@ export const getTripCheckInCheckOutDays = (
 export const adjustItineraryWithSelectedHotels = async (
   selectedHotels: Hotel[],
   tripCheckInCheckOutDays: number[][],
-  itinerary: DayPlan[],
+  itinerary: DayPlan[]
 ) => {
   for (
     let destinationIndex = 0;
@@ -350,23 +350,23 @@ export const adjustItineraryWithSelectedHotels = async (
         if (!noHotelEvents(dayPlan)) clearHotelEvents(dayPlan);
 
         const firstEventInSameTimeOfDayIndex = dayPlan.events.findIndex(
-          (event: Event) => event.time_of_day === hotelCheckInTimeOfDay,
+          (event: Event) => event.time_of_day === hotelCheckInTimeOfDay
         );
         dayPlan.events.splice(
           firstEventInSameTimeOfDayIndex,
           0,
-          hotelCheckInEvent,
+          hotelCheckInEvent
         );
       } else if (hotelCheckOutDay === day) {
         if (!noHotelEvents(dayPlan)) clearHotelEvents(dayPlan);
 
         const firstEventInSameTimeOfDayIndex = dayPlan.events.findIndex(
-          (event: Event) => event.time_of_day === hotelCheckOutTimeOfDay,
+          (event: Event) => event.time_of_day === hotelCheckOutTimeOfDay
         );
         dayPlan.events.splice(
           firstEventInSameTimeOfDayIndex,
           0,
-          hotelCheckOutEvent,
+          hotelCheckOutEvent
         );
       }
     });
@@ -387,7 +387,7 @@ export const isHotelCheckOutEvent = (event: Event): boolean => {
 export const getCorrespondingHotelCheckInDay = (
   itineraryRequest: GenerateItineraryJSON,
   selectedHotels: Hotel[],
-  hotelCheckOutEvent: Event,
+  hotelCheckOutEvent: Event
 ) => {
   const userRequestedDestinations =
     itineraryRequest.payload.user_requested_destinations;
@@ -396,14 +396,14 @@ export const getCorrespondingHotelCheckInDay = (
   const tripCheckInCheckOutDays = getTripCheckInCheckOutDays(
     userRequestedDestinations,
     tripStartDate,
-    tripEndDate,
+    tripEndDate
   );
   const hotelIndex = selectedHotels.findIndex(
     (hotel: Hotel) =>
       hotel &&
       hotel.name === hotelCheckOutEvent.location_name &&
       hotel.coordinates.latitude === hotelCheckOutEvent.coordinates?.lat &&
-      hotel.coordinates.longitude === hotelCheckOutEvent.coordinates.lng,
+      hotel.coordinates.longitude === hotelCheckOutEvent.coordinates.lng
   );
   const checkInDay = tripCheckInCheckOutDays[hotelIndex][0];
   return checkInDay;
@@ -412,7 +412,7 @@ export const getCorrespondingHotelCheckInDay = (
 export const getCorrespondingHotelCheckOutDay = (
   itineraryRequest: GenerateItineraryJSON,
   selectedHotels: Hotel[],
-  hotelCheckInEvent: Event,
+  hotelCheckInEvent: Event
 ) => {
   const userRequestedDestinations =
     itineraryRequest.payload.user_requested_destinations;
@@ -421,28 +421,29 @@ export const getCorrespondingHotelCheckOutDay = (
   const tripCheckInCheckOutDays = getTripCheckInCheckOutDays(
     userRequestedDestinations,
     tripStartDate,
-    tripEndDate,
+    tripEndDate
   );
   const hotelIndex = selectedHotels.findIndex(
     (hotel: Hotel) =>
       hotel &&
       hotel.name === hotelCheckInEvent.location_name &&
       hotel.coordinates.latitude === hotelCheckInEvent.coordinates?.lat &&
-      hotel.coordinates.longitude === hotelCheckInEvent.coordinates.lng,
+      hotel.coordinates.longitude === hotelCheckInEvent.coordinates.lng
   );
   const checkOutDay = tripCheckInCheckOutDays[hotelIndex][1];
   return checkOutDay;
 };
 
 // deletes the corresponding hotel check out event if the eventsToDelete contains a hotel check in event. else, delete the corresponding hotel check in event if the eventsToDelete contains a hotel check out event
+// also deletes the hotel in the selectedHotels array
 export const deleteCorrespondingHotelEvents = (
   eventsToDelete: Event[],
   itineraryRequest: GenerateItineraryJSON,
-  selectedHotels: Hotel[],
-  itinerary: DayPlan[],
-) => {
+  selectedHotels: any[],
+  itinerary: DayPlan[]
+): Hotel[] => {
   const hotelEventToDelete: Event = eventsToDelete.filter(
-    (event: Event) => event.is_hotel,
+    (event: Event) => event.is_hotel
   )[0];
 
   if (isHotelCheckInEvent(hotelEventToDelete)) {
@@ -450,7 +451,7 @@ export const deleteCorrespondingHotelEvents = (
     const correspondingCheckOutDay = getCorrespondingHotelCheckOutDay(
       itineraryRequest,
       selectedHotels,
-      hotelEventToDelete,
+      hotelEventToDelete
     );
     itinerary[correspondingCheckOutDay - 1].events = itinerary[
       correspondingCheckOutDay - 1
@@ -461,14 +462,14 @@ export const deleteCorrespondingHotelEvents = (
           event.location_name === hotelEventToDelete.location_name &&
           event.coordinates?.lat === hotelEventToDelete.coordinates?.lat &&
           event.coordinates?.lng === hotelEventToDelete.coordinates?.lng
-        ),
+        )
     );
   } else if (isHotelCheckOutEvent(hotelEventToDelete)) {
     // if this hotel event is a check out event, then delete the corresponding check in event
     const correspondingCheckInDay = getCorrespondingHotelCheckInDay(
       itineraryRequest,
       selectedHotels,
-      hotelEventToDelete,
+      hotelEventToDelete
     );
     itinerary[correspondingCheckInDay - 1].events = itinerary[
       correspondingCheckInDay - 1
@@ -479,7 +480,20 @@ export const deleteCorrespondingHotelEvents = (
           event.location_name === hotelEventToDelete.location_name &&
           event.coordinates?.lat === hotelEventToDelete.coordinates?.lat &&
           event.coordinates?.lng === hotelEventToDelete.coordinates?.lng
-        ),
+        )
     );
   }
+
+  selectedHotels = selectedHotels.map((hotel: Hotel) => {
+    if (
+      hotel &&
+      hotel.name === hotelEventToDelete.location_name &&
+      hotel.coordinates.latitude === hotelEventToDelete.coordinates?.lat &&
+      hotel.coordinates.longitude === hotelEventToDelete.coordinates.lng
+    ) {
+      return null;
+    } else return hotel;
+  });
+
+  return selectedHotels;
 };

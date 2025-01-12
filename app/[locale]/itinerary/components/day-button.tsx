@@ -9,10 +9,12 @@ const DayButton = ({
   dayNum,
   setDayNum,
   selected,
+  disabled,
 }: {
   dayNum: number;
   setDayNum: Dispatch<SetStateAction<number>>;
   selected: boolean;
+  disabled: boolean;
 }) => {
   const t = useTranslations("itinerary");
 
@@ -36,6 +38,7 @@ const DayButton = ({
         minWidth: width,
         maxWidth: width,
       }}
+      disabled={disabled}
     >
       <Text
         text={`${t("dayCap")} ${dayNum}`}

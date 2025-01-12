@@ -118,7 +118,7 @@ const HotelSelectorDialog = ({
   }, [hotels, hotelTabValue]);
 
   useEffect(() => {
-    if (open) {
+    if (open && hotels) {
       setHotelTabValue(0);
       setHotel(hotels[0]);
       setShowAlert(false);
@@ -157,7 +157,7 @@ const HotelSelectorDialog = ({
         hotel &&
         selectedHotel.name === hotel.name &&
         JSON.stringify(selectedHotel.coordinates) ===
-          JSON.stringify(hotel.coordinates)
+          JSON.stringify(hotel.coordinates),
     );
   };
 
@@ -179,7 +179,7 @@ const HotelSelectorDialog = ({
 
       const handleOnChange = (
         event: React.SyntheticEvent,
-        newValue: number
+        newValue: number,
       ) => {
         setHotelTabValue(newValue);
       };
@@ -692,7 +692,7 @@ const HotelSelectorDialog = ({
       const amenities = () => {
         const getIcon = (
           hotelType: HotelType,
-          amenity: HotelAmenity | VacationRentalAmenity
+          amenity: HotelAmenity | VacationRentalAmenity,
         ) => {
           let icon = null;
 
@@ -996,7 +996,7 @@ const HotelSelectorDialog = ({
                 disableDefaultUI={true}
               >
                 {mapMarkersData.map((mapMarkerData: MapMarkerData) =>
-                  eventMapMarker(mapMarkerData)
+                  eventMapMarker(mapMarkerData),
                 )}
                 {hotelMapMarker()}
               </Map>
