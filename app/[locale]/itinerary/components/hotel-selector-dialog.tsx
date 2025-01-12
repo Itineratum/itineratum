@@ -111,9 +111,11 @@ const HotelSelectorDialog = ({
   const utils = trpc.useUtils();
 
   useEffect(() => {
-    setHotel(hotels[hotelTabValue]);
-    setShowAlert(false);
-  }, [hotelTabValue]);
+    if (hotels) {
+      setHotel(hotels[hotelTabValue]);
+      setShowAlert(false);
+    }
+  }, [hotels, hotelTabValue]);
 
   useEffect(() => {
     if (open) {
@@ -155,7 +157,7 @@ const HotelSelectorDialog = ({
         hotel &&
         selectedHotel.name === hotel.name &&
         JSON.stringify(selectedHotel.coordinates) ===
-          JSON.stringify(hotel.coordinates),
+          JSON.stringify(hotel.coordinates)
     );
   };
 
@@ -177,7 +179,7 @@ const HotelSelectorDialog = ({
 
       const handleOnChange = (
         event: React.SyntheticEvent,
-        newValue: number,
+        newValue: number
       ) => {
         setHotelTabValue(newValue);
       };
@@ -690,7 +692,7 @@ const HotelSelectorDialog = ({
       const amenities = () => {
         const getIcon = (
           hotelType: HotelType,
-          amenity: HotelAmenity | VacationRentalAmenity,
+          amenity: HotelAmenity | VacationRentalAmenity
         ) => {
           let icon = null;
 
@@ -994,7 +996,7 @@ const HotelSelectorDialog = ({
                 disableDefaultUI={true}
               >
                 {mapMarkersData.map((mapMarkerData: MapMarkerData) =>
-                  eventMapMarker(mapMarkerData),
+                  eventMapMarker(mapMarkerData)
                 )}
                 {hotelMapMarker()}
               </Map>
@@ -1104,28 +1106,30 @@ const HotelSelectorDialog = ({
   };
 
   return (
-    <Dialog
-      key={destinationIndex}
-      open={open}
-      fullScreen={false}
-      onClose={handleOnClose}
-      maxWidth="lg"
-      sx={{ overflow: "scroll" }}
-    >
-      {titleHotelTabs()}
-      <DialogContent>
-        <Stack key={destinationIndex} direction="column" spacing={spacing}>
-          {hotelContent()}
-          {selectHotelButton()}
-          <Alert
-            showAlert={showAlert}
-            setShowAlert={setShowAlert}
-            alertText={alertText}
-            alertType={alertType}
-          />
-        </Stack>
-      </DialogContent>
-    </Dialog>
+    hotels && (
+      <Dialog
+        key={destinationIndex}
+        open={open}
+        fullScreen={false}
+        onClose={handleOnClose}
+        maxWidth="lg"
+        sx={{ overflow: "scroll" }}
+      >
+        {titleHotelTabs()}
+        <DialogContent>
+          <Stack key={destinationIndex} direction="column" spacing={spacing}>
+            {hotelContent()}
+            {selectHotelButton()}
+            <Alert
+              showAlert={showAlert}
+              setShowAlert={setShowAlert}
+              alertText={alertText}
+              alertType={alertType}
+            />
+          </Stack>
+        </DialogContent>
+      </Dialog>
+    )
   );
 };
 

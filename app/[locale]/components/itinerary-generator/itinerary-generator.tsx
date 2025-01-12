@@ -305,10 +305,10 @@ const ItineraryGenerator = () => {
             currency: getCookie("currency") as keyof typeof Currency,
           };
           const itineraryJson = generateItineraryJson(itineraryForm);
-          // const itinerary = await runPipeline(itineraryJson);
+          const itinerary = await runPipeline(itineraryJson);
 
           // backup
-          const itinerary = backupItineraryJson;
+          // const itinerary = backupItineraryJson;
 
           const email = session?.user?.email || null;
           const data = {
