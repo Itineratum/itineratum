@@ -1,7 +1,7 @@
 import Text from "@/components/atoms/text";
 import { TypographyVariant } from "@/constants/enums/theme";
 import colorsConst from "@/constants/pages/colors.json";
-import { Event, Position } from "@/lib/pythonBackend/types";
+import { Event, EventTimeOfDay, Position } from "@/lib/pythonBackend/types";
 import {
   AdvancedMarker,
   InfoWindow,
@@ -10,7 +10,6 @@ import {
 } from "@vis.gl/react-google-maps";
 import { useEffect, useState } from "react";
 import { OutputFormat, setDefaults } from "react-geocode";
-import { EventCardTimeOfDay } from "./event-card";
 
 const MapMarker = ({
   key,
@@ -22,7 +21,7 @@ const MapMarker = ({
 }: {
   key: number;
   position: Position;
-  timeOfDay: EventCardTimeOfDay;
+  timeOfDay: EventTimeOfDay;
   setSelectedEvent: any;
   event: Event;
   selected: boolean | null;
@@ -40,9 +39,9 @@ const MapMarker = ({
 
   const color = event.is_hotel
     ? colorsConst.components.mapSection.hotel
-    : timeOfDay === EventCardTimeOfDay.morning
+    : timeOfDay === EventTimeOfDay.morning
       ? colorsConst.components.mapSection.morning
-      : timeOfDay === EventCardTimeOfDay.afternoon
+      : timeOfDay === EventTimeOfDay.afternoon
         ? colorsConst.components.mapSection.afternoon
         : colorsConst.components.mapSection.evening;
   const defaultScale = 1;

@@ -9,6 +9,7 @@ import {
 } from "@/constants/enums/theme";
 import colorsConst from "@/constants/pages/colors.json";
 import {
+  Event,
   Hotel,
   HotelAmenity,
   HotelType,
@@ -63,9 +64,8 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import React, { Dispatch, SetStateAction, useEffect, useState } from "react";
 import Carousel from "react-material-ui-carousel";
-import { EventCardTimeOfDay } from "./event-card";
-import { DayPlanWithTimeOfDay, MapMarkerData } from "./map-section";
 import MapMarker from "./map-marker";
+import { MapMarkerData } from "./map-section";
 
 const HotelSelectorDialog = ({
   open,
@@ -77,7 +77,7 @@ const HotelSelectorDialog = ({
   destination,
   currency,
   itineraryId,
-  dayPlanWithTimeOfDay,
+  events,
 }: {
   open: boolean;
   setOpen: Dispatch<SetStateAction<boolean>>;
@@ -88,7 +88,7 @@ const HotelSelectorDialog = ({
   destination: string;
   currency: Currency;
   itineraryId: string;
-  dayPlanWithTimeOfDay: DayPlanWithTimeOfDay;
+  events: Event[];
 }) => {
   const t = useTranslations("itinerary.hotelSelectorDialog");
   const router = useRouter();
@@ -126,33 +126,23 @@ const HotelSelectorDialog = ({
   }, [open, destinationIndex, destination, hotels]);
 
   useEffect(() => {
+    if (!events) return;
+
     const newMapMarkersData: MapMarkerData[] = [];
 
-    for (const timeOfDay in dayPlanWithTimeOfDay) {
-      if (
-        !Object.prototype.hasOwnProperty.call(dayPlanWithTimeOfDay, timeOfDay)
-      )
-        continue;
-      const events =
-        dayPlanWithTimeOfDay[timeOfDay as keyof typeof dayPlanWithTimeOfDay];
-
-      for (const event of events) {
-        if (!event) continue;
-
-        newMapMarkersData.push({
-          timeOfDay:
-            EventCardTimeOfDay[timeOfDay as keyof typeof EventCardTimeOfDay],
-          event,
-          position: {
-            lat: event.coordinates!.lat ?? 0,
-            lng: event.coordinates!.lng ?? 0,
-          },
-        });
-      }
-
-      setMapMarkersData(newMapMarkersData);
+    for (const event of events) {
+      newMapMarkersData.push({
+        timeOfDay: event.time_of_day,
+        event,
+        position: {
+          lat: event.coordinates!.lat ?? 0,
+          lng: event.coordinates!.lng ?? 0,
+        },
+      });
     }
-  }, [dayPlanWithTimeOfDay]);
+
+    setMapMarkersData(newMapMarkersData);
+  }, [events]);
 
   const handleOnClose = () => {
     setOpen(false);
@@ -165,7 +155,7 @@ const HotelSelectorDialog = ({
         hotel &&
         selectedHotel.name === hotel.name &&
         JSON.stringify(selectedHotel.coordinates) ===
-          JSON.stringify(hotel.coordinates),
+          JSON.stringify(hotel.coordinates)
     );
   };
 
@@ -187,7 +177,7 @@ const HotelSelectorDialog = ({
 
       const handleOnChange = (
         event: React.SyntheticEvent,
-        newValue: number,
+        newValue: number
       ) => {
         setHotelTabValue(newValue);
       };
@@ -700,7 +690,7 @@ const HotelSelectorDialog = ({
       const amenities = () => {
         const getIcon = (
           hotelType: HotelType,
-          amenity: HotelAmenity | VacationRentalAmenity,
+          amenity: HotelAmenity | VacationRentalAmenity
         ) => {
           let icon = null;
 
@@ -1004,7 +994,7 @@ const HotelSelectorDialog = ({
                 disableDefaultUI={true}
               >
                 {mapMarkersData.map((mapMarkerData: MapMarkerData) =>
-                  eventMapMarker(mapMarkerData),
+                  eventMapMarker(mapMarkerData)
                 )}
                 {hotelMapMarker()}
               </Map>

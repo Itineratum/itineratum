@@ -1,11 +1,16 @@
+"use client";
+
 import Text from "@/components/atoms/text";
+import { ItineraryEditAction } from "@/components/templates/itinerary-page";
 import { TypographyVariant } from "@/constants/enums/theme";
 import colorsConst from "@/constants/pages/colors.json";
-import { Event } from "@/lib/pythonBackend/types";
+import { Event, EventTimeOfDay } from "@/lib/pythonBackend/types";
 import CalendarTodayIcon from "@mui/icons-material/CalendarToday";
 import LocationOnIcon from "@mui/icons-material/LocationOn";
-import { Box, Button, Stack } from "@mui/material";
+import RemoveCircleIcon from "@mui/icons-material/RemoveCircle";
+import { Box, Button, IconButton, Stack } from "@mui/material";
 import { Dayjs } from "dayjs";
+import { Dispatch, SetStateAction } from "react";
 
 export const eventCardMaxWidth = 515;
 
@@ -16,19 +21,29 @@ const EventCard = ({
   setSelectedEvent,
   event,
   selected,
+  isEditing,
+  edits,
+  setEdits,
+  index,
 }: {
   date: Dayjs;
   destination: string;
-  timeOfDay: EventCardTimeOfDay;
+  timeOfDay: EventTimeOfDay;
   setSelectedEvent: any;
   event: Event;
   selected: boolean;
+  isEditing: boolean;
+  edits: Record<ItineraryEditAction, number[]> | null;
+  setEdits: Dispatch<
+    SetStateAction<Record<ItineraryEditAction, number[]> | null>
+  >;
+  index: number;
 }) => {
   const color = event.is_hotel
     ? colorsConst.components.mapSection.hotel
-    : timeOfDay === EventCardTimeOfDay.morning
+    : timeOfDay === EventTimeOfDay.morning
       ? colorsConst.components.eventCard.morning
-      : timeOfDay === EventCardTimeOfDay.afternoon
+      : timeOfDay === EventTimeOfDay.afternoon
         ? colorsConst.components.eventCard.afternoon
         : colorsConst.components.eventCard.evening;
   const iconSize = 36;
@@ -37,6 +52,54 @@ const EventCard = ({
   const maxWidth = eventCardMaxWidth;
   const maxHeight = "230px";
   const border = selected ? `6px solid ${color}` : "2px solid black";
+
+  const removeButton = () => {
+    const iconSize = 37;
+
+    const handleOnClick = () => {
+      let newEdits: Record<ItineraryEditAction, number[]>;
+
+      if (edits) {
+        newEdits = { ...edits };
+
+        if (edits.delete) {
+          newEdits.delete.push(index);
+        } else {
+          newEdits.delete = [index];
+        }
+      } else {
+        newEdits = { [ItineraryEditAction.delete]: [index] };
+      }
+
+      setEdits(newEdits);
+    };
+
+    return (
+      <IconButton
+        onClick={handleOnClick}
+        sx={{
+          position: "absolute",
+          top: -16,
+          left: -16,
+          zIndex: 1,
+          backgroundColor:
+            colorsConst.components.eventCard.deleteButtonBackground,
+          "&:hover": {
+            backgroundColor:
+              colorsConst.components.eventCard.deleteButtonBackgroundHover,
+          },
+        }}
+      >
+        <RemoveCircleIcon
+          sx={{
+            color: colorsConst.components.eventCard.deleteButton,
+            height: iconSize,
+            width: iconSize,
+          }}
+        />
+      </IconButton>
+    );
+  };
 
   const leftAvatar = () => {
     const size = 70;
@@ -124,28 +187,32 @@ const EventCard = ({
   };
 
   return (
-    <Button
-      onClick={handleOnClick}
+    <Box
       sx={{
-        display: "flex",
-        alignItems: "center",
-        padding,
-        border,
-        borderRadius,
+        position: "relative",
+        display: "inline-block",
         maxWidth,
         maxHeight,
       }}
     >
-      {leftAvatar()}
-      {eventDetails()}
-    </Button>
+      {isEditing && removeButton()}
+      <Button
+        onClick={handleOnClick}
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          padding,
+          border,
+          borderRadius,
+          maxWidth,
+          maxHeight,
+        }}
+      >
+        {leftAvatar()}
+        {eventDetails()}
+      </Button>
+    </Box>
   );
 };
-
-export enum EventCardTimeOfDay {
-  morning = "Morning",
-  afternoon = "Afternoon",
-  evening = "Evening",
-}
 
 export default EventCard;

@@ -25,7 +25,10 @@
       "morning": "#ff8161",
       "afternoon": "#1e90ff",
       "evening": "#7b198b",
-      "background": "#f6f4f4"
+      "background": "#f6f4f4",
+      "deleteButton": "#f34235",
+      "deleteButtonBackground": "#ffffff",
+      "deleteButtonBackgroundHover": "#f8d7da"
     },
     "mapSection": {
       "glyphColor": "#ffffff",

@@ -1,4 +1,3 @@
-import { EventCardTimeOfDay } from "@/app/[locale]/itinerary/components/event-card";
 import { getDays } from "@/utils/itinerary";
 import dayjs from "dayjs";
 import {
@@ -7,9 +6,19 @@ import {
   fromLatLng,
   setDefaults,
 } from "react-geocode";
-import { DayPlan, Event, Hotel, Position, TravelTime } from "./types";
+import {
+  DayPlan,
+  Event,
+  EventTimeOfDay,
+  Hotel,
+  Position,
+  TravelTime,
+} from "./types";
 
-export const getEvents = async (rawTimePeriodPlan: any[]): Promise<Event[]> => {
+export const getEvents = async (
+  rawTimePeriodPlan: any[],
+  timeOfDay: EventTimeOfDay
+): Promise<Event[]> => {
   setDefaults({
     key: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY,
     language: "en",
@@ -40,6 +49,7 @@ export const getEvents = async (rawTimePeriodPlan: any[]): Promise<Event[]> => {
     events.push({
       is_hotel: item.is_hotel ? item.is_hotel : false,
       event_name: item.location_name,
+      time_of_day: timeOfDay,
       location_name: item.display_name ? item.display_name.text : "",
       location_address: item.location_address,
       coordinates: {
@@ -71,7 +81,7 @@ export const getGooglePlacePhotoEndpoint = (photoString: string): string => {
 
 export const getGoogleDistanceMatrixEndpoint = (
   origin: Position,
-  destination: Position,
+  destination: Position
 ): string => {
   const formattedOrigin = `${origin.lat}%2C${origin.lng}`;
   const formattedDestination = `${destination.lat}%2C${destination.lng}`;
@@ -90,15 +100,14 @@ export const getTravelOriginDestinations = (list: Position[]): Position[][] => {
 };
 
 export const getTravelTimes = async (
-  itinerary: DayPlan[],
+  itinerary: DayPlan[]
 ): Promise<TravelTime[][]> => {
   const itineraryTravelTimes: TravelTime[][] = [];
 
   for (const dayPlan of itinerary) {
-    const eventCoordinates: Position[] = dayPlan.morning
-      .concat(dayPlan.afternoon)
-      .concat(dayPlan.evening)
-      .map((event) => event.coordinates ?? { lat: 0, lng: 0 });
+    const eventCoordinates: Position[] = dayPlan.events.map(
+      (event) => event.coordinates ?? { lat: 0, lng: 0 }
+    );
     const originDestinationPairs =
       getTravelOriginDestinations(eventCoordinates);
     const dayPlanTravelTimes: TravelTime[] = [];
@@ -106,7 +115,7 @@ export const getTravelTimes = async (
     for (const originDestinationPair of originDestinationPairs) {
       const googleDistanceMatrixEndpoint = getGoogleDistanceMatrixEndpoint(
         originDestinationPair[0],
-        originDestinationPair[1],
+        originDestinationPair[1]
       );
       const response = await fetch(googleDistanceMatrixEndpoint);
 
@@ -130,12 +139,12 @@ export const getTravelTimes = async (
 };
 
 export const formatItinerary = async (
-  itineraryRaw: any,
+  itineraryRaw: any
 ): Promise<DayPlan[]> => {
   const itinerary: DayPlan[] = [];
   itineraryRaw = itineraryRaw.filter(
     (destinationPlan: any) =>
-      destinationPlan.plan && destinationPlan.plan.length > 0,
+      destinationPlan.plan && destinationPlan.plan.length > 0
   );
 
   for (const destinationPlan of itineraryRaw) {
@@ -144,15 +153,22 @@ export const formatItinerary = async (
 
     for (let index = 0; index < destinationPlan.plan.length; index++) {
       const rawDayPlan = destinationPlan.plan[index];
-      const morning = await getEvents(rawDayPlan.morning);
-      const afternoon = await getEvents(rawDayPlan.afternoon);
-      const evening = await getEvents(rawDayPlan.evening);
+      const morningEvents = await getEvents(
+        rawDayPlan.morning,
+        EventTimeOfDay.morning
+      );
+      const afternoonEvents = await getEvents(
+        rawDayPlan.afternoon,
+        EventTimeOfDay.afternoon
+      );
+      const eveningEvents = await getEvents(
+        rawDayPlan.evening,
+        EventTimeOfDay.evening
+      );
       const dayPlan: DayPlan = {
         destination,
         day: days[index],
-        morning,
-        afternoon,
-        evening,
+        events: morningEvents.concat(afternoonEvents).concat(eveningEvents),
       };
       itinerary.push(dayPlan);
     }
@@ -161,9 +177,9 @@ export const formatItinerary = async (
 };
 
 export const getTimeOfDay = (
-  time: string | null | undefined,
-): EventCardTimeOfDay => {
-  if (!time) return EventCardTimeOfDay.morning;
+  time: string | null | undefined
+): EventTimeOfDay => {
+  if (!time) return EventTimeOfDay.morning;
 
   const [hour, minutePart] = time.toLowerCase().split(":");
   const period = minutePart.slice(-2);
@@ -177,13 +193,13 @@ export const getTimeOfDay = (
   }
 
   if (hour24 >= 6 && hour24 < 12) {
-    return EventCardTimeOfDay.morning;
+    return EventTimeOfDay.morning;
   } else if (hour24 >= 12 && hour24 < 18) {
-    return EventCardTimeOfDay.afternoon;
+    return EventTimeOfDay.afternoon;
   } else if (hour24 >= 18 && hour24 < 24) {
-    return EventCardTimeOfDay.evening;
+    return EventTimeOfDay.evening;
   } else {
-    return EventCardTimeOfDay.morning;
+    return EventTimeOfDay.morning;
   }
 };
 
@@ -218,44 +234,15 @@ export const formatHotels = (hotelsRaw: any): Hotel[][] => {
   return hotels;
 };
 
-export const noHotelEvents = (dayPlan: DayPlan): boolean => {
-  return (
-    dayPlan.morning.every((event: Event) => !event.is_hotel) &&
-    dayPlan.afternoon.every((event: Event) => !event.is_hotel) &&
-    dayPlan.evening.every((event: Event) => !event.is_hotel)
-  );
-};
+export const noHotelEvents = (dayPlan: DayPlan): boolean =>
+  dayPlan.events.every((event: Event) => !event.is_hotel);
 
 export const clearHotelEvents = (dayPlan: DayPlan) => {
-  const hasHotelEvents: boolean[] = [false, false, false];
-
-  dayPlan.morning.forEach((event: Event) => {
-    if (event.is_hotel) {
-      hasHotelEvents[0] = true;
-    }
-  });
-  dayPlan.afternoon.forEach((event: Event) => {
-    if (event.is_hotel) {
-      hasHotelEvents[1] = true;
-    }
-  });
-  dayPlan.evening.forEach((event: Event) => {
-    if (event.is_hotel) {
-      hasHotelEvents[2] = true;
-    }
-  });
-
-  hasHotelEvents.forEach((hasHotelEvent: boolean, index: number) => {
-    if (hasHotelEvent) {
-      if (index === 0) dayPlan.morning.shift();
-      else if (index === 1) dayPlan.afternoon.shift();
-      else if (index === 2) dayPlan.evening.shift();
-    }
-  });
+  dayPlan.events = dayPlan.events.filter((event: Event) => !event.is_hotel);
 };
 
 export const getHotelLocationAddress = async (
-  coordinates: Position,
+  coordinates: Position
 ): Promise<string> => {
   setDefaults({
     key: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY,
@@ -271,17 +258,17 @@ export const getHotelLocationAddress = async (
 export const getTripCheckInCheckOutDays = (
   userRequestedDestinations: any,
   tripStartDate: dayjs.Dayjs,
-  tripEndDate: dayjs.Dayjs,
+  tripEndDate: dayjs.Dayjs
 ): number[][] => {
   const tripCheckInCheckOutDays: number[][] = [];
 
   for (const userRequestedDestination of userRequestedDestinations) {
     const destinationCheckInCheckOutDays: number[] = [];
     const destinationStartDate = dayjs(userRequestedDestination.start_date).utc(
-      true,
+      true
     );
     const destinationEndDate = dayjs(userRequestedDestination.end_date).utc(
-      true,
+      true
     );
 
     if (destinationStartDate.isSame(tripStartDate)) {
@@ -294,7 +281,7 @@ export const getTripCheckInCheckOutDays = (
 
     if (destinationEndDate.isSame(tripEndDate)) {
       destinationCheckInCheckOutDays.push(
-        tripEndDate.diff(tripStartDate, "day") + 1,
+        tripEndDate.diff(tripStartDate, "day") + 1
       );
     } else {
       const dayOfTripOfDestinationEndDate =
@@ -311,7 +298,7 @@ export const getTripCheckInCheckOutDays = (
 export const adjustItineraryWithSelectedHotels = async (
   selectedHotels: Hotel[],
   tripCheckInCheckOutDays: number[][],
-  itinerary: DayPlan[],
+  itinerary: DayPlan[]
 ) => {
   for (
     let destinationIndex = 0;
@@ -324,8 +311,8 @@ export const adjustItineraryWithSelectedHotels = async (
 
     const hotelCheckInDay = tripCheckInCheckOutDays[destinationIndex][0];
     const hotelCheckOutDay = tripCheckInCheckOutDays[destinationIndex][1];
-    const hotelCheckInTimePeriod = getTimeOfDay(hotel.check_in_time);
-    const hotelCheckOutTimePeriod = getTimeOfDay(hotel.check_out_time);
+    const hotelCheckInTimeOfDay = getTimeOfDay(hotel.check_in_time);
+    const hotelCheckOutTimeOfDay = getTimeOfDay(hotel.check_out_time);
     const hotelLocationAddress = await getHotelLocationAddress({
       lat: hotel.coordinates.latitude,
       lng: hotel.coordinates.longitude,
@@ -333,6 +320,7 @@ export const adjustItineraryWithSelectedHotels = async (
     const hotelCheckInEvent: Event = {
       is_hotel: true,
       event_name: `Check in to ${hotel.name}`,
+      time_of_day: hotelCheckInTimeOfDay,
       location_name: hotel.name,
       location_address: hotelLocationAddress,
       coordinates: {
@@ -350,6 +338,7 @@ export const adjustItineraryWithSelectedHotels = async (
     const hotelCheckOutEvent: Event = {
       ...hotelCheckInEvent,
       event_name: `Check out from ${hotel.name}`,
+      time_of_day: hotelCheckOutTimeOfDay,
       location_name: hotel.name,
     };
 
@@ -357,52 +346,64 @@ export const adjustItineraryWithSelectedHotels = async (
       const day = dayPlan.day;
 
       if (hotelCheckInDay === day) {
-        if (hotelCheckInTimePeriod === EventCardTimeOfDay.morning) {
-          if (noHotelEvents(dayPlan)) {
-            dayPlan.morning.unshift(hotelCheckInEvent);
-          } else {
-            clearHotelEvents(dayPlan);
-            dayPlan.morning.unshift(hotelCheckInEvent);
-          }
-        } else if (hotelCheckInTimePeriod === EventCardTimeOfDay.afternoon) {
-          if (noHotelEvents(dayPlan)) {
-            dayPlan.afternoon.unshift(hotelCheckInEvent);
-          } else {
-            clearHotelEvents(dayPlan);
-            dayPlan.afternoon.unshift(hotelCheckInEvent);
-          }
-        } else {
-          if (noHotelEvents(dayPlan)) {
-            dayPlan.evening.unshift(hotelCheckInEvent);
-          } else {
-            clearHotelEvents(dayPlan);
-            dayPlan.evening.unshift(hotelCheckInEvent);
-          }
-        }
+        if (!noHotelEvents(dayPlan)) clearHotelEvents(dayPlan);
+
+        const firstEventInSameTimeOfDayIndex = dayPlan.events.findIndex((event: Event) => event.time_of_day === hotelCheckInTimeOfDay);
+        dayPlan.events.splice(firstEventInSameTimeOfDayIndex, 0, hotelCheckInEvent);
       } else if (hotelCheckOutDay === day) {
-        if (hotelCheckOutTimePeriod === EventCardTimeOfDay.morning) {
-          if (noHotelEvents(dayPlan)) {
-            dayPlan.morning.unshift(hotelCheckOutEvent);
-          } else {
-            clearHotelEvents(dayPlan);
-            dayPlan.morning.unshift(hotelCheckOutEvent);
-          }
-        } else if (hotelCheckOutTimePeriod === EventCardTimeOfDay.afternoon) {
-          if (noHotelEvents(dayPlan)) {
-            dayPlan.afternoon.unshift(hotelCheckOutEvent);
-          } else {
-            clearHotelEvents(dayPlan);
-            dayPlan.afternoon.unshift(hotelCheckOutEvent);
-          }
-        } else {
-          if (noHotelEvents(dayPlan)) {
-            dayPlan.evening.unshift(hotelCheckOutEvent);
-          } else {
-            clearHotelEvents(dayPlan);
-            dayPlan.evening.unshift(hotelCheckOutEvent);
-          }
-        }
+        if (!noHotelEvents(dayPlan)) clearHotelEvents(dayPlan);
+
+        const firstEventInSameTimeOfDayIndex = dayPlan.events.findIndex((event: Event) => event.time_of_day === hotelCheckOutTimeOfDay);
+        dayPlan.events.splice(firstEventInSameTimeOfDayIndex, 0, hotelCheckOutEvent);
       }
+
+      // if (hotelCheckInDay === day) {
+      //   if (hotelCheckInTimeOfDay === EventCardTimeOfDay.morning) {
+      //     if (noHotelEvents(dayPlan)) {
+      //       dayPlan.morning.unshift(hotelCheckInEvent);
+      //     } else {
+      //       clearHotelEvents(dayPlan);
+      //       dayPlan.morning.unshift(hotelCheckInEvent);
+      //     }
+      //   } else if (hotelCheckInTimeOfDay === EventCardTimeOfDay.afternoon) {
+      //     if (noHotelEvents(dayPlan)) {
+      //       dayPlan.afternoon.unshift(hotelCheckInEvent);
+      //     } else {
+      //       clearHotelEvents(dayPlan);
+      //       dayPlan.afternoon.unshift(hotelCheckInEvent);
+      //     }
+      //   } else {
+      //     if (noHotelEvents(dayPlan)) {
+      //       dayPlan.evening.unshift(hotelCheckInEvent);
+      //     } else {
+      //       clearHotelEvents(dayPlan);
+      //       dayPlan.evening.unshift(hotelCheckInEvent);
+      //     }
+      //   }
+      // } else if (hotelCheckOutDay === day) {
+      //   if (hotelCheckOutTimeOfDay === EventCardTimeOfDay.morning) {
+      //     if (noHotelEvents(dayPlan)) {
+      //       dayPlan.morning.unshift(hotelCheckOutEvent);
+      //     } else {
+      //       clearHotelEvents(dayPlan);
+      //       dayPlan.morning.unshift(hotelCheckOutEvent);
+      //     }
+      //   } else if (hotelCheckOutTimeOfDay === EventCardTimeOfDay.afternoon) {
+      //     if (noHotelEvents(dayPlan)) {
+      //       dayPlan.afternoon.unshift(hotelCheckOutEvent);
+      //     } else {
+      //       clearHotelEvents(dayPlan);
+      //       dayPlan.afternoon.unshift(hotelCheckOutEvent);
+      //     }
+      //   } else {
+      //     if (noHotelEvents(dayPlan)) {
+      //       dayPlan.evening.unshift(hotelCheckOutEvent);
+      //     } else {
+      //       clearHotelEvents(dayPlan);
+      //       dayPlan.evening.unshift(hotelCheckOutEvent);
+      //     }
+      //   }
+      // }
     });
   }
 };

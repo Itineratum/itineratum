@@ -41,15 +41,14 @@ export interface GenerateItineraryJSON {
 
 export interface DayPlan {
   day: number;
-  morning: Event[];
-  afternoon: Event[];
-  evening: Event[];
   destination: string;
+  events: Event[];
 }
 
 export interface Event {
   is_hotel: boolean; // indicates whether the current event is a hotel check in/check out event
   event_name: string;
+  time_of_day: EventTimeOfDay
   location_name: string;
   location_address: string;
   coordinates: Position | null;
@@ -60,6 +59,12 @@ export interface Event {
   openingHours: string[];
   checkInTime: string | null;
   checkOutTime: string | null;
+}
+
+export enum EventTimeOfDay {
+  morning = "Morning",
+  afternoon = "Afternoon",
+  evening = "Evening",
 }
 
 export interface Position {

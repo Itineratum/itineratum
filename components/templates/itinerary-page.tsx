@@ -2,10 +2,7 @@
 
 import AdjustBudgetDialog from "@/app/[locale]/itinerary/components/adjust-budget-dialog";
 import DayButton from "@/app/[locale]/itinerary/components/day-button";
-import EventCard, {
-  eventCardMaxWidth,
-  EventCardTimeOfDay,
-} from "@/app/[locale]/itinerary/components/event-card";
+import EventCard from "@/app/[locale]/itinerary/components/event-card";
 import EventDetailsCard, {
   eventDetailsCardHeight,
   eventDetailsCardOverlapOffset,
@@ -23,30 +20,13 @@ import {
 } from "@/constants/enums/theme";
 import { IItinerary } from "@/constants/types/itinerary";
 import { DayPlan, Event, Hotel, TravelTime } from "@/lib/pythonBackend/types";
-import {
-  Box,
-  Button,
-  CircularProgress,
-  Container,
-  Skeleton,
-  Stack,
-} from "@mui/material";
-import { useMapsLibrary, useMap } from "@vis.gl/react-google-maps";
+import { Box, Button, CircularProgress, Container, Stack } from "@mui/material";
 import dayjs from "dayjs";
-import { get } from "lodash";
 import { useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
-import { OutputFormat, setDefaults } from "react-geocode";
 
 const ItineraryPage = ({ params }: { params: { id: string } }) => {
   const t = useTranslations("itinerary");
-
-  setDefaults({
-    key: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY,
-    language: "en",
-    region: "sg",
-    outputFormat: OutputFormat.JSON,
-  });
 
   const [itineraryData, setItineraryData] = useState<IItinerary | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
@@ -63,6 +43,13 @@ const ItineraryPage = ({ params }: { params: { id: string } }) => {
   const [hotelSelectorDialogOpen, setHotelSelectorDialogOpen] =
     useState<boolean>(false);
   const [selectedHotels, setSelectedHotels] = useState<Hotel[]>([]);
+  const [events, setEvents] = useState<Event[]>([]);
+  const [backupEvents, setBackupEvents] = useState<Event[]>([]);
+  const [isEditing, setIsEditing] = useState<boolean>(false);
+  const [edits, setEdits] = useState<Record<
+    ItineraryEditAction,
+    number[]
+  > | null>(null);
 
   const gap = 6;
   const paddingBottom = "20px";
@@ -79,12 +66,12 @@ const ItineraryPage = ({ params }: { params: { id: string } }) => {
         setError(error.message);
         setIsLoading(false);
       },
-    },
+    }
   );
 
   const getCorrectDayPlan = () =>
     getItinerary.data.itinerary.filter(
-      (dayPlan: DayPlan) => dayPlan.day === dayNum,
+      (dayPlan: DayPlan) => dayPlan.day === dayNum
     )[0];
 
   const getDestinations = () => {
@@ -117,6 +104,30 @@ const ItineraryPage = ({ params }: { params: { id: string } }) => {
       setSelectedEvent(null);
     }
   }, [dayNum]);
+
+  // set the events state
+  useEffect(() => {
+    if (dayPlan) {
+      const events = dayPlan.events;
+      setEvents(events);
+      setBackupEvents(events);
+    }
+  }, [dayPlan]);
+
+  useEffect(() => {
+    if (edits) {
+      // handle event deletes
+      if (edits.delete) {
+        const newEvents: Event[] = [...events];
+
+        edits.delete.forEach((eventIndex) => {
+          newEvents.splice(eventIndex, 1);
+        });
+
+        setEvents(newEvents);
+      }
+    }
+  }, [edits]);
 
   if (isLoading)
     return (
@@ -266,9 +277,6 @@ const ItineraryPage = ({ params }: { params: { id: string } }) => {
       const startDate = dayjs(itineraryData.request.payload.start_date);
       const date = dayNum === 1 ? startDate : startDate.add(dayNum - 1, "day");
       const destination = dayPlan!.destination;
-      const events = dayPlan!.morning
-        .concat(dayPlan!.afternoon)
-        .concat(dayPlan!.evening);
 
       const noTravelTimes = () => {
         return (
@@ -289,19 +297,16 @@ const ItineraryPage = ({ params }: { params: { id: string } }) => {
               <EventCard
                 date={date}
                 destination={destination}
-                timeOfDay={
-                  index < dayPlan!.morning.length
-                    ? EventCardTimeOfDay.morning
-                    : index <
-                        dayPlan!.morning.length + dayPlan!.afternoon.length
-                      ? EventCardTimeOfDay.afternoon
-                      : EventCardTimeOfDay.evening
-                }
+                timeOfDay={event.time_of_day}
                 setSelectedEvent={setSelectedEvent}
                 event={event}
                 selected={
                   JSON.stringify(event) === JSON.stringify(selectedEvent)
                 }
+                isEditing={isEditing}
+                edits={edits}
+                setEdits={setEdits}
+                index={index}
               />
               {travelTimes.length < 1
                 ? noTravelTimes()
@@ -326,10 +331,6 @@ const ItineraryPage = ({ params }: { params: { id: string } }) => {
   const detailsSection = () => {
     const spacing = 2;
     const margin = "16px";
-
-    const events = dayPlan!.morning
-      .concat(dayPlan!.afternoon)
-      .concat(dayPlan!.evening);
     let numOfCards = events.length;
 
     const heading = () => {
@@ -390,12 +391,65 @@ const ItineraryPage = ({ params }: { params: { id: string } }) => {
     );
   };
 
+  const editItinerarySection = () => {
+    const spacing = 2;
+
+    const cancelButton = () => {
+      const handleOnClick = () => {
+        setEdits(null);
+        setIsEditing(!isEditing);
+        setEvents(backupEvents);
+      };
+
+      return (
+        edits && (
+          <Button variant="contained" onClick={handleOnClick} color={"info"}>
+            <Text
+              text={t("cancel")}
+              variant={TypographyVariant.button}
+              bold={true}
+            />
+          </Button>
+        )
+      );
+    };
+
+    const editSaveButton = () => {
+      const handleOnClick = () => {
+        setIsEditing(!isEditing);
+
+        if (isEditing) {
+        } else {
+        }
+      };
+
+      return (
+        <Button
+          variant="contained"
+          onClick={handleOnClick}
+          color={isEditing ? "secondary" : "primary"}
+        >
+          <Text
+            text={isEditing ? t("save") : t("edit")}
+            variant={TypographyVariant.button}
+            bold={true}
+          />
+        </Button>
+      );
+    };
+
+    return (
+      <Stack direction="row" spacing={spacing}>
+        {cancelButton()}
+        {editSaveButton()}
+      </Stack>
+    );
+  };
   return (
     <Container
       sx={{
         display: "flex",
         flexDirection: "column",
-        alignItems: "flex-start",
         gap: gap,
         paddingBottom,
       }}
@@ -403,17 +457,18 @@ const ItineraryPage = ({ params }: { params: { id: string } }) => {
       {budgetSection()}
       {itinerarySummaryText()}
       {dayButtons()}
-      {selectHotelButton()}
-      <Stack direction="row" spacing={gap}>
+      <Box display="flex" justifyContent="flex-start">
+        {selectHotelButton()}
+      </Box>
+      <Stack direction="row" spacing={gap} justifyContent="center">
         {itineraryGeneratedSection()}
         {detailsSection()}
       </Stack>
+      <Box display="flex" justifyContent="flex-end">
+        {editItinerarySection()}
+      </Box>
       <MapSection
-        dayPlanWithTimeOfDay={{
-          morning: dayPlan!.morning,
-          afternoon: dayPlan!.afternoon,
-          evening: dayPlan!.evening,
-        }}
+        events={events}
         setSelectedEvent={setSelectedEvent}
         selectedEvent={selectedEvent}
       />
@@ -437,11 +492,7 @@ const ItineraryPage = ({ params }: { params: { id: string } }) => {
           itineraryData.request.payload.localisation.currency as Currency
         }
         itineraryId={params.id}
-        dayPlanWithTimeOfDay={{
-          morning: dayPlan!.morning,
-          afternoon: dayPlan!.afternoon,
-          evening: dayPlan!.evening,
-        }}
+        events={events}
       />
       <EventDetailsDialog
         open={eventDetailsDialogOpen}
@@ -453,3 +504,7 @@ const ItineraryPage = ({ params }: { params: { id: string } }) => {
 };
 
 export default ItineraryPage;
+
+export enum ItineraryEditAction {
+  delete = "delete",
+}
