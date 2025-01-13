@@ -77,6 +77,20 @@
       "step6": {
         "otherRequirements": "Other Requirements"
       },
+      "generationSteps": {
+        "validating": "Validating Plan",
+        "validatingDescription": "Checking that your plan is valid...",
+        "searchingHotels": "Searching for Hotels",
+        "searchingHotelsDescription": "Searching for hotels at your destinations that fit your preferences...",
+        "searchingFlights": "Searching for Flights",
+        "searchingFlightsDescription": "Searching for flights that fit your preferences...",
+        "generatingItinerary": "Generating your Itinerary",
+        "generatingItineraryDescription0": "Generating a detailed itinerary just for you...",
+        "generatingItineraryDescription1": "This may take a little while...",
+        "generatingItineraryDescription2": "We appreciate your patience...",
+        "generatingItineraryDescription3": "You will be automatically redirected once your itinerary has been generated...",
+        "generationComplete": "Generation Complete"
+      },
       "next": "Next",
       "previous": "Previous",
       "generate": "Generate",

@@ -13,8 +13,17 @@ export enum GenerateItineraryPreferredTransport {
   bus = "Bus",
 }
 
-export enum GenerateItineraryOtherRequirements {
+export enum GenerateItineraryOtherRequirement {
   petFriendly = "Pet Friendly",
   familyFriendly = "Family Friendly",
   moreSustainable = "More Sustainable",
+}
+
+export enum GenerateItineraryStep {
+  inputting = "inputting",
+  validating = "validating",
+  searchingHotels = "searchingHotels",
+  searchingFlights = "searchingFlights",
+  generatingItinerary = "generatingItinerary",
+  generationComplete = "generationComplete",
 }

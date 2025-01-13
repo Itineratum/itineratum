@@ -1,4 +1,4 @@
-export const backupItineraryJson = {
+export const backupRunPipelineResponseJson = {
   plan_is_valid: true,
   general_outline: [
     {

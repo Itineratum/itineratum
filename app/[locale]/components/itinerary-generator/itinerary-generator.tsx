@@ -7,10 +7,12 @@ import { Currency } from "@/constants/enums/currency";
 import colorsConst from "@/constants/pages/colors.json";
 import endpointsConst from "@/constants/pages/endpoints.json";
 import { GenerateItineraryFormData } from "@/constants/types/formData/generateItineraryFormData";
-import { backupItineraryJson } from "@/lib/pythonBackend/backupItineraryJson";
+import { backupRunPipelineResponseJson } from "@/lib/pythonBackend/backupRunPipelineResponseJson";
 import {
+  debugPipelineWithGenerationSteps,
   generateItineraryJson,
   runPipeline,
+  runPipelineWithGenerationSteps,
 } from "@/lib/pythonBackend/pythonBackend";
 import ArrowBackOutlinedIcon from "@mui/icons-material/ArrowBackOutlined";
 import ArrowForwardOutlinedIcon from "@mui/icons-material/ArrowForwardOutlined";
@@ -28,6 +30,9 @@ import Step3 from "./step-3";
 import Step4 from "./step-4";
 import Step5 from "./step-5";
 import Step6 from "./step-6";
+import ItineraryGenerationSteps from "./itinerary-generation-steps";
+import { GenerateItineraryStep } from "@/constants/enums/generateItinerary";
+import { backupRunPipelineWithGenerationStepsJson } from "@/lib/pythonBackend/backupRunPipelineWithGenerationStepsJson";
 
 const ItineraryGenerator = () => {
   const { data: session } = useSession();
@@ -53,6 +58,9 @@ const ItineraryGenerator = () => {
     useState<boolean>(false);
   const [showAlert, setShowAlert] = useState<boolean>(false);
   const [alertText, setAlertText] = useState<string>("");
+  const [generationStep, setGenerationStep] = useState<GenerateItineraryStep>(
+    GenerateItineraryStep.inputting,
+  );
 
   const border: string = `2px solid ${colorsConst.palette.secondary.main}`;
   const borderRadius: string = "16px";
@@ -305,18 +313,30 @@ const ItineraryGenerator = () => {
             currency: getCookie("currency") as keyof typeof Currency,
           };
           const itineraryJson = generateItineraryJson(itineraryForm);
-          // const itinerary = await runPipeline(itineraryJson);
 
+          // const itinerary = await runPipeline(itineraryJson);
           // backup
-          const itinerary = backupItineraryJson;
+          // const itinerary = backupRunPipelineResponseJson;
+
+          const runPipelineRes = await runPipelineWithGenerationSteps(
+            itineraryJson,
+            setGenerationStep,
+          );
+          // debug
+          // const runPipelineRes = await debugPipelineWithGenerationSteps(
+          //   itineraryJson,
+          //   setGenerationStep
+          // );
+          // backup
+          // const runPipelineRes = backupRunPipelineWithGenerationStepsJson;
 
           const email = session?.user?.email || null;
           const data = {
             email,
-            request: itinerary.request,
-            itinerary: itinerary.detailed_itinerary || [],
-            hotels: itinerary.hotel_search_results || [],
-            flights: itinerary.flight_search_results || [],
+            request: itineraryJson,
+            itinerary: runPipelineRes.itinerary.itinerary || [],
+            hotels: runPipelineRes.hotels || [],
+            flights: runPipelineRes.flights || [],
           };
           const itineraryId = await saveItinerary.mutateAsync(data);
 
@@ -326,8 +346,6 @@ const ItineraryGenerator = () => {
           console.error(error);
           setAlertText(error.message);
           setShowAlert(true);
-        } finally {
-          setGeneratingItinerary(false);
         }
       };
 
@@ -394,6 +412,9 @@ const ItineraryGenerator = () => {
           alertType={AlertType.error}
         />
         {navigationButtons()}
+        <Box>
+          <ItineraryGenerationSteps generationStep={generationStep} />
+        </Box>
       </Stack>
     </FormProvider>
   );

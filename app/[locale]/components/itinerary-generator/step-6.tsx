@@ -1,5 +1,5 @@
 import Text from "@/components/atoms/text";
-import { GenerateItineraryOtherRequirements } from "@/constants/enums/generateItinerary";
+import { GenerateItineraryOtherRequirement } from "@/constants/enums/generateItinerary";
 import { TypographyVariant } from "@/constants/enums/theme";
 import { GenerateItineraryFormData } from "@/constants/types/formData/generateItineraryFormData";
 import { Checkbox, FormControlLabel, Stack } from "@mui/material";
@@ -28,7 +28,7 @@ const Step6 = ({
   const otherRequirementsCheckboxSection = () => {
     const handleOnChange = (
       event: React.ChangeEvent<HTMLInputElement>,
-      requirement: keyof typeof GenerateItineraryOtherRequirements,
+      requirement: keyof typeof GenerateItineraryOtherRequirement,
     ) => {
       const currentValues = fields.getValues(otherRequirements) || {};
       fields.setValue(otherRequirements, {
@@ -38,7 +38,7 @@ const Step6 = ({
     };
 
     const checkbox = (
-      value: keyof typeof GenerateItineraryOtherRequirements,
+      value: keyof typeof GenerateItineraryOtherRequirement,
     ) => {
       const currentValues = fields.getValues(otherRequirements) || {};
       return (
@@ -52,7 +52,7 @@ const Step6 = ({
           }
           label={
             <Text
-              text={GenerateItineraryOtherRequirements[value]}
+              text={GenerateItineraryOtherRequirement[value]}
               variant={TypographyVariant.h4}
               bold={true}
             />
@@ -63,8 +63,8 @@ const Step6 = ({
 
     return (
       <Stack spacing={spacing} direction="column">
-        {Object.keys(GenerateItineraryOtherRequirements).map((key) =>
-          checkbox(key as keyof typeof GenerateItineraryOtherRequirements),
+        {Object.keys(GenerateItineraryOtherRequirement).map((key) =>
+          checkbox(key as keyof typeof GenerateItineraryOtherRequirement),
         )}
       </Stack>
     );

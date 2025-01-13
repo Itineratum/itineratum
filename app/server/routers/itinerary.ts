@@ -43,14 +43,13 @@ export const itineraryRouter = router({
       const travelTimes: TravelTime[][] = await getTravelTimes(itinerary);
       const hotelsRaw = data.input.hotels;
       const hotels: Hotel[][] = formatHotels(hotelsRaw);
-
       const saveItineraryRes = await saveItinerary(
         email,
         request,
         itinerary,
         travelTimes,
         hotels,
-        flights
+        flights,
       );
       return saveItineraryRes.itineraryId;
     }),
@@ -82,14 +81,13 @@ export const itineraryRouter = router({
       const travelTimes: TravelTime[][] = await getTravelTimes(itinerary);
       const hotelsRaw = data.input.hotels;
       const hotels: Hotel[][] = formatHotels(hotelsRaw);
-
       const adjustItineraryBudgetRes = await adjustItineraryBudget(
         itineraryId,
         request,
         itinerary,
         travelTimes,
         hotels,
-        flights
+        flights,
       );
 
       if (!adjustItineraryBudgetRes.success) {
@@ -109,28 +107,28 @@ export const itineraryRouter = router({
       const userRequestedDestinations =
         retrieveItineraryRes.data.request.payload.user_requested_destinations;
       const tripStartDate = dayjs(
-        retrieveItineraryRes.data.request.payload.start_date
+        retrieveItineraryRes.data.request.payload.start_date,
       ).utc(true);
       const tripEndDate = dayjs(
-        retrieveItineraryRes.data.request.payload.end_date
+        retrieveItineraryRes.data.request.payload.end_date,
       ).utc(true);
       const selectedHotels = data.input.selectedHotels;
       const tripCheckInCheckOutDays: number[][] = getTripCheckInCheckOutDays(
         userRequestedDestinations,
         tripStartDate,
-        tripEndDate
+        tripEndDate,
       );
       await adjustItineraryWithSelectedHotels(
         selectedHotels,
         tripCheckInCheckOutDays,
-        itinerary
+        itinerary,
       );
       const travelTimes: TravelTime[][] = await getTravelTimes(itinerary);
       const adjustItineraryHotelsRes = await adjustItineraryHotels(
         itineraryId,
         itinerary,
         selectedHotels,
-        travelTimes
+        travelTimes,
       );
 
       if (!adjustItineraryHotelsRes.success) {
@@ -161,14 +159,15 @@ export const itineraryRouter = router({
           eventsToDelete,
           retrieveItineraryRes.data.request,
           selectedHotels,
-          itinerary
+          itinerary,
         );
       }
+
       const editItineraryRes = await editItinerary(
         itineraryId,
         itinerary,
         travelTimes,
-        selectedHotels
+        selectedHotels,
       );
 
       if (!editItineraryRes.success) {

@@ -50,7 +50,7 @@ const ItineraryPage = ({ params }: { params: { id: string } }) => {
   const [backupEvents, setBackupEvents] = useState<Event[]>([]);
   const [isEditing, setIsEditing] = useState<boolean>(false);
   const [edit, setEdit] = useState<Record<ItineraryEditAction, number> | null>(
-    null
+    null,
   ); // only one edit at a time, since we want to reflect the edits in real-time
   const [edits, setEdits] = useState<Record<
     ItineraryEditAction,
@@ -73,14 +73,14 @@ const ItineraryPage = ({ params }: { params: { id: string } }) => {
         setError(error.message);
         setIsLoading(false);
       },
-    }
+    },
   );
   const editItinerary = trpc.itinerary.editItinerary.useMutation();
   const utils = trpc.useUtils();
 
   const getCorrectDayPlan = (): DayPlan =>
     getItinerary.data.itinerary.filter(
-      (dayPlan: DayPlan) => dayPlan.day === dayNum
+      (dayPlan: DayPlan) => dayPlan.day === dayNum,
     )[0];
 
   const getDestinations = () => {

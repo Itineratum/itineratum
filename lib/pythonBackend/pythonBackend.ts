@@ -1,7 +1,10 @@
+import { GenerateItineraryStep } from "@/constants/enums/generateItinerary";
 import {
   GenerateItineraryFormData,
   UserRequestedDestination,
 } from "@/constants/types/formData/generateItineraryFormData";
+import { Dispatch, SetStateAction } from "react";
+import { backupRunPipelineWithGenerationStepsJson } from "./backupRunPipelineWithGenerationStepsJson";
 import { PythonBackendEndpoints } from "./endpoints";
 import { GenerateItineraryJSON } from "./types";
 
@@ -121,6 +124,118 @@ export const searchFlights = async (itineraryJson: GenerateItineraryJSON) => {
     }
 
     return await response.json();
+  } catch (error: any) {
+    throw new Error(error);
+  }
+};
+
+export const runPipelineWithGenerationSteps = async (
+  itineraryJson: GenerateItineraryJSON,
+  setGenerationStep: Dispatch<SetStateAction<GenerateItineraryStep>>,
+) => {
+  try {
+    // validate the plan
+    setGenerationStep(GenerateItineraryStep.validating);
+    const validatePlanRes = await validatePlan(itineraryJson);
+
+    if (
+      validatePlanRes.plan_is_valid ||
+      validatePlanRes.plan_is_valid === "yes"
+    ) {
+      setGenerationStep(GenerateItineraryStep.searchingHotels);
+    } else {
+      throw new Error(validatePlanRes.invalid_reason);
+    }
+
+    // search for hotels
+    const searchHotelsRes = await searchHotels(itineraryJson);
+
+    if (searchHotelsRes) {
+      setGenerationStep(GenerateItineraryStep.searchingFlights);
+    } else {
+      throw new Error("Error finding hotels");
+    }
+
+    // search for flights
+    const searchFlightsRes = await searchFlights(itineraryJson);
+
+    // if (searchFlightsRes) setGenerationStep(GenerateItineraryStep.generatingItinerary);
+    setGenerationStep(GenerateItineraryStep.generatingItinerary);
+
+    // generate detailed itinerary
+    const generateItineraryRes = await generateItinerary(itineraryJson);
+    setGenerationStep(GenerateItineraryStep.generationComplete);
+
+    return {
+      itinerary: generateItineraryRes,
+      hotels: searchHotelsRes,
+      flights: searchFlightsRes,
+    };
+  } catch (error: any) {
+    throw new Error(error);
+  }
+};
+
+export const debugPipelineWithGenerationSteps = async (
+  itineraryJson: GenerateItineraryJSON,
+  setGenerationStep: Dispatch<SetStateAction<GenerateItineraryStep>>,
+) => {
+  const timeoutDurations = [
+    3000, // validate plan
+    3000, // search hotels
+    3000, // search flights
+    20000, // generate itinerary
+  ];
+
+  try {
+    // validate the plan
+    setGenerationStep(GenerateItineraryStep.validating);
+    const validatePlanRes = {
+      plan_is_valid: "yes",
+      invalid_reason: "invalid",
+    };
+    await new Promise((f) => setTimeout(f, timeoutDurations[0]));
+
+    if (
+      validatePlanRes.plan_is_valid ||
+      validatePlanRes.plan_is_valid === "yes"
+    ) {
+      setGenerationStep(GenerateItineraryStep.searchingHotels);
+    } else {
+      throw new Error(validatePlanRes.invalid_reason);
+    }
+
+    // search for hotels
+    // const searchHotelsRes = await searchHotels(itineraryJson);
+    const searchHotelsRes = backupRunPipelineWithGenerationStepsJson.hotels;
+    await new Promise((f) => setTimeout(f, timeoutDurations[1]));
+
+    if (searchHotelsRes) {
+      setGenerationStep(GenerateItineraryStep.searchingFlights);
+    } else {
+      throw new Error("Error finding hotels");
+    }
+
+    // search for flights
+    // const searchFlightsRes = await searchFlights(itineraryJson);
+    const searchFlightsRes = backupRunPipelineWithGenerationStepsJson.flights;
+    await new Promise((f) => setTimeout(f, timeoutDurations[2]));
+
+    // if (searchFlightsRes) setGenerationStep(GenerateItineraryStep.generatingItinerary);
+    setGenerationStep(GenerateItineraryStep.generatingItinerary);
+
+    // generate detailed itinerary
+    // const generateItineraryRes = await generateItinerary(itineraryJson);
+    const generateItineraryRes =
+      backupRunPipelineWithGenerationStepsJson.itinerary;
+    await new Promise((f) => setTimeout(f, timeoutDurations[3]));
+    setGenerationStep(GenerateItineraryStep.generationComplete);
+
+    return {
+      itinerary: generateItineraryRes,
+      hotels: searchHotelsRes,
+      flights: searchFlightsRes,
+    };
   } catch (error: any) {
     throw new Error(error);
   }
