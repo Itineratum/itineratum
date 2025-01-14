@@ -1,5 +1,5 @@
 import Text from "@/components/atoms/text";
-import ThreeGuysBackground from "@/components/atoms/three_guys_background";
+import ThreeGuysBackground from "@/components/atoms/three-guys-background";
 import { TypographyVariant } from "@/constants/enums/theme";
 import { Box, Container, Stack } from "@mui/material";
 import { useTranslations } from "next-intl";

@@ -33,7 +33,7 @@ const ThreeGuysBackground = ({ children }: { children: React.ReactNode }) => {
         style={{
           position: "absolute",
           bottom: "0%",
-          left: "80%",
+          left: "90%",
           transform: "translateX(-50%)",
           zIndex: -1,
         }}

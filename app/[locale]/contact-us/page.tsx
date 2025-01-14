@@ -1,5 +1,5 @@
 import { appRouter } from "@/app/server/routers/root";
-import ThreeGuysBackground from "@/components/atoms/three_guys_background";
+import ThreeGuysBackground from "@/components/atoms/three-guys-background";
 import ContactUsPage from "@/components/templates/contact-us-page";
 import { IFAQ } from "@/constants/types/faq";
 import { createServerSideHelpers } from "@trpc/react-query/server";

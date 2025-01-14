@@ -264,7 +264,23 @@
     "faq2": "Are there any charges that comes with using Itineratum to generate an itinerary?",
     "faq2Answer": "No, using Itineratum to generate an itinerary is completely free. We believe in making travel planning easy and accessible for everyone. Our basic itinerary generation service is provided at no cost. However, if you choose to book accommodations, flights, or other services through our platform, those will be subject to the respective providers' fees.",
     "faq3": "What is the cancellation policy?",
-    "faq3Answer": "Lorem ipsum"
+    "faq3Answer": "Lorem ipsum",
+    "feedbackForm": {
+      "feedbacks": "Feedbacks",
+      "description": "Your feedback is invaluable in helping us imporve and provide better travel planning experiences. Whether it's a suggestion, a question, or just a quick note, we're here to listen.\n\nFeel free to explore more features, or if you have additional ideas or need assistance, don't hesitate to get in touch with us directly.\n\nHappy travels,\nThe Itineratum Team",
+      "rateExperience": "How would you rate your experience with Itineratum?",
+      "feedbackCategory": "Feedback Category",
+      "thoughtsSuggestions": "Please share your thoughts or suggestions",
+      "thoughtsSuggestionsPlaceholder": "Type here",
+      "uploadFiles": "Upload Files (Optional)",
+      "uploadFilesInstructions": "Only images (.jpg or .png), videos (.mp4), audio (.mp3) or PDFs (.pdf) allowed!",
+      "uploadInstructions": "Drag a file here, or click to select files from your computer",
+      "uploadedFiles": "Uploaded Files",
+      "submit": "Submit",
+      "submitting": "Submitting",
+      "submitted": "Submitted",
+      "submissionSuccessful": "Feedback successfully submitted!"
+    }
   },
   "signUp": {
     "signUp": "Sign Up",

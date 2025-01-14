@@ -11,6 +11,7 @@ import { Box, Card, CardContent, Container, Stack } from "@mui/material";
 import { useTranslations } from "next-intl";
 import Text from "../atoms/text";
 import contactsConst from "@/constants/pages/contacts.json";
+import FeedbackForm from "@/app/[locale]/contact-us/components/feedback-form";
 
 const ContactUsPage = ({ faqs }: { faqs: IFAQ[] }) => {
   const t = useTranslations("contactUs");
@@ -183,6 +184,7 @@ const ContactUsPage = ({ faqs }: { faqs: IFAQ[] }) => {
         {contactUsText()}
         {contactOptionsSection()}
         {commonFaqsSection()}
+        <FeedbackForm />
       </Stack>
     </Container>
   );

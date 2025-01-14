@@ -60,7 +60,7 @@ const AdjustBudgetDialog = ({
   const [showAlert, setShowAlert] = useState<boolean>(false);
   const [alertText, setAlertText] = useState<string>("");
   const [generationStep, setGenerationStep] = useState<GenerateItineraryStep>(
-    GenerateItineraryStep.inputting
+    GenerateItineraryStep.inputting,
   );
 
   const budgetId = "budget";
@@ -176,7 +176,7 @@ const AdjustBudgetDialog = ({
         itineraryRequest.payload.budget = Number(fields.getValues(budgetId));
         const newItinerary = await debugRunPipelineWithGenerationSteps(
           itineraryRequest,
-          setGenerationStep
+          setGenerationStep,
         );
         const data = {
           itineraryId,
@@ -206,8 +206,7 @@ const AdjustBudgetDialog = ({
           onClick={handleOnClick}
           sx={{ width }}
           disabled={
-            adjustingBudget ||
-            budget === itineraryRequest.payload.budget 
+            adjustingBudget || budget === itineraryRequest.payload.budget
           }
         >
           {adjustingBudget ? (

@@ -63,6 +63,41 @@ export const ourFileRouter = {
         throw error;
       }
     }),
+  feedbackFormFileUploader: f({
+    image: { maxFileSize: "2MB" },
+    pdf: { maxFileSize: "2MB" },
+    audio: { maxFileSize: "2MB" },
+    video: { maxFileSize: "8MB" },
+  })
+    // Set permissions and file types for this FileRoute
+    .middleware(async ({ req }) => {
+      // This code runs on your server before upload
+      const session = await getServerSession(authOptions);
+
+      if (!session || !session.user?.email) {
+        throw new UploadThingError("Unauthorized");
+      }
+
+      const email = session.user.email;
+
+      // Whatever is returned here is accessible in onUploadComplete as `metadata`
+      return { email };
+    })
+    .onUploadComplete(async ({ metadata, file }) => {
+      try {
+        // This code RUNS ON YOUR SERVER after upload
+        const email = metadata.email;
+
+        console.log(
+          `User ${email} has uploaded a new file via the feedback form to ${file.url}!`,
+        );
+
+        // !!! Whatever is returned here is sent to the clientside `onClientUploadComplete`4 callback
+        return { file: file.url };
+      } catch (error) {
+        throw error;
+      }
+    }),
 } satisfies FileRouter;
 
 export type OurFileRouter = typeof ourFileRouter;

@@ -1,3 +1,5 @@
+import contactsConst from "@/constants/pages/contacts.json";
+import { FeedbackCategory } from "@/constants/types/formData/feedbackFormData";
 import nodemailer from "nodemailer";
 
 const transporter = nodemailer.createTransport({
@@ -75,6 +77,48 @@ export const sendNewsletterSubscribedEmail = async (
     await transporter.sendMail(mailOptions);
   } catch (error) {
     console.error("Error sending newsletter subscribed email!", error);
+    throw error;
+  }
+};
+
+export const sendFeedbackEmailNotification = async (
+  userEmail: string | null | undefined,
+  userName: string | null | undefined,
+  rating: number,
+  feedbackCategory: FeedbackCategory,
+  thoughtsSuggestions: string,
+  fileUrls: string[],
+) => {
+  const mailOptions = {
+    from: process.env.NODEMAILER_EMAIL,
+    to: contactsConst.email,
+    subject: "[NOTIF]: New feedback received",
+    text: `Feedback received\n\nUser Email: ${userEmail ?? ""}\nUser Name: ${userName ?? ""}\nRating: ${rating}\nFeedback Category: ${feedbackCategory}\nThoughts or Suggestions: ${thoughtsSuggestions}\nUploaded files: ${fileUrls.map((fileUrl) => `\n- ${fileUrl}`)}`,
+  };
+
+  try {
+    await transporter.sendMail(mailOptions);
+  } catch (error) {
+    console.error("Error sending newsletter subscribed email!", error);
+    throw error;
+  }
+};
+
+export const sendFeedbackReceivedEmail = async (
+  toEmail: string,
+  name: string | null | undefined,
+) => {
+  const mailOptions = {
+    from: process.env.NODEMAILER_EMAIL,
+    to: toEmail,
+    subject: "Your feeback to Itineratum has been received",
+    text: `Dear ${name ?? ""},\n\nThank you for your feedback, we will review your feedback and take any necessary actions. Thank you for using Itineratum!`,
+  };
+
+  try {
+    await transporter.sendMail(mailOptions);
+  } catch (error) {
+    console.error("Error sending feedback received email!", error);
     throw error;
   }
 };
