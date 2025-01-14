@@ -1,12 +1,18 @@
 import { trpc } from "@/app/_trpc/client";
 import Text from "@/components/atoms/text";
 import Alert from "@/components/molecules/alert";
+import ItineraryGenerationSteps from "@/components/molecules/itinerary-generation-steps";
 import { AlertType } from "@/constants/enums/alertType";
 import { Currency } from "@/constants/enums/currency";
+import { GenerateItineraryStep } from "@/constants/enums/generateItinerary";
 import { TypographyVariant } from "@/constants/enums/theme";
 import colorsConst from "@/constants/pages/colors.json";
 import { AdjustBudgetFormData } from "@/constants/types/formData/adjustBudgetFormData";
-import { runPipeline } from "@/lib/pythonBackend/pythonBackend";
+import {
+  debugRunPipelineWithGenerationSteps,
+  runPipeline,
+  runPipelineWithGenerationSteps,
+} from "@/lib/pythonBackend/pythonBackend";
 import { GenerateItineraryJSON } from "@/lib/pythonBackend/types";
 import { isValidIntegerRegex } from "@/utils/itineraryGeneratorValidation";
 import {
@@ -53,8 +59,13 @@ const AdjustBudgetDialog = ({
   const [adjustingBudget, setAdjustingBudget] = useState<boolean>(false);
   const [showAlert, setShowAlert] = useState<boolean>(false);
   const [alertText, setAlertText] = useState<string>("");
+  const [generationStep, setGenerationStep] = useState<GenerateItineraryStep>(
+    GenerateItineraryStep.inputting
+  );
 
-  const budget = "budget";
+  const budgetId = "budget";
+  const budget = fields.watch(budgetId);
+
   const spacing = 4;
   const width = "300px";
 
@@ -113,14 +124,14 @@ const AdjustBudgetDialog = ({
           />
         </Box>
         <Controller
-          name={budget}
+          name={budgetId}
           control={fields.control}
           rules={{
             validate: budgetValidation,
           }}
           render={({ field, fieldState }) => (
             <TextField
-              {...fields.register(budget)}
+              {...fields.register(budgetId)}
               variant="outlined"
               label={t("budgetDescription")}
               InputLabelProps={{
@@ -132,7 +143,7 @@ const AdjustBudgetDialog = ({
               onChange={(event) => {
                 const value = event.target.value;
                 field.onChange(value);
-                fields.trigger(budget);
+                fields.trigger(budgetId);
               }}
               inputProps={{
                 inputMode: "numeric",
@@ -149,23 +160,30 @@ const AdjustBudgetDialog = ({
   };
 
   const adjustBudgetButton = () => {
-    const width = "45%";
+    const width = "200px";
     const loadingAnimationSize: number = 24;
     const spacing = 2;
 
     const handleOnClick = async () => {
+      const budgetIsValid = await fields.trigger(budgetId);
+
+      if (!budgetIsValid) return;
+
       setAdjustingBudget(true);
 
       try {
         // validate the itinerary request with the adjusted budget
-        itineraryRequest.payload.budget = Number(fields.getValues(budget));
-        const newItinerary = await runPipeline(itineraryRequest);
+        itineraryRequest.payload.budget = Number(fields.getValues(budgetId));
+        const newItinerary = await debugRunPipelineWithGenerationSteps(
+          itineraryRequest,
+          setGenerationStep
+        );
         const data = {
           itineraryId,
-          request: newItinerary.request,
-          itinerary: newItinerary.detailed_itinerary ?? [],
-          hotels: newItinerary.hotel_search_results ?? [],
-          flights: newItinerary.flight_search_results ?? [],
+          request: itineraryRequest,
+          itinerary: newItinerary.itinerary ?? [],
+          hotels: newItinerary.hotels ?? [],
+          flights: newItinerary.flights ?? [],
         };
         await adjustItineraryBudget.mutateAsync(data);
         utils.itinerary.getItinerary.invalidate();
@@ -187,7 +205,10 @@ const AdjustBudgetDialog = ({
           variant="contained"
           onClick={handleOnClick}
           sx={{ width }}
-          disabled={adjustingBudget}
+          disabled={
+            adjustingBudget ||
+            budget === itineraryRequest.payload.budget 
+          }
         >
           {adjustingBudget ? (
             <Stack
@@ -226,6 +247,7 @@ const AdjustBudgetDialog = ({
             alertText={alertText}
             alertType={AlertType.error}
           />
+          <ItineraryGenerationSteps generationStep={generationStep} />
         </Stack>
       </DialogContent>
     </Dialog>

@@ -176,7 +176,7 @@ export const runPipelineWithGenerationSteps = async (
   }
 };
 
-export const debugPipelineWithGenerationSteps = async (
+export const debugRunPipelineWithGenerationSteps = async (
   itineraryJson: GenerateItineraryJSON,
   setGenerationStep: Dispatch<SetStateAction<GenerateItineraryStep>>,
 ) => {

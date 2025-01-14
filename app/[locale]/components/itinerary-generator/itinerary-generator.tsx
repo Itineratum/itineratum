@@ -9,7 +9,7 @@ import endpointsConst from "@/constants/pages/endpoints.json";
 import { GenerateItineraryFormData } from "@/constants/types/formData/generateItineraryFormData";
 import { backupRunPipelineResponseJson } from "@/lib/pythonBackend/backupRunPipelineResponseJson";
 import {
-  debugPipelineWithGenerationSteps,
+  debugRunPipelineWithGenerationSteps,
   generateItineraryJson,
   runPipeline,
   runPipelineWithGenerationSteps,
@@ -30,7 +30,7 @@ import Step3 from "./step-3";
 import Step4 from "./step-4";
 import Step5 from "./step-5";
 import Step6 from "./step-6";
-import ItineraryGenerationSteps from "./itinerary-generation-steps";
+import ItineraryGenerationSteps from "../../../../components/molecules/itinerary-generation-steps";
 import { GenerateItineraryStep } from "@/constants/enums/generateItinerary";
 import { backupRunPipelineWithGenerationStepsJson } from "@/lib/pythonBackend/backupRunPipelineWithGenerationStepsJson";
 
