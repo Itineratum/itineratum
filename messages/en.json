@@ -127,6 +127,7 @@
     "cancel": "Cancel Edits",
     "saving": "Saving Edits",
     "editInstructions": "Click on 'Save Edits' to save your edits and see the updated itinerary.",
+    "addActivity": "Add Activity",
     "adjustBudgetDialog": {
       "adjustBudget": "Adjust Budget",
       "description": "Adjust the budget for your trip.",
@@ -168,6 +169,18 @@
       "clickHere": "Click Here",
       "checkInTime": "Check In Time",
       "checkOutTime": "Check Out Time"
+    },
+    "addEventDialog": {
+      "newActivity": "New Activity",
+      "description": "Add a new activity to your trip.",
+      "locationName": "Location Name",
+      "locationNameDescription": "Search for location",
+      "locationNameErrorMessage": "Please enter a location name!",
+      "timeOfDay": "Time of Day",
+      "timeOfDayDescription": "Select time of day for activity",
+      "timeOfDayErrorMessage": "Please select a time of day!",
+      "addActivity": "Add Activity",
+      "addingActivity": "Adding Activity"
     }
   },
   "account": {

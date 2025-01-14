@@ -1,5 +1,6 @@
 "use client";
 
+import AddEventDialog from "@/app/[locale]/itinerary/components/add-event-dialog";
 import AdjustBudgetDialog from "@/app/[locale]/itinerary/components/adjust-budget-dialog";
 import DayButton from "@/app/[locale]/itinerary/components/day-button";
 import EventCard from "@/app/[locale]/itinerary/components/event-card";
@@ -49,14 +50,17 @@ const ItineraryPage = ({ params }: { params: { id: string } }) => {
   const [events, setEvents] = useState<Event[]>([]);
   const [backupEvents, setBackupEvents] = useState<Event[]>([]);
   const [isEditing, setIsEditing] = useState<boolean>(false);
-  const [edit, setEdit] = useState<Record<ItineraryEditAction, number> | null>(
-    null,
-  ); // only one edit at a time, since we want to reflect the edits in real-time
-  const [edits, setEdits] = useState<Record<
-    ItineraryEditAction,
-    Event[]
+  const [edit, setEdit] = useState<Partial<
+    Record<ItineraryEditAction, number>
+  > | null>(null); // only one edit at a time, since we want to reflect the edits in real-time
+  const [edits, setEdits] = useState<Partial<
+    Record<ItineraryEditAction, Event[]>
   > | null>(null);
   const [isSavingEdits, setIsSavingEdits] = useState<boolean>(false);
+  const [addEventDialogOpen, setAddEventDialogOpen] = useState<boolean>(false);
+  const [indexToAddEventTo, setIndexToAddEventTo] = useState<number | null>(
+    null,
+  );
 
   const gap = 6;
   const paddingBottom = "20px";
@@ -127,24 +131,40 @@ const ItineraryPage = ({ params }: { params: { id: string } }) => {
 
   useEffect(() => {
     if (edit) {
-      // handle event delete
       if (edit.delete || edit.delete === 0) {
+        // handle event deletions
         const newEvents: Event[] = [...events];
         const indexOfEventToDelete: number = edit.delete;
         newEvents.splice(indexOfEventToDelete, 1);
         setEvents(newEvents);
         const eventToDelete = events[indexOfEventToDelete];
+        let newEdits: Partial<Record<ItineraryEditAction, Event[]>>;
 
         if (edits) {
-          const newEdits = { ...edits };
-          newEdits.delete.push(eventToDelete);
-          setEdits(newEdits!);
+          newEdits = { ...edits };
+
+          if (newEdits.delete) {
+            newEdits.delete.push(eventToDelete);
+          } else {
+            newEdits.delete = [eventToDelete];
+          }
         } else {
-          setEdits({ [ItineraryEditAction.delete]: [eventToDelete] });
+          newEdits = { [ItineraryEditAction.delete]: [eventToDelete] };
         }
+
+        setEdits(newEdits);
+      } else if (edit.add || edit.add === 0) {
+        // TODO: handle event additions
+        const newEvents: Event[] = [...events];
+        const indexOfEventToAdd: number = edit.add;
+        newEvents.splice(indexOfEventToAdd, 0);
       }
     }
   }, [edit]);
+
+  useEffect(() => {
+    console.log(edits);
+  }, [edits]);
 
   if (isLoading)
     return (
@@ -324,6 +344,8 @@ const ItineraryPage = ({ params }: { params: { id: string } }) => {
                 isEditing={isEditing}
                 setEdit={setEdit}
                 index={index}
+                setAddEventDialogOpen={setAddEventDialogOpen}
+                setIndexToAddEventTo={setIndexToAddEventTo}
               />
               {!isEditing &&
                 (travelTimes.length < 1
@@ -571,6 +593,12 @@ const ItineraryPage = ({ params }: { params: { id: string } }) => {
         setOpen={setEventDetailsDialogOpen}
         event={selectedEvent}
       />
+      <AddEventDialog
+        open={addEventDialogOpen}
+        setOpen={setAddEventDialogOpen}
+        itineraryId={params.id}
+        indexToAddEventTo={indexToAddEventTo ?? 0}
+      />
     </Container>
   );
 };
@@ -579,4 +607,5 @@ export default ItineraryPage;
 
 export enum ItineraryEditAction {
   delete = "delete",
+  add = "add",
 }

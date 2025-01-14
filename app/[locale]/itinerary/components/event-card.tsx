@@ -11,6 +11,8 @@ import RemoveCircleIcon from "@mui/icons-material/RemoveCircle";
 import { Box, Button, IconButton, Stack } from "@mui/material";
 import { Dayjs } from "dayjs";
 import { Dispatch, SetStateAction } from "react";
+import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
+import { useTranslations } from "next-intl";
 
 export const eventCardMaxWidth = 515;
 
@@ -24,6 +26,8 @@ const EventCard = ({
   isEditing,
   setEdit,
   index,
+  setAddEventDialogOpen,
+  setIndexToAddEventTo,
 }: {
   date: Dayjs;
   destination: string;
@@ -32,9 +36,15 @@ const EventCard = ({
   event: Event;
   selected: boolean;
   isEditing: boolean;
-  setEdit: Dispatch<SetStateAction<Record<ItineraryEditAction, number> | null>>;
+  setEdit: Dispatch<
+    SetStateAction<Partial<Record<ItineraryEditAction, number>> | null>
+  >;
   index: number;
+  setAddEventDialogOpen: Dispatch<SetStateAction<boolean>>;
+  setIndexToAddEventTo: Dispatch<SetStateAction<number | null>>;
 }) => {
+  const t = useTranslations("itinerary");
+
   const color = event.is_hotel
     ? colorsConst.components.mapSection.hotel
     : timeOfDay === EventTimeOfDay.morning
@@ -48,12 +58,13 @@ const EventCard = ({
   const maxWidth = eventCardMaxWidth;
   const maxHeight = "230px";
   const border = selected ? `6px solid ${color}` : "2px solid black";
+  const spacing = 2;
 
-  const removeButton = () => {
+  const deleteButton = () => {
     const iconSize = 37;
 
     const handleOnClick = () => {
-      const newEdit: Record<ItineraryEditAction, number> = {
+      const newEdit: Partial<Record<ItineraryEditAction, number>> = {
         [ItineraryEditAction.delete]: index,
       };
       setEdit(newEdit);
@@ -82,6 +93,46 @@ const EventCard = ({
             width: iconSize,
           }}
         />
+      </IconButton>
+    );
+  };
+
+  const addButton = (indexToAddEventTo: number) => {
+    const iconSize = 37;
+    const spacing = 2;
+
+    const handleOnClick = () => {
+      const newEdit: Partial<Record<ItineraryEditAction, number>> = {
+        [ItineraryEditAction.add]: indexToAddEventTo,
+      };
+      setEdit(newEdit);
+
+      setIndexToAddEventTo(indexToAddEventTo);
+      setAddEventDialogOpen(true);
+    };
+
+    return (
+      <IconButton onClick={handleOnClick}>
+        <Stack
+          direction="row"
+          spacing={spacing}
+          display="flex"
+          alignItems="center"
+        >
+          <AddCircleOutlineIcon
+            sx={{
+              color: colorsConst.palette.text.primary,
+              height: iconSize,
+              width: iconSize,
+            }}
+          />
+          <Text
+            text={t("addActivity")}
+            variant={TypographyVariant.body1}
+            bold={false}
+            color={colorsConst.palette.text.primary}
+          />
+        </Stack>
       </IconButton>
     );
   };
@@ -172,31 +223,35 @@ const EventCard = ({
   };
 
   return (
-    <Box
-      sx={{
-        position: "relative",
-        display: "inline-block",
-        maxWidth,
-        maxHeight,
-      }}
-    >
-      {isEditing && removeButton()}
-      <Button
-        onClick={handleOnClick}
+    <Stack direction="column" spacing={spacing}>
+      {isEditing && index === 0 && addButton(index)}
+      <Box
         sx={{
-          display: "flex",
-          alignItems: "center",
-          padding,
-          border,
-          borderRadius,
+          position: "relative",
+          display: "inline-block",
           maxWidth,
           maxHeight,
         }}
       >
-        {leftAvatar()}
-        {eventDetails()}
-      </Button>
-    </Box>
+        {isEditing && deleteButton()}
+        <Button
+          onClick={handleOnClick}
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            padding,
+            border,
+            borderRadius,
+            maxWidth,
+            maxHeight,
+          }}
+        >
+          {leftAvatar()}
+          {eventDetails()}
+        </Button>
+      </Box>
+      {isEditing && addButton(index + 1)}
+    </Stack>
   );
 };
 

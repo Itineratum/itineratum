@@ -5,7 +5,14 @@ import {
   GenerateItineraryFormData,
   UserRequestedDestination,
 } from "@/constants/types/formData/generateItineraryFormData";
-import { Box, Grid, MenuItem, Select, Stack } from "@mui/material";
+import {
+  Box,
+  Grid,
+  MenuItem,
+  Select,
+  SelectChangeEvent,
+  Stack,
+} from "@mui/material";
 import { useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
 import { UseFormReturn } from "react-hook-form";
