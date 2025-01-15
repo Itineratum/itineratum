@@ -138,7 +138,7 @@ export const adjustItineraryHotels = async (
   }
 };
 
-export const editItinerary = async (
+export const removeEventFromItinerary = async (
   itineraryId: string,
   itinerary: DayPlan[],
   travelTimes: TravelTime[][],
@@ -161,7 +161,37 @@ export const editItinerary = async (
     if (result.acknowledged) {
       return { success: true };
     } else {
-      return { success: false, error: "Itinerary edit failed" };
+      return { success: false, error: "Remove event from itinerary failed" };
+    }
+  } catch (error) {
+    console.error(error);
+    throw error;
+  } finally {
+    // await disconnectFromDatabase();
+  }
+};
+
+export const insertEditEventInItinerary = async (
+  itineraryId: string,
+  dayNum: number,
+  dayPlan: DayPlan,
+) => {
+  try {
+    await connectToDatabase();
+    const update = {
+      $set: {
+        [`itinerary[${dayNum - 1}]`]: dayPlan,
+      },
+    };
+    const result = await Itinerary.updateOne(
+      { _id: new ObjectId(itineraryId) },
+      update,
+    );
+
+    if (result.acknowledged) {
+      return { success: true };
+    } else {
+      return { success: false, error: "Insert event to itinerary failed" };
     }
   } catch (error) {
     console.error(error);

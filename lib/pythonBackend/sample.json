@@ -42521,21 +42521,28 @@
     "payload": {
       "date": "2021-10-01",
       "location": "Tokyo",
-      "itinerary": [{
-        "morning": [
-          "Visit to the Tokyo Tower",
-          "Lunch at the Sushi Restaurant"
-        ],
-        "afternoon": [
-          "Visit to the Tokyo Skytree",
-          "Dinner at the Ramen Restaurant"
-        ],
-        "evening": ["Visit to the Robot Restaurant", "Drinks at the Golden Gai"]
-      }],
-      "additional_activities": [{
-        "time_period": "morning",
-        "activity": "Visit to Hokaido ski resort"
-      }]
+      "itinerary": [
+        {
+          "morning": [
+            "Visit to the Tokyo Tower",
+            "Lunch at the Sushi Restaurant"
+          ],
+          "afternoon": [
+            "Visit to the Tokyo Skytree",
+            "Dinner at the Ramen Restaurant"
+          ],
+          "evening": [
+            "Visit to the Robot Restaurant",
+            "Drinks at the Golden Gai"
+          ]
+        }
+      ],
+      "additional_activities": [
+        {
+          "time_period": "morning",
+          "activity": "Visit to Hokaido ski resort"
+        }
+      ]
     }
   }
 }

@@ -6,5 +6,5 @@ export enum PythonBackendEndpoints {
   runPipeline = "/api/run_pipeline",
   validateNew = "/api/validate_new",
   validateEdit = "/api/validate_edit",
-  searchActivity = "/api/search_activity"
+  searchActivity = "/api/search_activity",
 }

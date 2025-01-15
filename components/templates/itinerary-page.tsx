@@ -59,7 +59,7 @@ const ItineraryPage = ({ params }: { params: { id: string } }) => {
   const [isSavingEdits, setIsSavingEdits] = useState<boolean>(false);
   const [addEventDialogOpen, setAddEventDialogOpen] = useState<boolean>(false);
   const [indexToAddEventTo, setIndexToAddEventTo] = useState<number | null>(
-    null
+    null,
   );
 
   const gap = 6;
@@ -77,14 +77,15 @@ const ItineraryPage = ({ params }: { params: { id: string } }) => {
         setError(error.message);
         setIsLoading(false);
       },
-    }
+    },
   );
-  const deleteEventFromItinerary = trpc.itinerary.deleteEventFromItinerary.useMutation();
+  const deleteEventFromItinerary =
+    trpc.itinerary.deleteEventFromItinerary.useMutation();
   const utils = trpc.useUtils();
 
   const getCorrectDayPlan = (): DayPlan =>
     getItinerary.data.itinerary.filter(
-      (dayPlan: DayPlan) => dayPlan.day === dayNum
+      (dayPlan: DayPlan) => dayPlan.day === dayNum,
     )[0];
 
   const getDestinations = () => {

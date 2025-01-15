@@ -253,7 +253,7 @@ const AddEventDialog = ({
             dayPlan,
             timeOfDay,
             locationName,
-            locationCity
+            locationCity,
           );
           const validateNewRes = await validateNew(validateNewJson);
 
@@ -266,7 +266,7 @@ const AddEventDialog = ({
 
           const searchActivityJson = generateSearchActivityJson(
             locationName,
-            locationCity
+            locationCity,
           );
           const searchActivityRes = await searchActivity(searchActivityJson);
           console.log("searchActivityRes", searchActivityRes);
