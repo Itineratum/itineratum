@@ -51,7 +51,7 @@ const ItineraryPage = ({ params }: { params: { id: string } }) => {
   const [backupEvents, setBackupEvents] = useState<Event[]>([]);
   const [isEditing, setIsEditing] = useState<boolean>(false);
   const [edit, setEdit] = useState<Partial<
-    Record<ItineraryEditAction, number>
+    Record<ItineraryEditAction, number | AddEventToItineraryAction>
   > | null>(null); // only one edit at a time, since we want to reflect the edits in real-time
   const [edits, setEdits] = useState<Partial<
     Record<ItineraryEditAction, Event[]>
@@ -59,7 +59,7 @@ const ItineraryPage = ({ params }: { params: { id: string } }) => {
   const [isSavingEdits, setIsSavingEdits] = useState<boolean>(false);
   const [addEventDialogOpen, setAddEventDialogOpen] = useState<boolean>(false);
   const [indexToAddEventTo, setIndexToAddEventTo] = useState<number | null>(
-    null,
+    null
   );
 
   const gap = 6;
@@ -77,7 +77,7 @@ const ItineraryPage = ({ params }: { params: { id: string } }) => {
         setError(error.message);
         setIsLoading(false);
       },
-    },
+    }
   );
   const deleteEventFromItinerary =
     trpc.itinerary.deleteEventFromItinerary.useMutation();
@@ -85,7 +85,7 @@ const ItineraryPage = ({ params }: { params: { id: string } }) => {
 
   const getCorrectDayPlan = (): DayPlan =>
     getItinerary.data.itinerary.filter(
-      (dayPlan: DayPlan) => dayPlan.day === dayNum,
+      (dayPlan: DayPlan) => dayPlan.day === dayNum
     )[0];
 
   const getDestinations = () => {
@@ -135,7 +135,7 @@ const ItineraryPage = ({ params }: { params: { id: string } }) => {
       if (edit.delete || edit.delete === 0) {
         // handle event deletions
         const newEvents: Event[] = [...events];
-        const indexOfEventToDelete: number = edit.delete;
+        const indexOfEventToDelete: number = edit.delete as number;
         newEvents.splice(indexOfEventToDelete, 1);
         setEvents(newEvents);
         const eventToDelete = events[indexOfEventToDelete];
@@ -157,8 +157,23 @@ const ItineraryPage = ({ params }: { params: { id: string } }) => {
       } else if (edit.add || edit.add === 0) {
         // TODO: handle event additions
         const newEvents: Event[] = [...events];
-        const indexOfEventToAdd: number = edit.add;
-        newEvents.splice(indexOfEventToAdd, 0);
+        const addEventToItineraryAction: AddEventToItineraryAction =
+          edit.add as AddEventToItineraryAction;
+        const indexToAddEventTo: number =
+          addEventToItineraryAction.indexToAddEventTo;
+        newEvents.splice(
+          indexToAddEventTo,
+          0,
+          addEventToItineraryAction.newEvent
+        );
+        setEvents(newEvents);
+        let newEdits: Partial<Record<ItineraryEditAction, Event[]>>;
+
+        if (edits) {
+          
+        }
+      } else if (edit.modify || edit.modify === 0) {
+        // TODO: handle event modifications
       }
     }
   }, [edit]);
@@ -466,6 +481,7 @@ const ItineraryPage = ({ params }: { params: { id: string } }) => {
       const loadingAnimationSize: number = 24;
       const spacing = 2;
 
+      // TODO: handle adding and modification of events too
       const handleOnClick = async () => {
         if (isEditing && edits) {
           // save the edits
@@ -600,7 +616,9 @@ const ItineraryPage = ({ params }: { params: { id: string } }) => {
         itineraryId={params.id}
         indexToAddEventTo={indexToAddEventTo ?? 0}
         itineraryRequest={itineraryData.request}
+        events={events}
         dayPlan={dayPlan!}
+        setEdit={setEdit}
       />
     </Container>
   );
@@ -611,4 +629,10 @@ export default ItineraryPage;
 export enum ItineraryEditAction {
   delete = "delete",
   add = "add",
-}
+  modify = "modify"
+};
+
+export interface AddEventToItineraryAction {
+  indexToAddEventTo: number;
+  newEvent: Event;
+};

@@ -9,6 +9,7 @@ import { PythonBackendEndpoints } from "./endpoints";
 import {
   AdditionalActivity,
   DayPlan,
+  Event,
   EventTimeOfDay,
   GenerateItineraryJSON,
   SearchActivityJSON,
@@ -379,6 +380,7 @@ export const generateItineraryJson = (
 
 export const generateValidateNewJson = (
   itineraryRequest: GenerateItineraryJSON,
+  events: Event[],
   dayPlan: DayPlan,
   timeOfDay: EventTimeOfDay,
   locationName: string,
@@ -391,13 +393,13 @@ export const generateValidateNewJson = (
     destinationDayNum === 1
       ? tripStartDate
       : tripStartDate.add(destinationDayNum - 1, "day");
-  const morning = dayPlan.events
+  const morning = events
     .filter((event) => event.time_of_day === EventTimeOfDay.morning)
     .map((event) => event.event_name);
-  const afternoon = dayPlan.events
+  const afternoon = events
     .filter((event) => event.time_of_day === EventTimeOfDay.afternoon)
     .map((event) => event.event_name);
-  const evening = dayPlan.events
+  const evening = events
     .filter((event) => event.time_of_day === EventTimeOfDay.evening)
     .map((event) => event.event_name);
   const additionalActivity: AdditionalActivity = {
@@ -418,6 +420,7 @@ export const generateValidateNewJson = (
 
 export const generateValidateEditJson = (
   itineraryRequest: GenerateItineraryJSON,
+  events: Event[],
   dayPlan: DayPlan,
 ): ValidateEditJSON => {
   const destination = dayPlan.destination;
@@ -427,13 +430,13 @@ export const generateValidateEditJson = (
     destinationDayNum === 1
       ? tripStartDate
       : tripStartDate.add(destinationDayNum - 1, "day");
-  const morning = dayPlan.events
+  const morning = events
     .filter((event) => event.time_of_day === EventTimeOfDay.morning)
     .map((event) => event.event_name);
-  const afternoon = dayPlan.events
+  const afternoon = events
     .filter((event) => event.time_of_day === EventTimeOfDay.afternoon)
     .map((event) => event.event_name);
-  const evening = dayPlan.events
+  const evening = events
     .filter((event) => event.time_of_day === EventTimeOfDay.evening)
     .map((event) => event.event_name);
 

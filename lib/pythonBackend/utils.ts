@@ -503,3 +503,55 @@ export const deleteCorrespondingHotelEvents = (
 
   return selectedHotels;
 };
+
+export const getTimesOfDayBefore = (
+  input: EventTimeOfDay,
+): EventTimeOfDay[] => {
+  if (input === EventTimeOfDay.morning) {
+    return [EventTimeOfDay.morning];
+  } else if (input === EventTimeOfDay.afternoon) {
+    return [EventTimeOfDay.morning, EventTimeOfDay.afternoon];
+  } else {
+    return [
+      EventTimeOfDay.morning,
+      EventTimeOfDay.afternoon,
+      EventTimeOfDay.evening,
+    ];
+  }
+};
+
+export const getTimesOfDayAfter = (input: EventTimeOfDay): EventTimeOfDay[] => {
+  if (input === EventTimeOfDay.morning) {
+    return [
+      EventTimeOfDay.morning,
+      EventTimeOfDay.afternoon,
+      EventTimeOfDay.evening,
+    ];
+  } else if (input === EventTimeOfDay.afternoon) {
+    return [EventTimeOfDay.afternoon, EventTimeOfDay.evening];
+  } else {
+    return [EventTimeOfDay.evening];
+  }
+};
+
+export const getTimesOfDayBetween = (
+  previous: EventTimeOfDay,
+  next: EventTimeOfDay,
+): EventTimeOfDay[] => {
+  const timeOrder = [
+    EventTimeOfDay.morning,
+    EventTimeOfDay.afternoon,
+    EventTimeOfDay.evening,
+  ];
+  const startIndex = timeOrder.indexOf(previous);
+  const endIndex = timeOrder.indexOf(next);
+
+  if (startIndex === -1 || endIndex === -1) {
+    throw new Error("Invalid EventTimeOfDay values provided.");
+  }
+
+  return timeOrder.slice(
+    Math.min(startIndex, endIndex),
+    Math.max(startIndex, endIndex) + 1,
+  );
+};

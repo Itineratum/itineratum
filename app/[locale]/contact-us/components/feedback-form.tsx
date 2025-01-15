@@ -390,7 +390,7 @@ const FeedbackForm = () => {
       // reset form values
       reset({
         rating: 0,
-        feedbackCategory: FeedbackCategory.generalFeedback,
+        feedbackCategory: null as unknown as FeedbackCategory,
         thoughtsSuggestions: "",
         files: [],
       });

@@ -2,6 +2,7 @@ import { trpc } from "@/app/_trpc/client";
 import Text from "@/components/atoms/text";
 import Alert from "@/components/molecules/alert";
 import TextInputField from "@/components/molecules/text-input-field";
+import { AddEventToItineraryAction, ItineraryEditAction } from "@/components/templates/itinerary-page";
 import { AlertType } from "@/constants/enums/alertType";
 import { TypographyVariant } from "@/constants/enums/theme";
 import colorsConst from "@/constants/pages/colors.json";
@@ -14,9 +15,15 @@ import {
 } from "@/lib/pythonBackend/pythonBackend";
 import {
   DayPlan,
+  Event,
   EventTimeOfDay,
   GenerateItineraryJSON,
 } from "@/lib/pythonBackend/types";
+import {
+  getTimesOfDayAfter,
+  getTimesOfDayBefore,
+  getTimesOfDayBetween,
+} from "@/lib/pythonBackend/utils";
 import {
   Box,
   Button,
@@ -41,16 +48,24 @@ const AddEventDialog = ({
   open,
   setOpen,
   itineraryRequest,
-  dayPlan,
+  events,
   itineraryId,
   indexToAddEventTo,
+  dayPlan,
+  setEdit,
 }: {
   open: boolean;
   setOpen: Dispatch<SetStateAction<boolean>>;
   itineraryRequest: GenerateItineraryJSON;
-  dayPlan: DayPlan;
+  events: Event[];
   itineraryId: string;
   indexToAddEventTo: number;
+  dayPlan: DayPlan;
+  setEdit: Dispatch<
+    SetStateAction<Partial<
+      Record<ItineraryEditAction, number | AddEventToItineraryAction>
+    > | null>
+  >;
 }) => {
   const t = useTranslations("itinerary.addEventDialog");
   const router = useRouter();
@@ -60,6 +75,7 @@ const AddEventDialog = ({
     setValue,
     watch,
     trigger,
+    reset,
   } = useForm<AddNewEventFormData>();
 
   const [addingActivity, setAddingActivity] = useState<boolean>(false);
@@ -81,7 +97,14 @@ const AddEventDialog = ({
   const utils = trpc.useUtils();
 
   const handleOnClose = () => {
-    if (!addingActivity) setOpen(false);
+    if (!addingActivity) {
+      setOpen(false);
+      reset({
+        locationName: "",
+        locationCity: "",
+        timeOfDay: null as unknown as EventTimeOfDay,
+      });
+    }
   };
 
   const title = () => {
@@ -194,6 +217,53 @@ const AddEventDialog = ({
       );
     };
 
+    const getPreviousEvent = (): Event | null => {
+      if (indexToAddEventTo === 0) return null;
+
+      return events[indexToAddEventTo - 1];
+    };
+
+    const getNextEvent = (): Event | null => {
+      if (indexToAddEventTo === events.length) return null;
+
+      return events[indexToAddEventTo];
+    };
+
+    const timeOfDayOptions = () => {
+      const previousEvent: Event | null = getPreviousEvent();
+      const nextEvent: Event | null = getNextEvent();
+      let options: EventTimeOfDay[] = [];
+      let previousEventTimeOfDay: EventTimeOfDay;
+      let nextEventTimeOfDay: EventTimeOfDay;
+
+      if (!previousEvent && nextEvent) {
+        // if no previous event, means this new event will be the first one in the updated itineray. allow any time of day before and during the same time of day as the next event
+        nextEventTimeOfDay = nextEvent.time_of_day;
+        options = getTimesOfDayBefore(nextEventTimeOfDay);
+      } else if (previousEvent && !nextEvent) {
+        // if no next event, means this new event will be the last one in the updated itinerary. allow any time of day during and after the same time of day as the previous event
+        previousEventTimeOfDay = previousEvent.time_of_day;
+        options = getTimesOfDayAfter(previousEventTimeOfDay);
+      } else if (!previousEvent && !nextEvent) {
+        // if no previous and next events, means this new event will be the only one in the updated itinerary. allow any time of day
+        options = Object.values(EventTimeOfDay);
+      } else {
+        // if there are both previous and next events, means this event will be sandwiched between existing events. allow any time of day during and after the previous time of day as the previous event, and during and before the time of day as the next event
+        previousEventTimeOfDay = previousEvent?.time_of_day!;
+        nextEventTimeOfDay = nextEvent?.time_of_day!;
+        options = getTimesOfDayBetween(
+          previousEventTimeOfDay,
+          nextEventTimeOfDay
+        );
+      }
+
+      return options.map((timeOfDay) => (
+        <MenuItem key={timeOfDay} value={timeOfDay}>
+          {timeOfDay}
+        </MenuItem>
+      ));
+    };
+
     return (
       <Stack
         direction="row"
@@ -217,11 +287,7 @@ const AddEventDialog = ({
                 displayEmpty
               >
                 {hint()}
-                {Object.values(EventTimeOfDay).map((timeOfDay) => (
-                  <MenuItem key={timeOfDay} value={timeOfDay}>
-                    {timeOfDay}
-                  </MenuItem>
-                ))}
+                {timeOfDayOptions()}
               </Select>
             )}
           />
@@ -246,14 +312,13 @@ const AddEventDialog = ({
 
         if (locationNameValid && locationCityValid && timeOfDayValid) {
           setAddingActivity(true);
-
-          // TODO: to validate the event addition and retrieve event details from Oscar's backend, and then save it in the MongoDB}
           const validateNewJson = generateValidateNewJson(
             itineraryRequest,
+            events,
             dayPlan,
             timeOfDay,
             locationName,
-            locationCity,
+            locationCity
           );
           const validateNewRes = await validateNew(validateNewJson);
 
@@ -266,11 +331,12 @@ const AddEventDialog = ({
 
           const searchActivityJson = generateSearchActivityJson(
             locationName,
-            locationCity,
+            locationCity
           );
           const searchActivityRes = await searchActivity(searchActivityJson);
           console.log("searchActivityRes", searchActivityRes);
-          // TODO: wait for Oscar to get back to me on the /validate_new and then handle the searchActivityRes by adding it to the day plan and saving it on MongoDB
+          // TODO: wait for Oscar to get back to me on the /validate_new and then handle the searchActivityRes by adding it to the day plan
+          // TODO: don't forget to update the setEdit state so that it is reflected in the ItineraryPage component
         }
       } catch (error: any) {
         setAlertText(error.message);
