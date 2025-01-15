@@ -170,7 +170,6 @@ const ItineraryPage = ({ params }: { params: { id: string } }) => {
         let newEdits: Partial<Record<ItineraryEditAction, Event[]>>;
 
         if (edits) {
-          
         }
       } else if (edit.modify || edit.modify === 0) {
         // TODO: handle event modifications
@@ -629,10 +628,10 @@ export default ItineraryPage;
 export enum ItineraryEditAction {
   delete = "delete",
   add = "add",
-  modify = "modify"
-};
+  modify = "modify",
+}
 
 export interface AddEventToItineraryAction {
   indexToAddEventTo: number;
   newEvent: Event;
-};
+}

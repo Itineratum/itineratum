@@ -104,11 +104,6 @@ const EventCard = ({
     const spacing = 2;
 
     const handleOnClick = () => {
-      const newEdit: Partial<Record<ItineraryEditAction, number>> = {
-        [ItineraryEditAction.add]: indexToAddEventTo,
-      };
-      setEdit(newEdit);
-
       setIndexToAddEventTo(indexToAddEventTo);
       setAddEventDialogOpen(true);
     };
