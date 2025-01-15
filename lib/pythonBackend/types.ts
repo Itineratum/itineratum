@@ -141,3 +141,43 @@ export enum VacationRentalAmenity {
   "Free Wi-Fi" = "Free Wi-Fi",
   "Pool" = "Pool",
 }
+
+export interface ValidateNewJSON {
+  use_dummy_data: boolean;
+  payload: {
+    date: string;
+    location: string;
+    itinerary: {
+      morning: string[];
+      afternoon: string[];
+      evening: string[];
+    }[];
+    additional_activities: AdditionalActivity[];
+  };
+}
+
+export interface AdditionalActivity {
+  time_period: EventTimeOfDay;
+  activity: string;
+}
+
+export interface ValidateEditJSON {
+  use_dummy_data: boolean;
+  payload: {
+    date: string;
+    location: string;
+    itinerary: {
+      morning: string[];
+      afternoon: string[];
+      evening: string[];
+    }[];
+  };
+}
+
+export interface SearchActivityJSON {
+  use_dummy_data: boolean;
+  payload: {
+    location_name: string;
+    location_city: string;
+  };
+}

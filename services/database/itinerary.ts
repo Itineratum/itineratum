@@ -146,9 +146,6 @@ export const editItinerary = async (
 ) => {
   try {
     await connectToDatabase();
-
-    console.log("SELECTED HOTELS", selectedHotels);
-
     const update = {
       $set: {
         itinerary,

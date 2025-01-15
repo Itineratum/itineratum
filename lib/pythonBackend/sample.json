@@ -2,24 +2,24 @@
   "request": {
     "use_dummy_data": false,
     "payload": {
-      "start_date": "2025-01-13",
-      "end_date": "2025-01-27",
+      "start_date": "2025-04-13",
+      "end_date": "2025-04-27",
       "origin_country": "Singapore",
       "user_requested_destinations": [
         {
           "name": "Los Angeles",
-          "start_date": "2025-01-13",
-          "end_date": "2025-01-17"
+          "start_date": "2025-04-13",
+          "end_date": "2025-04-17"
         },
         {
           "name": "Las Vegas",
-          "start_date": "2025-01-18",
-          "end_date": "2025-01-22"
+          "start_date": "2025-04-18",
+          "end_date": "2025-04-22"
         },
         {
           "name": "New York",
-          "start_date": "2025-01-23",
-          "end_date": "2025-01-27"
+          "start_date": "2025-04-23",
+          "end_date": "2025-04-27"
         }
       ],
       "budget": "8000",
@@ -42516,20 +42516,26 @@
       }
     }
   },
-  "new_activity_payload": {
-    "date": "2021-10-01",
-    "location": "Tokyo",
-    "itinerary": {
-      "morning": ["Visit to the Tokyo Tower", "Lunch at the Sushi Restaurant"],
-      "afternoon": [
-        "Visit to the Tokyo Skytree",
-        "Dinner at the Ramen Restaurant"
-      ],
-      "evening": ["Visit to the Robot Restaurant", "Drinks at the Golden Gai"]
-    },
-    "additional_activity": {
-      "time_period": "morning",
-      "activity": "Visit to Hokaido ski resort"
+  "new_activity_request": {
+    "use_dummy_data": false,
+    "payload": {
+      "date": "2021-10-01",
+      "location": "Tokyo",
+      "itinerary": [{
+        "morning": [
+          "Visit to the Tokyo Tower",
+          "Lunch at the Sushi Restaurant"
+        ],
+        "afternoon": [
+          "Visit to the Tokyo Skytree",
+          "Dinner at the Ramen Restaurant"
+        ],
+        "evening": ["Visit to the Robot Restaurant", "Drinks at the Golden Gai"]
+      }],
+      "additional_activities": [{
+        "time_period": "morning",
+        "activity": "Visit to Hokaido ski resort"
+      }]
     }
   }
 }

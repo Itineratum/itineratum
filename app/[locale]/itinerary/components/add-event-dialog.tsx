@@ -6,7 +6,17 @@ import { AlertType } from "@/constants/enums/alertType";
 import { TypographyVariant } from "@/constants/enums/theme";
 import colorsConst from "@/constants/pages/colors.json";
 import { AddNewEventFormData } from "@/constants/types/formData/addNewEventFormData";
-import { EventTimeOfDay } from "@/lib/pythonBackend/types";
+import {
+  generateSearchActivityJson,
+  generateValidateNewJson,
+  searchActivity,
+  validateNew,
+} from "@/lib/pythonBackend/pythonBackend";
+import {
+  DayPlan,
+  EventTimeOfDay,
+  GenerateItineraryJSON,
+} from "@/lib/pythonBackend/types";
 import {
   Box,
   Button,
@@ -17,7 +27,6 @@ import {
   DialogTitle,
   FormControl,
   FormHelperText,
-  InputLabel,
   MenuItem,
   Select,
   SelectChangeEvent,
@@ -31,11 +40,15 @@ import { Controller, useForm } from "react-hook-form";
 const AddEventDialog = ({
   open,
   setOpen,
+  itineraryRequest,
+  dayPlan,
   itineraryId,
   indexToAddEventTo,
 }: {
   open: boolean;
   setOpen: Dispatch<SetStateAction<boolean>>;
+  itineraryRequest: GenerateItineraryJSON;
+  dayPlan: DayPlan;
   itineraryId: string;
   indexToAddEventTo: number;
 }) => {
@@ -45,7 +58,6 @@ const AddEventDialog = ({
     control,
     formState: { errors },
     setValue,
-    getValues,
     watch,
     trigger,
   } = useForm<AddNewEventFormData>();
@@ -53,13 +65,15 @@ const AddEventDialog = ({
   const [addingActivity, setAddingActivity] = useState<boolean>(false);
   const [showAlert, setShowAlert] = useState<boolean>(false);
   const [alertText, setAlertText] = useState<string>("");
+  const [alertType, setAlertType] = useState<AlertType>(AlertType.info);
 
   const spacing = 4;
 
   const locationNameId = "locationName";
+  const locationCityId = "locationCity";
   const timeOfDayId = "timeOfDay";
-
   const locationName = watch(locationNameId);
+  const locationCity = watch(locationCityId);
   const timeOfDay = watch(timeOfDayId);
 
   const adjustItineraryBudget =
@@ -118,6 +132,34 @@ const AddEventDialog = ({
           errorMessage={t("locationNameErrorMessage")}
           errors={errors}
           value={locationName}
+        />
+      </Stack>
+    );
+  };
+
+  const locationCityField = () => {
+    const spacing = 2;
+
+    return (
+      <Stack
+        direction="row"
+        display="flex"
+        alignItems="center"
+        spacing={spacing}
+      >
+        <Text
+          text={t("locationCity") + ":"}
+          variant={TypographyVariant.h6}
+          bold={false}
+          color={colorsConst.palette.text.primary}
+        />
+        <TextInputField
+          name={locationCityId}
+          label={t("locationCityDescription")}
+          control={control}
+          errorMessage={t("locationCityErrorMessage")}
+          errors={errors}
+          value={locationCity}
         />
       </Stack>
     );
@@ -197,13 +239,43 @@ const AddEventDialog = ({
     const spacing = 2;
 
     const handleOnClick = async () => {
-      const locationNameValid = await trigger(locationNameId);
-      const timeOfDayValid = await trigger(timeOfDayId);
+      try {
+        const locationNameValid = await trigger(locationNameId);
+        const locationCityValid = await trigger(locationCityId);
+        const timeOfDayValid = await trigger(timeOfDayId);
 
-      if (locationNameValid && timeOfDayValid) {
-        setAddingActivity(true);
+        if (locationNameValid && locationCityValid && timeOfDayValid) {
+          setAddingActivity(true);
 
-        // TODO: to validate the event addition and retrieve event details from Oscar's backend, and then save it in the MongoDB}
+          // TODO: to validate the event addition and retrieve event details from Oscar's backend, and then save it in the MongoDB}
+          const validateNewJson = generateValidateNewJson(
+            itineraryRequest,
+            dayPlan,
+            timeOfDay,
+            locationName,
+            locationCity
+          );
+          const validateNewRes = await validateNew(validateNewJson);
+
+          if (!validateNewRes.success) {
+            setAlertText(validateNewRes.reason);
+            setAlertType(AlertType.error);
+            setShowAlert(true);
+            return;
+          }
+
+          const searchActivityJson = generateSearchActivityJson(
+            locationName,
+            locationCity
+          );
+          const searchActivityRes = await searchActivity(searchActivityJson);
+          console.log("searchActivityRes", searchActivityRes);
+          // TODO: wait for Oscar to get back to me on the /validate_new and then handle the searchActivityRes by adding it to the day plan and saving it on MongoDB
+        }
+      } catch (error: any) {
+        setAlertText(error.message);
+        setAlertType(AlertType.error);
+        setShowAlert(true);
       }
     };
 
@@ -253,13 +325,14 @@ const AddEventDialog = ({
         <Stack direction="column" spacing={spacing}>
           {description()}
           {locationNameField()}
+          {locationCityField()}
           {timeOfDayField()}
           {addEventButton()}
           <Alert
             showAlert={showAlert}
             setShowAlert={setShowAlert}
             alertText={alertText}
-            alertType={AlertType.error}
+            alertType={alertType}
           />
         </Stack>
       </DialogContent>

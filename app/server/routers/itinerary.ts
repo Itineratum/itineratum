@@ -22,7 +22,7 @@ import utc from "dayjs/plugin/utc";
 import {
   adjustItineraryBudgetSchema,
   adjustItineraryHotelsSchema,
-  editItinerarySchema,
+  deleteEventFromItinerarySchema,
   getItinerarySchema,
   saveItinerarySchema,
 } from "../schemas/itinerary";
@@ -138,10 +138,9 @@ export const itineraryRouter = router({
         });
       }
     }),
-  // only handles event deletes for now
-  editItinerary: publicProcedure
-    .input(editItinerarySchema.input)
-    .output(editItinerarySchema.output)
+  deleteEventFromItinerary: publicProcedure
+    .input(deleteEventFromItinerarySchema.input)
+    .output(deleteEventFromItinerarySchema.output)
     .mutation(async (data) => {
       const itineraryId = data.input.itineraryId;
       const retrieveItineraryRes = await retrieveItinerary(itineraryId);

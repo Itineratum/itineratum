@@ -35,7 +35,7 @@ export const adjustItineraryHotelsSchema = {
   output: z.void(),
 };
 
-export const editItinerarySchema = {
+export const deleteEventFromItinerarySchema = {
   input: z.object({
     itineraryId: z.string(),
     dayNum: z.number(),
