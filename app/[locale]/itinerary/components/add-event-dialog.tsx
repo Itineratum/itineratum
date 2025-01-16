@@ -43,7 +43,6 @@ import {
   Stack,
 } from "@mui/material";
 import { useTranslations } from "next-intl";
-import { useRouter } from "next/navigation";
 import { Dispatch, SetStateAction, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 
@@ -69,7 +68,6 @@ const AddEventDialog = ({
   >;
 }) => {
   const t = useTranslations("itinerary.addEventDialog");
-  const router = useRouter();
   const {
     control,
     formState: { errors },
@@ -319,35 +317,20 @@ const AddEventDialog = ({
             locationName,
             locationCity,
           );
-          // const validateNewRes = await validateNew(validateNewJson);
+          const validateNewRes = await validateNew(validateNewJson);
 
-          // if (!validateNewRes.success) {
-          //   setAlertText(validateNewRes.reason);
-          //   setAlertType(AlertType.error);
-          //   setShowAlert(true);
-          //   return;
-          // }
+          if (!validateNewRes.success) {
+            setAlertText(validateNewRes.reason);
+            setAlertType(AlertType.error);
+            setShowAlert(true);
+            return;
+          }
 
           const searchActivityJson = generateSearchActivityJson(
             locationName,
             locationCity,
           );
-          // const searchActivityRes = await searchActivity(searchActivityJson);
-          const searchActivityRes = {
-            location_name: "Muscle Beach",
-            location_city: "Los Angeles",
-            location_address: "Muscle Beach, Venice, CA 90291, USA",
-            display_name: {
-              text: "Muscle Beach",
-            },
-            rating: "N/A",
-            website_uri: "N/A",
-            price_level: "N/A",
-            price_range: "N/A",
-            photos: [],
-            opening_hours: "N/A",
-            primary_type: "N/A",
-          };
+          const searchActivityRes = await searchActivity(searchActivityJson);
           const newEvent = await getEvents([searchActivityRes], timeOfDay);
           const newEdit: Partial<
             Record<ItineraryEditAction, AddEventToItineraryDetails>

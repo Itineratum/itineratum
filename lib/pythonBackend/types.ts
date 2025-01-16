@@ -170,7 +170,7 @@ export interface ValidateEditJSON {
       morning: string[];
       afternoon: string[];
       evening: string[];
-    }[];
+    };
   };
 }
 

@@ -304,6 +304,59 @@ export const getTripCheckInCheckOutDays = (
   return tripCheckInCheckOutDays;
 };
 
+export const getIndexToInsertHotelEventAt = (
+  events: Event[],
+  hotelEventTimeOfDay: EventTimeOfDay,
+): number => {
+  let output = 0;
+  const firstEventInSameTimeOfDayIndex = events.findIndex(
+    (event: Event) => event.time_of_day === hotelEventTimeOfDay,
+  );
+
+  if (firstEventInSameTimeOfDayIndex === -1) {
+    if (hotelEventTimeOfDay === EventTimeOfDay.morning) {
+      // if there are no morning events, then this hotel event is the first event of the day plan
+      output = 0;
+    } else if (hotelEventTimeOfDay === EventTimeOfDay.afternoon) {
+      // if there are no afternoon events
+      const hasMorningEvents: boolean = events.some(
+        (event) => event.time_of_day === EventTimeOfDay.morning,
+      );
+
+      if (hasMorningEvents) {
+        // if there are morning events, insert this afternoon hotel event after the last morning event
+        output =
+          events.findLastIndex(
+            (event) => event.time_of_day === EventTimeOfDay.morning,
+          ) + 1;
+      } else {
+        // if there are no morning and afternoon events, then this afternoon hotel event will be the first/only event of the day plan, before the evening events (if any)
+        output = 0;
+      }
+    } else if (hotelEventTimeOfDay === EventTimeOfDay.evening) {
+      // if there are no evening events
+      const hasAfternoonEvents: boolean = events.some(
+        (event) => event.time_of_day === EventTimeOfDay.afternoon,
+      );
+
+      if (hasAfternoonEvents) {
+        // if there are afternoon events, insert this evening hotel event after the last afternoon event
+        output =
+          events.findLastIndex(
+            (event) => event.time_of_day === EventTimeOfDay.afternoon,
+          ) + 1;
+      } else {
+        // if there are no afternoon and evening events, then this evening hotel event will be the last/only event of the day plan, after the morning events (if any)
+        output = events.length;
+      }
+    }
+  } else {
+    output = firstEventInSameTimeOfDayIndex;
+  }
+
+  return output;
+};
+
 export const adjustItineraryWithSelectedHotels = async (
   selectedHotels: Hotel[],
   tripCheckInCheckOutDays: number[][],
@@ -357,25 +410,19 @@ export const adjustItineraryWithSelectedHotels = async (
       if (hotelCheckInDay === day) {
         if (!noHotelEvents(dayPlan)) clearHotelEvents(dayPlan);
 
-        const firstEventInSameTimeOfDayIndex = dayPlan.events.findIndex(
-          (event: Event) => event.time_of_day === hotelCheckInTimeOfDay,
+        const indexToInsertHotelEventAt = getIndexToInsertHotelEventAt(
+          dayPlan.events,
+          hotelCheckInTimeOfDay,
         );
-        dayPlan.events.splice(
-          firstEventInSameTimeOfDayIndex,
-          0,
-          hotelCheckInEvent,
-        );
+        dayPlan.events.splice(indexToInsertHotelEventAt, 0, hotelCheckInEvent);
       } else if (hotelCheckOutDay === day) {
         if (!noHotelEvents(dayPlan)) clearHotelEvents(dayPlan);
 
-        const firstEventInSameTimeOfDayIndex = dayPlan.events.findIndex(
-          (event: Event) => event.time_of_day === hotelCheckOutTimeOfDay,
+        const indexToInsertHotelEventAt = getIndexToInsertHotelEventAt(
+          dayPlan.events,
+          hotelCheckOutTimeOfDay,
         );
-        dayPlan.events.splice(
-          firstEventInSameTimeOfDayIndex,
-          0,
-          hotelCheckOutEvent,
-        );
+        dayPlan.events.splice(indexToInsertHotelEventAt, 0, hotelCheckOutEvent);
       }
     });
   }

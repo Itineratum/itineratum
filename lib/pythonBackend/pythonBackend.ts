@@ -442,7 +442,7 @@ export const generateValidateEditJson = (
     payload: {
       date: destinationDate.format("YYYY-MM-DD"),
       location: destination,
-      itinerary: [{ morning, afternoon, evening }],
+      itinerary: { morning, afternoon, evening },
     },
   };
 };

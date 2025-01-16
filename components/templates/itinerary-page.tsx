@@ -284,7 +284,11 @@ const ItineraryPage = ({ params }: { params: { id: string } }) => {
       };
 
       return (
-        <Button variant="contained" onClick={handleOnClick}>
+        <Button
+          variant="contained"
+          onClick={handleOnClick}
+          disabled={isEditing || edits.length > 0}
+        >
           <Text
             text={t("adjustBudgetDialog.adjustBudget")}
             variant={TypographyVariant.button}
@@ -332,7 +336,11 @@ const ItineraryPage = ({ params }: { params: { id: string } }) => {
     };
 
     return (
-      <Button variant="contained" onClick={handleOnClick}>
+      <Button
+        variant="contained"
+        onClick={handleOnClick}
+        disabled={isEditing || edits.length > 0}
+      >
         <Text
           text={`${t("hotelSelectorDialog.selectHotel")} ${dayPlan?.destination}`}
           variant={TypographyVariant.button}
