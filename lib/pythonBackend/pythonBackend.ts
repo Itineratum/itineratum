@@ -304,7 +304,19 @@ export const validateEdit = async (validateEditJson: ValidateEditJSON) => {
       throw new Error("Network response was not ok!");
     }
 
-    return await response.json();
+    const res = await response.json();
+    const output = {
+      success: false,
+      reason: "",
+    };
+
+    if (res.plan_is_valid) {
+      output.success = true;
+    } else {
+      output.reason = res.invalid_reason;
+    }
+
+    return output;
   } catch (error: any) {
     throw new Error(error);
   }

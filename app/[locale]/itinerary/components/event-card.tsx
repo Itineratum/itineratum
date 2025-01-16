@@ -2,20 +2,22 @@
 
 import Text from "@/components/atoms/text";
 import {
-  AddEventToItineraryDetails,
+  DeleteEventFromItineraryDetails,
   ItineraryEditAction,
+  ItineraryEditDetails,
 } from "@/components/templates/itinerary-page";
 import { TypographyVariant } from "@/constants/enums/theme";
 import colorsConst from "@/constants/pages/colors.json";
 import { Event, EventTimeOfDay } from "@/lib/pythonBackend/types";
+import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 import CalendarTodayIcon from "@mui/icons-material/CalendarToday";
+import EditIcon from "@mui/icons-material/Edit";
 import LocationOnIcon from "@mui/icons-material/LocationOn";
 import RemoveCircleIcon from "@mui/icons-material/RemoveCircle";
 import { Box, Button, IconButton, Stack } from "@mui/material";
 import { Dayjs } from "dayjs";
-import { Dispatch, SetStateAction } from "react";
-import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 import { useTranslations } from "next-intl";
+import { Dispatch, SetStateAction } from "react";
 
 export const eventCardMaxWidth = 515;
 
@@ -31,6 +33,8 @@ const EventCard = ({
   index,
   setAddEventDialogOpen,
   setIndexToAddEventTo,
+  setModifyEventDialogOpen,
+  setIndexToModifyEventAt,
 }: {
   date: Dayjs;
   destination: string;
@@ -41,12 +45,14 @@ const EventCard = ({
   isEditing: boolean;
   setCurrentEdit: Dispatch<
     SetStateAction<Partial<
-      Record<ItineraryEditAction, number | AddEventToItineraryDetails>
+      Record<ItineraryEditAction, ItineraryEditDetails>
     > | null>
   >;
   index: number;
   setAddEventDialogOpen: Dispatch<SetStateAction<boolean>>;
   setIndexToAddEventTo: Dispatch<SetStateAction<number | null>>;
+  setModifyEventDialogOpen: Dispatch<SetStateAction<boolean>>;
+  setIndexToModifyEventAt: Dispatch<SetStateAction<number | null>>;
 }) => {
   const t = useTranslations("itinerary");
 
@@ -66,11 +72,14 @@ const EventCard = ({
   const spacing = 2;
 
   const deleteButton = () => {
-    const iconSize = 37;
-
     const handleOnClick = () => {
-      const newEdit: Partial<Record<ItineraryEditAction, number>> = {
-        [ItineraryEditAction.delete]: index,
+      const newEdit: Partial<
+        Record<ItineraryEditAction, DeleteEventFromItineraryDetails>
+      > = {
+        [ItineraryEditAction.delete]: {
+          indexToDeleteEventFrom: index,
+          event,
+        },
       };
       setCurrentEdit(newEdit);
     };
@@ -102,8 +111,38 @@ const EventCard = ({
     );
   };
 
+  const modifyButton = () => {
+    const handleOnClick = () => {
+      setIndexToModifyEventAt(index);
+      setModifyEventDialogOpen(true);
+    };
+
+    return (
+      <IconButton
+        onClick={handleOnClick}
+        sx={{
+          position: "absolute",
+          top: -16,
+          right: -16,
+          zIndex: 1,
+          backgroundColor: colorsConst.palette.text.secondary,
+          "&:hover": {
+            backgroundColor: colorsConst.palette.text.grey,
+          },
+        }}
+      >
+        <EditIcon
+          sx={{
+            color: colorsConst.palette.text.primary,
+            height: iconSize,
+            width: iconSize,
+          }}
+        />
+      </IconButton>
+    );
+  };
+
   const addButton = (indexToAddEventTo: number) => {
-    const iconSize = 37;
     const spacing = 2;
 
     const handleOnClick = () => {
@@ -234,6 +273,7 @@ const EventCard = ({
         }}
       >
         {isEditing && deleteButton()}
+        {isEditing && !event.is_hotel && modifyButton()}
         <Button
           onClick={handleOnClick}
           sx={{

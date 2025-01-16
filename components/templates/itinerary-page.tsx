@@ -11,6 +11,7 @@ import EventDetailsCard, {
 import EventDetailsDialog from "@/app/[locale]/itinerary/components/event-details-dialog";
 import HotelSelectorDialog from "@/app/[locale]/itinerary/components/hotel-selector-dialog";
 import MapSection from "@/app/[locale]/itinerary/components/map-section";
+import ModifyEventDialog from "@/app/[locale]/itinerary/components/modify-event-dialog";
 import TravelCard from "@/app/[locale]/itinerary/components/travel-card";
 import { trpc } from "@/app/_trpc/client";
 import Text from "@/components/atoms/text";
@@ -51,16 +52,21 @@ const ItineraryPage = ({ params }: { params: { id: string } }) => {
   const [backupEvents, setBackupEvents] = useState<Event[]>([]);
   const [isEditing, setIsEditing] = useState<boolean>(false);
   const [currentEdit, setCurrentEdit] = useState<Partial<
-    Record<ItineraryEditAction, number | AddEventToItineraryDetails>
+    Record<ItineraryEditAction, ItineraryEditDetails>
   > | null>(null); // only one edit at a time, since we want to reflect the edits in real-time
   const [edits, setEdits] = useState<
     Partial<Record<ItineraryEditAction, ItineraryEditDetails>>[]
   >([]);
   const [isSavingEdits, setIsSavingEdits] = useState<boolean>(false);
-  const [addEventDialogOpen, setAddEventDialogOpen] = useState<boolean>(false);
   const [indexToAddEventTo, setIndexToAddEventTo] = useState<number | null>(
     null,
   );
+  const [addEventDialogOpen, setAddEventDialogOpen] = useState<boolean>(false);
+  const [modifyEventDialogOpen, setModifyEventDialogOpen] =
+    useState<boolean>(false);
+  const [indexToModifyEventAt, setIndexToModifyEventAt] = useState<
+    number | null
+  >(null);
 
   const gap = 6;
   const paddingBottom = "20px";
@@ -131,16 +137,19 @@ const ItineraryPage = ({ params }: { params: { id: string } }) => {
 
   useEffect(() => {
     if (currentEdit) {
+      let newEdits: Partial<
+        Record<ItineraryEditAction, ItineraryEditDetails>
+      >[];
+
       if (currentEdit.delete || currentEdit.delete === 0) {
         // handle event deletions
         const newEvents: Event[] = [...events];
-        const indexOfEventToDelete: number = currentEdit.delete as number;
+        const indexOfEventToDelete: number = (
+          currentEdit.delete as DeleteEventFromItineraryDetails
+        ).indexToDeleteEventFrom;
         newEvents.splice(indexOfEventToDelete, 1);
         setEvents(newEvents);
         const eventToDelete = events[indexOfEventToDelete];
-        let newEdits: Partial<
-          Record<ItineraryEditAction, ItineraryEditDetails>
-        >[];
         const deleteEventFromItineraryDetails: DeleteEventFromItineraryDetails =
           {
             indexToDeleteEventFrom: indexOfEventToDelete,
@@ -178,9 +187,6 @@ const ItineraryPage = ({ params }: { params: { id: string } }) => {
         const newEventToAdd = addEventToItineraryDetails.newEvent;
         newEvents.splice(indexToAddEventTo, 0, newEventToAdd);
         setEvents(newEvents);
-        let newEdits: Partial<
-          Record<ItineraryEditAction, ItineraryEditDetails>
-        >[];
 
         if (edits) {
           newEdits = [...edits];
@@ -204,7 +210,35 @@ const ItineraryPage = ({ params }: { params: { id: string } }) => {
 
         setEdits(newEdits);
       } else if (currentEdit.modify || currentEdit.modify === 0) {
-        // TODO: handle event modifications
+        // handle event modifications
+        const newEvents: Event[] = [...events];
+        const modifyEventInItineraryDetails: ModifyEventInItineraryDetails =
+          currentEdit.modify as ModifyEventInItineraryDetails;
+        const indexToModifyEventAt: number =
+          modifyEventInItineraryDetails.indexToModifyEventAt;
+        const modifiedEvent = modifyEventInItineraryDetails.modifiedEvent;
+        newEvents[indexToModifyEventAt] = modifiedEvent;
+        setEvents(newEvents);
+
+        if (edits) {
+          newEdits = [...edits];
+
+          if (newEdits.length > 0) {
+            newEdits.push({
+              [ItineraryEditAction.modify]: modifyEventInItineraryDetails,
+            });
+          } else {
+            newEdits = [
+              { [ItineraryEditAction.modify]: modifyEventInItineraryDetails },
+            ];
+          }
+        } else {
+          newEdits = [
+            { [ItineraryEditAction.modify]: modifyEventInItineraryDetails },
+          ];
+        }
+
+        setEdits(newEdits);
       }
     }
   }, [currentEdit]);
@@ -401,6 +435,8 @@ const ItineraryPage = ({ params }: { params: { id: string } }) => {
                 index={index}
                 setAddEventDialogOpen={setAddEventDialogOpen}
                 setIndexToAddEventTo={setIndexToAddEventTo}
+                setModifyEventDialogOpen={setModifyEventDialogOpen}
+                setIndexToModifyEventAt={setIndexToModifyEventAt}
               />
               {!isEditing &&
                 (travelTimes.length < 1
@@ -656,6 +692,15 @@ const ItineraryPage = ({ params }: { params: { id: string } }) => {
         dayPlan={dayPlan!}
         setCurrentEdit={setCurrentEdit}
       />
+      <ModifyEventDialog
+        open={modifyEventDialogOpen}
+        setOpen={setModifyEventDialogOpen}
+        itineraryRequest={itineraryData.request}
+        events={events}
+        indexToModifyEventAt={indexToModifyEventAt ?? 0}
+        dayPlan={dayPlan!}
+        setCurrentEdit={setCurrentEdit}
+      />
     </Container>
   );
 };
@@ -680,7 +725,7 @@ export interface AddEventToItineraryDetails {
 
 export interface ModifyEventInItineraryDetails {
   indexToModifyEventAt: number;
-  newEvent: Event;
+  modifiedEvent: Event;
 }
 
 export type ItineraryEditDetails =

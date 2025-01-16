@@ -2,32 +2,26 @@ import Text from "@/components/atoms/text";
 import Alert from "@/components/molecules/alert";
 import TextInputField from "@/components/molecules/text-input-field";
 import {
-  AddEventToItineraryDetails,
   ItineraryEditAction,
   ItineraryEditDetails,
+  ModifyEventInItineraryDetails,
 } from "@/components/templates/itinerary-page";
 import { AlertType } from "@/constants/enums/alertType";
 import { TypographyVariant } from "@/constants/enums/theme";
 import colorsConst from "@/constants/pages/colors.json";
-import { AddNewEventFormData } from "@/constants/types/formData/addNewEventFormData";
+import { ModifyEventFormData } from "@/constants/types/formData/modifyEventFormData";
 import {
   generateSearchActivityJson,
-  generateValidateNewJson,
+  generateValidateEditJson,
   searchActivity,
-  validateNew,
+  validateEdit,
 } from "@/lib/pythonBackend/pythonBackend";
 import {
   DayPlan,
   Event,
-  EventTimeOfDay,
   GenerateItineraryJSON,
 } from "@/lib/pythonBackend/types";
-import {
-  getEvents,
-  getTimesOfDayAfter,
-  getTimesOfDayBefore,
-  getTimesOfDayBetween,
-} from "@/lib/pythonBackend/utils";
+import { getEvents } from "@/lib/pythonBackend/utils";
 import {
   Box,
   Button,
@@ -36,23 +30,18 @@ import {
   DialogContent,
   DialogContentText,
   DialogTitle,
-  FormControl,
-  FormHelperText,
-  MenuItem,
-  Select,
-  SelectChangeEvent,
   Stack,
 } from "@mui/material";
 import { useTranslations } from "next-intl";
 import { Dispatch, SetStateAction, useState } from "react";
-import { Controller, useForm } from "react-hook-form";
+import { useForm } from "react-hook-form";
 
-const AddEventDialog = ({
+const ModifyEventDialog = ({
   open,
   setOpen,
   itineraryRequest,
   events,
-  indexToAddEventTo,
+  indexToModifyEventAt,
   dayPlan,
   setCurrentEdit,
 }: {
@@ -60,7 +49,7 @@ const AddEventDialog = ({
   setOpen: Dispatch<SetStateAction<boolean>>;
   itineraryRequest: GenerateItineraryJSON;
   events: Event[];
-  indexToAddEventTo: number;
+  indexToModifyEventAt: number;
   dayPlan: DayPlan;
   setCurrentEdit: Dispatch<
     SetStateAction<Partial<
@@ -68,17 +57,16 @@ const AddEventDialog = ({
     > | null>
   >;
 }) => {
-  const t = useTranslations("itinerary.addEventDialog");
+  const t = useTranslations("itinerary.modifyEventDialog");
   const {
     control,
     formState: { errors },
-    setValue,
     watch,
     trigger,
     reset,
-  } = useForm<AddNewEventFormData>();
+  } = useForm<ModifyEventFormData>();
 
-  const [addingActivity, setAddingActivity] = useState<boolean>(false);
+  const [modifyingActivity, setModifyingActivity] = useState<boolean>(false);
   const [showAlert, setShowAlert] = useState<boolean>(false);
   const [alertText, setAlertText] = useState<string>("");
   const [alertType, setAlertType] = useState<AlertType>(AlertType.info);
@@ -87,19 +75,16 @@ const AddEventDialog = ({
 
   const locationNameId = "locationName";
   const locationCityId = "locationCity";
-  const timeOfDayId = "timeOfDay";
   const locationName = watch(locationNameId);
   const locationCity = watch(locationCityId);
-  const timeOfDay = watch(timeOfDayId);
 
   const handleOnClose = () => {
-    if (!addingActivity) {
+    if (!modifyingActivity) {
       setShowAlert(false);
       setOpen(false);
       reset({
         locationName: "",
         locationCity: "",
-        timeOfDay: null as unknown as EventTimeOfDay,
       });
     }
   };
@@ -108,7 +93,7 @@ const AddEventDialog = ({
     return (
       <DialogTitle>
         <Text
-          text={t("newActivity")}
+          text={t("existingActivity")}
           variant={TypographyVariant.h4}
           bold={false}
         />
@@ -185,119 +170,8 @@ const AddEventDialog = ({
     );
   };
 
-  const timeOfDayField = () => {
-    const spacing = 2;
-
-    const label = () => {
-      return (
-        <Text
-          text={t("timeOfDay") + ":"}
-          variant={TypographyVariant.h6}
-          bold={false}
-          color={colorsConst.palette.text.primary}
-        />
-      );
-    };
-
-    const handleOnChange = (event: SelectChangeEvent<string>) => {
-      const selectedTimeOfDay = event.target.value;
-      setValue(timeOfDayId, selectedTimeOfDay as EventTimeOfDay, {
-        shouldValidate: true,
-      });
-    };
-
-    const hint = () => {
-      return (
-        <MenuItem value="" disabled>
-          {t("timeOfDayDescription")}
-        </MenuItem>
-      );
-    };
-
-    const getPreviousEvent = (): Event | null => {
-      if (indexToAddEventTo === 0) return null;
-
-      return events[indexToAddEventTo - 1];
-    };
-
-    const getNextEvent = (): Event | null => {
-      if (indexToAddEventTo === events.length) return null;
-
-      return events[indexToAddEventTo];
-    };
-
-    const timeOfDayOptions = () => {
-      const previousEvent: Event | null = getPreviousEvent();
-      const nextEvent: Event | null = getNextEvent();
-      let options: EventTimeOfDay[] = [];
-      let previousEventTimeOfDay: EventTimeOfDay;
-      let nextEventTimeOfDay: EventTimeOfDay;
-
-      if (!previousEvent && nextEvent) {
-        // if no previous event, means this new event will be the first one in the updated itineray. allow any time of day before and during the same time of day as the next event
-        nextEventTimeOfDay = nextEvent.time_of_day;
-        options = getTimesOfDayBefore(nextEventTimeOfDay);
-      } else if (previousEvent && !nextEvent) {
-        // if no next event, means this new event will be the last one in the updated itinerary. allow any time of day during and after the same time of day as the previous event
-        previousEventTimeOfDay = previousEvent.time_of_day;
-        options = getTimesOfDayAfter(previousEventTimeOfDay);
-      } else if (!previousEvent && !nextEvent) {
-        // if no previous and next events, means this new event will be the only one in the updated itinerary. allow any time of day
-        options = Object.values(EventTimeOfDay);
-      } else {
-        // if there are both previous and next events, means this event will be sandwiched between existing events. allow any time of day during and after the previous time of day as the previous event, and during and before the time of day as the next event
-        previousEventTimeOfDay = previousEvent?.time_of_day!;
-        nextEventTimeOfDay = nextEvent?.time_of_day!;
-        options = getTimesOfDayBetween(
-          previousEventTimeOfDay,
-          nextEventTimeOfDay,
-        );
-      }
-
-      return options.map((timeOfDay) => (
-        <MenuItem key={timeOfDay} value={timeOfDay}>
-          {timeOfDay}
-        </MenuItem>
-      ));
-    };
-
-    return (
-      <Stack
-        direction="row"
-        display="flex"
-        alignItems="center"
-        spacing={spacing}
-      >
-        {label()}
-        <FormControl fullWidth>
-          <Controller
-            name={timeOfDayId}
-            control={control}
-            rules={{ required: t("timeOfDayErrorMessage") }}
-            render={({ field }) => (
-              <Select
-                value={timeOfDay || ""}
-                defaultValue={""}
-                onChange={handleOnChange}
-                fullWidth={true}
-                required
-                displayEmpty
-              >
-                {hint()}
-                {timeOfDayOptions()}
-              </Select>
-            )}
-          />
-          <FormHelperText error={!!errors.timeOfDay}>
-            {errors.timeOfDay?.message}
-          </FormHelperText>
-        </FormControl>
-      </Stack>
-    );
-  };
-
-  const addEventButton = () => {
-    const width = "40%";
+  const modifyEventButton = () => {
+    const width = "35%";
     const loadingAnimationSize: number = 24;
     const spacing = 2;
 
@@ -305,23 +179,24 @@ const AddEventDialog = ({
       try {
         const locationNameValid = await trigger(locationNameId);
         const locationCityValid = await trigger(locationCityId);
-        const timeOfDayValid = await trigger(timeOfDayId);
 
-        if (locationNameValid && locationCityValid && timeOfDayValid) {
-          setAddingActivity(true);
+        if (locationNameValid && locationCityValid) {
+          setModifyingActivity(true);
           setShowAlert(false);
-          const validateNewJson = generateValidateNewJson(
+          const updatedEvents = [...events];
+          updatedEvents[indexToModifyEventAt] = {
+            ...updatedEvents[indexToModifyEventAt],
+            event_name: `${locationName}, ${locationCity}`,
+          };
+          const validateEditJson = generateValidateEditJson(
             itineraryRequest,
-            events,
+            updatedEvents,
             dayPlan,
-            timeOfDay,
-            locationName,
-            locationCity,
           );
-          const validateNewRes = await validateNew(validateNewJson);
+          const validateEditRes = await validateEdit(validateEditJson);
 
-          if (!validateNewRes.success) {
-            setAlertText(validateNewRes.reason);
+          if (!validateEditRes.success) {
+            setAlertText(validateEditRes.reason);
             setAlertType(AlertType.error);
             setShowAlert(true);
             return;
@@ -332,13 +207,18 @@ const AddEventDialog = ({
             locationCity,
           );
           const searchActivityRes = await searchActivity(searchActivityJson);
-          const newEvents = await getEvents([searchActivityRes], timeOfDay);
+          const modifiedEventTimeOfDay =
+            events[indexToModifyEventAt].time_of_day;
+          const modifiedEvents = await getEvents(
+            [searchActivityRes],
+            modifiedEventTimeOfDay,
+          );
           const newEdit: Partial<
-            Record<ItineraryEditAction, AddEventToItineraryDetails>
+            Record<ItineraryEditAction, ModifyEventInItineraryDetails>
           > = {
-            [ItineraryEditAction.add]: {
-              indexToAddEventTo,
-              newEvent: newEvents[0],
+            [ItineraryEditAction.modify]: {
+              indexToModifyEventAt,
+              modifiedEvent: modifiedEvents[0],
             },
           };
           setCurrentEdit(newEdit);
@@ -346,7 +226,6 @@ const AddEventDialog = ({
           reset({
             locationName: "",
             locationCity: "",
-            timeOfDay: null as unknown as EventTimeOfDay,
           });
         }
       } catch (error: any) {
@@ -354,7 +233,7 @@ const AddEventDialog = ({
         setAlertType(AlertType.error);
         setShowAlert(true);
       } finally {
-        setAddingActivity(false);
+        setModifyingActivity(false);
       }
     };
 
@@ -364,9 +243,9 @@ const AddEventDialog = ({
           variant="contained"
           onClick={handleOnClick}
           sx={{ width }}
-          disabled={addingActivity}
+          disabled={modifyingActivity}
         >
-          {addingActivity ? (
+          {modifyingActivity ? (
             <Stack
               direction="row"
               spacing={spacing}
@@ -375,14 +254,14 @@ const AddEventDialog = ({
             >
               <CircularProgress size={loadingAnimationSize} />
               <Text
-                text={t("addingActivity")}
+                text={t("modifyingActivity")}
                 variant={TypographyVariant.button}
                 bold={false}
               />
             </Stack>
           ) : (
             <Text
-              text={t("addActivity")}
+              text={t("modifyActivity")}
               variant={TypographyVariant.button}
               bold={false}
             />
@@ -405,8 +284,7 @@ const AddEventDialog = ({
           {description()}
           {locationNameField()}
           {locationCityField()}
-          {timeOfDayField()}
-          {addEventButton()}
+          {modifyEventButton()}
           <Alert
             showAlert={showAlert}
             setShowAlert={setShowAlert}
@@ -419,4 +297,4 @@ const AddEventDialog = ({
   );
 };
 
-export default AddEventDialog;
+export default ModifyEventDialog;

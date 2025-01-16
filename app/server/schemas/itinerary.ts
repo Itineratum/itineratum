@@ -44,35 +44,3 @@ export const editItinerarySchema = {
   }),
   output: z.void(),
 };
-
-export const deleteEventFromItinerarySchema = {
-  input: z.object({
-    itineraryId: z.string(),
-    dayNum: z.number(),
-    newEvents: z.any(),
-    edits: z.any(),
-  }),
-  output: z.void(),
-};
-
-export const addEventToItinerarySchema = {
-  input: z.object({
-    itineraryId: z.string(),
-    indexToAddEventTo: z.number(),
-    dayNum: z.number(),
-    newEventDetails: z.any(),
-    newEventTimeOfDay: z.string(),
-  }),
-  output: z.void(),
-};
-
-export const modifyEventInItinerarySchema = {
-  input: z.object({
-    itineraryId: z.string(),
-    indexToModifyEventAt: z.number(),
-    dayNum: z.number(),
-    modifiedEventDetails: z.any(),
-    modifiedEventTimeOfDay: z.string(),
-  }),
-  output: z.void(),
-};

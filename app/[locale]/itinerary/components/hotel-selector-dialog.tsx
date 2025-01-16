@@ -157,7 +157,7 @@ const HotelSelectorDialog = ({
         hotel &&
         selectedHotel.name === hotel.name &&
         JSON.stringify(selectedHotel.coordinates) ===
-          JSON.stringify(hotel.coordinates),
+          JSON.stringify(hotel.coordinates)
     );
   };
 
@@ -179,7 +179,7 @@ const HotelSelectorDialog = ({
 
       const handleOnChange = (
         event: React.SyntheticEvent,
-        newValue: number,
+        newValue: number
       ) => {
         setHotelTabValue(newValue);
       };
@@ -189,6 +189,7 @@ const HotelSelectorDialog = ({
           <Tabs value={hotelTabValue} onChange={handleOnChange}>
             {hotels.map((hotel) => (
               <Tab
+                key={JSON.stringify(hotel)}
                 label={`${hotel.name} ${hotelSelected(hotel) ? `(${t("selected")})` : ""}`}
                 sx={{
                   color: colorsConst.palette.text.primary,
@@ -692,7 +693,7 @@ const HotelSelectorDialog = ({
       const amenities = () => {
         const getIcon = (
           hotelType: HotelType,
-          amenity: HotelAmenity | VacationRentalAmenity,
+          amenity: HotelAmenity | VacationRentalAmenity
         ) => {
           let icon = null;
 
@@ -863,7 +864,7 @@ const HotelSelectorDialog = ({
           return (
             <Stack direction="column">
               {hotel?.amenities.map((amenity: any) => (
-                <Stack direction="row" spacing={spacing}>
+                <Stack key={amenity} direction="row" spacing={spacing}>
                   {getIcon(hotelType, amenity)}
                   <Text
                     text={`${amenity}`}
@@ -996,7 +997,7 @@ const HotelSelectorDialog = ({
                 disableDefaultUI={true}
               >
                 {mapMarkersData.map((mapMarkerData: MapMarkerData) =>
-                  eventMapMarker(mapMarkerData),
+                  eventMapMarker(mapMarkerData)
                 )}
                 {hotelMapMarker()}
               </Map>

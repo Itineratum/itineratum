@@ -3,19 +3,12 @@ import {
   ItineraryEditAction,
   ItineraryEditDetails,
 } from "@/components/templates/itinerary-page";
-import {
-  DayPlan,
-  Event,
-  EventTimeOfDay,
-  Hotel,
-  TravelTime,
-} from "@/lib/pythonBackend/types";
+import { DayPlan, Event, Hotel, TravelTime } from "@/lib/pythonBackend/types";
 import {
   adjustItineraryWithSelectedHotels,
   deleteCorrespondingHotelEvents,
   formatHotels,
   formatItinerary,
-  getEvents,
   getTravelTimes,
   getTripCheckInCheckOutDays,
   hasHotelDeletes,
@@ -23,7 +16,6 @@ import {
 import {
   adjustItineraryBudget,
   adjustItineraryHotels,
-  insertEditEventInItinerary,
   retrieveItinerary,
   saveItinerary,
   updateItinerary,
@@ -36,7 +28,6 @@ import {
   adjustItineraryHotelsSchema,
   editItinerarySchema,
   getItinerarySchema,
-  modifyEventInItinerarySchema,
   saveItinerarySchema,
 } from "../schemas/itinerary";
 import { publicProcedure, router } from "../trpc";
@@ -193,38 +184,6 @@ export const itineraryRouter = router({
         throw new TRPCError({
           code: "INTERNAL_SERVER_ERROR",
           message: updateItineraryRes?.error!,
-        });
-      }
-    }),
-  modifyEventInItinerary: publicProcedure
-    .input(modifyEventInItinerarySchema.input)
-    .output(modifyEventInItinerarySchema.output)
-    .mutation(async (data) => {
-      const itineraryId = data.input.itineraryId;
-      const retrieveItineraryRes = await retrieveItinerary(itineraryId);
-      const itinerary: DayPlan[] = retrieveItineraryRes.data.itinerary;
-      const dayNum = data.input.dayNum;
-      const dayPlan = itinerary.filter(
-        (dayPlan: DayPlan) => dayPlan.day === dayNum,
-      )[0];
-      const indexToModifyEventAt = data.input.indexToModifyEventAt;
-      const modifiedEventDetails = data.input.modifiedEventDetails;
-      const modifiedEventTimeOfDay = data.input.modifiedEventTimeOfDay;
-      const modifiedEvent = await getEvents(
-        [modifiedEventDetails],
-        modifiedEventTimeOfDay as EventTimeOfDay,
-      );
-      dayPlan.events[indexToModifyEventAt] = modifiedEvent[0];
-      const insertEditEventInItineraryRes = await insertEditEventInItinerary(
-        itineraryId,
-        dayNum,
-        dayPlan,
-      );
-
-      if (!insertEditEventInItineraryRes.success) {
-        throw new TRPCError({
-          code: "INTERNAL_SERVER_ERROR",
-          message: insertEditEventInItineraryRes?.error!,
         });
       }
     }),

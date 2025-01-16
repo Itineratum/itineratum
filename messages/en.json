@@ -184,6 +184,18 @@
       "timeOfDayErrorMessage": "Please select a time of day!",
       "addActivity": "Add Activity",
       "addingActivity": "Adding Activity"
+    },
+    "modifyEventDialog": {
+      "existingActivity": "Existing Activity",
+      "description": "Modify an existing activity in your trip.",
+      "locationName": "Location Name",
+      "locationNameDescription": "Search for location",
+      "locationNameErrorMessage": "Please enter a location name!",
+      "locationCity": "Location City",
+      "locationCityDescription": "Search for city",
+      "locationCityErrorMessage": "Please enter the city of the location!",
+      "modifyActivity": "Modify Activity",
+      "modifyingActivity": "Modifying Activity"
     }
   },
   "account": {
