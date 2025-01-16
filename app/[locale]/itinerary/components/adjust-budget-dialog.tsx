@@ -174,14 +174,18 @@ const AdjustBudgetDialog = ({
       try {
         // validate the itinerary request with the adjusted budget
         itineraryRequest.payload.budget = Number(fields.getValues(budgetId));
-        const newItinerary = await debugRunPipelineWithGenerationSteps(
+        // const newItinerary = await debugRunPipelineWithGenerationSteps(
+        //   itineraryRequest,
+        //   setGenerationStep,
+        // );
+        const newItinerary = await runPipelineWithGenerationSteps(
           itineraryRequest,
           setGenerationStep,
         );
         const data = {
           itineraryId,
           request: itineraryRequest,
-          itinerary: newItinerary.itinerary ?? [],
+          itinerary: newItinerary.itinerary.itinerary ?? [],
           hotels: newItinerary.hotels ?? [],
           flights: newItinerary.flights ?? [],
         };

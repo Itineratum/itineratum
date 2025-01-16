@@ -346,6 +346,8 @@ const ItineraryGenerator = () => {
           console.error(error);
           setAlertText(error.message);
           setShowAlert(true);
+        } finally {
+          setGeneratingItinerary(false);
         }
       };
 
@@ -413,7 +415,9 @@ const ItineraryGenerator = () => {
         />
         {navigationButtons()}
         <Box>
-          <ItineraryGenerationSteps generationStep={generationStep} />
+          {generatingItinerary && (
+            <ItineraryGenerationSteps generationStep={generationStep} />
+          )}
         </Box>
       </Stack>
     </FormProvider>

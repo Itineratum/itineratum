@@ -50,7 +50,7 @@ export const getEvents = async (
       is_hotel: item.is_hotel ? item.is_hotel : false,
       event_name: item.location_name,
       time_of_day: timeOfDay,
-      location_name: item.display_name ? item.display_name.text : "",
+      location_name: item.display_name ?? "",
       location_address: item.location_address,
       coordinates: {
         lat,
@@ -128,8 +128,12 @@ export const getTravelTimes = async (
       const distanceMatrixJson = await response.json();
 
       const travelTime: TravelTime = {
-        distance: distanceMatrixJson.rows[0].elements[0].distance.text,
-        duration: distanceMatrixJson.rows[0].elements[0].duration.text,
+        distance:
+          distanceMatrixJson.rows[0].elements[0].distance.text ??
+          "Distance not available",
+        duration:
+          distanceMatrixJson.rows[0].elements[0].duration.text ??
+          "Duration not available",
       };
       dayPlanTravelTimes.push(travelTime);
     }
