@@ -56,12 +56,14 @@ export const getEvents = async (
         lat,
         lng,
       },
-      description: item.description,
-      rating: item.rating ? item.rating : 0,
-      website_uri: item.website_uri ? item.website_uri : "",
+      description: item.description ?? "",
+      rating: item.rating && item.rating !== "N/A" ? item.rating : 0,
+      website_uri:
+        item.website_uri && item.website_uri !== "N/A" ? item.website_uri : "",
       photo,
       openingHours:
         item.opening_hours &&
+        item.opening_hours !== "N/A" &&
         item.opening_hours.weekdayDescriptions &&
         item.opening_hours.weekdayDescriptions.length > 0
           ? item.opening_hours.weekdayDescriptions
@@ -379,7 +381,7 @@ export const adjustItineraryWithSelectedHotels = async (
   }
 };
 
-export const hasHotelEdits = (eventsToDelete: Event[]): boolean =>
+export const hasHotelDeletes = (eventsToDelete: Event[]): boolean =>
   eventsToDelete.some((event: Event) => event.is_hotel);
 
 export const isHotelCheckInEvent = (event: Event): boolean => {

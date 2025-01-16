@@ -151,8 +151,8 @@ export interface ValidateNewJSON {
       morning: string[];
       afternoon: string[];
       evening: string[];
-    }[];
-    additional_activities: AdditionalActivity[];
+    };
+    additional_activity: AdditionalActivity;
   };
 }
 

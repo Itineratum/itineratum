@@ -270,17 +270,14 @@ export const validateNew = async (validateNewJson: ValidateNewJSON) => {
     }
 
     const res = await response.json();
-
-    console.log("RES", res);
-
     const output = {
       success: false,
       reason: "",
     };
 
-    if (res.plan_is_valid && res.plan_is_valid === "yes") {
+    if (res.plan_is_valid && res.plan_is_valid.toLowerCase() === "yes") {
       output.success = true;
-    } else if (res.plan_is_valid === "no") {
+    } else if (res.plan_is_valid.toLowerCase() === "no") {
       output.reason = res.invalid_reason;
     }
 
@@ -412,8 +409,8 @@ export const generateValidateNewJson = (
     payload: {
       date: destinationDate.format("YYYY-MM-DD"),
       location: destination,
-      itinerary: [{ morning, afternoon, evening }],
-      additional_activities: [additionalActivity],
+      itinerary: { morning, afternoon, evening },
+      additional_activity: additionalActivity,
     },
   };
 };

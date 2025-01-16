@@ -1,7 +1,10 @@
 "use client";
 
 import Text from "@/components/atoms/text";
-import { AddEventToItineraryAction, ItineraryEditAction } from "@/components/templates/itinerary-page";
+import {
+  AddEventToItineraryDetails,
+  ItineraryEditAction,
+} from "@/components/templates/itinerary-page";
 import { TypographyVariant } from "@/constants/enums/theme";
 import colorsConst from "@/constants/pages/colors.json";
 import { Event, EventTimeOfDay } from "@/lib/pythonBackend/types";
@@ -24,7 +27,7 @@ const EventCard = ({
   event,
   selected,
   isEditing,
-  setEdit,
+  setCurrentEdit,
   index,
   setAddEventDialogOpen,
   setIndexToAddEventTo,
@@ -36,9 +39,9 @@ const EventCard = ({
   event: Event;
   selected: boolean;
   isEditing: boolean;
-  setEdit: Dispatch<
+  setCurrentEdit: Dispatch<
     SetStateAction<Partial<
-      Record<ItineraryEditAction, number | AddEventToItineraryAction>
+      Record<ItineraryEditAction, number | AddEventToItineraryDetails>
     > | null>
   >;
   index: number;
@@ -69,7 +72,7 @@ const EventCard = ({
       const newEdit: Partial<Record<ItineraryEditAction, number>> = {
         [ItineraryEditAction.delete]: index,
       };
-      setEdit(newEdit);
+      setCurrentEdit(newEdit);
     };
 
     return (

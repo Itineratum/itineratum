@@ -50,16 +50,16 @@ const ItineraryPage = ({ params }: { params: { id: string } }) => {
   const [events, setEvents] = useState<Event[]>([]);
   const [backupEvents, setBackupEvents] = useState<Event[]>([]);
   const [isEditing, setIsEditing] = useState<boolean>(false);
-  const [edit, setEdit] = useState<Partial<
-    Record<ItineraryEditAction, number | AddEventToItineraryAction>
+  const [currentEdit, setCurrentEdit] = useState<Partial<
+    Record<ItineraryEditAction, number | AddEventToItineraryDetails>
   > | null>(null); // only one edit at a time, since we want to reflect the edits in real-time
-  const [edits, setEdits] = useState<Partial<
-    Record<ItineraryEditAction, Event[]>
-  > | null>(null);
+  const [edits, setEdits] = useState<
+    Partial<Record<ItineraryEditAction, ItineraryEditDetails>>[]
+  >([]);
   const [isSavingEdits, setIsSavingEdits] = useState<boolean>(false);
   const [addEventDialogOpen, setAddEventDialogOpen] = useState<boolean>(false);
   const [indexToAddEventTo, setIndexToAddEventTo] = useState<number | null>(
-    null
+    null,
   );
 
   const gap = 6;
@@ -77,15 +77,14 @@ const ItineraryPage = ({ params }: { params: { id: string } }) => {
         setError(error.message);
         setIsLoading(false);
       },
-    }
+    },
   );
-  const deleteEventFromItinerary =
-    trpc.itinerary.deleteEventFromItinerary.useMutation();
+  const editItinerary = trpc.itinerary.editItinerary.useMutation();
   const utils = trpc.useUtils();
 
   const getCorrectDayPlan = (): DayPlan =>
     getItinerary.data.itinerary.filter(
-      (dayPlan: DayPlan) => dayPlan.day === dayNum
+      (dayPlan: DayPlan) => dayPlan.day === dayNum,
     )[0];
 
   const getDestinations = () => {
@@ -131,51 +130,84 @@ const ItineraryPage = ({ params }: { params: { id: string } }) => {
   }, [dayPlan]);
 
   useEffect(() => {
-    if (edit) {
-      if (edit.delete || edit.delete === 0) {
+    if (currentEdit) {
+      if (currentEdit.delete || currentEdit.delete === 0) {
         // handle event deletions
         const newEvents: Event[] = [...events];
-        const indexOfEventToDelete: number = edit.delete as number;
+        const indexOfEventToDelete: number = currentEdit.delete as number;
         newEvents.splice(indexOfEventToDelete, 1);
         setEvents(newEvents);
         const eventToDelete = events[indexOfEventToDelete];
-        let newEdits: Partial<Record<ItineraryEditAction, Event[]>>;
+        let newEdits: Partial<
+          Record<ItineraryEditAction, ItineraryEditDetails>
+        >[];
+        const deleteEventFromItineraryDetails: DeleteEventFromItineraryDetails =
+          {
+            indexToDeleteEventFrom: indexOfEventToDelete,
+            event: eventToDelete,
+          };
 
         if (edits) {
-          newEdits = { ...edits };
+          newEdits = [...edits];
 
-          if (newEdits.delete) {
-            newEdits.delete.push(eventToDelete);
+          if (newEdits.length > 0) {
+            newEdits.push({
+              [ItineraryEditAction.delete]: deleteEventFromItineraryDetails,
+            });
           } else {
-            newEdits.delete = [eventToDelete];
+            newEdits = [
+              {
+                [ItineraryEditAction.delete]: deleteEventFromItineraryDetails,
+              },
+            ];
           }
         } else {
-          newEdits = { [ItineraryEditAction.delete]: [eventToDelete] };
+          newEdits = [
+            { [ItineraryEditAction.delete]: deleteEventFromItineraryDetails },
+          ];
         }
 
         setEdits(newEdits);
-      } else if (edit.add || edit.add === 0) {
-        // TODO: handle event additions
+      } else if (currentEdit.add || currentEdit.add === 0) {
+        // handle event additions
         const newEvents: Event[] = [...events];
-        const addEventToItineraryAction: AddEventToItineraryAction =
-          edit.add as AddEventToItineraryAction;
+        const addEventToItineraryDetails: AddEventToItineraryDetails =
+          currentEdit.add as AddEventToItineraryDetails;
         const indexToAddEventTo: number =
-          addEventToItineraryAction.indexToAddEventTo;
-        newEvents.splice(
-          indexToAddEventTo,
-          0,
-          addEventToItineraryAction.newEvent
-        );
+          addEventToItineraryDetails.indexToAddEventTo;
+        const newEventToAdd = addEventToItineraryDetails.newEvent;
+        newEvents.splice(indexToAddEventTo, 0, newEventToAdd);
         setEvents(newEvents);
-        let newEdits: Partial<Record<ItineraryEditAction, Event[]>>;
+        let newEdits: Partial<
+          Record<ItineraryEditAction, ItineraryEditDetails>
+        >[];
 
         if (edits) {
+          newEdits = [...edits];
+
+          if (newEdits.length > 0) {
+            newEdits.push({
+              [ItineraryEditAction.add]: addEventToItineraryDetails,
+            });
+          } else {
+            newEdits = [
+              { [ItineraryEditAction.add]: addEventToItineraryDetails },
+            ];
+          }
+        } else {
+          newEdits = [
+            {
+              [ItineraryEditAction.add]: addEventToItineraryDetails,
+            },
+          ];
         }
-      } else if (edit.modify || edit.modify === 0) {
+
+        setEdits(newEdits);
+      } else if (currentEdit.modify || currentEdit.modify === 0) {
         // TODO: handle event modifications
       }
     }
-  }, [edit]);
+  }, [currentEdit]);
 
   useEffect(() => {
     console.log(edits);
@@ -357,7 +389,7 @@ const ItineraryPage = ({ params }: { params: { id: string } }) => {
                   JSON.stringify(event) === JSON.stringify(selectedEvent)
                 }
                 isEditing={isEditing}
-                setEdit={setEdit}
+                setCurrentEdit={setCurrentEdit}
                 index={index}
                 setAddEventDialogOpen={setAddEventDialogOpen}
                 setIndexToAddEventTo={setIndexToAddEventTo}
@@ -451,8 +483,8 @@ const ItineraryPage = ({ params }: { params: { id: string } }) => {
 
     const cancelButton = () => {
       const handleOnClick = () => {
-        setEdit(null);
-        setEdits(null);
+        setCurrentEdit(null);
+        setEdits([]);
         setIsEditing(!isEditing);
         setEvents(backupEvents);
       };
@@ -480,10 +512,8 @@ const ItineraryPage = ({ params }: { params: { id: string } }) => {
       const loadingAnimationSize: number = 24;
       const spacing = 2;
 
-      // TODO: handle adding and modification of events too
       const handleOnClick = async () => {
         if (isEditing && edits) {
-          // save the edits
           setIsSavingEdits(true);
           const data = {
             itineraryId: params.id,
@@ -491,12 +521,12 @@ const ItineraryPage = ({ params }: { params: { id: string } }) => {
             newEvents: events,
             edits,
           };
-          await deleteEventFromItinerary.mutateAsync(data);
+          await editItinerary.mutateAsync(data);
         }
 
         setIsEditing(!isEditing);
         setIsSavingEdits(false);
-        setEdits(null);
+        setEdits([]);
         utils.itinerary.getItinerary.invalidate();
         router.refresh();
       };
@@ -506,7 +536,7 @@ const ItineraryPage = ({ params }: { params: { id: string } }) => {
           variant="contained"
           onClick={handleOnClick}
           color={isEditing ? "secondary" : "primary"}
-          disabled={(isEditing && !edit) || isSavingEdits}
+          disabled={(isEditing && !currentEdit) || isSavingEdits}
         >
           {isSavingEdits ? (
             <Stack direction="row" spacing={spacing}>
@@ -612,12 +642,11 @@ const ItineraryPage = ({ params }: { params: { id: string } }) => {
       <AddEventDialog
         open={addEventDialogOpen}
         setOpen={setAddEventDialogOpen}
-        itineraryId={params.id}
         indexToAddEventTo={indexToAddEventTo ?? 0}
         itineraryRequest={itineraryData.request}
         events={events}
         dayPlan={dayPlan!}
-        setEdit={setEdit}
+        setCurrentEdit={setCurrentEdit}
       />
     </Container>
   );
@@ -631,7 +660,22 @@ export enum ItineraryEditAction {
   modify = "modify",
 }
 
-export interface AddEventToItineraryAction {
+export interface DeleteEventFromItineraryDetails {
+  indexToDeleteEventFrom: number;
+  event: Event;
+}
+
+export interface AddEventToItineraryDetails {
   indexToAddEventTo: number;
   newEvent: Event;
 }
+
+export interface ModifyEventInItineraryDetails {
+  indexToModifyEventAt: number;
+  newEvent: Event;
+}
+
+export type ItineraryEditDetails =
+  | DeleteEventFromItineraryDetails
+  | AddEventToItineraryDetails
+  | ModifyEventInItineraryDetails;

@@ -1,8 +1,10 @@
-import { trpc } from "@/app/_trpc/client";
 import Text from "@/components/atoms/text";
 import Alert from "@/components/molecules/alert";
 import TextInputField from "@/components/molecules/text-input-field";
-import { AddEventToItineraryAction, ItineraryEditAction } from "@/components/templates/itinerary-page";
+import {
+  AddEventToItineraryDetails,
+  ItineraryEditAction,
+} from "@/components/templates/itinerary-page";
 import { AlertType } from "@/constants/enums/alertType";
 import { TypographyVariant } from "@/constants/enums/theme";
 import colorsConst from "@/constants/pages/colors.json";
@@ -20,6 +22,7 @@ import {
   GenerateItineraryJSON,
 } from "@/lib/pythonBackend/types";
 import {
+  getEvents,
   getTimesOfDayAfter,
   getTimesOfDayBefore,
   getTimesOfDayBetween,
@@ -49,21 +52,19 @@ const AddEventDialog = ({
   setOpen,
   itineraryRequest,
   events,
-  itineraryId,
   indexToAddEventTo,
   dayPlan,
-  setEdit,
+  setCurrentEdit,
 }: {
   open: boolean;
   setOpen: Dispatch<SetStateAction<boolean>>;
   itineraryRequest: GenerateItineraryJSON;
   events: Event[];
-  itineraryId: string;
   indexToAddEventTo: number;
   dayPlan: DayPlan;
-  setEdit: Dispatch<
+  setCurrentEdit: Dispatch<
     SetStateAction<Partial<
-      Record<ItineraryEditAction, number | AddEventToItineraryAction>
+      Record<ItineraryEditAction, number | AddEventToItineraryDetails>
     > | null>
   >;
 }) => {
@@ -92,12 +93,9 @@ const AddEventDialog = ({
   const locationCity = watch(locationCityId);
   const timeOfDay = watch(timeOfDayId);
 
-  const adjustItineraryBudget =
-    trpc.itinerary.adjustItineraryBudget.useMutation();
-  const utils = trpc.useUtils();
-
   const handleOnClose = () => {
     if (!addingActivity) {
+      setShowAlert(false);
       setOpen(false);
       reset({
         locationName: "",
@@ -253,7 +251,7 @@ const AddEventDialog = ({
         nextEventTimeOfDay = nextEvent?.time_of_day!;
         options = getTimesOfDayBetween(
           previousEventTimeOfDay,
-          nextEventTimeOfDay
+          nextEventTimeOfDay,
         );
       }
 
@@ -312,36 +310,67 @@ const AddEventDialog = ({
 
         if (locationNameValid && locationCityValid && timeOfDayValid) {
           setAddingActivity(true);
+          setShowAlert(false);
           const validateNewJson = generateValidateNewJson(
             itineraryRequest,
             events,
             dayPlan,
             timeOfDay,
             locationName,
-            locationCity
+            locationCity,
           );
-          const validateNewRes = await validateNew(validateNewJson);
+          // const validateNewRes = await validateNew(validateNewJson);
 
-          if (!validateNewRes.success) {
-            setAlertText(validateNewRes.reason);
-            setAlertType(AlertType.error);
-            setShowAlert(true);
-            return;
-          }
+          // if (!validateNewRes.success) {
+          //   setAlertText(validateNewRes.reason);
+          //   setAlertType(AlertType.error);
+          //   setShowAlert(true);
+          //   return;
+          // }
 
           const searchActivityJson = generateSearchActivityJson(
             locationName,
-            locationCity
+            locationCity,
           );
-          const searchActivityRes = await searchActivity(searchActivityJson);
-          console.log("searchActivityRes", searchActivityRes);
-          // TODO: wait for Oscar to get back to me on the /validate_new and then handle the searchActivityRes by adding it to the day plan
-          // TODO: don't forget to update the setEdit state so that it is reflected in the ItineraryPage component
+          // const searchActivityRes = await searchActivity(searchActivityJson);
+          const searchActivityRes = {
+            location_name: "Muscle Beach",
+            location_city: "Los Angeles",
+            location_address: "Muscle Beach, Venice, CA 90291, USA",
+            display_name: {
+              text: "Muscle Beach",
+            },
+            rating: "N/A",
+            website_uri: "N/A",
+            price_level: "N/A",
+            price_range: "N/A",
+            photos: [],
+            opening_hours: "N/A",
+            primary_type: "N/A",
+          };
+          const newEvent = await getEvents([searchActivityRes], timeOfDay);
+          const newEdit: Partial<
+            Record<ItineraryEditAction, AddEventToItineraryDetails>
+          > = {
+            [ItineraryEditAction.add]: {
+              indexToAddEventTo,
+              newEvent: newEvent[0],
+            },
+          };
+          setCurrentEdit(newEdit);
+          setOpen(false);
+          reset({
+            locationName: "",
+            locationCity: "",
+            timeOfDay: null as unknown as EventTimeOfDay,
+          });
         }
       } catch (error: any) {
         setAlertText(error.message);
         setAlertType(AlertType.error);
         setShowAlert(true);
+      } finally {
+        setAddingActivity(false);
       }
     };
 
