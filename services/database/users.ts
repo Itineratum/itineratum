@@ -1,12 +1,11 @@
 import { AuthService } from "@/constants/enums/authService";
 import { SignInError } from "@/constants/errors/signIn";
-import { connectToDatabase, disconnectFromDatabase } from "@/lib/db";
+import { connectToDatabase } from "@/lib/db";
 import { deleteImage } from "@/lib/uploadThing";
 import User, { initialUser } from "@/models/User";
 import { getAuthService } from "@/utils/getAuthService";
 import bcrypt from "bcrypt";
 import { Account, User as AuthUser } from "next-auth";
-
 // used by Google provider login
 export const signIn = async ({
   user,
@@ -121,6 +120,7 @@ export const credentialsSignUp = async (
         password: hashedPassword,
         auth_service: AuthService.Credentials,
         account_created: Date.now(),
+        generated_itineraries: [],
       };
 
       if (existingUser && existingUser.is_deleted) {
@@ -347,6 +347,41 @@ export const verifyUserPassword = async (
           error: "Wrong password!",
         };
       }
+    }
+  } catch (error) {
+    console.error(error);
+    throw error;
+  } finally {
+    // await disconnectFromDatabase();
+  }
+};
+
+export const addItineraryToUser = async (
+  email: string,
+  itineraryId: string,
+) => {
+  try {
+    await connectToDatabase();
+    const user = await User.findOne({ email });
+
+    if (!user) {
+      return {
+        success: false,
+        error: "User not found!",
+      };
+    }
+
+    const update = {
+      $push: {
+        generated_itineraries: itineraryId,
+      },
+    };
+    const result = await User.updateOne({ email }, update);
+
+    if (result.acknowledged) {
+      return { success: true };
+    } else {
+      return { success: false, error: "Add itinerary failed" };
     }
   } catch (error) {
     console.error(error);

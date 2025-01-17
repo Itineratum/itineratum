@@ -20,6 +20,7 @@ import {
   saveItinerary,
   updateItinerary,
 } from "@/services/database/itinerary";
+import { addItineraryToUser } from "@/services/database/users";
 import { TRPCError } from "@trpc/server";
 import dayjs from "dayjs";
 import utc from "dayjs/plugin/utc";
@@ -55,7 +56,23 @@ export const itineraryRouter = router({
         hotels,
         flights,
       );
-      return saveItineraryRes.itineraryId;
+      const itineraryId = saveItineraryRes.itineraryId;
+
+      if (email) {
+        const addItineraryToUserRes = await addItineraryToUser(
+          email,
+          itineraryId,
+        );
+
+        if (!addItineraryToUserRes.success) {
+          throw new TRPCError({
+            code: "INTERNAL_SERVER_ERROR",
+            message: addItineraryToUserRes?.error!,
+          });
+        }
+      }
+
+      return itineraryId;
     }),
   getItinerary: publicProcedure
     .input(getItinerarySchema.input)

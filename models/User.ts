@@ -54,6 +54,7 @@ const userSchema = new Schema<IUser>(
       },
       required: true,
     },
+    generated_itineraries: { type: [String], required: true },
   },
   { collection: constDbCollections.users },
 );
@@ -72,6 +73,7 @@ export const initialUser = (
     account_created: Date.now(),
     language: "en",
     currency: "sgd",
+    generated_itineraries: [],
   };
 };
 

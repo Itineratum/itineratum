@@ -19,6 +19,7 @@ export interface IUser {
   password: string;
   is_deleted: boolean;
   notifications: Notifications;
+  generated_itineraries: string[];
 }
 
 export interface Notifications {
