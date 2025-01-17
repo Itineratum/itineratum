@@ -243,10 +243,6 @@ const ItineraryPage = ({ params }: { params: { id: string } }) => {
     }
   }, [currentEdit]);
 
-  useEffect(() => {
-    console.log(edits);
-  }, [edits]);
-
   if (isLoading)
     return (
       <Container sx={{ display: "flex", justifyContent: "center" }}>
