@@ -171,7 +171,6 @@ const ModifyEventDialog = ({
   };
 
   const modifyEventButton = () => {
-    const width = "35%";
     const loadingAnimationSize: number = 24;
     const spacing = 2;
 
@@ -242,7 +241,7 @@ const ModifyEventDialog = ({
         <Button
           variant="contained"
           onClick={handleOnClick}
-          sx={{ width }}
+          sx={{ width: "auto", minWidth: "unset" }}
           disabled={modifyingActivity}
         >
           {modifyingActivity ? (
