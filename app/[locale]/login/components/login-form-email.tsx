@@ -56,7 +56,15 @@ export const LogInFormEmail = ({
       if (signInRes && signInRes.ok) {
         setAlertText("");
         setShowAlert(false);
-        router.push("/");
+        const searchParams = new URLSearchParams(window.location.search);
+        const returnUrl = searchParams.get("returnUrl");
+
+        if (returnUrl) {
+          // if the user was earlier told to log in to save the generated itinerary, redirect them back to the itinerary page
+          router.push(returnUrl);
+        } else {
+          router.push("/");
+        }
       } else {
         setAlertText(t("loginErrorAlert"));
         setShowAlert(true);

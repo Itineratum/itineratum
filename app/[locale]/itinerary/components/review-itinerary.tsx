@@ -15,6 +15,8 @@ import ModifyEventDialog from "@/app/[locale]/itinerary/components/modify-event-
 import TravelCard from "@/app/[locale]/itinerary/components/travel-card";
 import { trpc } from "@/app/_trpc/client";
 import Text from "@/components/atoms/text";
+import Alert from "@/components/molecules/alert";
+import { AlertType } from "@/constants/enums/alertType";
 import { Currency } from "@/constants/enums/currency";
 import { ItineraryPageStep } from "@/constants/enums/itineraryPageStep";
 import {
@@ -24,7 +26,15 @@ import {
 import colorsConst from "@/constants/pages/colors.json";
 import { IItinerary } from "@/constants/types/itinerary";
 import { DayPlan, Event, Hotel, TravelTime } from "@/lib/pythonBackend/types";
-import { Box, Button, CircularProgress, Container, Stack } from "@mui/material";
+import {
+  Box,
+  Button,
+  CircularProgress,
+  Container,
+  Snackbar,
+  SnackbarCloseReason,
+  Stack,
+} from "@mui/material";
 import dayjs from "dayjs";
 import { useSession } from "next-auth/react";
 import { useTranslations } from "next-intl";
@@ -78,6 +88,9 @@ const ReviewItinerary = ({
     number | null
   >(null);
   const [canEdit, setCanEdit] = useState<boolean>(false);
+  const [isSavingitinerary, setIsSavingItinerary] = useState<boolean>(false);
+  const [showAlert, setShowAlert] = useState<boolean>(false);
+  const [canSaveItinerary, setCanSaveItinerary] = useState<boolean>(true);
 
   const gap = 6;
   const paddingBottom = "20px";
@@ -97,6 +110,15 @@ const ReviewItinerary = ({
     },
   );
   const editItinerary = trpc.itinerary.editItinerary.useMutation();
+  const saveItineraryToUser = trpc.user.saveItineraryToUser.useMutation();
+  const getUserSavedItineraries = trpc.user.getUserSavedItineraries.useQuery(
+    {
+      email: session?.user.email!,
+    },
+    {
+      enabled: !!email,
+    },
+  );
   const utils = trpc.useUtils();
 
   const getCorrectDayPlan = (): DayPlan =>
@@ -125,15 +147,21 @@ const ReviewItinerary = ({
       setTravelTimes(getItinerary.data.travel_times[dayNum - 1]);
       setIsLoading(false);
 
-      if (
-        email &&
-        (email === getItinerary.data.generated_by ||
-          getItinerary.data.generated_by === "")
-      ) {
+      if (email && email === getItinerary.data.generated_by) {
         setCanEdit(true);
       }
     }
   }, [getItinerary.data, email]);
+
+  useEffect(() => {
+    if (getUserSavedItineraries.data) {
+      setCanSaveItinerary(
+        !getUserSavedItineraries.data.some(
+          (itineraryId: string) => itineraryId === params.id,
+        ),
+      );
+    }
+  }, [getUserSavedItineraries.data]);
 
   useEffect(() => {
     if (getItinerary.data) {
@@ -553,25 +581,25 @@ const ReviewItinerary = ({
       };
 
       return (
-        isEditing && (
-          <Button
-            variant="contained"
-            onClick={handleOnClick}
-            sx={{ backgroundColor: colorsConst.palette.text.secondary }}
-            disabled={isSavingEdits}
-          >
-            <Text
-              text={t("cancel")}
-              variant={TypographyVariant.button}
-              bold={true}
-              color={colorsConst.palette.text.primary}
-            />
-          </Button>
-        )
+        <Button
+          variant="contained"
+          onClick={handleOnClick}
+          sx={{ backgroundColor: colorsConst.palette.text.secondary }}
+          disabled={isSavingEdits}
+        >
+          <Text
+            text={t("cancel")}
+            variant={TypographyVariant.button}
+            bold={true}
+            color={colorsConst.palette.text.primary}
+          />
+        </Button>
       );
     };
 
     const editSaveButton = () => {
+      // by default, only the user account that generated the itinerary can edit the itinerary
+      // this means that if some un-logged in user generated the itinerary, they cannot edit the itinerary since they were not logged in
       const loadingAnimationSize: number = 24;
       const spacing = 2;
 
@@ -635,46 +663,73 @@ const ReviewItinerary = ({
     };
 
     const saveItineraryButton = () => {
-      const handleOnClick = () => {
-        window.scrollTo(0, 0);
-        setItineraryPageStep(ItineraryPageStep.saveItinerary);
+      // by default, anyone can save the itinerary
+      const loadingAnimationSize = 24;
+      const spacing = 2;
+
+      const handleOnClick = async () => {
+        setShowAlert(false);
+
+        // if the user is logged in
+        if (session?.user && email) {
+          setIsSavingItinerary(true);
+          const data = {
+            email,
+            itineraryId: params.id,
+          };
+          await saveItineraryToUser.mutateAsync(data);
+          setIsSavingItinerary(false);
+          setShowAlert(true);
+          utils.invalidate();
+        } else {
+          window.scrollTo(0, 0);
+          setItineraryPageStep(ItineraryPageStep.saveItinerary);
+        }
       };
 
       return (
-        canEdit &&
-        !isEditing && (
-          <Button
-            variant="contained"
-            onClick={handleOnClick}
-            color="secondary"
-            disabled={isEditing}
-          >
+        <Button
+          variant="contained"
+          onClick={handleOnClick}
+          color="secondary"
+          disabled={isEditing}
+        >
+          <Stack direction="row" spacing={spacing}>
+            {isSavingitinerary && (
+              <CircularProgress size={loadingAnimationSize} />
+            )}
             <Text
-              text={t("saveItinerary")}
+              text={
+                isSavingitinerary ? t("savingItinerary") : t("saveItinerary")
+              }
               variant={TypographyVariant.button}
               bold={false}
             />
-          </Button>
-        )
+          </Stack>
+        </Button>
       );
     };
 
     return (
-      canEdit && (
-        <Stack direction="column" spacing={spacing}>
-          <Stack
-            direction="row"
-            spacing={spacing}
-            display="flex"
-            justifyContent="flex-end"
-          >
-            {cancelButton()}
-            {editSaveButton()}
-            {saveItineraryButton()}
-          </Stack>
-          {instructions()}
+      <Stack direction="column" spacing={spacing}>
+        <Stack
+          direction="row"
+          spacing={spacing}
+          display="flex"
+          justifyContent="flex-end"
+        >
+          {canEdit && isEditing && cancelButton()}
+          {canEdit && editSaveButton()}
+          {!isEditing && canSaveItinerary && saveItineraryButton()}
         </Stack>
-      )
+        <Alert
+          showAlert={showAlert}
+          setShowAlert={setShowAlert}
+          alertText={t("itinerarySaved")}
+          alertType={AlertType.success}
+        />
+        {instructions()}
+      </Stack>
     );
   };
 

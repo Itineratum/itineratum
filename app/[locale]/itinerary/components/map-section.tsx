@@ -19,7 +19,7 @@ const MapSection = ({
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
   const height = "700px";
-  const width = "60vw";
+  const maxWidth = "60vw";
   const borderRadius = "20px";
 
   useEffect(() => {
@@ -58,7 +58,7 @@ const MapSection = ({
         mapId={process.env.NEXT_PUBLIC_GOOGLE_MAPS_ID}
         style={{
           height,
-          width,
+          maxWidth,
           border: "2px solid black",
           borderRadius,
           overflow: "hidden",

@@ -1,6 +1,7 @@
 import contactsConst from "@/constants/pages/contacts.json";
 import { FeedbackCategory } from "@/constants/types/formData/feedbackFormData";
 import nodemailer from "nodemailer";
+import endpointsConst from "@/constants/pages/endpoints.json";
 
 const transporter = nodemailer.createTransport({
   port: 465,
@@ -113,6 +114,27 @@ export const sendFeedbackReceivedEmail = async (
     to: toEmail,
     subject: "Your feeback to Itineratum has been received",
     text: `Dear ${name ?? ""},\n\nThank you for your feedback, we will review your feedback and take any necessary actions. Thank you for using Itineratum!`,
+  };
+
+  try {
+    await transporter.sendMail(mailOptions);
+  } catch (error) {
+    console.error("Error sending feedback received email!", error);
+    throw error;
+  }
+};
+
+export const sendItinerary = async (toEmail: string, itineraryId: string) => {
+  const host =
+    process.env.NODE_ENV === "development"
+      ? process.env.HOST_DEV
+      : process.env.HOST_PROD;
+
+  const mailOptions = {
+    from: process.env.NODEMAILER_EMAIL,
+    to: toEmail,
+    subject: "Your customised itinerary from Itineratum",
+    text: `Hello,\n\nYou can view your customised itinerary at: ${host}/${endpointsConst.itinerary.endpoint}/${itineraryId}`,
   };
 
   try {

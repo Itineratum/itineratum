@@ -356,10 +356,40 @@ export const verifyUserPassword = async (
   }
 };
 
-export const addItineraryToUser = async (
-  email: string,
-  itineraryId: string,
-) => {
+export const retrieveUserSavedItineraries = async (email: string) => {
+  try {
+    await connectToDatabase();
+    const user = await User.findOne({ email });
+
+    if (!user) {
+      return {
+        success: false,
+        error: "User not found!",
+      };
+    }
+
+    const savedItineraries = user.generated_itineraries;
+
+    if (savedItineraries) {
+      return {
+        success: true,
+        data: savedItineraries,
+      };
+    } else {
+      return {
+        success: false,
+        error: "Failed to retrieve user-saved itineraries!",
+      };
+    }
+  } catch (error) {
+    console.error(error);
+    throw error;
+  } finally {
+    // await disconnectFromDatabase();
+  }
+};
+
+export const saveUserItinerary = async (email: string, itineraryId: string) => {
   try {
     await connectToDatabase();
     const user = await User.findOne({ email });
@@ -381,7 +411,7 @@ export const addItineraryToUser = async (
     if (result.acknowledged) {
       return { success: true };
     } else {
-      return { success: false, error: "Add itinerary failed" };
+      return { success: false, error: "Save itinerary to user failed" };
     }
   } catch (error) {
     console.error(error);

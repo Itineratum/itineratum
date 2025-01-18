@@ -18,6 +18,8 @@ import {
   deleteUser,
   retrieveCurrencyLanguage,
   retrieveUserDetails,
+  retrieveUserSavedItineraries,
+  saveUserItinerary,
   updateUser,
   verifyUserPassword,
 } from "@/services/database/users";
@@ -34,8 +36,10 @@ import {
   getUserAccountDetailsSchema,
   getUserCurrencyLanguageSchema,
   getUserNotificationsSettingsSchema,
+  getUserSavedItinerariesSchema,
   loginViaEmailSchema,
   loginViaOtpSchema,
+  saveItineraryToUserSchema,
   switchCurrencySchema,
   switchLanguageSchema,
   updateUserAccountSchema,
@@ -365,6 +369,38 @@ export const userRouter = router({
           message: updateUserRes.error,
         });
       }
+    }),
+  saveItineraryToUser: publicProcedure
+    .input(saveItineraryToUserSchema.input)
+    .output(saveItineraryToUserSchema.output)
+    .mutation(async (data) => {
+      const email = data.input.email;
+      const itineraryId = data.input.itineraryId;
+      const saveUserItineraryRes = await saveUserItinerary(email, itineraryId);
+
+      if (!saveUserItineraryRes.success) {
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message: saveUserItineraryRes.error,
+        });
+      }
+    }),
+  getUserSavedItineraries: publicProcedure
+    .input(getUserSavedItinerariesSchema.input)
+    .output(getUserSavedItinerariesSchema.output)
+    .query(async (data) => {
+      const email = data.input.email;
+      const retrieveUserSavedItinerariesRes =
+        await retrieveUserSavedItineraries(email);
+
+      if (!retrieveUserSavedItinerariesRes.success) {
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message: retrieveUserSavedItinerariesRes.error,
+        });
+      }
+
+      return retrieveUserSavedItinerariesRes.data;
     }),
 });
 

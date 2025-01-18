@@ -10,9 +10,11 @@ import Text from "../atoms/text";
 export const GoogleButton = ({
   formMargin,
   buttonWidth = "80%",
+  returnUrl,
 }: {
   formMargin: number;
   buttonWidth?: string;
+  returnUrl?: string | null;
 }) => {
   const t = useTranslations("googleButton");
 
@@ -22,7 +24,7 @@ export const GoogleButton = ({
 
   const handleOnClick = async () => {
     await signIn("google", {
-      callbackUrl: "/",
+      callbackUrl: returnUrl ?? "/",
     });
   };
 

@@ -3,6 +3,7 @@ import {
   ItineraryEditAction,
   ItineraryEditDetails,
 } from "@/app/[locale]/itinerary/components/review-itinerary";
+import { sendItinerary } from "@/lib/nodeMailer";
 import { DayPlan, Event, Hotel, TravelTime } from "@/lib/pythonBackend/types";
 import {
   adjustItineraryWithSelectedHotels,
@@ -19,8 +20,8 @@ import {
   retrieveItinerary,
   saveItinerary,
   updateItinerary,
+  updateItineraryGeneratedBy,
 } from "@/services/database/itinerary";
-import { addItineraryToUser } from "@/services/database/users";
 import { TRPCError } from "@trpc/server";
 import dayjs from "dayjs";
 import utc from "dayjs/plugin/utc";
@@ -28,8 +29,10 @@ import {
   adjustItineraryBudgetSchema,
   adjustItineraryHotelsSchema,
   editItinerarySchema,
+  emailItinerarySchema,
   getItinerarySchema,
   saveItinerarySchema,
+  updateItineraryGeneratedBySchema,
 } from "../schemas/itinerary";
 import { publicProcedure, router } from "../trpc";
 
@@ -57,21 +60,6 @@ export const itineraryRouter = router({
         flights,
       );
       const itineraryId = saveItineraryRes.itineraryId;
-
-      if (email) {
-        const addItineraryToUserRes = await addItineraryToUser(
-          email,
-          itineraryId,
-        );
-
-        if (!addItineraryToUserRes.success) {
-          throw new TRPCError({
-            code: "INTERNAL_SERVER_ERROR",
-            message: addItineraryToUserRes?.error!,
-          });
-        }
-      }
-
       return itineraryId;
     }),
   getItinerary: publicProcedure
@@ -201,6 +189,32 @@ export const itineraryRouter = router({
         throw new TRPCError({
           code: "INTERNAL_SERVER_ERROR",
           message: updateItineraryRes?.error!,
+        });
+      }
+    }),
+  emailItinerary: publicProcedure
+    .input(emailItinerarySchema.input)
+    .output(emailItinerarySchema.output)
+    .mutation(async (data) => {
+      const email = data.input.email;
+      const itineraryId = data.input.itineraryId;
+      await sendItinerary(email, itineraryId);
+    }),
+  updateItineraryGeneratedBy: publicProcedure
+    .input(updateItineraryGeneratedBySchema.input)
+    .output(updateItineraryGeneratedBySchema.output)
+    .mutation(async (data) => {
+      const email = data.input.email;
+      const itineraryId = data.input.itineraryId;
+      const updateItineraryGeneratedByRes = await updateItineraryGeneratedBy(
+        itineraryId,
+        email,
+      );
+
+      if (!updateItineraryGeneratedByRes.success) {
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message: updateItineraryGeneratedByRes?.error!,
         });
       }
     }),

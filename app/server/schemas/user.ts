@@ -134,3 +134,13 @@ export const updateUserNotificationsSettingsSchema = {
   }),
   output: z.void(),
 };
+
+export const saveItineraryToUserSchema = {
+  input: z.object({ email: z.string(), itineraryId: z.string() }),
+  output: z.void(),
+};
+
+export const getUserSavedItinerariesSchema = {
+  input: z.object({ email: z.string() }),
+  output: z.any(),
+};

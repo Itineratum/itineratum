@@ -89,7 +89,15 @@ const SignUpForm = () => {
       if (signInRes && signInRes.ok) {
         setAlertText("");
         setShowAlert(false);
-        router.push("/"); // redirect to home page
+        const searchParams = new URLSearchParams(window.location.search);
+        const returnUrl = searchParams.get("returnUrl");
+
+        if (returnUrl) {
+          // if the user was earlier told to log in to save the generated itinerary, redirect them back to the itinerary page
+          router.push(returnUrl);
+        } else {
+          router.push("/");
+        }
       } else {
         setAlertText(t("signUpErrorAlert"));
         setAlertType(AlertType.error);

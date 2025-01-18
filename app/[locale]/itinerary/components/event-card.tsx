@@ -1,11 +1,6 @@
 "use client";
 
 import Text from "@/components/atoms/text";
-import {
-  DeleteEventFromItineraryDetails,
-  ItineraryEditAction,
-  ItineraryEditDetails,
-} from "@/components/templates/itinerary-page";
 import { TypographyVariant } from "@/constants/enums/theme";
 import colorsConst from "@/constants/pages/colors.json";
 import { Event, EventTimeOfDay } from "@/lib/pythonBackend/types";
@@ -18,6 +13,11 @@ import { Box, Button, IconButton, Stack } from "@mui/material";
 import { Dayjs } from "dayjs";
 import { useTranslations } from "next-intl";
 import { Dispatch, SetStateAction } from "react";
+import {
+  ItineraryEditAction,
+  ItineraryEditDetails,
+  DeleteEventFromItineraryDetails,
+} from "./review-itinerary";
 
 export const eventCardMaxWidth = 515;
 

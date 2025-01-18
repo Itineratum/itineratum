@@ -16,6 +16,9 @@ const LoginPage = () => {
   const t = useTranslations("login");
   const [isLoginUsingOtp, setIsLoginUsingOtp] = useState<boolean>(false);
 
+  const searchParams = new URLSearchParams(window.location.search);
+  const returnUrl = searchParams.get("returnUrl");
+
   const pageTransitionDuration: number = 500;
   const formMargin: number = 2;
 
@@ -61,7 +64,7 @@ const LoginPage = () => {
           justifyContent: "center",
         }}
       >
-        <GoogleButton formMargin={formMargin} />
+        <GoogleButton formMargin={formMargin} returnUrl={returnUrl} />
       </Box>
     </Container>
   );
