@@ -2,7 +2,7 @@ import {
   DeleteEventFromItineraryDetails,
   ItineraryEditAction,
   ItineraryEditDetails,
-} from "@/components/templates/itinerary-page";
+} from "@/app/[locale]/itinerary/components/review-itinerary";
 import { DayPlan, Event, Hotel, TravelTime } from "@/lib/pythonBackend/types";
 import {
   adjustItineraryWithSelectedHotels,

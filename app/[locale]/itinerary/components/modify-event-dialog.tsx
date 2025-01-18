@@ -1,11 +1,6 @@
 import Text from "@/components/atoms/text";
 import Alert from "@/components/molecules/alert";
 import TextInputField from "@/components/molecules/text-input-field";
-import {
-  ItineraryEditAction,
-  ItineraryEditDetails,
-  ModifyEventInItineraryDetails,
-} from "@/components/templates/itinerary-page";
 import { AlertType } from "@/constants/enums/alertType";
 import { TypographyVariant } from "@/constants/enums/theme";
 import colorsConst from "@/constants/pages/colors.json";
@@ -35,6 +30,11 @@ import {
 import { useTranslations } from "next-intl";
 import { Dispatch, SetStateAction, useState } from "react";
 import { useForm } from "react-hook-form";
+import {
+  ItineraryEditAction,
+  ItineraryEditDetails,
+  ModifyEventInItineraryDetails,
+} from "./review-itinerary";
 
 const ModifyEventDialog = ({
   open,

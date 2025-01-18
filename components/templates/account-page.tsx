@@ -6,11 +6,9 @@ import AccountPersonalInformation from "@/app/[locale]/account/components/accoun
 import { AccountSetting } from "@/constants/enums/accountSetting";
 import { Slide } from "@mui/material";
 import Container from "@mui/material/Container";
-import { useTranslations } from "next-intl";
 import { useState } from "react";
 
 const AccountPage = () => {
-  const t = useTranslations("account");
   const [accountSetting, setAccountSetting] = useState<AccountSetting>(
     AccountSetting.base,
   );

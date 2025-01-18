@@ -128,6 +128,9 @@
     "saving": "Saving Edits",
     "editInstructions": "Click on 'Save Edits' to save your edits and see the updated itinerary.",
     "addActivity": "Add Activity",
+    "saveItinerary": "Save Itinerary",
+    "reviewItinerary": "Review Itinerary",
+    "saveItineraryInstructions": "Congratulations on successfully planning your trip! Please select one of the following options to recieve your customised itinerary",
     "adjustBudgetDialog": {
       "adjustBudget": "Adjust Budget",
       "description": "Adjust the budget for your trip.",
