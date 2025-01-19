@@ -140,6 +140,11 @@ export const saveItineraryToUserSchema = {
   output: z.void(),
 };
 
+export const getUserSavedItineraryIdsSchema = {
+  input: z.object({ email: z.string() }),
+  output: z.any(),
+};
+
 export const getUserSavedItinerariesSchema = {
   input: z.object({ email: z.string() }),
   output: z.any(),

@@ -356,7 +356,7 @@ export const verifyUserPassword = async (
   }
 };
 
-export const retrieveUserSavedItineraries = async (email: string) => {
+export const retrieveUserSavedItineraryIds = async (email: string) => {
   try {
     await connectToDatabase();
     const user = await User.findOne({ email });

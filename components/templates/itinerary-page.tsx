@@ -7,7 +7,6 @@ import { ItineraryPageStep } from "@/constants/enums/itineraryPageStep";
 import { CircularProgress, Container, Slide, Snackbar } from "@mui/material";
 import { useSession } from "next-auth/react";
 import { useTranslations } from "next-intl";
-import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 
 const ItineraryPage = ({ params }: { params: { id: string } }) => {

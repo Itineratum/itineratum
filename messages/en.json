@@ -107,6 +107,9 @@
       "emailSuccess": "Email successfully added to newsletter!"
     }
   },
+  "savedTrips": {
+    "welcome": "Welcome"
+  },
   "itinerary": {
     "noItinerary": "No itinerary found!",
     "budgetCap": "Budget Cap",

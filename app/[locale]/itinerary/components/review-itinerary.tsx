@@ -111,7 +111,7 @@ const ReviewItinerary = ({
   );
   const editItinerary = trpc.itinerary.editItinerary.useMutation();
   const saveItineraryToUser = trpc.user.saveItineraryToUser.useMutation();
-  const getUserSavedItineraries = trpc.user.getUserSavedItineraries.useQuery(
+  const getUserSavedItineraryIds = trpc.user.getUserSavedItineraryIds.useQuery(
     {
       email: session?.user.email!,
     },
@@ -154,14 +154,14 @@ const ReviewItinerary = ({
   }, [getItinerary.data, email]);
 
   useEffect(() => {
-    if (getUserSavedItineraries.data) {
+    if (getUserSavedItineraryIds.data) {
       setCanSaveItinerary(
-        !getUserSavedItineraries.data.some(
+        !getUserSavedItineraryIds.data.some(
           (itineraryId: string) => itineraryId === params.id,
         ),
       );
     }
-  }, [getUserSavedItineraries.data]);
+  }, [getUserSavedItineraryIds.data]);
 
   useEffect(() => {
     if (getItinerary.data) {

@@ -20,6 +20,7 @@ export interface IUser {
   is_deleted: boolean;
   notifications: Notifications;
   generated_itineraries: string[];
+  todo_list: ToDo[];
 }
 
 export interface Notifications {
@@ -30,4 +31,9 @@ export interface Notifications {
 interface NotificationsOptions {
   email: boolean;
   push_notifications: boolean;
+}
+
+interface ToDo {
+  task: string;
+  completed: boolean;
 }

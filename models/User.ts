@@ -55,6 +55,7 @@ const userSchema = new Schema<IUser>(
       required: true,
     },
     generated_itineraries: { type: [String], required: true },
+    todo_list: { type: [Object], required: false },
   },
   { collection: constDbCollections.users },
 );

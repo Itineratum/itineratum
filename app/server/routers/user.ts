@@ -18,7 +18,7 @@ import {
   deleteUser,
   retrieveCurrencyLanguage,
   retrieveUserDetails,
-  retrieveUserSavedItineraries,
+  retrieveUserSavedItineraryIds,
   saveUserItinerary,
   updateUser,
   verifyUserPassword,
@@ -37,6 +37,7 @@ import {
   getUserCurrencyLanguageSchema,
   getUserNotificationsSettingsSchema,
   getUserSavedItinerariesSchema,
+  getUserSavedItineraryIdsSchema,
   loginViaEmailSchema,
   loginViaOtpSchema,
   saveItineraryToUserSchema,
@@ -47,6 +48,8 @@ import {
   verifyVerificationCodeSchema,
 } from "../schemas/user";
 import { privateProcedure, publicProcedure, router } from "../trpc";
+import { IItinerary } from "@/constants/types/itinerary";
+import { retrieveItinerary } from "@/services/database/itinerary";
 
 export const userRouter = router({
   generateVerificationCode: publicProcedure
@@ -385,22 +388,49 @@ export const userRouter = router({
         });
       }
     }),
+  getUserSavedItineraryIds: publicProcedure
+    .input(getUserSavedItineraryIdsSchema.input)
+    .output(getUserSavedItineraryIdsSchema.output)
+    .query(async (data) => {
+      const email = data.input.email;
+      const retrieveUserSavedItineraryIdsRes =
+        await retrieveUserSavedItineraryIds(email);
+
+      if (!retrieveUserSavedItineraryIdsRes.success) {
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message: retrieveUserSavedItineraryIdsRes.error,
+        });
+      }
+
+      return retrieveUserSavedItineraryIdsRes.data;
+    }),
   getUserSavedItineraries: publicProcedure
     .input(getUserSavedItinerariesSchema.input)
     .output(getUserSavedItinerariesSchema.output)
     .query(async (data) => {
       const email = data.input.email;
-      const retrieveUserSavedItinerariesRes =
-        await retrieveUserSavedItineraries(email);
+      const retrieveUserSavedItineraryIdsRes =
+        await retrieveUserSavedItineraryIds(email);
 
-      if (!retrieveUserSavedItinerariesRes.success) {
+      if (!retrieveUserSavedItineraryIdsRes.success) {
         throw new TRPCError({
           code: "INTERNAL_SERVER_ERROR",
-          message: retrieveUserSavedItinerariesRes.error,
+          message: retrieveUserSavedItineraryIdsRes.error,
         });
       }
 
-      return retrieveUserSavedItinerariesRes.data;
+      const itineraries: IItinerary[] = [];
+      const uniqueItineraryIds: string[] = Array.from(
+        new Set(retrieveUserSavedItineraryIdsRes.data),
+      );
+
+      for (const itineraryId of uniqueItineraryIds) {
+        const retrieveItineraryRes = await retrieveItinerary(itineraryId);
+        itineraries.push(retrieveItineraryRes.data);
+      }
+
+      return itineraries;
     }),
 });
 
