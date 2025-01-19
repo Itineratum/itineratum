@@ -26,20 +26,23 @@ import {
 import colorsConst from "@/constants/pages/colors.json";
 import { IItinerary } from "@/constants/types/itinerary";
 import { DayPlan, Event, Hotel, TravelTime } from "@/lib/pythonBackend/types";
+import { getItinerarySummaryText } from "@/lib/pythonBackend/utils";
 import {
   Box,
   Button,
   CircularProgress,
   Container,
-  Snackbar,
-  SnackbarCloseReason,
+  IconButton,
   Stack,
 } from "@mui/material";
 import dayjs from "dayjs";
 import { useSession } from "next-auth/react";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
+import ArrowBackIcon from "@mui/icons-material/ArrowBack";
+import endpointsConst from "@/constants/pages/endpoints.json";
+import { buildLocaleEndpoint } from "@/utils/buildLocaleEndpoint";
 
 const ReviewItinerary = ({
   params,
@@ -52,6 +55,7 @@ const ReviewItinerary = ({
   const router = useRouter();
   const { data: session } = useSession();
   const email = session?.user.email;
+  const locale = useLocale();
 
   const [itineraryData, setItineraryData] = useState<IItinerary | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
@@ -91,6 +95,7 @@ const ReviewItinerary = ({
   const [isSavingitinerary, setIsSavingItinerary] = useState<boolean>(false);
   const [showAlert, setShowAlert] = useState<boolean>(false);
   const [canSaveItinerary, setCanSaveItinerary] = useState<boolean>(true);
+  const [canGoBack, setCanGoBack] = useState<boolean>(false);
 
   const gap = 6;
   const paddingBottom = "20px";
@@ -290,6 +295,13 @@ const ReviewItinerary = ({
     }
   }, [currentEdit]);
 
+  useEffect(() => {
+    const searchParams = new URLSearchParams(window.location.search);
+    const from = searchParams.get("from");
+
+    if (from === "savedtrips") setCanGoBack(true);
+  }, []);
+
   if (isLoading)
     return (
       <Container sx={{ display: "flex", justifyContent: "center" }}>
@@ -313,32 +325,36 @@ const ReviewItinerary = ({
       </Container>
     );
 
-  const itinerarySummaryText = () => {
-    const numDays = itineraryData.itinerary.length;
+  const backButton = () => {
+    const spacing = 2;
 
-    const getDestinationsString = (): string => {
-      let output = "";
-      destinations.map((destination, index) => {
-        output += destination;
-
-        if (index < destinations.length - 2) {
-          output += ", ";
-        } else if (index === destinations.length - 2) {
-          output += " and ";
-        }
-      });
-      return output;
+    const text = () => {
+      return (
+        <Text text={t("back")} variant={TypographyVariant.h6} bold={false} />
+      );
     };
 
-    const text = `${numDays} ${numDays > 1 ? t("days") : t("day")} ${numDays} ${numDays > 1 ? t("nights") : t("night")} ${t("to")} ${getDestinationsString()}`;
+    const button = () => {
+      const handleOnClick = () => {
+        router.push(
+          buildLocaleEndpoint(locale, endpointsConst.savedTrips.endpoint),
+        );
+      };
+
+      return (
+        <IconButton onClick={handleOnClick} color="primary">
+          <ArrowBackIcon />
+        </IconButton>
+      );
+    };
 
     return (
-      <Text
-        text={text}
-        variant={TypographyVariant.h4}
-        bold={true}
-        textDecoration={TypographyTextDecoration.underline}
-      />
+      canGoBack && (
+        <Stack direction="row" spacing={spacing} alignItems="center">
+          {button()}
+          {text()}
+        </Stack>
+      )
     );
   };
 
@@ -382,6 +398,17 @@ const ReviewItinerary = ({
           {adjustBudgetButton()}
         </Stack>
       )
+    );
+  };
+
+  const itinerarySummaryText = () => {
+    return (
+      <Text
+        text={getItinerarySummaryText(itineraryData)}
+        variant={TypographyVariant.h4}
+        bold={true}
+        textDecoration={TypographyTextDecoration.underline}
+      />
     );
   };
 
@@ -742,6 +769,7 @@ const ReviewItinerary = ({
         paddingBottom,
       }}
     >
+      {backButton()}
       {budgetSection()}
       {itinerarySummaryText()}
       {dayButtons()}

@@ -36,7 +36,7 @@ import {
   getUserAccountDetailsSchema,
   getUserCurrencyLanguageSchema,
   getUserNotificationsSettingsSchema,
-  getUserSavedItinerariesSchema,
+  getUserSavedItinerariesAndIdsSchema,
   getUserSavedItineraryIdsSchema,
   loginViaEmailSchema,
   loginViaOtpSchema,
@@ -405,9 +405,9 @@ export const userRouter = router({
 
       return retrieveUserSavedItineraryIdsRes.data;
     }),
-  getUserSavedItineraries: publicProcedure
-    .input(getUserSavedItinerariesSchema.input)
-    .output(getUserSavedItinerariesSchema.output)
+  getUserSavedItinerariesAndIds: publicProcedure
+    .input(getUserSavedItinerariesAndIdsSchema.input)
+    .output(getUserSavedItinerariesAndIdsSchema.output)
     .query(async (data) => {
       const email = data.input.email;
       const retrieveUserSavedItineraryIdsRes =
@@ -420,14 +420,14 @@ export const userRouter = router({
         });
       }
 
-      const itineraries: IItinerary[] = [];
+      const itineraries: Record<string, IItinerary>[] = [];
       const uniqueItineraryIds: string[] = Array.from(
         new Set(retrieveUserSavedItineraryIdsRes.data),
       );
 
       for (const itineraryId of uniqueItineraryIds) {
         const retrieveItineraryRes = await retrieveItinerary(itineraryId);
-        itineraries.push(retrieveItineraryRes.data);
+        itineraries.push({ [itineraryId]: retrieveItineraryRes.data });
       }
 
       return itineraries;

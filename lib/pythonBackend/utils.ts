@@ -14,6 +14,8 @@ import {
   Position,
   TravelTime,
 } from "./types";
+import { IItinerary } from "@/constants/types/itinerary";
+import { UserRequestedDestination } from "@/constants/types/formData/generateItineraryFormData";
 
 export const getEvents = async (
   rawTimePeriodPlan: any[],
@@ -127,15 +129,22 @@ export const getTravelTimes = async (
 
       const distanceMatrixJson = await response.json();
 
-      const travelTime: TravelTime = {
-        distance:
-          distanceMatrixJson.rows[0].elements[0].distance.text ??
-          "Distance not available",
-        duration:
-          distanceMatrixJson.rows[0].elements[0].duration.text ??
-          "Duration not available",
-      };
-      dayPlanTravelTimes.push(travelTime);
+      if (distanceMatrixJson.rows[0].elements[0].status === "OK") {
+        const travelTime: TravelTime = {
+          distance:
+            distanceMatrixJson.rows[0].elements[0].distance.text ??
+            "Distance not available",
+          duration:
+            distanceMatrixJson.rows[0].elements[0].duration.text ??
+            "Duration not available",
+        };
+        dayPlanTravelTimes.push(travelTime);
+      } else {
+        dayPlanTravelTimes.push({
+          distance: "Distance not available",
+          duration: "Duration not available",
+        });
+      }
     }
 
     itineraryTravelTimes.push(dayPlanTravelTimes);
@@ -607,4 +616,27 @@ export const getTimesOfDayBetween = (
     Math.min(startIndex, endIndex),
     Math.max(startIndex, endIndex) + 1,
   );
+};
+
+const getDestinationsString = (destinations: string[]): string => {
+  let output = "";
+  destinations.map((destination, index) => {
+    output += destination;
+
+    if (index < destinations.length - 2) {
+      output += ", ";
+    } else if (index === destinations.length - 2) {
+      output += " and ";
+    }
+  });
+  return output;
+};
+
+export const getItinerarySummaryText = (itinerary: IItinerary): string => {
+  const numDays = itinerary.itinerary.length;
+  const destinations =
+    itinerary.request.payload.user_requested_destinations.map(
+      (userRequestedDestination) => userRequestedDestination.name,
+    );
+  return `${numDays} ${numDays > 1 ? "days" : "day"} ${numDays} ${numDays > 1 ? "nights" : "night"} to ${getDestinationsString(destinations)}`;
 };

@@ -145,7 +145,7 @@ export const getUserSavedItineraryIdsSchema = {
   output: z.any(),
 };
 
-export const getUserSavedItinerariesSchema = {
+export const getUserSavedItinerariesAndIdsSchema = {
   input: z.object({ email: z.string() }),
   output: z.any(),
 };

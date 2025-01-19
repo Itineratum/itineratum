@@ -1,14 +1,21 @@
 "use client";
 
+import ItineraryCard, {
+  itineraryCardHeight,
+  itineraryCardOverlapOffset,
+  itineraryCardWidth,
+} from "@/app/[locale]/saved-trips/components/itinerary-card";
+import { trpc } from "@/app/_trpc/client";
 import { TypographyVariant } from "@/constants/enums/theme";
-import { Container, Stack } from "@mui/material";
+import { IItinerary } from "@/constants/types/itinerary";
+import { getItinerarySummaryText } from "@/lib/pythonBackend/utils";
+import { Box, CircularProgress, Container, Stack } from "@mui/material";
 import { useSession } from "next-auth/react";
 import { useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import Text from "../atoms/text";
-import { trpc } from "@/app/_trpc/client";
-import { IItinerary } from "@/constants/types/itinerary";
+import colorsConst from "@/constants/pages/colors.json";
 
 const SavedTripsPage = () => {
   const { data: session, status } = useSession();
@@ -17,14 +24,18 @@ const SavedTripsPage = () => {
   const router = useRouter();
   const t = useTranslations("savedTrips");
 
-  const [savedItineraries, setSavedItineraries] = useState<IItinerary[]>([]);
+  const [savedItineraries, setSavedItineraries] = useState<
+    Record<string, IItinerary>[]
+  >([]);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
 
   const margin = 5;
   const spacing = 2;
 
-  const getUserSavedItineraries = trpc.user.getUserSavedItineraries.useQuery({
-    email: session?.user.email!,
-  });
+  const getUserSavedItineraries =
+    trpc.user.getUserSavedItinerariesAndIds.useQuery({
+      email: session?.user.email!,
+    });
 
   useEffect(() => {
     if (!isLoggedIn) router.push("/protected");
@@ -33,12 +44,89 @@ const SavedTripsPage = () => {
   useEffect(() => {
     if (getUserSavedItineraries.data) {
       setSavedItineraries(
-        getUserSavedItineraries.data as unknown as IItinerary[],
+        getUserSavedItineraries.data as unknown as Record<string, IItinerary>[],
       );
+      setIsLoading(false);
     }
   }, [getUserSavedItineraries.data]);
 
-  const itinerariesSection = () => {};
+  const itinerariesSection = () => {
+    const border = `2px solid ${colorsConst.palette.secondary.main}`;
+    const borderRadius = "20px";
+    const numOfItineraryCards = savedItineraries.length;
+    const margin = "16px";
+    const spacing = 2;
+    const padding = 5;
+    const loadingAnimationSize = 24;
+
+    const label = () => {
+      return (
+        <Text
+          text={t("plannedTripsDescription") + ":"}
+          variant={TypographyVariant.h5}
+          bold={false}
+        />
+      );
+    };
+
+    const noItineraries = () => {
+      return (
+        <Text
+          text={t("noItineraries")}
+          variant={TypographyVariant.h6}
+          bold={false}
+        />
+      );
+    };
+
+    return (
+      <Box
+        sx={{
+          border,
+          borderRadius,
+          padding,
+          width: itineraryCardWidth + padding,
+        }}
+      >
+        {isLoading ? (
+          <Box display="flex" justifyContent="center">
+            <CircularProgress size={loadingAnimationSize} />
+          </Box>
+        ) : savedItineraries.length === 0 ? (
+          noItineraries()
+        ) : (
+          <Stack direction="column" spacing={spacing}>
+            {label()}
+            <Box
+              sx={{
+                position: "relative",
+                height:
+                  itineraryCardHeight +
+                  (numOfItineraryCards - 1) * itineraryCardOverlapOffset,
+                marginBottom: margin,
+              }}
+            >
+              {savedItineraries.map((record, index) => {
+                const itineraryId = Object.keys(record)[0];
+                const itinerary = record[itineraryId];
+
+                return (
+                  <ItineraryCard
+                    key={itineraryId}
+                    title={getItinerarySummaryText(itinerary)}
+                    pictureUrl={itinerary.itinerary[0].events[0].photo}
+                    itineraryId={itineraryId}
+                    numOfCards={numOfItineraryCards}
+                    index={index}
+                  />
+                );
+              })}
+            </Box>
+          </Stack>
+        )}
+      </Box>
+    );
+  };
 
   const calendarTodoSection = () => {
     const calendar = () => {};
@@ -47,7 +135,7 @@ const SavedTripsPage = () => {
   };
 
   return (
-    <Container maxWidth="md">
+    <Container maxWidth="lg">
       <Stack
         display="flex"
         direction="column"
@@ -60,7 +148,9 @@ const SavedTripsPage = () => {
           variant={TypographyVariant.h2}
           bold={true}
         />
-        <Stack direction="row" spacing={spacing}></Stack>
+        <Stack direction="row" spacing={spacing}>
+          {itinerariesSection()}
+        </Stack>
       </Stack>
     </Container>
   );

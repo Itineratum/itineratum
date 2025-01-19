@@ -57,7 +57,7 @@
         "numTravellers": "Number of people travelling",
         "adults": "Adults",
         "adultsErrorMessage": "Please enter a value of at least 1.",
-        "children": "Children (18 & below)",
+        "children": "Children (17 & below)",
         "childrenErrorMessage": "Please enter a value of at least 0."
       },
       "step3": {
@@ -108,9 +108,12 @@
     }
   },
   "savedTrips": {
-    "welcome": "Welcome"
+    "welcome": "Welcome",
+    "plannedTripsDescription": "So far you've planned trips for",
+    "noItineraries": "You have no saved itineraries, generate one now!"
   },
   "itinerary": {
+    "back": "Back to Saved Trips",
     "noItinerary": "No itinerary found!",
     "budgetCap": "Budget Cap",
     "minPrice": "Min Price",
