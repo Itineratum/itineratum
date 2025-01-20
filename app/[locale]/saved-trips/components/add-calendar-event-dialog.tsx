@@ -1,6 +1,8 @@
 import { trpc } from "@/app/_trpc/client";
 import Text from "@/components/atoms/text";
+import Alert from "@/components/molecules/alert";
 import TextInputField from "@/components/molecules/text-input-field";
+import { AlertType } from "@/constants/enums/alertType";
 import { TypographyVariant } from "@/constants/enums/theme";
 import colorsConst from "@/constants/pages/colors.json";
 import { CalendarEvent } from "@/constants/types/calendarEvent";
@@ -43,6 +45,7 @@ const AddCalendarEventDialog = ({
 
   const [isAddingCalendarEvent, setIsAddingCalendarEvent] =
     useState<boolean>(false);
+  const [showAlert, setShowAlert] = useState<boolean>(false);
 
   const spacing = 4;
 
@@ -234,7 +237,7 @@ const AddCalendarEventDialog = ({
       };
       await addUserCalendarEvent.mutateAsync(data);
       setIsAddingCalendarEvent(false);
-      setOpen(false);
+      setShowAlert(true);
       utils.user.invalidate();
     };
 
@@ -287,6 +290,12 @@ const AddCalendarEventDialog = ({
           {startDateField()}
           {endDateField()}
           {addEventButton()}
+          <Alert
+            showAlert={showAlert}
+            setShowAlert={setShowAlert}
+            alertText={t("calendarEventAdded")}
+            alertType={AlertType.success}
+          />
         </Stack>
       </DialogContent>
     </Dialog>

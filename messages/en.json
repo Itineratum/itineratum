@@ -124,7 +124,8 @@
       "endDateError": "End Date is required!",
       "endDateValidationError": "End Date must be after Start Date!",
       "addCalendarEvent": "Add Calendar Event",
-      "addingCalendarEvent": "Adding Calendar Event"
+      "addingCalendarEvent": "Adding Calendar Event",
+      "calendarEventAdded": "Your calendar event has been added!"
     },
     "userCalendarEventDialog": {
       "startDate": "Start Date",
