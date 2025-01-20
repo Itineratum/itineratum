@@ -149,3 +149,13 @@ export const getUserSavedItinerariesAndIdsSchema = {
   input: z.object({ email: z.string() }),
   output: z.any(),
 };
+
+export const addUserCalendarEventSchema = {
+  input: z.object({ email: z.string(), calendarEvent: z.any() }),
+  output: z.void(),
+};
+
+export const getUserCalendarEventsSchema = {
+  input: z.object({ email: z.string() }),
+  output: z.any(),
+};

@@ -56,6 +56,7 @@ const userSchema = new Schema<IUser>(
     },
     generated_itineraries: { type: [String], required: true },
     todo_list: { type: [Object], required: false },
+    calendar_events: { type: [Object], required: true },
   },
   { collection: constDbCollections.users },
 );
@@ -75,6 +76,7 @@ export const initialUser = (
     language: "en",
     currency: "sgd",
     generated_itineraries: [],
+    calendar_events: [],
   };
 };
 

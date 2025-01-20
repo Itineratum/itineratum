@@ -2,12 +2,15 @@ import {
   AccountNotificationsField,
   AccountNotificationsFieldType,
 } from "@/constants/enums/accountNotifications";
+import { CalendarEvent } from "@/constants/types/calendarEvent";
+import { IItinerary } from "@/constants/types/itinerary";
 import {
   sendAccountDeletedEmail,
   sendAccountPasswordChangedEmail,
   sendNewsletterSubscribedEmail,
   sendSignUpVerificationEmail,
 } from "@/lib/nodeMailer";
+import { retrieveItinerary } from "@/services/database/itinerary";
 import {
   addEmailToNewsletter,
   removeEmailFromNewsletter,
@@ -16,7 +19,9 @@ import {
   credentialsLogIn,
   credentialsSignUp,
   deleteUser,
+  insertUserCalendarEvent,
   retrieveCurrencyLanguage,
+  retrieveUserCalendarEvents,
   retrieveUserDetails,
   retrieveUserSavedItineraryIds,
   saveUserItinerary,
@@ -30,10 +35,12 @@ import {
 import { TRPCError } from "@trpc/server";
 import bcrypt from "bcrypt";
 import {
+  addUserCalendarEventSchema,
   changeUserPasswordSchema,
   deleteUserAccountSchema,
   generateVerificationCodeSchema,
   getUserAccountDetailsSchema,
+  getUserCalendarEventsSchema,
   getUserCurrencyLanguageSchema,
   getUserNotificationsSettingsSchema,
   getUserSavedItinerariesAndIdsSchema,
@@ -48,8 +55,6 @@ import {
   verifyVerificationCodeSchema,
 } from "../schemas/user";
 import { privateProcedure, publicProcedure, router } from "../trpc";
-import { IItinerary } from "@/constants/types/itinerary";
-import { retrieveItinerary } from "@/services/database/itinerary";
 
 export const userRouter = router({
   generateVerificationCode: publicProcedure
@@ -431,6 +436,42 @@ export const userRouter = router({
       }
 
       return itineraries;
+    }),
+  addUserCalendarEvent: publicProcedure
+    .input(addUserCalendarEventSchema.input)
+    .output(addUserCalendarEventSchema.output)
+    .mutation(async (data) => {
+      const email = data.input.email;
+      const calendarEvent: CalendarEvent = data.input
+        .calendarEvent as CalendarEvent;
+      const insertUserCalendarEventRes = await insertUserCalendarEvent(
+        email,
+        calendarEvent,
+      );
+
+      if (!insertUserCalendarEventRes.success) {
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message: insertUserCalendarEventRes.error,
+        });
+      }
+    }),
+  getUserCalendarEvents: publicProcedure
+    .input(getUserCalendarEventsSchema.input)
+    .output(getUserCalendarEventsSchema.output)
+    .query(async (data) => {
+      const email = data.input.email;
+      const retrieveUserCalendarEventsRes =
+        await retrieveUserCalendarEvents(email);
+
+      if (!retrieveUserCalendarEventsRes.success) {
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message: retrieveUserCalendarEventsRes.error,
+        });
+      }
+
+      return retrieveUserCalendarEventsRes.data;
     }),
 });
 

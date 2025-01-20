@@ -1,5 +1,6 @@
 import { AuthService } from "@/constants/enums/authService";
 import { SignInError } from "@/constants/errors/signIn";
+import { CalendarEvent } from "@/constants/types/calendarEvent";
 import { connectToDatabase } from "@/lib/db";
 import { deleteImage } from "@/lib/uploadThing";
 import User, { initialUser } from "@/models/User";
@@ -412,6 +413,75 @@ export const saveUserItinerary = async (email: string, itineraryId: string) => {
       return { success: true };
     } else {
       return { success: false, error: "Save itinerary to user failed" };
+    }
+  } catch (error) {
+    console.error(error);
+    throw error;
+  } finally {
+    // await disconnectFromDatabase();
+  }
+};
+
+export const insertUserCalendarEvent = async (
+  email: string,
+  calendarEvent: CalendarEvent,
+) => {
+  try {
+    await connectToDatabase();
+    const user = await User.findOne({ email });
+
+    if (!user) {
+      return {
+        success: false,
+        error: "User not found!",
+      };
+    }
+
+    const update = {
+      $push: {
+        calendar_events: calendarEvent,
+      },
+    };
+
+    const result = await User.updateOne({ email }, update);
+
+    if (result.acknowledged) {
+      return { success: true };
+    } else {
+      return { success: false, error: "Insert user calendar event failed" };
+    }
+  } catch (error) {
+    console.error(error);
+    throw error;
+  } finally {
+    // await disconnectFromDatabase();
+  }
+};
+
+export const retrieveUserCalendarEvents = async (email: string) => {
+  try {
+    await connectToDatabase();
+    const user = await User.findOne({ email });
+
+    if (!user) {
+      return {
+        success: false,
+        error: "User not found!",
+      };
+    }
+
+    const calendarEvents = user.calendar_events;
+
+    if (calendarEvents) {
+      return {
+        success: true,
+        data: calendarEvents,
+      };
+    } else {
+      return {
+        success: false,
+        error: "Failed to retrieve user-saved itineraries!",
+      };
     }
   } catch (error) {
     console.error(error);

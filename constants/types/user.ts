@@ -1,6 +1,7 @@
 import { AuthService } from "../enums/authService";
 import { Currency } from "../enums/currency";
 import { Language } from "../enums/language";
+import { CalendarEvent } from "./calendarEvent";
 
 export interface IUser {
   first_name?: String | undefined;
@@ -21,6 +22,7 @@ export interface IUser {
   notifications: Notifications;
   generated_itineraries: string[];
   todo_list: ToDo[];
+  calendar_events: CalendarEvent[];
 }
 
 export interface Notifications {

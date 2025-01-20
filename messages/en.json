@@ -110,7 +110,26 @@
   "savedTrips": {
     "welcome": "Welcome",
     "plannedTripsDescription": "So far you've planned trips for",
-    "noItineraries": "You have no saved itineraries, generate one now!"
+    "noItineraries": "You have no saved itineraries, generate one now!",
+    "addCalendarEventDialog": {
+      "title": "Add Calendar Event",
+      "description": "Got a calendar event? Add it here for easy referencing with your itineraries.",
+      "name": "Calendar Event Name",
+      "nameDescription": "Enter the name of the calendar event",
+      "nameError": "Calendar event name is required!",
+      "isWholeDay": "Whole Day Event",
+      "startDate": "Start Date",
+      "startDateError": "Start Date is required!",
+      "endDate": "End Date",
+      "endDateError": "End Date is required!",
+      "endDateValidationError": "End Date must be after Start Date!",
+      "addCalendarEvent": "Add Calendar Event",
+      "addingCalendarEvent": "Adding Calendar Event"
+    },
+    "userCalendarEventDialog": {
+      "startDate": "Start Date",
+      "endDate": "End Date"
+    }
   },
   "itinerary": {
     "back": "Back to Saved Trips",

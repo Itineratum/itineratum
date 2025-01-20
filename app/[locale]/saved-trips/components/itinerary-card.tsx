@@ -17,12 +17,14 @@ const ItineraryCard = ({
   itineraryId,
   numOfCards,
   index,
+  selected,
 }: {
   title: string;
   pictureUrl: string;
   itineraryId: string;
   numOfCards: number;
   index: number;
+  selected: boolean;
 }) => {
   const router = useRouter();
 
@@ -35,7 +37,8 @@ const ItineraryCard = ({
     transform: "scale(1.1)",
     zIndex: numOfCards, // Bring the hovered card to the front
   };
-  const zIndex = numOfCards - index;
+  const transform = selected ? hoverSx.transform : "";
+  const zIndex = selected ? hoverSx.zIndex : numOfCards - index;
 
   const [imageSrc, setImageSrc] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
@@ -120,6 +123,7 @@ const ItineraryCard = ({
         top: `${index * overlapOffset}px`,
         zIndex,
         transition: `transform ${hoverAnimationDuration}`,
+        transform,
         "&:hover": hoverSx,
       }}
     >

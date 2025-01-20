@@ -1,5 +1,6 @@
 "use client";
 
+import AddCalendarEventDialog from "@/app/[locale]/saved-trips/components/add-calendar-event-dialog";
 import ItineraryCalendar from "@/app/[locale]/saved-trips/components/itinerary-calendar";
 import ItineraryCard, {
   itineraryCardHeight,
@@ -17,6 +18,8 @@ import { useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import Text from "../atoms/text";
+import { CalendarEvent } from "@/constants/types/calendarEvent";
+import UserCalendarEventDialog from "@/app/[locale]/saved-trips/components/user-calendar-event-dialog";
 
 const SavedTripsPage = () => {
   const { data: session, status } = useSession();
@@ -28,7 +31,15 @@ const SavedTripsPage = () => {
   const [savedItineraries, setSavedItineraries] = useState<
     Record<string, IItinerary>[]
   >([]);
+  const [userCalendarEvents, setUserCalendarEvents] = useState<CalendarEvent[]>(
+    [],
+  );
   const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [selectedItineraryId, setSelectedItineraryId] = useState<string | null>(
+    null,
+  );
+  const [showAddCalendarEventDialog, setShowAddCalendarEventDialog] =
+    useState<boolean>(false);
 
   const margin = 5;
   const spacing = 2;
@@ -39,6 +50,9 @@ const SavedTripsPage = () => {
     trpc.user.getUserSavedItinerariesAndIds.useQuery({
       email: session?.user.email!,
     });
+  const getUserCalendarEvents = trpc.user.getUserCalendarEvents.useQuery({
+    email: session?.user.email!,
+  });
 
   useEffect(() => {
     if (!isLoggedIn) router.push("/protected");
@@ -52,6 +66,12 @@ const SavedTripsPage = () => {
       setIsLoading(false);
     }
   }, [getUserSavedItineraries.data]);
+
+  useEffect(() => {
+    if (getUserCalendarEvents.data) {
+      setUserCalendarEvents(getUserCalendarEvents.data);
+    }
+  }, [getUserCalendarEvents.data]);
 
   const itinerariesSection = () => {
     const border = `2px solid ${colorsConst.palette.secondary.main}`;
@@ -129,6 +149,7 @@ const SavedTripsPage = () => {
                       itineraryId={itineraryId}
                       numOfCards={numOfItineraryCards}
                       index={index}
+                      selected={selectedItineraryId === itineraryId}
                     />
                   );
                 })}
@@ -156,7 +177,12 @@ const SavedTripsPage = () => {
             padding,
           }}
         >
-          <ItineraryCalendar />
+          <ItineraryCalendar
+            savedItineraries={savedItineraries}
+            setSelectedItineraryId={setSelectedItineraryId}
+            setShowAddCalendarEventDialog={setShowAddCalendarEventDialog}
+            userCalendarEvents={userCalendarEvents}
+          />
         </Box>
       );
     };
@@ -191,6 +217,10 @@ const SavedTripsPage = () => {
           {calendarTodoSection()}
         </Grid>
       </Stack>
+      <AddCalendarEventDialog
+        open={showAddCalendarEventDialog}
+        setOpen={setShowAddCalendarEventDialog}
+      />
     </Container>
   );
 };
