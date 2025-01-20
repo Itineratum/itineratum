@@ -7,9 +7,9 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import endpointsConst from "@/constants/pages/endpoints.json";
 
-export const itineraryCardHeight = 300;
-export const itineraryCardWidth = 575;
-export const itineraryCardOverlapOffset = 250;
+export const itineraryCardHeight = 230;
+export const itineraryCardWidth = 420;
+export const itineraryCardOverlapOffset = 200;
 
 const ItineraryCard = ({
   title,

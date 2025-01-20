@@ -1,5 +1,6 @@
 "use client";
 
+import ItineraryCalendar from "@/app/[locale]/saved-trips/components/itinerary-calendar";
 import ItineraryCard, {
   itineraryCardHeight,
   itineraryCardOverlapOffset,
@@ -7,15 +8,15 @@ import ItineraryCard, {
 } from "@/app/[locale]/saved-trips/components/itinerary-card";
 import { trpc } from "@/app/_trpc/client";
 import { TypographyVariant } from "@/constants/enums/theme";
+import colorsConst from "@/constants/pages/colors.json";
 import { IItinerary } from "@/constants/types/itinerary";
 import { getItinerarySummaryText } from "@/lib/pythonBackend/utils";
-import { Box, CircularProgress, Container, Stack } from "@mui/material";
+import { Box, CircularProgress, Container, Grid, Stack } from "@mui/material";
 import { useSession } from "next-auth/react";
 import { useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import Text from "../atoms/text";
-import colorsConst from "@/constants/pages/colors.json";
 
 const SavedTripsPage = () => {
   const { data: session, status } = useSession();
@@ -31,6 +32,8 @@ const SavedTripsPage = () => {
 
   const margin = 5;
   const spacing = 2;
+  const itinerariesSectionGrid = 5;
+  const calendarToDoSectionGrid = 12 - itinerariesSectionGrid;
 
   const getUserSavedItineraries =
     trpc.user.getUserSavedItinerariesAndIds.useQuery({
@@ -56,14 +59,14 @@ const SavedTripsPage = () => {
     const numOfItineraryCards = savedItineraries.length;
     const margin = "16px";
     const spacing = 2;
-    const padding = 5;
+    const padding = 2;
     const loadingAnimationSize = 24;
 
     const label = () => {
       return (
         <Text
           text={t("plannedTripsDescription") + ":"}
-          variant={TypographyVariant.h5}
+          variant={TypographyVariant.h6}
           bold={false}
         />
       );
@@ -80,58 +83,93 @@ const SavedTripsPage = () => {
     };
 
     return (
-      <Box
-        sx={{
-          border,
-          borderRadius,
-          padding,
-          width: itineraryCardWidth + padding,
-        }}
-      >
-        {isLoading ? (
-          <Box display="flex" justifyContent="center">
-            <CircularProgress size={loadingAnimationSize} />
-          </Box>
-        ) : savedItineraries.length === 0 ? (
-          noItineraries()
-        ) : (
-          <Stack direction="column" spacing={spacing}>
-            {label()}
-            <Box
-              sx={{
-                position: "relative",
-                height:
-                  itineraryCardHeight +
-                  (numOfItineraryCards - 1) * itineraryCardOverlapOffset,
-                marginBottom: margin,
-              }}
-            >
-              {savedItineraries.map((record, index) => {
-                const itineraryId = Object.keys(record)[0];
-                const itinerary = record[itineraryId];
-
-                return (
-                  <ItineraryCard
-                    key={itineraryId}
-                    title={getItinerarySummaryText(itinerary)}
-                    pictureUrl={itinerary.itinerary[0].events[0].photo}
-                    itineraryId={itineraryId}
-                    numOfCards={numOfItineraryCards}
-                    index={index}
-                  />
-                );
-              })}
+      <Grid item xs={itinerariesSectionGrid}>
+        <Box
+          sx={{
+            border,
+            borderRadius,
+            padding,
+            paddingBottom: padding + 3,
+            width: itineraryCardWidth,
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center", // Centers the ItineraryCards within the section
+          }}
+        >
+          {isLoading ? (
+            <Box display="flex" justifyContent="center">
+              <CircularProgress size={loadingAnimationSize} />
             </Box>
-          </Stack>
-        )}
-      </Box>
+          ) : savedItineraries.length === 0 ? (
+            noItineraries()
+          ) : (
+            <Stack direction="column" spacing={spacing} alignItems="center">
+              {label()}
+              <Box
+                sx={{
+                  position: "relative",
+                  height:
+                    itineraryCardHeight +
+                    (numOfItineraryCards - 1) * itineraryCardOverlapOffset,
+                  marginBottom: margin,
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "center", // Ensures cards are centered
+                }}
+              >
+                {savedItineraries.map((record, index) => {
+                  const itineraryId = Object.keys(record)[0];
+                  const itinerary = record[itineraryId];
+
+                  return (
+                    <ItineraryCard
+                      key={itineraryId}
+                      title={getItinerarySummaryText(itinerary)}
+                      pictureUrl={itinerary.itinerary[0].events[0].photo}
+                      itineraryId={itineraryId}
+                      numOfCards={numOfItineraryCards}
+                      index={index}
+                    />
+                  );
+                })}
+              </Box>
+            </Stack>
+          )}
+        </Box>
+      </Grid>
     );
   };
 
   const calendarTodoSection = () => {
-    const calendar = () => {};
+    const spacing = 2;
+
+    const calendar = () => {
+      const border = `2px solid black`;
+      const borderRadius = "20px";
+      const padding = "24px";
+
+      return (
+        <Box
+          sx={{
+            border,
+            borderRadius,
+            padding,
+          }}
+        >
+          <ItineraryCalendar />
+        </Box>
+      );
+    };
 
     const todoList = () => {};
+
+    return (
+      <Grid item xs={calendarToDoSectionGrid}>
+        <Stack direction="column" spacing={spacing}>
+          {calendar()}
+        </Stack>
+      </Grid>
+    );
   };
 
   return (
@@ -148,9 +186,10 @@ const SavedTripsPage = () => {
           variant={TypographyVariant.h2}
           bold={true}
         />
-        <Stack direction="row" spacing={spacing}>
+        <Grid container spacing={spacing}>
           {itinerariesSection()}
-        </Stack>
+          {calendarTodoSection()}
+        </Grid>
       </Stack>
     </Container>
   );
