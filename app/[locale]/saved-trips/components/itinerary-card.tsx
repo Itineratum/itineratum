@@ -82,7 +82,7 @@ const ItineraryCard = ({
         >
           <Text
             text={title.toUpperCase()}
-            variant={TypographyVariant.h5}
+            variant={TypographyVariant.h6}
             bold={false}
           />
         </Box>
