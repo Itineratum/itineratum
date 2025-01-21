@@ -111,13 +111,14 @@
     "welcome": "Welcome",
     "plannedTripsDescription": "So far you've planned trips for",
     "noItineraries": "You have no saved itineraries, generate one now!",
+    "toDo": "To do",
+    "noToDos": "No to-dos found!",
     "addCalendarEventDialog": {
       "title": "Add Calendar Event",
       "description": "Got a calendar event? Add it here for easy referencing with your itineraries.",
       "name": "Calendar Event Name",
       "nameDescription": "Enter the name of the calendar event",
       "nameError": "Calendar event name is required!",
-      "isWholeDay": "Whole Day Event",
       "startDate": "Start Date",
       "startDateError": "Start Date is required!",
       "endDate": "End Date",
@@ -130,6 +131,16 @@
     "userCalendarEventDialog": {
       "startDate": "Start Date",
       "endDate": "End Date"
+    },
+    "addToDoDialog": {
+      "title": "Add To Do",
+      "description": "Got a task/to do? Add it here for easy referencing with your itineraries.",
+      "toDo": "To Do",
+      "toDoDescription": "Enter the task you need to do",
+      "toDoError": "To do is required!",
+      "addToDo": "Add To Do",
+      "addingToDo": "Adding To Do",
+      "toDoAdded": "Your to do has been added!"
     }
   },
   "itinerary": {

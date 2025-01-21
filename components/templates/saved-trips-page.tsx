@@ -1,15 +1,18 @@
 "use client";
 
 import AddCalendarEventDialog from "@/app/[locale]/saved-trips/components/add-calendar-event-dialog";
+import AddToDoDialog from "@/app/[locale]/saved-trips/components/add-to-do-dialog";
 import ItineraryCalendar from "@/app/[locale]/saved-trips/components/itinerary-calendar";
 import ItineraryCard, {
   itineraryCardHeight,
   itineraryCardOverlapOffset,
   itineraryCardWidth,
 } from "@/app/[locale]/saved-trips/components/itinerary-card";
+import ToDoList from "@/app/[locale]/saved-trips/components/todo-list";
 import { trpc } from "@/app/_trpc/client";
 import { TypographyVariant } from "@/constants/enums/theme";
 import colorsConst from "@/constants/pages/colors.json";
+import { CalendarEvent } from "@/constants/types/calendarEvent";
 import { IItinerary } from "@/constants/types/itinerary";
 import { getItinerarySummaryText } from "@/lib/pythonBackend/utils";
 import { Box, CircularProgress, Container, Grid, Stack } from "@mui/material";
@@ -18,8 +21,6 @@ import { useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import Text from "../atoms/text";
-import { CalendarEvent } from "@/constants/types/calendarEvent";
-import UserCalendarEventDialog from "@/app/[locale]/saved-trips/components/user-calendar-event-dialog";
 
 const SavedTripsPage = () => {
   const { data: session, status } = useSession();
@@ -40,6 +41,7 @@ const SavedTripsPage = () => {
   );
   const [showAddCalendarEventDialog, setShowAddCalendarEventDialog] =
     useState<boolean>(false);
+  const [showAddToDoDialog, setShowAddToDoDialog] = useState<boolean>(false);
 
   const margin = 5;
   const spacing = 2;
@@ -163,12 +165,11 @@ const SavedTripsPage = () => {
 
   const calendarTodoSection = () => {
     const spacing = 2;
+    const border = `2px solid black`;
+    const borderRadius = "20px";
+    const padding = "24px";
 
     const calendar = () => {
-      const border = `2px solid black`;
-      const borderRadius = "20px";
-      const padding = "24px";
-
       return (
         <Box
           sx={{
@@ -187,12 +188,26 @@ const SavedTripsPage = () => {
       );
     };
 
-    const todoList = () => {};
+    const toDoList = () => {
+      return (
+        <Box
+          sx={{
+            border,
+            borderRadius,
+            padding,
+            backgroundColor: colorsConst.palette.secondary.main,
+          }}
+        >
+          <ToDoList setShowAddToDoDialog={setShowAddToDoDialog} />
+        </Box>
+      );
+    };
 
     return (
       <Grid item xs={calendarToDoSectionGrid}>
         <Stack direction="column" spacing={spacing}>
           {calendar()}
+          {toDoList()}
         </Stack>
       </Grid>
     );
@@ -221,6 +236,7 @@ const SavedTripsPage = () => {
         open={showAddCalendarEventDialog}
         setOpen={setShowAddCalendarEventDialog}
       />
+      <AddToDoDialog open={showAddToDoDialog} setOpen={setShowAddToDoDialog} />
     </Container>
   );
 };

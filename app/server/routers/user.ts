@@ -4,6 +4,7 @@ import {
 } from "@/constants/enums/accountNotifications";
 import { CalendarEvent } from "@/constants/types/calendarEvent";
 import { IItinerary } from "@/constants/types/itinerary";
+import { ToDo } from "@/constants/types/toDo";
 import {
   sendAccountDeletedEmail,
   sendAccountPasswordChangedEmail,
@@ -20,10 +21,13 @@ import {
   credentialsSignUp,
   deleteUser,
   insertUserCalendarEvent,
+  insertUserToDo,
+  modifyUserToDo,
   retrieveCurrencyLanguage,
   retrieveUserCalendarEvents,
   retrieveUserDetails,
   retrieveUserSavedItineraryIds,
+  retrieveUserToDoList,
   saveUserItinerary,
   updateUser,
   verifyUserPassword,
@@ -35,8 +39,10 @@ import {
 import { TRPCError } from "@trpc/server";
 import bcrypt from "bcrypt";
 import {
+  addToUserToDoListSchema,
   addUserCalendarEventSchema,
   changeUserPasswordSchema,
+  checkUserToDoSchema,
   deleteUserAccountSchema,
   generateVerificationCodeSchema,
   getUserAccountDetailsSchema,
@@ -45,6 +51,7 @@ import {
   getUserNotificationsSettingsSchema,
   getUserSavedItinerariesAndIdsSchema,
   getUserSavedItineraryIdsSchema,
+  getUserToDoListSchema,
   loginViaEmailSchema,
   loginViaOtpSchema,
   saveItineraryToUserSchema,
@@ -442,8 +449,7 @@ export const userRouter = router({
     .output(addUserCalendarEventSchema.output)
     .mutation(async (data) => {
       const email = data.input.email;
-      const calendarEvent: CalendarEvent = data.input
-        .calendarEvent as CalendarEvent;
+      const calendarEvent: CalendarEvent = data.input.calendarEvent;
       const insertUserCalendarEventRes = await insertUserCalendarEvent(
         email,
         calendarEvent,
@@ -472,6 +478,57 @@ export const userRouter = router({
       }
 
       return retrieveUserCalendarEventsRes.data;
+    }),
+  getUserToDoList: publicProcedure
+    .input(getUserToDoListSchema.input)
+    .output(getUserToDoListSchema.output)
+    .query(async (data) => {
+      const email = data.input.email;
+      const retrieveUserToDoListRes = await retrieveUserToDoList(email);
+
+      if (!retrieveUserToDoListRes.success) {
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message: retrieveUserToDoListRes.error,
+        });
+      }
+
+      return retrieveUserToDoListRes.data;
+    }),
+  addToUserToDoList: publicProcedure
+    .input(addToUserToDoListSchema.input)
+    .output(addToUserToDoListSchema.output)
+    .mutation(async (data) => {
+      const email = data.input.email;
+      const toDo: ToDo = data.input.toDo;
+      const insertUserToDoRes = await insertUserToDo(email, toDo);
+
+      if (!insertUserToDoRes.success) {
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message: insertUserToDoRes.error,
+        });
+      }
+    }),
+  checkUserToDo: publicProcedure
+    .input(checkUserToDoSchema.input)
+    .output(checkUserToDoSchema.output)
+    .mutation(async (data) => {
+      const email = data.input.email;
+      const toDoIndex = data.input.toDoIndex;
+      const toDoIsComplete = data.input.toDoIsComplete;
+      const modifyUserToDoRes = await modifyUserToDo(
+        email,
+        toDoIndex,
+        toDoIsComplete,
+      );
+
+      if (!modifyUserToDoRes.success) {
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message: modifyUserToDoRes.error,
+        });
+      }
     }),
 });
 

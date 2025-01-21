@@ -1,6 +1,7 @@
 import { AuthService } from "@/constants/enums/authService";
 import { SignInError } from "@/constants/errors/signIn";
 import { CalendarEvent } from "@/constants/types/calendarEvent";
+import { ToDo } from "@/constants/types/toDo";
 import { connectToDatabase } from "@/lib/db";
 import { deleteImage } from "@/lib/uploadThing";
 import User, { initialUser } from "@/models/User";
@@ -122,6 +123,8 @@ export const credentialsSignUp = async (
         auth_service: AuthService.Credentials,
         account_created: Date.now(),
         generated_itineraries: [],
+        calendar_events: [],
+        todo_list: [],
       };
 
       if (existingUser && existingUser.is_deleted) {
@@ -480,8 +483,111 @@ export const retrieveUserCalendarEvents = async (email: string) => {
     } else {
       return {
         success: false,
-        error: "Failed to retrieve user-saved itineraries!",
+        error: "Failed to retrieve user calendar events!",
       };
+    }
+  } catch (error) {
+    console.error(error);
+    throw error;
+  } finally {
+    // await disconnectFromDatabase();
+  }
+};
+
+export const retrieveUserToDoList = async (email: string) => {
+  try {
+    await connectToDatabase();
+    const user = await User.findOne({ email });
+
+    if (!user) {
+      return {
+        success: false,
+        error: "User not found!",
+      };
+    }
+
+    const todoList = user.todo_list;
+
+    if (todoList) {
+      return {
+        success: true,
+        data: todoList,
+      };
+    } else {
+      return {
+        success: false,
+        error: "Failed to retrieve user to-do list!",
+      };
+    }
+  } catch (error) {
+    console.error(error);
+    throw error;
+  } finally {
+    // await disconnectFromDatabase();
+  }
+};
+
+export const insertUserToDo = async (email: string, toDo: ToDo) => {
+  try {
+    await connectToDatabase();
+    const user = await User.findOne({ email });
+
+    if (!user) {
+      return {
+        success: false,
+        error: "User not found!",
+      };
+    }
+
+    const update = {
+      $push: {
+        todo_list: toDo,
+      },
+    };
+
+    const result = await User.updateOne({ email }, update);
+
+    if (result.acknowledged) {
+      return { success: true };
+    } else {
+      return { success: false, error: "Insert user to do failed" };
+    }
+  } catch (error) {
+    console.error(error);
+    throw error;
+  } finally {
+    // await disconnectFromDatabase();
+  }
+};
+
+export const modifyUserToDo = async (
+  email: string,
+  toDoIndex: number,
+  toDoIsComplete: boolean,
+) => {
+  try {
+    await connectToDatabase();
+    const user = await User.findOne({ email });
+
+    if (!user) {
+      return {
+        success: false,
+        error: "User not found!",
+      };
+    }
+
+    const update = {
+      $set: {
+        [`todo_list.${toDoIndex}.isComplete`]: toDoIsComplete,
+      },
+    };
+
+    const result = await User.updateOne({ email }, update);
+
+    if (result.acknowledged) {
+      return { success: true };
+    } else {
+      return { success: false, error: "Modify user to do failed" };
     }
   } catch (error) {
     console.error(error);

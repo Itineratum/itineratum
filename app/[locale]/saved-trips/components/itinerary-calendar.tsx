@@ -14,6 +14,7 @@ import { Calendar, dayjsLocalizer, View, Views } from "react-big-calendar";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import AddIcon from "@mui/icons-material/Add";
 import UserCalendarEventDialog from "./user-calendar-event-dialog";
+import colorsConst from "@/constants/pages/colors.json";
 
 const ItineraryCalendar = ({
   savedItineraries,
@@ -95,7 +96,10 @@ const ItineraryCalendar = ({
     };
 
     return (
-      <IconButton onClick={handleOnClick}>
+      <IconButton
+        onClick={handleOnClick}
+        sx={{ color: colorsConst.palette.text.primary }}
+      >
         <AddIcon />
       </IconButton>
     );

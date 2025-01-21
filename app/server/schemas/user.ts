@@ -159,3 +159,22 @@ export const getUserCalendarEventsSchema = {
   input: z.object({ email: z.string() }),
   output: z.any(),
 };
+
+export const getUserToDoListSchema = {
+  input: z.object({ email: z.string() }),
+  output: z.any(),
+};
+
+export const addToUserToDoListSchema = {
+  input: z.object({ email: z.string(), toDo: z.any() }),
+  output: z.void(),
+};
+
+export const checkUserToDoSchema = {
+  input: z.object({
+    email: z.string(),
+    toDoIndex: z.number(),
+    toDoIsComplete: z.boolean(),
+  }),
+  output: z.void(),
+};

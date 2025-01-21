@@ -62,6 +62,7 @@ const AddCalendarEventDialog = ({
   const handleOnClose = () => {
     if (!isAddingCalendarEvent) {
       setOpen(false);
+      setShowAlert(false);
       reset({
         name: "",
         startDate: null as unknown as Dayjs,
