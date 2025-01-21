@@ -6,6 +6,7 @@ import { Country } from "@/constants/enums/country";
 import { Currency } from "@/constants/enums/currency";
 import { Language } from "@/constants/enums/language";
 import { CalendarEvent } from "@/constants/types/calendarEvent";
+import { ToDo } from "@/constants/types/toDo";
 import { IUser } from "@/constants/types/user";
 import mongoose, { models } from "mongoose";
 const { Schema } = mongoose;
@@ -15,6 +16,11 @@ const calendarEventSchema = new Schema<CalendarEvent>({
   start: Object,
   end: Object,
   itineraryId: Object,
+});
+
+const toDoSchema = new Schema<ToDo>({
+  name: String,
+  isComplete: Boolean,
 });
 
 const userSchema = new Schema<IUser>(
@@ -64,7 +70,7 @@ const userSchema = new Schema<IUser>(
     },
     generated_itineraries: { type: [String], required: true },
     todo_list: {
-      type: [Object],
+      type: [toDoSchema],
       required: true,
     },
     calendar_events: {

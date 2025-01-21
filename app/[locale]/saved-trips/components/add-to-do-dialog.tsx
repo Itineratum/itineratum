@@ -44,8 +44,8 @@ const AddToDoDialog = ({
 
   const spacing = 4;
 
-  const toDoId = "toDo";
-  const toDo = watch(toDoId);
+  const nameId = "name";
+  const name = watch(nameId);
 
   const addToUserToDoList = trpc.user.addToUserToDoList.useMutation();
   const utils = trpc.useUtils();
@@ -55,7 +55,7 @@ const AddToDoDialog = ({
       setOpen(false);
       setShowAlert(false);
       reset({
-        toDo: "",
+        name: "",
       });
     }
   };
@@ -98,12 +98,12 @@ const AddToDoDialog = ({
           color={colorsConst.palette.text.primary}
         />
         <TextInputField
-          name={toDoId}
+          name={nameId}
           label={t("toDoDescription")}
           control={control}
           errorMessage={t("toDoError")}
           errors={errors}
-          value={toDo}
+          value={name}
         />
       </Stack>
     );
@@ -114,16 +114,15 @@ const AddToDoDialog = ({
     const spacing = 2;
 
     const handleOnClick = async () => {
-      const toDoValid = await trigger(toDoId);
+      const toDoValid = await trigger(nameId);
 
       if (!toDoValid) return;
 
       setIsAddingToDo(true);
-      const newToDo: ToDo = {
-        toDo,
+      const newToDo = {
+        name: name,
         isComplete: false,
       };
-
       const data = {
         email: session?.user.email!,
         toDo: newToDo,

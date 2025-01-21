@@ -495,109 +495,6 @@ export const retrieveUserCalendarEvents = async (email: string) => {
   }
 };
 
-export const retrieveUserToDoList = async (email: string) => {
-  try {
-    await connectToDatabase();
-    const user = await User.findOne({ email });
-
-    if (!user) {
-      return {
-        success: false,
-        error: "User not found!",
-      };
-    }
-
-    const todoList = user.todo_list;
-
-    if (todoList) {
-      return {
-        success: true,
-        data: todoList,
-      };
-    } else {
-      return {
-        success: false,
-        error: "Failed to retrieve user to-do list!",
-      };
-    }
-  } catch (error) {
-    console.error(error);
-    throw error;
-  } finally {
-    // await disconnectFromDatabase();
-  }
-};
-
-export const insertUserToDo = async (email: string, toDo: ToDo) => {
-  try {
-    await connectToDatabase();
-    const user = await User.findOne({ email });
-
-    if (!user) {
-      return {
-        success: false,
-        error: "User not found!",
-      };
-    }
-
-    const update = {
-      $push: {
-        todo_list: toDo,
-      },
-    };
-
-    const result = await User.updateOne({ email }, update);
-
-    if (result.acknowledged) {
-      return { success: true };
-    } else {
-      return { success: false, error: "Insert user to do failed!" };
-    }
-  } catch (error) {
-    console.error(error);
-    throw error;
-  } finally {
-    // await disconnectFromDatabase();
-  }
-};
-
-export const updateUserToDo = async (
-  email: string,
-  toDoIndex: number,
-  toDoIsComplete: boolean,
-) => {
-  try {
-    await connectToDatabase();
-    const user = await User.findOne({ email });
-
-    if (!user) {
-      return {
-        success: false,
-        error: "User not found!",
-      };
-    }
-
-    const update = {
-      $set: {
-        [`todo_list.${toDoIndex}.isComplete`]: toDoIsComplete,
-      },
-    };
-
-    const result = await User.updateOne({ email }, update);
-
-    if (result.acknowledged) {
-      return { success: true };
-    } else {
-      return { success: false, error: "Modify user to do failed!" };
-    }
-  } catch (error) {
-    console.error(error);
-    throw error;
-  } finally {
-    // await disconnectFromDatabase();
-  }
-};
-
 export const updateUserCalendarEvent = async (
   email: string,
   modifiedCalendarEvent: CalendarEvent,
@@ -671,6 +568,148 @@ export const removeUserCalendarEvent = async (
       return { success: true };
     } else {
       return { success: false, error: "Remove user calendar event failed!" };
+    }
+  } catch (error) {
+    console.error(error);
+    throw error;
+  } finally {
+    // await disconnectFromDatabase();
+  }
+};
+
+export const retrieveUserToDoList = async (email: string) => {
+  try {
+    await connectToDatabase();
+    const user = await User.findOne({ email });
+
+    if (!user) {
+      return {
+        success: false,
+        error: "User not found!",
+      };
+    }
+
+    const todoList = user.todo_list;
+
+    if (todoList) {
+      return {
+        success: true,
+        data: todoList,
+      };
+    } else {
+      return {
+        success: false,
+        error: "Failed to retrieve user to-do list!",
+      };
+    }
+  } catch (error) {
+    console.error(error);
+    throw error;
+  } finally {
+    // await disconnectFromDatabase();
+  }
+};
+
+export const insertUserToDo = async (email: string, toDo: any) => {
+  try {
+    await connectToDatabase();
+    const user = await User.findOne({ email });
+
+    if (!user) {
+      return {
+        success: false,
+        error: "User not found!",
+      };
+    }
+
+    const update = {
+      $push: {
+        todo_list: toDo,
+      },
+    };
+
+    const result = await User.updateOne({ email }, update);
+
+    if (result.acknowledged) {
+      return { success: true };
+    } else {
+      return { success: false, error: "Insert user to do failed!" };
+    }
+  } catch (error) {
+    console.error(error);
+    throw error;
+  } finally {
+    // await disconnectFromDatabase();
+  }
+};
+
+export const updateUserToDo = async (email: string, modifiedUserToDo: ToDo) => {
+  try {
+    await connectToDatabase();
+    const user = await User.findOne({ email });
+
+    if (!user) {
+      return {
+        success: false,
+        error: "User not found!",
+      };
+    }
+
+    const update = {
+      $set: {
+        "todo_list.$[element]": modifiedUserToDo,
+      },
+    };
+    // credits to https://www.mongodb.com/community/forums/t/updating-nested-array-object-with-specific-condition/228238/3
+    const arrayFilters = {
+      arrayFilters: [
+        {
+          "element._id": { $eq: modifiedUserToDo._id },
+        },
+      ],
+    };
+
+    const result = await User.updateOne({ email }, update, arrayFilters);
+
+    if (result.modifiedCount > 0) {
+      return { success: true };
+    } else {
+      return { success: false, error: "Modify user to do failed!" };
+    }
+  } catch (error) {
+    console.error(error);
+    throw error;
+  } finally {
+    // await disconnectFromDatabase();
+  }
+};
+
+export const removeUserToDo = async (email: string, toDoId: ObjectId) => {
+  try {
+    await connectToDatabase();
+    const user = await User.findOne({ email });
+
+    if (!user) {
+      return {
+        success: false,
+        error: "User not found!",
+      };
+    }
+
+    const update = {
+      $pull: {
+        todo_list: {
+          _id: toDoId,
+        },
+      },
+    };
+
+    const result = await User.updateOne({ email }, update);
+
+    if (result.acknowledged) {
+      return { success: true };
+    } else {
+      return { success: false, error: "Remove user to do failed!" };
     }
   } catch (error) {
     console.error(error);

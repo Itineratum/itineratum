@@ -154,6 +154,10 @@
       "addToDo": "Add To Do",
       "addingToDo": "Adding To Do",
       "toDoAdded": "Your to do has been added!"
+    },
+    "toDoItem": {
+      "nameDescription": "Enter the task you need to do",
+      "nameError": "To do is required!"
     }
   },
   "itinerary": {

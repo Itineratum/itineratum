@@ -180,11 +180,15 @@ export const addToUserToDoListSchema = {
   output: z.void(),
 };
 
-export const checkUserToDoSchema = {
+export const modifyUserToDoSchema = {
   input: z.object({
     email: z.string(),
-    toDoIndex: z.number(),
-    toDoIsComplete: z.boolean(),
+    modifiedToDo: z.any(),
   }),
+  output: z.void(),
+};
+
+export const deleteUserToDoSchema = {
+  input: z.object({ email: z.string(), toDoId: z.any() }),
   output: z.void(),
 };

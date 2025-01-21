@@ -1,4 +1,7 @@
+import { ObjectId } from "mongodb";
+
 export interface ToDo {
-  toDo: string;
+  name: string;
   isComplete: boolean;
+  _id: ObjectId | null;
 }

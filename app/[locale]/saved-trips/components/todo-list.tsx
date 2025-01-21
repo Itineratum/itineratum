@@ -1,27 +1,15 @@
 import { trpc } from "@/app/_trpc/client";
 import Text from "@/components/atoms/text";
-import {
-  TypographyTextDecoration,
-  TypographyVariant,
-} from "@/constants/enums/theme";
+import { TypographyVariant } from "@/constants/enums/theme";
 import colorsConst from "@/constants/pages/colors.json";
 import { ToDo } from "@/constants/types/toDo";
 import AddIcon from "@mui/icons-material/Add";
-import {
-  Box,
-  Checkbox,
-  CircularProgress,
-  IconButton,
-  List,
-  ListItem,
-  ListItemButton,
-  ListItemIcon,
-  ListItemText,
-  Stack,
-} from "@mui/material";
+import { Box, CircularProgress, IconButton, List, Stack } from "@mui/material";
+import { ObjectId } from "mongodb";
 import { useSession } from "next-auth/react";
 import { useTranslations } from "next-intl";
-import React, { Dispatch, SetStateAction, useEffect, useState } from "react";
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
+import ToDoItem from "./todo-item";
 
 const ToDoList = ({
   setShowAddToDoDialog,
@@ -33,7 +21,7 @@ const ToDoList = ({
   const isLoggedIn = status === "authenticated";
 
   const [toDos, setToDos] = useState<ToDo[]>([]);
-  const [checkedToDoIndices, setCheckedToDoIndices] = useState<number[]>([0]);
+  const [checkedToDoIds, setCheckedToDoIds] = useState<ObjectId[]>([]);
 
   const spacing = 2;
   const maxHeight = "592px";
@@ -44,41 +32,17 @@ const ToDoList = ({
     },
     { enabled: isLoggedIn },
   );
-  const checkUserToDo = trpc.user.checkUserToDo.useMutation();
 
   useEffect(() => {
-    if (getUserToDoList.data && getUserToDoList.data.length > 0) {
+    if (getUserToDoList.data) {
       setToDos(getUserToDoList.data);
-      setCheckedToDoIndices(
+      setCheckedToDoIds(
         getUserToDoList.data
-          .map((toDo: ToDo, index: number) => (toDo.isComplete ? index : -1))
-          .filter((index: number) => index !== -1),
+          .filter((toDo: ToDo) => toDo.isComplete)
+          .map((toDo: ToDo) => toDo._id),
       );
     }
   }, [getUserToDoList.data]);
-
-  const handleOnChange = async (
-    event: React.ChangeEvent<HTMLInputElement>,
-    index: number,
-  ) => {
-    const isChecked = event.target.checked;
-    const newCheckedToDos = [...checkedToDoIndices];
-    const data = {
-      email: session?.user.email!,
-      toDoIndex: index,
-      toDoIsComplete: isChecked,
-    };
-    await checkUserToDo.mutateAsync(data);
-
-    if (isChecked) {
-      newCheckedToDos.push(index);
-    } else {
-      const currentIndex = checkedToDoIndices.indexOf(index);
-      newCheckedToDos.splice(currentIndex, 1);
-    }
-
-    setCheckedToDoIndices(newCheckedToDos);
-  };
 
   const titleAddButton = () => {
     const title = () => {
@@ -133,26 +97,13 @@ const ToDoList = ({
 
     return (
       <List sx={{ maxHeight, overflow: "auto" }}>
-        {toDos.map((toDo, index) => (
-          <ListItem key={index}>
-            <ListItemButton dense>
-              <ListItemIcon>
-                <Checkbox
-                  checked={checkedToDoIndices.includes(index)}
-                  sx={{ color: colorsConst.palette.text.primary }}
-                  onChange={(event) => handleOnChange(event, index)}
-                />
-              </ListItemIcon>
-              <ListItemText>
-                <Text
-                  text={toDo.toDo}
-                  variant={TypographyVariant.h6}
-                  bold={false}
-                  textDecoration={TypographyTextDecoration.underline}
-                />
-              </ListItemText>
-            </ListItemButton>
-          </ListItem>
+        {toDos.map((toDo) => (
+          <ToDoItem
+            key={JSON.stringify(toDo._id)}
+            toDo={toDo}
+            checkedToDoIds={checkedToDoIds}
+            setCheckedToDoIds={setCheckedToDoIds}
+          />
         ))}
       </List>
     );

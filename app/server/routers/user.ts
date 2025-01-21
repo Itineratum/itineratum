@@ -4,7 +4,6 @@ import {
 } from "@/constants/enums/accountNotifications";
 import { CalendarEvent } from "@/constants/types/calendarEvent";
 import { IItinerary } from "@/constants/types/itinerary";
-import { ToDo } from "@/constants/types/toDo";
 import {
   sendAccountDeletedEmail,
   sendAccountPasswordChangedEmail,
@@ -23,6 +22,7 @@ import {
   insertUserCalendarEvent,
   insertUserToDo,
   removeUserCalendarEvent,
+  removeUserToDo,
   retrieveCurrencyLanguage,
   retrieveUserCalendarEvents,
   retrieveUserDetails,
@@ -44,9 +44,9 @@ import {
   addToUserToDoListSchema,
   addUserCalendarEventSchema,
   changeUserPasswordSchema,
-  checkUserToDoSchema,
   deleteUserAccountSchema,
   deleteUserCalendarEventSchema,
+  deleteUserToDoSchema,
   generateVerificationCodeSchema,
   getUserAccountDetailsSchema,
   getUserCalendarEventsSchema,
@@ -58,6 +58,7 @@ import {
   loginViaEmailSchema,
   loginViaOtpSchema,
   modifyUserCalendarEventSchema,
+  modifyUserToDoSchema,
   saveItineraryToUserSchema,
   switchCurrencySchema,
   switchLanguageSchema,
@@ -541,7 +542,7 @@ export const userRouter = router({
     .output(addToUserToDoListSchema.output)
     .mutation(async (data) => {
       const email = data.input.email;
-      const toDo: ToDo = data.input.toDo;
+      const toDo = data.input.toDo;
       const insertUserToDoRes = await insertUserToDo(email, toDo);
 
       if (!insertUserToDoRes.success) {
@@ -551,23 +552,33 @@ export const userRouter = router({
         });
       }
     }),
-  checkUserToDo: publicProcedure
-    .input(checkUserToDoSchema.input)
-    .output(checkUserToDoSchema.output)
+  modifyUserToDo: publicProcedure
+    .input(modifyUserToDoSchema.input)
+    .output(modifyUserToDoSchema.output)
     .mutation(async (data) => {
       const email = data.input.email;
-      const toDoIndex = data.input.toDoIndex;
-      const toDoIsComplete = data.input.toDoIsComplete;
-      const updateUserToDoRes = await updateUserToDo(
-        email,
-        toDoIndex,
-        toDoIsComplete,
-      );
+      const modifiedToDo = data.input.modifiedToDo;
+      const updateUserToDoRes = await updateUserToDo(email, modifiedToDo);
 
       if (!updateUserToDoRes.success) {
         throw new TRPCError({
           code: "INTERNAL_SERVER_ERROR",
           message: updateUserToDoRes.error,
+        });
+      }
+    }),
+  deleteUserToDo: publicProcedure
+    .input(deleteUserToDoSchema.input)
+    .output(deleteUserToDoSchema.output)
+    .mutation(async (data) => {
+      const email = data.input.email;
+      const toDoId = data.input.toDoId;
+      const removeUserToDoRes = await removeUserToDo(email, toDoId);
+
+      if (!removeUserToDoRes.success) {
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message: removeUserToDoRes.error,
         });
       }
     }),
