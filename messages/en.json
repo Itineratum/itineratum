@@ -129,8 +129,21 @@
       "calendarEventAdded": "Your calendar event has been added!"
     },
     "userCalendarEventDialog": {
+      "save": "Save Modifications",
+      "stop": "Stop Modifying",
+      "modify": "Modify",
+      "modifying": "Modifying",
+      "delete": "Delete",
+      "deleting": "Deleting",
+      "name": "Calendar Event Name",
+      "nameDescription": "Enter the name of the calendar event",
+      "nameError": "Calendar event name is required!",
       "startDate": "Start Date",
-      "endDate": "End Date"
+      "startDateError": "Start Date is required!",
+      "endDate": "End Date",
+      "endDateError": "End Date is required!",
+      "endDateValidationError": "End Date must be after Start Date!",
+      "calendarEventModified": "Your calendar event has been modified!"
     },
     "addToDoDialog": {
       "title": "Add To Do",

@@ -160,6 +160,16 @@ export const getUserCalendarEventsSchema = {
   output: z.any(),
 };
 
+export const modifyUserCalendarEventSchema = {
+  input: z.object({ email: z.string(), modifiedCalendarEvent: z.any() }),
+  output: z.void(),
+};
+
+export const deleteUserCalendarEventSchema = {
+  input: z.object({ email: z.string(), calendarEventId: z.any() }),
+  output: z.void(),
+};
+
 export const getUserToDoListSchema = {
   input: z.object({ email: z.string() }),
   output: z.any(),

@@ -5,9 +5,17 @@ import { AuthService } from "@/constants/enums/authService";
 import { Country } from "@/constants/enums/country";
 import { Currency } from "@/constants/enums/currency";
 import { Language } from "@/constants/enums/language";
-import { IUser, Notifications } from "@/constants/types/user";
+import { CalendarEvent } from "@/constants/types/calendarEvent";
+import { IUser } from "@/constants/types/user";
 import mongoose, { models } from "mongoose";
 const { Schema } = mongoose;
+
+const calendarEventSchema = new Schema<CalendarEvent>({
+  title: String,
+  start: Object,
+  end: Object,
+  itineraryId: Object,
+});
 
 const userSchema = new Schema<IUser>(
   {
@@ -55,8 +63,14 @@ const userSchema = new Schema<IUser>(
       required: true,
     },
     generated_itineraries: { type: [String], required: true },
-    todo_list: { type: [Object], required: true },
-    calendar_events: { type: [Object], required: true },
+    todo_list: {
+      type: [Object],
+      required: true,
+    },
+    calendar_events: {
+      type: [calendarEventSchema],
+      required: true,
+    },
   },
   { collection: constDbCollections.users },
 );

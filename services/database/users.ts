@@ -7,6 +7,7 @@ import { deleteImage } from "@/lib/uploadThing";
 import User, { initialUser } from "@/models/User";
 import { getAuthService } from "@/utils/getAuthService";
 import bcrypt from "bcrypt";
+import { ObjectId } from "mongodb";
 import { Account, User as AuthUser } from "next-auth";
 // used by Google provider login
 export const signIn = async ({
@@ -427,7 +428,7 @@ export const saveUserItinerary = async (email: string, itineraryId: string) => {
 
 export const insertUserCalendarEvent = async (
   email: string,
-  calendarEvent: CalendarEvent,
+  calendarEvent: any,
 ) => {
   try {
     await connectToDatabase();
@@ -550,7 +551,7 @@ export const insertUserToDo = async (email: string, toDo: ToDo) => {
     if (result.acknowledged) {
       return { success: true };
     } else {
-      return { success: false, error: "Insert user to do failed" };
+      return { success: false, error: "Insert user to do failed!" };
     }
   } catch (error) {
     console.error(error);
@@ -560,7 +561,7 @@ export const insertUserToDo = async (email: string, toDo: ToDo) => {
   }
 };
 
-export const modifyUserToDo = async (
+export const updateUserToDo = async (
   email: string,
   toDoIndex: number,
   toDoIsComplete: boolean,
@@ -587,7 +588,89 @@ export const modifyUserToDo = async (
     if (result.acknowledged) {
       return { success: true };
     } else {
-      return { success: false, error: "Modify user to do failed" };
+      return { success: false, error: "Modify user to do failed!" };
+    }
+  } catch (error) {
+    console.error(error);
+    throw error;
+  } finally {
+    // await disconnectFromDatabase();
+  }
+};
+
+export const updateUserCalendarEvent = async (
+  email: string,
+  modifiedCalendarEvent: CalendarEvent,
+) => {
+  try {
+    await connectToDatabase();
+    const user = await User.findOne({ email });
+
+    if (!user) {
+      return {
+        success: false,
+        error: "User not found!",
+      };
+    }
+
+    const update = {
+      $set: {
+        "calendar_events.$[element]": modifiedCalendarEvent,
+      },
+    };
+    // credits to https://www.mongodb.com/community/forums/t/updating-nested-array-object-with-specific-condition/228238/3
+    const arrayFilters = {
+      arrayFilters: [
+        {
+          "element._id": { $eq: modifiedCalendarEvent._id },
+        },
+      ],
+    };
+
+    const result = await User.updateOne({ email }, update, arrayFilters);
+
+    if (result.modifiedCount > 0) {
+      return { success: true };
+    } else {
+      return { success: false, error: "Modify user calendar event failed!" };
+    }
+  } catch (error) {
+    console.error(error);
+    throw error;
+  } finally {
+    // await disconnectFromDatabase();
+  }
+};
+
+export const removeUserCalendarEvent = async (
+  email: string,
+  calendarEventId: ObjectId,
+) => {
+  try {
+    await connectToDatabase();
+    const user = await User.findOne({ email });
+
+    if (!user) {
+      return {
+        success: false,
+        error: "User not found!",
+      };
+    }
+
+    const update = {
+      $pull: {
+        calendar_events: {
+          _id: calendarEventId,
+        },
+      },
+    };
+
+    const result = await User.updateOne({ email }, update);
+
+    if (result.acknowledged) {
+      return { success: true };
+    } else {
+      return { success: false, error: "Remove user calendar event failed!" };
     }
   } catch (error) {
     console.error(error);

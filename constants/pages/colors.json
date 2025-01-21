@@ -36,6 +36,9 @@
       "afternoon": "#1e90ff",
       "evening": "#7b198b",
       "hotel": "#34c759"
+    },
+    "button": {
+      "deleteColor": "#f34235"
     }
   },
   "continueWithGoogleButton": {

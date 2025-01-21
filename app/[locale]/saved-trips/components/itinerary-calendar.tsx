@@ -1,6 +1,8 @@
+import colorsConst from "@/constants/pages/colors.json";
 import { CalendarEvent } from "@/constants/types/calendarEvent";
 import { IItinerary } from "@/constants/types/itinerary";
 import { getItinerarySummaryText } from "@/lib/pythonBackend/utils";
+import AddIcon from "@mui/icons-material/Add";
 import { Box, IconButton, Stack } from "@mui/material";
 import dayjs, { Dayjs } from "dayjs";
 import {
@@ -12,9 +14,7 @@ import {
 } from "react";
 import { Calendar, dayjsLocalizer, View, Views } from "react-big-calendar";
 import "react-big-calendar/lib/css/react-big-calendar.css";
-import AddIcon from "@mui/icons-material/Add";
 import UserCalendarEventDialog from "./user-calendar-event-dialog";
-import colorsConst from "@/constants/pages/colors.json";
 
 const ItineraryCalendar = ({
   savedItineraries,
@@ -50,7 +50,7 @@ const ItineraryCalendar = ({
     if (savedItineraries && savedItineraries.length > 0) {
       const newCalendarEvents: CalendarEvent[] = [];
 
-      savedItineraries.map((record) => {
+      savedItineraries.forEach((record) => {
         const itineraryId = Object.keys(record)[0];
         const itinerary = record[itineraryId];
         const title = getItinerarySummaryText(itinerary);
@@ -63,16 +63,16 @@ const ItineraryCalendar = ({
           start,
           end,
           itineraryId,
+          _id: null,
         };
         newCalendarEvents.push(calendarEvent);
       });
 
-      userCalendarEvents.map((userCalendarEvent) => {
+      userCalendarEvents.forEach((userCalendarEvent) => {
         userCalendarEvent.start = new Date(userCalendarEvent.start);
         userCalendarEvent.end = new Date(userCalendarEvent.end);
         newCalendarEvents.push(userCalendarEvent);
       });
-
       setCalendarEvents(newCalendarEvents);
     }
   }, [savedItineraries, userCalendarEvents]);
@@ -123,6 +123,7 @@ const ItineraryCalendar = ({
       </Box>
       {selectedUserCalendarEvent && (
         <UserCalendarEventDialog
+          key={JSON.stringify(selectedUserCalendarEvent)}
           open={userCalendarEventDialogOpen}
           setOpen={setUserCalendarEventDialogOpen}
           calendarEvent={selectedUserCalendarEvent!}

@@ -22,7 +22,7 @@ import {
   deleteUser,
   insertUserCalendarEvent,
   insertUserToDo,
-  modifyUserToDo,
+  removeUserCalendarEvent,
   retrieveCurrencyLanguage,
   retrieveUserCalendarEvents,
   retrieveUserDetails,
@@ -30,6 +30,8 @@ import {
   retrieveUserToDoList,
   saveUserItinerary,
   updateUser,
+  updateUserCalendarEvent,
+  updateUserToDo,
   verifyUserPassword,
 } from "@/services/database/users";
 import {
@@ -44,6 +46,7 @@ import {
   changeUserPasswordSchema,
   checkUserToDoSchema,
   deleteUserAccountSchema,
+  deleteUserCalendarEventSchema,
   generateVerificationCodeSchema,
   getUserAccountDetailsSchema,
   getUserCalendarEventsSchema,
@@ -54,6 +57,7 @@ import {
   getUserToDoListSchema,
   loginViaEmailSchema,
   loginViaOtpSchema,
+  modifyUserCalendarEventSchema,
   saveItineraryToUserSchema,
   switchCurrencySchema,
   switchLanguageSchema,
@@ -449,7 +453,7 @@ export const userRouter = router({
     .output(addUserCalendarEventSchema.output)
     .mutation(async (data) => {
       const email = data.input.email;
-      const calendarEvent: CalendarEvent = data.input.calendarEvent;
+      const calendarEvent = data.input.calendarEvent;
       const insertUserCalendarEventRes = await insertUserCalendarEvent(
         email,
         calendarEvent,
@@ -478,6 +482,43 @@ export const userRouter = router({
       }
 
       return retrieveUserCalendarEventsRes.data;
+    }),
+  modifyUserCalendarEvent: publicProcedure
+    .input(modifyUserCalendarEventSchema.input)
+    .output(modifyUserCalendarEventSchema.output)
+    .mutation(async (data) => {
+      const email = data.input.email;
+      const modifiedCalendarEvent: CalendarEvent =
+        data.input.modifiedCalendarEvent;
+      const updateUserCalendarEventRes = await updateUserCalendarEvent(
+        email,
+        modifiedCalendarEvent,
+      );
+
+      if (!updateUserCalendarEventRes.success) {
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message: updateUserCalendarEventRes.error,
+        });
+      }
+    }),
+  deleteUserCalendarEvent: publicProcedure
+    .input(deleteUserCalendarEventSchema.input)
+    .output(deleteUserCalendarEventSchema.output)
+    .mutation(async (data) => {
+      const email = data.input.email;
+      const calendarEventId = data.input.calendarEventId;
+      const removeUserCalendarEventRes = await removeUserCalendarEvent(
+        email,
+        calendarEventId,
+      );
+
+      if (!removeUserCalendarEventRes.success) {
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message: removeUserCalendarEventRes.error,
+        });
+      }
     }),
   getUserToDoList: publicProcedure
     .input(getUserToDoListSchema.input)
@@ -517,16 +558,16 @@ export const userRouter = router({
       const email = data.input.email;
       const toDoIndex = data.input.toDoIndex;
       const toDoIsComplete = data.input.toDoIsComplete;
-      const modifyUserToDoRes = await modifyUserToDo(
+      const updateUserToDoRes = await updateUserToDo(
         email,
         toDoIndex,
         toDoIsComplete,
       );
 
-      if (!modifyUserToDoRes.success) {
+      if (!updateUserToDoRes.success) {
         throw new TRPCError({
           code: "INTERNAL_SERVER_ERROR",
-          message: modifyUserToDoRes.error,
+          message: updateUserToDoRes.error,
         });
       }
     }),

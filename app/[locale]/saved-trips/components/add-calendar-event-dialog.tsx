@@ -23,6 +23,7 @@ import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider/L
 import { Dayjs } from "dayjs";
 import { useSession } from "next-auth/react";
 import { useTranslations } from "next-intl";
+import { useRouter } from "next/navigation";
 import { Dispatch, SetStateAction, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 
@@ -225,13 +226,12 @@ const AddCalendarEventDialog = ({
       if (!nameValid || !startDateValid || !endDateValid) return;
 
       setIsAddingCalendarEvent(true);
-      const newCalendarEvent: CalendarEvent = {
+      const newCalendarEvent = {
         title: name,
         start: startDate.toDate(),
         end: endDate.toDate(),
         itineraryId: null,
       };
-
       const data = {
         email: session?.user.email!,
         calendarEvent: newCalendarEvent,
