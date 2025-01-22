@@ -24,9 +24,12 @@ import {
   TypographyVariant,
 } from "@/constants/enums/theme";
 import colorsConst from "@/constants/pages/colors.json";
+import endpointsConst from "@/constants/pages/endpoints.json";
 import { IItinerary } from "@/constants/types/itinerary";
 import { DayPlan, Event, Hotel, TravelTime } from "@/lib/pythonBackend/types";
 import { getItinerarySummaryText } from "@/lib/pythonBackend/utils";
+import { buildLocaleEndpoint } from "@/utils/buildLocaleEndpoint";
+import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import {
   Box,
   Button,
@@ -40,9 +43,6 @@ import { useSession } from "next-auth/react";
 import { useLocale, useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
-import ArrowBackIcon from "@mui/icons-material/ArrowBack";
-import endpointsConst from "@/constants/pages/endpoints.json";
-import { buildLocaleEndpoint } from "@/utils/buildLocaleEndpoint";
 
 const ReviewItinerary = ({
   params,
@@ -825,6 +825,7 @@ const ReviewItinerary = ({
         setCurrentEdit={setCurrentEdit}
       />
       <ModifyEventDialog
+        key={JSON.stringify(events[indexToModifyEventAt!])}
         open={modifyEventDialogOpen}
         setOpen={setModifyEventDialogOpen}
         itineraryRequest={itineraryData.request}
@@ -832,6 +833,7 @@ const ReviewItinerary = ({
         indexToModifyEventAt={indexToModifyEventAt ?? 0}
         dayPlan={dayPlan!}
         setCurrentEdit={setCurrentEdit}
+        event={events[indexToModifyEventAt!]}
       />
     </Container>
   );

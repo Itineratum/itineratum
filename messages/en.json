@@ -277,6 +277,9 @@
       "locationCity": "Location City",
       "locationCityDescription": "Search for city",
       "locationCityErrorMessage": "Please enter the city of the location!",
+      "timeOfDay": "Time of Day",
+      "timeOfDayDescription": "Select time of day for activity",
+      "timeOfDayErrorMessage": "Please select a time of day!",
       "modifyActivity": "Modify Activity",
       "modifyingActivity": "Modifying Activity"
     }

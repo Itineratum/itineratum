@@ -1,3 +1,4 @@
+import { IItinerary } from "@/constants/types/itinerary";
 import dayjs from "dayjs";
 import {
   OutputFormat,
@@ -14,8 +15,6 @@ import {
   Position,
   TravelTime,
 } from "./types";
-import { IItinerary } from "@/constants/types/itinerary";
-import { UserRequestedDestination } from "@/constants/types/formData/generateItineraryFormData";
 
 export const getEvents = async (
   rawTimePeriodPlan: any[],
@@ -639,4 +638,56 @@ export const getItinerarySummaryText = (itinerary: IItinerary): string => {
       (userRequestedDestination) => userRequestedDestination.name,
     );
   return `${numDays} ${numDays > 1 ? "days" : "day"} ${numDays} ${numDays > 1 ? "nights" : "night"} to ${getDestinationsString(destinations)}`;
+};
+
+export const getPreviousEvent = (
+  indexOfEvent: number,
+  events: Event[],
+): Event | null => {
+  if (indexOfEvent === 0) return null;
+
+  return events[indexOfEvent - 1];
+};
+
+export const getNextEvent = (
+  indexOfEvent: number,
+  events: Event[],
+): Event | null => {
+  if (indexOfEvent === events.length) return null;
+
+  return events[indexOfEvent];
+};
+
+export const getTimeOfDayOptions = (
+  indexOfEvent: number,
+  events: Event[],
+  isModifyEvent: boolean,
+): EventTimeOfDay[] => {
+  const previousEvent: Event | null = getPreviousEvent(indexOfEvent, events);
+  const nextEvent: Event | null = isModifyEvent
+    ? getNextEvent(indexOfEvent + 1, events)
+    : getNextEvent(indexOfEvent, events);
+  let options: EventTimeOfDay[] = [];
+  let previousEventTimeOfDay: EventTimeOfDay;
+  let nextEventTimeOfDay: EventTimeOfDay;
+
+  if (!previousEvent && nextEvent) {
+    // if no previous event, means this new event will be the first one in the updated itineray. allow any time of day before and during the same time of day as the next event
+    nextEventTimeOfDay = nextEvent.time_of_day;
+    options = getTimesOfDayBefore(nextEventTimeOfDay);
+  } else if (previousEvent && !nextEvent) {
+    // if no next event, means this new event will be the last one in the updated itinerary. allow any time of day during and after the same time of day as the previous event
+    previousEventTimeOfDay = previousEvent.time_of_day;
+    options = getTimesOfDayAfter(previousEventTimeOfDay);
+  } else if (!previousEvent && !nextEvent) {
+    // if no previous and next events, means this new event will be the only one in the updated itinerary. allow any time of day
+    options = Object.values(EventTimeOfDay);
+  } else {
+    // if there are both previous and next events, means this event will be sandwiched between existing events. allow any time of day during and after the previous time of day as the previous event, and during and before the time of day as the next event
+    previousEventTimeOfDay = previousEvent?.time_of_day!;
+    nextEventTimeOfDay = nextEvent?.time_of_day!;
+    options = getTimesOfDayBetween(previousEventTimeOfDay, nextEventTimeOfDay);
+  }
+
+  return options;
 };

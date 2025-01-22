@@ -17,12 +17,7 @@ import {
   EventTimeOfDay,
   GenerateItineraryJSON,
 } from "@/lib/pythonBackend/types";
-import {
-  getEvents,
-  getTimesOfDayAfter,
-  getTimesOfDayBefore,
-  getTimesOfDayBetween,
-} from "@/lib/pythonBackend/utils";
+import { getEvents, getTimeOfDayOptions } from "@/lib/pythonBackend/utils";
 import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
 import {
   Box,
@@ -386,47 +381,14 @@ const AddEventDialog = ({
       );
     };
 
-    const getPreviousEvent = (): Event | null => {
-      if (indexToAddEventTo === 0) return null;
+    const timeOfDayOptionItems = () => {
+      const timeOfDayOptions = getTimeOfDayOptions(
+        indexToAddEventTo,
+        events,
+        false,
+      );
 
-      return events[indexToAddEventTo - 1];
-    };
-
-    const getNextEvent = (): Event | null => {
-      if (indexToAddEventTo === events.length) return null;
-
-      return events[indexToAddEventTo];
-    };
-
-    const timeOfDayOptions = () => {
-      const previousEvent: Event | null = getPreviousEvent();
-      const nextEvent: Event | null = getNextEvent();
-      let options: EventTimeOfDay[] = [];
-      let previousEventTimeOfDay: EventTimeOfDay;
-      let nextEventTimeOfDay: EventTimeOfDay;
-
-      if (!previousEvent && nextEvent) {
-        // if no previous event, means this new event will be the first one in the updated itineray. allow any time of day before and during the same time of day as the next event
-        nextEventTimeOfDay = nextEvent.time_of_day;
-        options = getTimesOfDayBefore(nextEventTimeOfDay);
-      } else if (previousEvent && !nextEvent) {
-        // if no next event, means this new event will be the last one in the updated itinerary. allow any time of day during and after the same time of day as the previous event
-        previousEventTimeOfDay = previousEvent.time_of_day;
-        options = getTimesOfDayAfter(previousEventTimeOfDay);
-      } else if (!previousEvent && !nextEvent) {
-        // if no previous and next events, means this new event will be the only one in the updated itinerary. allow any time of day
-        options = Object.values(EventTimeOfDay);
-      } else {
-        // if there are both previous and next events, means this event will be sandwiched between existing events. allow any time of day during and after the previous time of day as the previous event, and during and before the time of day as the next event
-        previousEventTimeOfDay = previousEvent?.time_of_day!;
-        nextEventTimeOfDay = nextEvent?.time_of_day!;
-        options = getTimesOfDayBetween(
-          previousEventTimeOfDay,
-          nextEventTimeOfDay,
-        );
-      }
-
-      return options.map((timeOfDay) => (
+      return timeOfDayOptions.map((timeOfDay) => (
         <MenuItem key={timeOfDay} value={timeOfDay}>
           {timeOfDay}
         </MenuItem>
@@ -456,7 +418,7 @@ const AddEventDialog = ({
                 displayEmpty
               >
                 {hint()}
-                {timeOfDayOptions()}
+                {timeOfDayOptionItems()}
               </Select>
             )}
           />

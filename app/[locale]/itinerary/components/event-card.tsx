@@ -9,7 +9,7 @@ import CalendarTodayIcon from "@mui/icons-material/CalendarToday";
 import EditIcon from "@mui/icons-material/Edit";
 import LocationOnIcon from "@mui/icons-material/LocationOn";
 import RemoveCircleIcon from "@mui/icons-material/RemoveCircle";
-import { Box, Button, IconButton, Stack } from "@mui/material";
+import { Box, Button, IconButton, Menu, Stack } from "@mui/material";
 import { Dayjs } from "dayjs";
 import { useTranslations } from "next-intl";
 import { Dispatch, SetStateAction } from "react";
@@ -18,6 +18,7 @@ import {
   ItineraryEditDetails,
   DeleteEventFromItineraryDetails,
 } from "./review-itinerary";
+import MenuIcon from "@mui/icons-material/Menu";
 
 export const eventCardMaxWidth = 515;
 
@@ -271,9 +272,20 @@ const EventCard = ({
           maxWidth,
           maxHeight,
         }}
+        draggable={isEditing}
       >
         {isEditing && deleteButton()}
         {isEditing && !event.is_hotel && modifyButton()}
+        {isEditing && (
+          <MenuIcon
+            sx={{
+              position: "absolute",
+              top: "50%",
+              left: "-10%",
+              color: "black",
+            }}
+          />
+        )}
         <Button
           onClick={handleOnClick}
           sx={{
