@@ -39,6 +39,7 @@ import {
   CircularProgress,
   Container,
   IconButton,
+  Snackbar,
   Stack,
 } from "@mui/material";
 import dayjs from "dayjs";
@@ -99,9 +100,11 @@ const ReviewItinerary = ({
   const [showAlert, setShowAlert] = useState<boolean>(false);
   const [canSaveItinerary, setCanSaveItinerary] = useState<boolean>(true);
   const [canGoBack, setCanGoBack] = useState<boolean>(false);
+  const [showSnackbar, setShowSnackbar] = useState<boolean>(false);
 
   const gap = 6;
   const paddingBottom = "20px";
+  const snackbarAutoHideDuration = 5000;
 
   const getItinerary = trpc.itinerary.getItinerary.useQuery(
     { itineraryId: params.id },
@@ -304,6 +307,39 @@ const ReviewItinerary = ({
         } else {
           newEdits = [
             { [ItineraryEditAction.modify]: modifyEventInItineraryDetails },
+          ];
+        }
+
+        setEdits(newEdits);
+      } else if (currentEdit.reorder || currentEdit.reorder === 0) {
+        // handle event reorders
+        const newEvents: Event[] = [...events];
+        const reorderEventInItineraryDetails: ReorderEventInItineraryDetails =
+          currentEdit.reorder as ReorderEventInItineraryDetails;
+        const reorderedEvent: Event = reorderEventInItineraryDetails.event;
+        const oldEventIndex: number =
+          reorderEventInItineraryDetails.oldEventIndex;
+        const newEventIndex: number =
+          reorderEventInItineraryDetails.newEventIndex;
+        newEvents.splice(oldEventIndex, 1);
+        newEvents.splice(newEventIndex, 0, reorderedEvent);
+        setEvents(newEvents);
+
+        if (edits) {
+          newEdits = [...edits];
+
+          if (newEdits.length > 0) {
+            newEdits.push({
+              [ItineraryEditAction.reorder]: reorderEventInItineraryDetails,
+            });
+          } else {
+            newEdits = [
+              { [ItineraryEditAction.reorder]: reorderEventInItineraryDetails },
+            ];
+          }
+        } else {
+          newEdits = [
+            { [ItineraryEditAction.reorder]: reorderEventInItineraryDetails },
           ];
         }
 
@@ -528,6 +564,8 @@ const ReviewItinerary = ({
                 setIndexToAddEventTo={setIndexToAddEventTo}
                 setModifyEventDialogOpen={setModifyEventDialogOpen}
                 setIndexToModifyEventAt={setIndexToModifyEventAt}
+                events={events}
+                setShowSnackbar={setShowSnackbar}
               />
               {!isEditing &&
                 (travelTimes.length < 1
@@ -777,6 +815,14 @@ const ReviewItinerary = ({
     );
   };
 
+  const snackbarHandleOnClose = (event?: any, reason?: any) => {
+    if (reason === "clickaway") {
+      return;
+    }
+
+    setShowSnackbar(false);
+  };
+
   return (
     <Container
       sx={{
@@ -852,6 +898,13 @@ const ReviewItinerary = ({
         setCurrentEdit={setCurrentEdit}
         event={events[indexToModifyEventAt!]}
       />
+      <Snackbar
+        open={showSnackbar}
+        onClose={snackbarHandleOnClose}
+        autoHideDuration={snackbarAutoHideDuration}
+        message={t("noReorder")}
+        anchorOrigin={{ vertical: "top", horizontal: "center" }}
+      />
     </Container>
   );
 };
@@ -862,6 +915,7 @@ export enum ItineraryEditAction {
   delete = "delete",
   add = "add",
   modify = "modify",
+  reorder = "reorder",
 }
 
 export interface DeleteEventFromItineraryDetails {
@@ -880,7 +934,14 @@ export interface ModifyEventInItineraryDetails {
   timeOfDayChange: boolean;
 }
 
+export interface ReorderEventInItineraryDetails {
+  event: Event;
+  oldEventIndex: number;
+  newEventIndex: number;
+}
+
 export type ItineraryEditDetails =
   | DeleteEventFromItineraryDetails
   | AddEventToItineraryDetails
-  | ModifyEventInItineraryDetails;
+  | ModifyEventInItineraryDetails
+  | ReorderEventInItineraryDetails;

@@ -17,6 +17,7 @@ import {
   ItineraryEditAction,
   ItineraryEditDetails,
   DeleteEventFromItineraryDetails,
+  ReorderEventInItineraryDetails,
 } from "./review-itinerary";
 import MenuIcon from "@mui/icons-material/Menu";
 
@@ -36,6 +37,8 @@ const EventCard = ({
   setIndexToAddEventTo,
   setModifyEventDialogOpen,
   setIndexToModifyEventAt,
+  events,
+  setShowSnackbar,
 }: {
   date: Dayjs;
   destination: string;
@@ -54,6 +57,8 @@ const EventCard = ({
   setIndexToAddEventTo: Dispatch<SetStateAction<number | null>>;
   setModifyEventDialogOpen: Dispatch<SetStateAction<boolean>>;
   setIndexToModifyEventAt: Dispatch<SetStateAction<number | null>>;
+  events: Event[];
+  setShowSnackbar: Dispatch<SetStateAction<boolean>>;
 }) => {
   const t = useTranslations("itinerary");
 
@@ -262,6 +267,43 @@ const EventCard = ({
     setSelectedEvent(event);
   };
 
+  const handleDragStart = (dragEvent: React.DragEvent<HTMLDivElement>) => {
+    dragEvent.dataTransfer.setData("text/plain", index.toString());
+  };
+
+  const handleDragOver = (event: React.DragEvent<HTMLDivElement>) => {
+    event.preventDefault();
+  };
+
+  const handleDrop = (dragEvent: React.DragEvent<HTMLDivElement>) => {
+    dragEvent.preventDefault();
+    const oldEventIndex = parseInt(
+      dragEvent.dataTransfer.getData("text/plain"),
+    );
+    const newEventIndex = index;
+    const movedEvent = events[oldEventIndex];
+
+    // if the event has not even been reordered at all
+    if (oldEventIndex === newEventIndex) return;
+
+    // if the event moved beyond its time of day (i.e., a morning event moved to afternoon)
+    if (movedEvent.time_of_day !== events[newEventIndex].time_of_day) {
+      setShowSnackbar(true);
+      return;
+    }
+
+    const newEdit: Partial<
+      Record<ItineraryEditAction, ReorderEventInItineraryDetails>
+    > = {
+      [ItineraryEditAction.reorder]: {
+        event: movedEvent,
+        oldEventIndex,
+        newEventIndex,
+      },
+    };
+    setCurrentEdit(newEdit);
+  };
+
   return (
     <Stack direction="column" spacing={spacing}>
       {isEditing && index === 0 && addButton(index)}
@@ -273,6 +315,9 @@ const EventCard = ({
           maxHeight,
         }}
         draggable={isEditing}
+        onDragStart={handleDragStart}
+        onDragOver={handleDragOver}
+        onDrop={handleDrop}
       >
         {isEditing && deleteButton()}
         {isEditing && !event.is_hotel && modifyButton()}
