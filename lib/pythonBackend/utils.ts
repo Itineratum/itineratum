@@ -51,7 +51,7 @@ export const getEvents = async (
       is_hotel: item.is_hotel ? item.is_hotel : false,
       event_name: item.location_name,
       time_of_day: timeOfDay,
-      location_name: item.display_name ?? "",
+      location_name: item.display_name.text ?? item.display_name ?? "",
       location_address: item.location_address,
       coordinates: {
         lat,
@@ -690,4 +690,44 @@ export const getTimeOfDayOptions = (
   }
 
   return options;
+};
+
+export const getIndexToMoveModifiedEventTo = (
+  modifiedEvent: Event,
+  events: Event[],
+): number => {
+  const newEventTimeOfDay = modifiedEvent.time_of_day;
+  const indexToMoveModifiedEventTo = events.findIndex(
+    (event: Event) => event.time_of_day === newEventTimeOfDay,
+  );
+
+  if (indexToMoveModifiedEventTo === -1) {
+    // if there are no existing events at the new time of day in the day plan of the itinerary
+    if (newEventTimeOfDay === EventTimeOfDay.morning) {
+      // if there are no existing morning events, the modified event is going to be the first event of the day plan
+      return 0;
+    } else if (newEventTimeOfDay === EventTimeOfDay.afternoon) {
+      // if there are no existing afternoon events
+      const hasMorningEvents = events.some(
+        (event: Event) => event.time_of_day === EventTimeOfDay.morning,
+      );
+
+      if (hasMorningEvents) {
+        // if there are morning events, ensure the modified event comes after the last morning event
+        return (
+          events.findLastIndex(
+            (event: Event) => event.time_of_day === EventTimeOfDay.morning,
+          ) + 1
+        );
+      } else {
+        // if there are no morning events, then the modified event is going to be the first event of the day plan
+        return 0;
+      }
+    } else {
+      // if there are no existing event events, the modified event is going to be the last event of the day plan
+      return events.length;
+    }
+  } else {
+    return indexToMoveModifiedEventTo;
+  }
 };

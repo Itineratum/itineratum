@@ -27,7 +27,10 @@ import colorsConst from "@/constants/pages/colors.json";
 import endpointsConst from "@/constants/pages/endpoints.json";
 import { IItinerary } from "@/constants/types/itinerary";
 import { DayPlan, Event, Hotel, TravelTime } from "@/lib/pythonBackend/types";
-import { getItinerarySummaryText } from "@/lib/pythonBackend/utils";
+import {
+  getIndexToMoveModifiedEventTo,
+  getItinerarySummaryText,
+} from "@/lib/pythonBackend/utils";
 import { buildLocaleEndpoint } from "@/utils/buildLocaleEndpoint";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import {
@@ -266,10 +269,24 @@ const ReviewItinerary = ({
         const newEvents: Event[] = [...events];
         const modifyEventInItineraryDetails: ModifyEventInItineraryDetails =
           currentEdit.modify as ModifyEventInItineraryDetails;
+        const hasTimeOfDayChange =
+          modifyEventInItineraryDetails.timeOfDayChange;
+        const modifiedEvent = modifyEventInItineraryDetails.modifiedEvent;
         const indexToModifyEventAt: number =
           modifyEventInItineraryDetails.indexToModifyEventAt;
-        const modifiedEvent = modifyEventInItineraryDetails.modifiedEvent;
-        newEvents[indexToModifyEventAt] = modifiedEvent;
+
+        if (hasTimeOfDayChange) {
+          // if the user modified the event's time of day, shift it to the first index where the time of day is at, regardless of whether there are any existing events during that time of day
+          newEvents.splice(indexToModifyEventAt, 1);
+          const indexToMoveModifiedEventTo = getIndexToMoveModifiedEventTo(
+            modifiedEvent,
+            newEvents,
+          );
+          newEvents.splice(indexToMoveModifiedEventTo, 0, modifiedEvent);
+        } else {
+          newEvents[indexToModifyEventAt] = modifiedEvent;
+        }
+
         setEvents(newEvents);
 
         if (edits) {
@@ -860,6 +877,7 @@ export interface AddEventToItineraryDetails {
 export interface ModifyEventInItineraryDetails {
   indexToModifyEventAt: number;
   modifiedEvent: Event;
+  timeOfDayChange: boolean;
 }
 
 export type ItineraryEditDetails =
