@@ -7,6 +7,8 @@ import { AlertType } from "@/constants/enums/alertType";
 import { TypographyVariant } from "@/constants/enums/theme";
 import colorsConst from "@/constants/pages/colors.json";
 import { NewsletterFormData } from "@/constants/types/formData/newsletterFormData";
+import noodles from "@/public/noodles.png";
+import leaningTowerOfPisa from "@/public/pisa.png";
 import { isValidEmail } from "@/utils/signUpFormValidation";
 import {
   Box,
@@ -17,13 +19,13 @@ import {
   Stack,
   TextField,
 } from "@mui/material";
+import { motion } from "framer-motion";
 import { useSession } from "next-auth/react";
 import { useTranslations } from "next-intl";
 import Image from "next/image";
 import { ChangeEvent, useEffect, useState } from "react";
 import { Controller, ControllerRenderProps, useForm } from "react-hook-form";
-import leaningTowerOfPisa from "@/public/pisa.png";
-import noodles from "@/public/noodles.png";
+import { useInView } from "react-intersection-observer";
 
 const NewsletterSignup = () => {
   const { data: session, status } = useSession();
@@ -42,12 +44,17 @@ const NewsletterSignup = () => {
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const [hasEmailInNewsletter, setHasEmailInNewsletter] =
     useState<boolean>(isLoggedIn);
+  const [ref, inView] = useInView({
+    triggerOnce: true,
+    threshold: 0.2,
+  });
 
   const nameId = "name";
   const emailId = "email";
-
   const name = watch(nameId);
   const email = watch(emailId);
+
+  const rollInAnimationDuration = 1.2; // in seconds
 
   const addEmailToNewsLetter =
     trpc.newsletterEmail.addEmailToNewsletter.useMutation({
@@ -207,17 +214,29 @@ const NewsletterSignup = () => {
 
   const leftImage = () => {
     return (
-      <Box sx={{ position: "relative", top: "0%", left: "-25%" }}>
-        <Image src={leaningTowerOfPisa} alt={"The Leaning Tower of Pisa"} />
-      </Box>
+      <motion.div
+        initial={{ x: -200, opacity: 0 }}
+        animate={inView ? { x: "-25%", opacity: 1 } : {}}
+        transition={{ duration: rollInAnimationDuration, ease: "easeOut" }}
+      >
+        <Box sx={{ position: "relative", top: "0%" }}>
+          <Image src={leaningTowerOfPisa} alt={"The Leaning Tower of Pisa"} />
+        </Box>
+      </motion.div>
     );
   };
 
   const rightImage = () => {
     return (
-      <Box sx={{ position: "relative", top: "-17%", right: "0%" }}>
-        <Image src={noodles} alt={"A bowl of noodles"} />
-      </Box>
+      <motion.div
+        initial={{ x: 200, opacity: 0 }}
+        animate={inView ? { x: "0%", opacity: 1 } : {}}
+        transition={{ duration: rollInAnimationDuration, ease: "easeOut" }}
+      >
+        <Box sx={{ position: "relative", top: "-17%" }}>
+          <Image src={noodles} alt={"A bowl of noodles"} />
+        </Box>
+      </motion.div>
     );
   };
 
@@ -237,7 +256,7 @@ const NewsletterSignup = () => {
     };
 
     return (
-      <Box sx={signUpFormSx}>
+      <Box ref={ref} sx={signUpFormSx}>
         <Grid container spacing={gridSpacing}>
           <Grid item xs={imageSize}>
             {leftImage()}
