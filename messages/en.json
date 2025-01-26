@@ -195,7 +195,7 @@
     "emailSuccess": "Itinerary successfully emailed!",
     "savingItinerary": "Saving Itinerary",
     "itinerarySaved": "Itinerary successfully saved to your account! You can view them under 'Saved Trips' tab!",
-    "noReorder": "You can only reorder events within its time of day! i.e., Cannot reorder morning event to afternoon!",
+    "noReorder": "Shifting is not possible as the selected events are in different time periods. Please modify the time periods before proceeding.",
     "adjustBudgetDialog": {
       "adjustBudget": "Adjust Budget",
       "description": "Adjust the budget for your trip.",
