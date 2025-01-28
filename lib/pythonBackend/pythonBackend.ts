@@ -25,17 +25,22 @@ const getPythonBackendUrl = () => {
     : process.env.NEXT_PUBLIC_PYTHON_BACKEND_URL_PROD;
 };
 
+const getRequest = (body: any) => {
+  return {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "Access-Control-Allow-Origin": "*",
+    },
+    body: JSON.stringify(body),
+  };
+};
+
 export const runPipeline = async (itineraryJson: GenerateItineraryJSON) => {
   try {
     const response = await fetch(
       `${getPythonBackendUrl()}${PythonBackendEndpoints.runPipeline}`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(itineraryJson),
-      }
+      getRequest(itineraryJson)
     );
 
     if (!response.ok) {
@@ -58,13 +63,7 @@ export const generateItinerary = async (
   try {
     const response = await fetch(
       `${getPythonBackendUrl()}${PythonBackendEndpoints.generateItinerary}`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(itineraryJson),
-      }
+      getRequest(itineraryJson)
     );
 
     if (!response.ok) {
@@ -81,13 +80,7 @@ export const validatePlan = async (itineraryJson: GenerateItineraryJSON) => {
   try {
     const response = await fetch(
       `${getPythonBackendUrl()}${PythonBackendEndpoints.validatePlan}`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(itineraryJson),
-      }
+      getRequest(itineraryJson)
     );
 
     if (!response.ok) {
@@ -104,13 +97,7 @@ export const searchHotels = async (itineraryJson: GenerateItineraryJSON) => {
   try {
     const response = await fetch(
       `${getPythonBackendUrl()}${PythonBackendEndpoints.searchHotels}`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(itineraryJson),
-      }
+      getRequest(itineraryJson)
     );
 
     if (!response.ok) {
@@ -127,13 +114,7 @@ export const searchFlights = async (itineraryJson: GenerateItineraryJSON) => {
   try {
     const response = await fetch(
       `${getPythonBackendUrl()}${PythonBackendEndpoints.searchFlights}`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(itineraryJson),
-      }
+      getRequest(itineraryJson)
     );
 
     if (!response.ok) {
@@ -262,13 +243,7 @@ export const validateNew = async (validateNewJson: ValidateNewJSON) => {
   try {
     const response = await fetch(
       `${getPythonBackendUrl()}${PythonBackendEndpoints.validateNew}`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(validateNewJson),
-      }
+      getRequest(validateNewJson)
     );
 
     if (!response.ok) {
@@ -297,13 +272,7 @@ export const validateEdit = async (validateEditJson: ValidateEditJSON) => {
   try {
     const response = await fetch(
       `${getPythonBackendUrl()}${PythonBackendEndpoints.validateEdit}`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(validateEditJson),
-      }
+      getRequest(validateEditJson)
     );
 
     if (!response.ok) {
@@ -334,13 +303,7 @@ export const searchActivity = async (
   try {
     const response = await fetch(
       `${getPythonBackendUrl()}${PythonBackendEndpoints.searchActivity}`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(searchActivityJson),
-      }
+      getRequest(searchActivityJson)
     );
 
     if (!response.ok) {
