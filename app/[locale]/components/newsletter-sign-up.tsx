@@ -82,6 +82,7 @@ const NewsletterSignup = () => {
   const gridSpacing: number = 4;
   const userInputsSize: number = 6;
   const imageSize: number = (12 - userInputsSize) / 2;
+  const height = "380px";
 
   const userInputs = () => {
     const spacing: number = 4;
@@ -251,7 +252,7 @@ const NewsletterSignup = () => {
       borderRadius: 6,
       color: colorsConst.palette.text.secondary,
       overflow: "hidden",
-      height: "40vh",
+      height,
       width: "100%",
     };
 
