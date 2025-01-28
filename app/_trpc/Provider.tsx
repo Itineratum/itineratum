@@ -13,7 +13,7 @@ const TRPCProvider = ({ children }: { children: React.ReactNode }) => {
           url: "/api/trpc",
         }),
       ],
-    })
+    }),
   );
   return (
     <trpc.Provider client={trpcClient} queryClient={queryClient}>

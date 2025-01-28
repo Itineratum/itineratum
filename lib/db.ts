@@ -2,18 +2,25 @@ import mongoose from "mongoose";
 
 let cachedClient: mongoose.Mongoose | null = null;
 
+const getMongoDBurl = () => {
+  return process.env.NODE_ENV === "development"
+    ? process.env.DB_DEV!
+    : process.env.NODE_ENV === "test"
+      ? process.env.DB_TEST!
+      : process.env.DB_PROD!;
+};
+
 export const connectToDatabase = async () => {
   if (cachedClient) {
     return cachedClient;
   }
 
   try {
-    process.env.NODE_ENV === "development"
-      ? (cachedClient = await mongoose.connect(process.env.DB_DEV!))
-      : process.env.NODE_ENV === "test"
-        ? (cachedClient = await mongoose.connect(process.env.DB_TEST!))
-        : (cachedClient = await mongoose.connect(process.env.DB_PROD!));
-
+    const mongoDBUrl = getMongoDBurl();
+    console.log(
+      `Connecting to MongoDB on ${process.env.NODE_ENV} at ${mongoDBUrl}`,
+    );
+    cachedClient = await mongoose.connect(getMongoDBurl());
     console.log(`Connected to MongoDB!`);
     return cachedClient;
   } catch (error) {

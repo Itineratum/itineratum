@@ -14,7 +14,7 @@ const transporter = nodemailer.createTransport({
 
 export const sendSignUpVerificationEmail = async (
   toEmail: string,
-  verificationCode: string
+  verificationCode: string,
 ) => {
   const mailOptions = {
     from: process.env.NODEMAILER_EMAIL,
@@ -65,7 +65,7 @@ export const sendAccountDeletedEmail = async (toEmail: string) => {
 
 export const sendNewsletterSubscribedEmail = async (
   toEmail: string,
-  name: string
+  name: string,
 ) => {
   const mailOptions = {
     from: process.env.NODEMAILER_EMAIL,
@@ -88,7 +88,7 @@ export const sendFeedbackEmailNotification = async (
   rating: number,
   feedbackCategory: FeedbackCategory,
   thoughtsSuggestions: string,
-  fileUrls: string[]
+  fileUrls: string[],
 ) => {
   const mailOptions = {
     from: process.env.NODEMAILER_EMAIL,
@@ -107,7 +107,7 @@ export const sendFeedbackEmailNotification = async (
 
 export const sendFeedbackReceivedEmail = async (
   toEmail: string,
-  name: string | null | undefined
+  name: string | null | undefined,
 ) => {
   const mailOptions = {
     from: process.env.NODEMAILER_EMAIL,
