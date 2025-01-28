@@ -1,7 +1,7 @@
 import contactsConst from "@/constants/pages/contacts.json";
+import endpointsConst from "@/constants/pages/endpoints.json";
 import { FeedbackCategory } from "@/constants/types/formData/feedbackFormData";
 import nodemailer from "nodemailer";
-import endpointsConst from "@/constants/pages/endpoints.json";
 
 const transporter = nodemailer.createTransport({
   port: 465,
@@ -14,7 +14,7 @@ const transporter = nodemailer.createTransport({
 
 export const sendSignUpVerificationEmail = async (
   toEmail: string,
-  verificationCode: string,
+  verificationCode: string
 ) => {
   const mailOptions = {
     from: process.env.NODEMAILER_EMAIL,
@@ -65,7 +65,7 @@ export const sendAccountDeletedEmail = async (toEmail: string) => {
 
 export const sendNewsletterSubscribedEmail = async (
   toEmail: string,
-  name: string,
+  name: string
 ) => {
   const mailOptions = {
     from: process.env.NODEMAILER_EMAIL,
@@ -88,7 +88,7 @@ export const sendFeedbackEmailNotification = async (
   rating: number,
   feedbackCategory: FeedbackCategory,
   thoughtsSuggestions: string,
-  fileUrls: string[],
+  fileUrls: string[]
 ) => {
   const mailOptions = {
     from: process.env.NODEMAILER_EMAIL,
@@ -107,7 +107,7 @@ export const sendFeedbackEmailNotification = async (
 
 export const sendFeedbackReceivedEmail = async (
   toEmail: string,
-  name: string | null | undefined,
+  name: string | null | undefined
 ) => {
   const mailOptions = {
     from: process.env.NODEMAILER_EMAIL,
@@ -126,7 +126,7 @@ export const sendFeedbackReceivedEmail = async (
 
 export const sendItinerary = async (toEmail: string, itineraryId: string) => {
   const host =
-    process.env.NODE_ENV === "development"
+    process.env.NODE_ENV === "development" || process.env.NODE_ENV === "test"
       ? process.env.HOST_DEV
       : process.env.HOST_PROD;
 
