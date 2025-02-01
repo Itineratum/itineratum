@@ -59,7 +59,7 @@ const ItineraryGenerator = () => {
   const [showAlert, setShowAlert] = useState<boolean>(false);
   const [alertText, setAlertText] = useState<string>("");
   const [generationStep, setGenerationStep] = useState<GenerateItineraryStep>(
-    GenerateItineraryStep.inputting
+    GenerateItineraryStep.inputting,
   );
 
   const border: string = `2px solid ${colorsConst.palette.secondary.main}`;
@@ -129,17 +129,17 @@ const ItineraryGenerator = () => {
   const watchedFields = fields.watch();
   const checkFieldsValidForActiveStep = () => {
     const hasErrorsAtActiveStep = Object.keys(fields.formState.errors).some(
-      (errorField) => fieldsAtEachStep[activeStep].includes(errorField)
+      (errorField) => fieldsAtEachStep[activeStep].includes(errorField),
     );
     const requiredFieldsFilled = fieldsAtEachStep[activeStep].every(
-      (field: any) => !!fields.getValues(field)
+      (field: any) => !!fields.getValues(field),
     );
 
     // checks whether the start date of the first destination is the same as the trip start date, and the end date of the last destination is the same as the trip end date
     const step5Check =
       activeStep === 4
         ? watchedFields.userRequestedDestinations[0].startDate.isSame(
-            watchedFields.startDate
+            watchedFields.startDate,
           ) &&
           watchedFields.userRequestedDestinations[
             watchedFields.userRequestedDestinations.length - 1
@@ -150,7 +150,7 @@ const ItineraryGenerator = () => {
       !hasErrorsAtActiveStep &&
         requiredFieldsFilled &&
         watchedFields.userRequestedDestinations.length > 0 &&
-        step5Check
+        step5Check,
     );
   };
   useEffect(() => {
@@ -240,7 +240,7 @@ const ItineraryGenerator = () => {
           fields.setValue(
             //@ts-ignore
             `userRequestedDestinations[0].startDate`,
-            tripStartDate
+            tripStartDate,
           );
           //@ts-ignore
           fields.setValue(`userRequestedDestinations[0].endDate`, tripEndDate);
@@ -259,13 +259,13 @@ const ItineraryGenerator = () => {
             fields.setValue(
               //@ts-ignore
               `userRequestedDestinations[${index}].startDate`,
-              currentDate
+              currentDate,
             );
             const endDate = currentDate.add(daysToAllocate - 1, "day");
             fields.setValue(
               //@ts-ignore
               `userRequestedDestinations[${index}].endDate`,
-              endDate
+              endDate,
             );
 
             currentDate = endDate.add(1, "day");
@@ -320,7 +320,7 @@ const ItineraryGenerator = () => {
 
           const runPipelineRes = await runPipelineWithGenerationSteps(
             itineraryJson,
-            setGenerationStep
+            setGenerationStep,
           );
 
           // debug

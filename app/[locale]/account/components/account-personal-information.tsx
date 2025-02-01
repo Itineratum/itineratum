@@ -136,7 +136,8 @@ const AccountPersonalInformation = ({
     setShowConformDeleteDialog(false);
   };
   const deleteAccount = async () => {
-    const data = { email };
+    const name = session?.user.name;
+    const data = { email, name };
     await deleteUserAccount.mutateAsync(data);
     signOut({ callbackUrl: "/" });
   };

@@ -198,7 +198,8 @@ export const itineraryRouter = router({
     .mutation(async (data) => {
       const email = data.input.email;
       const itineraryId = data.input.itineraryId;
-      await sendItinerary(email, itineraryId);
+      const name = data.input.name;
+      await sendItinerary(email, name, itineraryId);
     }),
   updateItineraryGeneratedBy: publicProcedure
     .input(updateItineraryGeneratedBySchema.input)

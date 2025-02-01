@@ -18,6 +18,7 @@ import {
   IconButton,
   Stack,
 } from "@mui/material";
+import { useSession } from "next-auth/react";
 import { useLocale, useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
 import { Dispatch, SetStateAction, useState } from "react";
@@ -30,6 +31,7 @@ const SaveItinerary = ({
   itineraryId: string;
   setItineraryPageStep: Dispatch<SetStateAction<ItineraryPageStep>>;
 }) => {
+  const { data: session } = useSession();
   const t = useTranslations("itinerary");
   const router = useRouter();
   const locale = useLocale();
@@ -164,8 +166,10 @@ const SaveItinerary = ({
 
       if (emailValid) {
         setIsSendingEmail(true);
+        const name = session?.user.name;
         const data = {
           email,
+          name,
           itineraryId,
         };
         await emailItinerary.mutateAsync(data);

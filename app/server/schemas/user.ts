@@ -95,6 +95,7 @@ export const updateUserAccountSchema = {
 export const deleteUserAccountSchema = {
   input: z.object({
     email: z.string(),
+    name: z.string().nullable().optional(),
   }),
   output: z.void(),
 };
@@ -102,6 +103,7 @@ export const deleteUserAccountSchema = {
 export const changeUserPasswordSchema = {
   input: z.object({
     email: z.string(),
+    name: z.string().nullable().optional(),
     currentPassword: z.string(),
     newPassword: z.string(),
   }),

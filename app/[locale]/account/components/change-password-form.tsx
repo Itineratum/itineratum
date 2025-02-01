@@ -400,8 +400,10 @@ const ChangePasswordForm = ({
         setAlertText("");
         setShowAlert(false);
         const email = session?.user.email!;
+        const name = session?.user.name;
         const data = {
           email,
+          name,
           currentPassword,
           newPassword,
         };

@@ -46,7 +46,11 @@ export const editItinerarySchema = {
 };
 
 export const emailItinerarySchema = {
-  input: z.object({ email: z.string(), itineraryId: z.string() }),
+  input: z.object({
+    email: z.string(),
+    name: z.string().nullable().optional(),
+    itineraryId: z.string(),
+  }),
   output: z.void(),
 };
 

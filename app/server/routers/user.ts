@@ -252,9 +252,9 @@ export const userRouter = router({
     .input(deleteUserAccountSchema.input)
     .output(deleteUserAccountSchema.output)
     .mutation(async (data) => {
-      const { email } = data.input;
+      const { email, name } = data.input;
       const deleteUserRes = await deleteUser(email);
-      await sendAccountDeletedEmail(email);
+      await sendAccountDeletedEmail(email, name);
 
       if (!deleteUserRes.success) {
         throw new TRPCError({
@@ -267,7 +267,7 @@ export const userRouter = router({
     .input(changeUserPasswordSchema.input)
     .output(changeUserPasswordSchema.output)
     .mutation(async (data) => {
-      const { email, currentPassword, newPassword } = data.input;
+      const { email, name, currentPassword, newPassword } = data.input;
 
       // verify that the user has entered the correct current password
       const verifyUserPasswordRes = await verifyUserPassword(
@@ -290,7 +290,7 @@ export const userRouter = router({
         },
       };
       const updateUserRes = await updateUser(email, update);
-      await sendAccountPasswordChangedEmail(email);
+      await sendAccountPasswordChangedEmail(email, name);
 
       if (!updateUserRes.success) {
         throw new TRPCError({
