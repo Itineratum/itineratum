@@ -66,7 +66,7 @@ const AccountBase = ({
         >
           <Text
             text={t("personalInformation.personalInformation")}
-            variant={TypographyVariant.h5}
+            variant={TypographyVariant.h4}
             bold={false}
           />
         </Button>
@@ -82,7 +82,7 @@ const AccountBase = ({
         >
           <Text
             text={t("accessibility")}
-            variant={TypographyVariant.h5}
+            variant={TypographyVariant.h4}
             bold={false}
           />
         </Button>
@@ -103,7 +103,7 @@ const AccountBase = ({
         >
           <Text
             text={t("notifications.notifications")}
-            variant={TypographyVariant.h5}
+            variant={TypographyVariant.h4}
             bold={false}
           />
         </Button>
@@ -145,7 +145,7 @@ const AccountBase = ({
         >
           <Text
             text={t("termsAndConditions")}
-            variant={TypographyVariant.h5}
+            variant={TypographyVariant.h4}
             bold={false}
           />
         </Button>
@@ -161,7 +161,7 @@ const AccountBase = ({
         >
           <Text
             text={t("privacyPolicy")}
-            variant={TypographyVariant.h5}
+            variant={TypographyVariant.h4}
             bold={false}
           />
         </Button>
