@@ -17,7 +17,6 @@ const AccountPage = () => {
   const personalInfoRef = useRef<HTMLDivElement>(null);
   const notificationsRef = useRef<HTMLDivElement>(null);
 
-  const bottomPadding = 48;
   const pageTransitionDuration: number = 500;
 
   useEffect(() => {
@@ -33,14 +32,16 @@ const AccountPage = () => {
     const resizeObserver = new ResizeObserver((entries) => {
       for (const entry of entries) {
         requestAnimationFrame(() => {
-          setContainerHeight(`${entry.contentRect.height + bottomPadding}px`);
+          const newHeight = `${entry.contentRect.height}px`;
+
+          if (newHeight !== containerHeight) setContainerHeight(newHeight);
         });
       }
     });
 
     resizeObserver.observe(activeRef.current);
     return () => resizeObserver.disconnect();
-  }, [accountSetting]);
+  }, [accountSetting, containerHeight]);
 
   const base = () => {
     return (
@@ -106,10 +107,12 @@ const AccountPage = () => {
   return (
     <Container
       sx={{
-        position: "relative",
-        overflow: "hidden", // Add this
-        minHeight: "200px", // Add minimum height
+        display: "flex",
+        flexDirection: "column",
+        alignItem: "center",
         justifyContent: "center",
+        position: "relative",
+        overflow: "hidden",
         height: containerHeight,
         transition: `height ${pageTransitionDuration}ms ease-in-out`,
       }}
