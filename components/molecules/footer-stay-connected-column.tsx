@@ -15,6 +15,7 @@ import {
   Skeleton,
   Stack,
   TextField,
+  useMediaQuery,
 } from "@mui/material";
 import { useSession } from "next-auth/react";
 import { useTranslations } from "next-intl";
@@ -24,7 +25,7 @@ import { Controller, ControllerRenderProps, useForm } from "react-hook-form";
 import Text from "../atoms/text";
 import Alert from "./alert";
 
-const StayConnectedColumn = () => {
+const FooterStayConnectedColumn = () => {
   const { data: session, status } = useSession();
   const isLoggedIn = status === "authenticated";
   const t = useTranslations("footer");
@@ -87,8 +88,9 @@ const StayConnectedColumn = () => {
     );
   };
 
-  const nameAndEmailRow = () => {
-    const rowSpacing: number = 2;
+  const nameAndEmail = () => {
+    const isMobile = useMediaQuery("(max-width: 600px)");
+    const spacing: number = 2;
     const style = {
       backgroundColor: "transparent",
       input: { color: "white" },
@@ -240,8 +242,12 @@ const StayConnectedColumn = () => {
     };
 
     return (
-      <Stack>
-        <Stack direction="row" spacing={rowSpacing} alignItems="center">
+      <Stack spacing={spacing}>
+        <Stack
+          direction={isMobile ? "column" : "row"}
+          spacing={spacing}
+          alignItems="center"
+        >
           {nameTextInput()}
           {emailTextInput()}
           {letsGoButton()}
@@ -261,9 +267,12 @@ const StayConnectedColumn = () => {
 
   const stayConnectedForm = () => {
     return (
-      <Stack spacing={spacing}>
+      <Stack
+        spacing={spacing}
+        sx={{ alignItems: { xs: "center", md: "flex-start" } }}
+      >
         {stayConnectedText()}
-        {nameAndEmailRow()}
+        {nameAndEmail()}
       </Stack>
     );
   };
@@ -280,7 +289,7 @@ const StayConnectedColumn = () => {
 
   return (
     <Stack spacing={spacing}>
-      <Box sx={{ height, width: "100%" }}>
+      <Box sx={{ height: { xs: "auto", md: height }, width: "100%" }}>
         {isLoggedIn && checkEmailInNewsletter.isLoading
           ? loadingIndicator()
           : hasEmailInNewsletter
@@ -298,4 +307,4 @@ const StayConnectedColumn = () => {
   );
 };
 
-export default StayConnectedColumn;
+export default FooterStayConnectedColumn;

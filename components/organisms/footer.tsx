@@ -16,7 +16,7 @@ import { useLocale, useTranslations } from "next-intl";
 import Link from "next/link";
 import Text from "../atoms/text";
 import TikTokIcon from "../atoms/tiktok-icon";
-import StayConnectedColumn from "../molecules/footer-stay-connected-column";
+import FooterStayConnectedColumn from "../molecules/footer-stay-connected-column";
 
 const Footer = () => {
   const t = useTranslations("footer");
@@ -26,7 +26,9 @@ const Footer = () => {
   const footerPaddingX: string = "40px";
   const footerPaddingY: string = "40px";
   const gridMarginBottom: string = "20px";
-  const spacing: number = 0;
+  const spacing: number = 2;
+
+  // Define custom column widths for desktop
   const stayConnectedColumnWidth: number = 5;
   const pageLinksColumnWidth: number = 2;
   const contactUsColumnWidth: number = 2;
@@ -36,16 +38,16 @@ const Footer = () => {
     return (
       <Grid
         item
-        xs={stayConnectedColumnWidth}
+        xs={12}
+        md={stayConnectedColumnWidth}
         sx={{ display: "flex", justifyContent: "center" }}
       >
-        <StayConnectedColumn />
+        <FooterStayConnectedColumn />
       </Grid>
     );
   };
 
   const pageLinksColumn = () => {
-    const spacing: number = 3;
     const typographyVariant: TypographyVariant = TypographyVariant.subtitle1;
 
     const homeLink = () => {
@@ -97,7 +99,7 @@ const Footer = () => {
     };
 
     return (
-      <Grid item xs={pageLinksColumnWidth}>
+      <Grid item xs={12} md={pageLinksColumnWidth}>
         <Stack spacing={spacing} sx={{ display: "flex", alignItems: "center" }}>
           {homeLink()}
           {savedTripsLink()}
@@ -153,7 +155,7 @@ const Footer = () => {
     };
 
     return (
-      <Grid item xs={contactUsColumnWidth}>
+      <Grid item xs={12} md={contactUsColumnWidth}>
         <Stack spacing={spacing} sx={{ display: "flex", alignItems: "center" }}>
           {contactUsHeading()}
           {contactDetails()}
@@ -166,7 +168,7 @@ const Footer = () => {
     const spacing: number = 3;
 
     return (
-      <Grid item xs={socialMediaLinksColumnWidth}>
+      <Grid item xs={12} md={socialMediaLinksColumnWidth}>
         <Stack
           direction="row"
           spacing={spacing}
@@ -199,7 +201,7 @@ const Footer = () => {
     return (
       <Divider
         sx={{
-          flexGrow: 1,
+          width: "100%",
           borderBottomWidth: lineThickness,
           borderBottomColor: "text.secondary",
           marginTop: marginTop,
@@ -231,10 +233,15 @@ const Footer = () => {
         direction="row"
         spacing={spacing}
         justifyContent="center"
-        sx={{ marginTop: "20px" }}
+        sx={{ marginTop: "20px", flexWrap: "wrap" }}
       >
         {Object.keys(links).map((text, index) => (
-          <Stack key={index} spacing={spacing} direction="row">
+          <Stack
+            key={index}
+            spacing={spacing}
+            direction="row"
+            alignItems="center"
+          >
             <Link
               href={links[text]}
               style={{ textDecoration: "none", color: "inherit" }}
@@ -245,7 +252,7 @@ const Footer = () => {
                 bold={false}
               />
             </Link>
-            {index < Object.keys(links).length - 1 ? divider() : <></>}
+            {index < Object.keys(links).length - 1 ? divider() : null}
           </Stack>
         ))}
       </Stack>
@@ -263,7 +270,12 @@ const Footer = () => {
         marginTop: footerMarginTop,
       }}
     >
-      <Stack direction="column" sx={{ width: "100%" }}>
+      <Stack
+        direction="column"
+        sx={{ width: "100%" }}
+        display="flex"
+        alignItems="center"
+      >
         <Grid
           container
           spacing={spacing}
