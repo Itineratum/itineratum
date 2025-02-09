@@ -46,6 +46,7 @@ const AccountNotifications = ({
   const formMargin: number = 7;
   const fieldSpacing: number = 4;
   const fieldWidth: string = "27%";
+  const spacing = 4;
 
   const getUserAccountNotificationsSettings =
     trpc.user.getUserNotificationsSettings.useQuery(
@@ -250,6 +251,8 @@ const AccountNotifications = ({
         <Stack
           direction={"row"}
           justifyContent="space-between"
+          alignItems="center"
+          spacing={spacing}
           width={fieldWidth}
         >
           {emailLabel()}
@@ -289,6 +292,8 @@ const AccountNotifications = ({
           direction={"row"}
           justifyContent="space-between"
           width={fieldWidth}
+          alignItems="center"
+          spacing={spacing}
         >
           {pushNotificationsLabel()}
           <NotificationsSwitch
@@ -370,6 +375,8 @@ const AccountNotifications = ({
           direction={"row"}
           justifyContent="space-between"
           width={fieldWidth}
+          alignItems="center"
+          spacing={spacing}
         >
           {emailLabel()}
           <NotificationsSwitch
@@ -408,6 +415,8 @@ const AccountNotifications = ({
           direction={"row"}
           justifyContent="space-between"
           width={fieldWidth}
+          alignItems="center"
+          spacing={spacing}
         >
           {pushNotificationsLabel()}
           <NotificationsSwitch

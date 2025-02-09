@@ -67,7 +67,6 @@ const AccountPersonalInformation = ({
   const formMargin: number = 2;
   const formFieldMargin: "dense" | "normal" | "none" | undefined = "normal";
   const fieldSpacing: number = 2;
-  const columnSx: number = 12 / 2;
   const textFieldSx = {
     "& .MuiInputBase-input": {
       padding: "10px",
@@ -193,6 +192,7 @@ const AccountPersonalInformation = ({
       </Breadcrumbs>
     );
   };
+
   const leftColumn = () => {
     const userAvatarField = () => {
       return (
@@ -347,16 +347,14 @@ const AccountPersonalInformation = ({
     };
 
     return (
-      <Grid item xs={columnSx}>
+      <Grid item xs={12} md={6}>
         <Stack spacing={fieldSpacing} useFlexGap>
           {userAvatarField()}
           {nameSection()}
           {emailField()}
-          {session?.provider === AuthService.Credentials ? (
-            changePasswordButton()
-          ) : (
-            <></>
-          )}
+          {session?.provider === AuthService.Credentials
+            ? changePasswordButton()
+            : null}
         </Stack>
       </Grid>
     );
@@ -499,7 +497,7 @@ const AccountPersonalInformation = ({
             type="button"
             fullWidth
             variant="contained"
-            sx={{ my: formMargin, maxWidth: buttonWidth, alignSelf: "center" }}
+            sx={{ maxWidth: buttonWidth, alignSelf: "center" }}
             color="secondary"
             disabled={isUpdating}
             onClick={handleOnClick}
@@ -527,7 +525,7 @@ const AccountPersonalInformation = ({
             type="button"
             fullWidth
             variant="contained"
-            sx={{ my: formMargin, maxWidth: buttonWidth, alignSelf: "center" }}
+            sx={{ maxWidth: buttonWidth, alignSelf: "center" }}
             color="primary"
             disabled={isUpdating}
             onClick={handleOnClick}
@@ -542,7 +540,12 @@ const AccountPersonalInformation = ({
       };
 
       return (
-        <Stack direction={"row"} spacing={fieldSpacing} useFlexGap>
+        <Stack
+          direction={"row"}
+          spacing={fieldSpacing}
+          useFlexGap
+          my={formMargin}
+        >
           {saveButton()}
           {deleteAccountButton()}
         </Stack>
@@ -550,7 +553,7 @@ const AccountPersonalInformation = ({
     };
 
     return (
-      <Grid item xs={columnSx}>
+      <Grid item xs={12} md={6}>
         <Stack spacing={fieldSpacing} useFlexGap>
           {addressSection()}
           {dateOfBirthField()}

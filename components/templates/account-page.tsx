@@ -109,7 +109,7 @@ const AccountPage = () => {
       sx={{
         display: "flex",
         flexDirection: "column",
-        alignItem: "center",
+        alignItems: "center",
         justifyContent: "center",
         position: "relative",
         overflow: "hidden",

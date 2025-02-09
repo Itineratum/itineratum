@@ -231,6 +231,7 @@ const UserAvatar = ({ editable }: { editable: boolean }) => {
         justifyContent="center"
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
+        onClick={() => setIsHovered((prev) => !prev)}
         sx={{
           marginTop: topMargin,
           marginBottom: bottomMargin,
