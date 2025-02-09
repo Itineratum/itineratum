@@ -21,6 +21,7 @@ const inputLabelProps = {
   },
   shrink: undefined,
 };
+const mobileSpacing = 1;
 
 const handleOnFocus = (e: any) => {
   e.target.labels[0].style.overflow = "visible";
@@ -44,7 +45,18 @@ const OriginField = ({
   const fieldId = "originCountry";
 
   return (
-    <Box display="flex" alignItems="center" sx={{ width: "100%" }}>
+    <Box
+      display="flex"
+      sx={{
+        width: "100%",
+        flexDirection: {
+          xs: "column",
+          md: "row",
+        },
+        alignItems: { xs: "flex-start", md: "center" },
+        gap: { xs: mobileSpacing, md: 0 },
+      }}
+    >
       <Box mr={textLabelMarginRight}>
         <Text
           text={t("origin") + ":"}
@@ -93,7 +105,19 @@ const DestinationField = ({
   const textLabelMarginRight: number = 2;
 
   return (
-    <Box display="flex" alignItems="center" sx={{ width: "100%" }}>
+    <Box
+      display="flex"
+      alignItems="center"
+      sx={{
+        width: "100%",
+        flexDirection: {
+          xs: "column",
+          md: "row",
+        },
+        alignItems: { xs: "flex-start", md: "center" },
+        gap: { xs: mobileSpacing, md: 0 },
+      }}
+    >
       <Box mr={textLabelMarginRight}>
         <Text
           text={t("destinations") + ":"}

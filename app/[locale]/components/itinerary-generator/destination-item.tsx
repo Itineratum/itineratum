@@ -1,3 +1,5 @@
+"use client";
+
 import Text from "@/components/atoms/text";
 import { TypographyVariant } from "@/constants/enums/theme";
 import colorsConst from "@/constants/pages/colors.json";
@@ -5,6 +7,8 @@ import {
   GenerateItineraryFormData,
   UserRequestedDestination,
 } from "@/constants/types/formData/generateItineraryFormData";
+import ArrowDownwardOutlinedIcon from "@mui/icons-material/ArrowDownwardOutlined";
+import ArrowUpwardOutlinedIcon from "@mui/icons-material/ArrowUpwardOutlined";
 import ClearOutlinedIcon from "@mui/icons-material/ClearOutlined";
 import MenuIcon from "@mui/icons-material/Menu";
 import { Box, IconButton, Stack } from "@mui/material";
@@ -43,40 +47,35 @@ const DestinationItem = ({
   const handleDrop = (event: React.DragEvent<HTMLDivElement>) => {
     event.preventDefault();
     const draggedIndex = parseInt(event.dataTransfer.getData("text/plain"));
-
     const tripStartDate =
       fields.getValues("startDate") || dayjs().startOf("day");
 
     if (draggedIndex === index) return;
 
-    var updatedDestinations = [...destinations];
+    let updatedDestinations = [...destinations];
     const [draggedItem] = updatedDestinations.splice(draggedIndex, 1);
     updatedDestinations.splice(index, 0, draggedItem);
 
-    // reset the startDate and endDate for all destinations
-    updatedDestinations = updatedDestinations.map((destination) => ({
-      ...destination,
+    // Reset dates for all destinations
+    updatedDestinations = updatedDestinations.map((dest) => ({
+      ...dest,
       startDate: tripStartDate,
       endDate: tripStartDate,
     }));
-
     fields.setValue(userRequestedDestinations, updatedDestinations);
   };
 
+  // Delete current destination
   const deleteButton = (index: number) => {
     const handleOnClick = () => {
       const tripStartDate =
         fields.getValues("startDate") || dayjs().startOf("day");
-
-      var updatedDestinations = destinations.filter((_, i) => i !== index);
-
-      // reset the startDate and endDate of the remaining destinations
-      updatedDestinations = updatedDestinations.map((destination) => ({
-        ...destination,
+      let updatedDestinations = destinations.filter((_, i) => i !== index);
+      updatedDestinations = updatedDestinations.map((dest) => ({
+        ...dest,
         startDate: tripStartDate,
         endDate: tripStartDate,
       }));
-
       fields.setValue(userRequestedDestinations, updatedDestinations);
       fields.trigger("startDate");
       fields.trigger("endDate");
@@ -86,6 +85,71 @@ const DestinationItem = ({
       <IconButton onClick={handleOnClick}>
         <ClearOutlinedIcon />
       </IconButton>
+    );
+  };
+
+  const mobileRearrangeControls = () => {
+    const upButton = () => {
+      const handleOnClick = () => {
+        if (index === 0) return; // Already at the top
+
+        const tripStartDate =
+          fields.getValues("startDate") || dayjs().startOf("day");
+        let updatedDestinations = [...destinations];
+        [updatedDestinations[index - 1], updatedDestinations[index]] = [
+          updatedDestinations[index],
+          updatedDestinations[index - 1],
+        ];
+        updatedDestinations = updatedDestinations.map((dest) => ({
+          ...dest,
+          startDate: tripStartDate,
+          endDate: tripStartDate,
+        }));
+        fields.setValue(userRequestedDestinations, updatedDestinations);
+      };
+
+      return (
+        index > 0 && (
+          <IconButton onClick={handleOnClick}>
+            <ArrowUpwardOutlinedIcon />
+          </IconButton>
+        )
+      );
+    };
+
+    const downButton = () => {
+      const handleOnClick = () => {
+        if (index === destinations.length - 1) return; // Already at the bottom
+
+        const tripStartDate =
+          fields.getValues("startDate") || dayjs().startOf("day");
+        let updatedDestinations = [...destinations];
+        [updatedDestinations[index + 1], updatedDestinations[index]] = [
+          updatedDestinations[index],
+          updatedDestinations[index + 1],
+        ];
+        updatedDestinations = updatedDestinations.map((dest) => ({
+          ...dest,
+          startDate: tripStartDate,
+          endDate: tripStartDate,
+        }));
+        fields.setValue(userRequestedDestinations, updatedDestinations);
+      };
+
+      return (
+        index < destinations.length - 1 && (
+          <IconButton onClick={handleOnClick}>
+            <ArrowDownwardOutlinedIcon />
+          </IconButton>
+        )
+      );
+    };
+
+    return (
+      <Box sx={{ display: { xs: "flex", md: "none" } }}>
+        {upButton()}
+        {downButton()}
+      </Box>
     );
   };
 
@@ -101,13 +165,23 @@ const DestinationItem = ({
       onDragOver={handleDragOver}
       onDrop={handleDrop}
     >
-      <Stack direction="row" spacing={spacing} alignItems={"center"}>
-        <MenuIcon sx={{ cursor: "move" }} />
-        <Text
-          text={destination.name}
-          variant={TypographyVariant.h6}
-          bold={false}
+      <Stack direction="row" spacing={spacing} alignItems="center">
+        {mobileRearrangeControls()}
+        <MenuIcon
+          sx={{ cursor: "move", display: { xs: "none", md: "flex" } }}
         />
+        <Box
+          sx={{
+            whiteSpace: "normal",
+            wordBreak: "break-word",
+          }}
+        >
+          <Text
+            text={destination.name}
+            variant={TypographyVariant.h6}
+            bold={false}
+          />
+        </Box>
       </Stack>
       {deleteButton(index)}
     </Box>

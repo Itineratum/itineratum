@@ -95,7 +95,6 @@ const Step1 = ({
 
     const destinationsSection = () => {
       return (
-        // <Box sx={{ maxHeight: "20vh", overflowY: "auto" }}>
         <Box>
           {destinations.map((destination, index) => (
             <DestinationItem
@@ -111,7 +110,7 @@ const Step1 = ({
     };
 
     return (
-      <Grid item xs={6}>
+      <Grid item xs={12} md={6}>
         <Stack spacing={spacing} direction="column" alignItems="center">
           {originField()}
           {destinationField()}

@@ -5,14 +5,7 @@ import {
   GenerateItineraryFormData,
   UserRequestedDestination,
 } from "@/constants/types/formData/generateItineraryFormData";
-import {
-  Box,
-  Grid,
-  MenuItem,
-  Select,
-  SelectChangeEvent,
-  Stack,
-} from "@mui/material";
+import { Box, Grid, MenuItem, Select, Stack } from "@mui/material";
 import { useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
 import { UseFormReturn } from "react-hook-form";
@@ -248,11 +241,14 @@ const Step5 = ({
         destination: UserRequestedDestination,
         index: number,
       ) => {
+        const spacing = 2;
+
         return (
-          <Grid container sx={destinationBoxSx} key={index}>
+          <Grid container sx={destinationBoxSx} key={index} spacing={spacing}>
             <Grid
               item
-              xs={leftSection}
+              xs={12}
+              md={leftSection}
               sx={{ display: "flex", direction: "row", alignItems: "center" }}
             >
               {numbering(index)}
@@ -262,7 +258,7 @@ const Step5 = ({
                 bold={false}
               />
             </Grid>
-            <Grid item xs={rightSection} sx={{ display: "flex" }}>
+            <Grid item xs={12} md={rightSection} sx={{ display: "flex" }}>
               {daysAllocationItem(destination)}
             </Grid>
           </Grid>
@@ -270,7 +266,14 @@ const Step5 = ({
       };
 
       return (
-        <Box sx={{ width: "100%" }}>
+        <Box
+          sx={{
+            width: "100%",
+            display: "flex",
+            gap: spacing,
+            flexDirection: "column",
+          }}
+        >
           {fields
             .getValues(userRequestedDestinations)
             .map((destination, index) => destinationItem(destination, index))}
@@ -292,14 +295,17 @@ const Step5 = ({
   };
 
   return (
-    <Stack
-      direction="row"
-      spacing={spacing}
-      sx={{ display: "flex", alignItems: "flex-start" }}
+    <Box
+      sx={{
+        display: "flex",
+        alignItems: "flex-start",
+        flexDirection: { xs: "column", md: "row" },
+        gap: spacing,
+      }}
     >
       {destinationLabel()}
       {daysAllocationSection()}
-    </Stack>
+    </Box>
   );
 };
 

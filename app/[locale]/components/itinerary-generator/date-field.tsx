@@ -18,6 +18,7 @@ const DateFields = ({
 }) => {
   const t = useTranslations("home.itineraryGenerator.step1");
   const spacing: number = 4;
+  const mobileSpacing = 1;
   const textLabelMarginRight: number = 2;
   const startDate = "startDate";
   const endDate = "endDate";
@@ -75,7 +76,19 @@ const DateFields = ({
     };
 
     return (
-      <Box display="flex" alignItems="center" sx={{ width: "100%" }}>
+      <Box
+        display="flex"
+        alignItems="center"
+        sx={{
+          width: "100%",
+          flexDirection: {
+            xs: "column",
+            md: "row",
+          },
+          alignItems: { xs: "flex-start", md: "center" },
+          gap: { xs: mobileSpacing, md: 0 },
+        }}
+      >
         <Box mr={textLabelMarginRight}>
           <Text
             text={t("from") + ":"}
@@ -147,7 +160,19 @@ const DateFields = ({
     };
 
     return (
-      <Box display="flex" alignItems="center" sx={{ width: "100%" }}>
+      <Box
+        display="flex"
+        alignItems="center"
+        sx={{
+          width: "100%",
+          flexDirection: {
+            xs: "column",
+            md: "row",
+          },
+          alignItems: { xs: "flex-start", md: "center" },
+          gap: { xs: mobileSpacing, md: 0 },
+        }}
+      >
         <Box mr={textLabelMarginRight}>
           <Text
             text={t("to") + ":"}
@@ -203,7 +228,7 @@ const DateFields = ({
   };
 
   return (
-    <Grid item xs={6} alignItems="flex-start">
+    <Grid item xs={12} md={6} alignItems="flex-start" width="100%">
       <LocalizationProvider dateAdapter={AdapterDayjs}>
         <Stack spacing={spacing} direction="column" alignItems="center">
           {fromDateField()}

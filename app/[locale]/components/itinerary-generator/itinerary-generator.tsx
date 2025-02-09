@@ -400,7 +400,7 @@ const ItineraryGenerator = () => {
         sx={{
           position: "relative",
           height: "auto",
-          width: "100%",
+          width: { xs: "85%", md: "100%" },
           overflow: "hidden",
           border,
           borderRadius,

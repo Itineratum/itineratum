@@ -18,6 +18,7 @@ const Step2 = ({
   const t = useTranslations("home.itineraryGenerator.step2");
 
   const spacing: number = 4;
+  const mobileSpacing = 2;
   const textLabelMarginRight: number = 2;
   const budget = "budget";
   const totalHotelRooms = "totalHotelRooms";
@@ -42,11 +43,19 @@ const Step2 = ({
       };
 
       return (
-        <Box display="flex" alignItems="center" sx={{ width: "100%" }}>
+        <Box
+          display="flex"
+          sx={{
+            width: "100%",
+            flexDirection: { xs: "column", md: "row" },
+            gap: { xs: mobileSpacing, md: 0 },
+            alignItems: { xs: "flex-start", md: "center" },
+          }}
+        >
           <Box
             mr={textLabelMarginRight}
             display="flex"
-            sx={{ width, flexShrink: 0 }}
+            sx={{ width: { xs: "100%", md: width }, flexShrink: 0 }}
           >
             <Text
               text={t("budget") + ": " + currency?.toUpperCase()}
@@ -82,6 +91,7 @@ const Step2 = ({
                 }}
                 error={fieldState.invalid}
                 helperText={fieldState.invalid ? t("budgetErrorMessage") : ""}
+                fullWidth
               />
             )}
           />
@@ -98,8 +108,19 @@ const Step2 = ({
       };
 
       return (
-        <Box display="flex" alignItems="center" sx={{ width: "100%" }}>
-          <Box display="flex" sx={{ width, flexShrink: 0 }}>
+        <Box
+          display="flex"
+          sx={{
+            width: "100%",
+            flexDirection: { xs: "column", md: "row" },
+            gap: { xs: mobileSpacing, md: 0 },
+            alignItems: { xs: "flex-start", md: "center" },
+          }}
+        >
+          <Box
+            display="flex"
+            sx={{ width: { xs: "100%", md: width }, flexShrink: 0 }}
+          >
             <Text
               text={t("hotelRooms") + ":"}
               variant={TypographyVariant.h4}
@@ -129,6 +150,7 @@ const Step2 = ({
                 helperText={
                   fieldState.invalid ? t("hotelRoomsErrorMessage") : ""
                 }
+                fullWidth
               />
             )}
           />
@@ -137,12 +159,11 @@ const Step2 = ({
     };
 
     return (
-      <Grid container spacing={spacing} direction="row" alignItems="center">
-        <Grid item xs={5}>
+      <Grid container spacing={spacing} alignItems="center">
+        <Grid item xs={12} md={5}>
           {budgetField()}
         </Grid>
-        <Grid item xs={7}>
-          {" "}
+        <Grid item xs={12} md={7}>
           {totalHotelRoomsField()}
         </Grid>
       </Grid>
@@ -200,6 +221,7 @@ const Step2 = ({
                   }}
                   error={fieldState.invalid}
                   helperText={fieldState.invalid ? t("adultsErrorMessage") : ""}
+                  fullWidth
                 />
               )}
             />
@@ -207,7 +229,12 @@ const Step2 = ({
         };
 
         return (
-          <Stack spacing={0} direction="column" alignItems="flex-start">
+          <Stack
+            spacing={0}
+            direction="column"
+            alignItems="flex-start"
+            sx={{ width: "100%" }}
+          >
             {label()}
             {inputField()}
           </Stack>
@@ -255,6 +282,7 @@ const Step2 = ({
                   helperText={
                     fieldState.invalid ? t("childrenErrorMessage") : ""
                   }
+                  fullWidth
                 />
               )}
             />
@@ -262,7 +290,12 @@ const Step2 = ({
         };
 
         return (
-          <Stack spacing={0} direction="column" alignItems="flex-start">
+          <Stack
+            spacing={0}
+            direction="column"
+            alignItems="flex-start"
+            width="100%"
+          >
             {label()}
             {inputField()}
           </Stack>
@@ -270,7 +303,12 @@ const Step2 = ({
       };
 
       return (
-        <Stack spacing={spacing} direction="column" alignItems="flex-start">
+        <Stack
+          spacing={spacing}
+          direction="column"
+          alignItems="flex-start"
+          width="100%"
+        >
           {adultsField()}
           {childrenField()}
         </Stack>
@@ -278,15 +316,27 @@ const Step2 = ({
     };
 
     return (
-      <Stack spacing={spacing} direction="row" alignItems="flex-start">
+      <Box
+        sx={{
+          display: "flex",
+          flexDirection: { xs: "column", md: "row" },
+          gap: spacing,
+          alignItems: "flex-start",
+        }}
+      >
         {numPeopleTravellingLabel()}
         {numPeopleTravellingFields()}
-      </Stack>
+      </Box>
     );
   };
 
   return (
-    <Stack spacing={spacing + 5} direction="column" alignItems="center">
+    <Stack
+      spacing={spacing + 5}
+      direction="column"
+      alignItems="center"
+      sx={{ display: "flex", alignItems: "flex-end" }}
+    >
       {budgetHotelRoomsSection()}
       {numPeopleTravellingSection()}
     </Stack>

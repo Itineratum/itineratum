@@ -2,7 +2,7 @@ import Text from "@/components/atoms/text";
 import { GenerateItineraryOtherRequirement } from "@/constants/enums/generateItinerary";
 import { TypographyVariant } from "@/constants/enums/theme";
 import { GenerateItineraryFormData } from "@/constants/types/formData/generateItineraryFormData";
-import { Checkbox, FormControlLabel, Stack } from "@mui/material";
+import { Box, Checkbox, FormControlLabel, Stack } from "@mui/material";
 import { useTranslations } from "next-intl";
 import { UseFormReturn } from "react-hook-form";
 
@@ -71,15 +71,21 @@ const Step6 = ({
   };
 
   return (
-    <Stack
-      spacing={spacing}
-      direction="row"
-      alignItems="flex-start"
-      justifyContent="center"
+    <Box
+      sx={{
+        display: "flex",
+        gap: spacing,
+        flexDirection: {
+          xs: "column",
+          md: "row",
+          alignItems: "flex-start",
+          justifyContent: "center",
+        },
+      }}
     >
       {labelSection()}
       {otherRequirementsCheckboxSection()}
-    </Stack>
+    </Box>
   );
 };
 

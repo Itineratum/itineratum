@@ -145,7 +145,13 @@ const Step3 = ({
     };
 
     return (
-      <Stack spacing={spacing + 10} direction="row" alignItems="center">
+      <Box
+        sx={{
+          display: "flex",
+          flexDirection: { xs: "column", md: "row", gap: spacing + 10 },
+          alignItems: "center",
+        }}
+      >
         <Stack spacing={spacing} direction="column">
           {Object.values(GenerateItineraryFocus).map((focus) => (
             <Box
@@ -180,7 +186,7 @@ const Step3 = ({
           ))}
         </Stack>
         {resetRankingsButton()}
-      </Stack>
+      </Box>
     );
   };
 
