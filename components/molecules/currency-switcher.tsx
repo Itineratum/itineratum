@@ -1,5 +1,5 @@
 import { trpc } from "@/app/_trpc/client";
-import { currencyMap } from "@/constants/enums/currency";
+import { Currency, currencyMap } from "@/constants/enums/currency";
 import { Skeleton } from "@mui/material";
 import { getCookie, setCookie } from "cookies-next";
 import { useSession } from "next-auth/react";
@@ -27,7 +27,7 @@ const CurrencySwitcher = () => {
       onError: (error) => {
         if (error.message === "UNAUTHORIZED") router.push("/protected");
       },
-    },
+    }
   );
 
   const handleCurrencyChange = async (newCurrency: string) => {
@@ -47,6 +47,7 @@ const CurrencySwitcher = () => {
 
   useEffect(() => {
     const storedCurrency = getCookie("currency");
+
     if (storedCurrency && typeof storedCurrency === "string") {
       setCurrency(storedCurrency);
     }
