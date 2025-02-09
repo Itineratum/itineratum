@@ -1,8 +1,10 @@
 import FAQ from "@/app/[locale]/contact-us/components/faq";
+import FeedbackForm from "@/app/[locale]/contact-us/components/feedback-form";
 import {
   TypographyTextDecoration,
   TypographyVariant,
 } from "@/constants/enums/theme";
+import contactsConst from "@/constants/pages/contacts.json";
 import { IFAQ } from "@/constants/types/faq";
 import { emailParser, phoneParser } from "@/utils/stringParsers";
 import ChatBubbleOutlineOutlinedIcon from "@mui/icons-material/ChatBubbleOutlineOutlined";
@@ -10,8 +12,6 @@ import HeadsetMicOutlinedIcon from "@mui/icons-material/HeadsetMicOutlined";
 import { Box, Card, CardContent, Container, Stack } from "@mui/material";
 import { useTranslations } from "next-intl";
 import Text from "../atoms/text";
-import contactsConst from "@/constants/pages/contacts.json";
-import FeedbackForm from "@/app/[locale]/contact-us/components/feedback-form";
 
 const ContactUsPage = ({ faqs }: { faqs: IFAQ[] }) => {
   const t = useTranslations("contactUs");
@@ -27,17 +27,20 @@ const ContactUsPage = ({ faqs }: { faqs: IFAQ[] }) => {
     border,
     width: "fit-content",
   };
-  const cardStyle = {
+  const cardSx = {
     display: "flex",
-    width: "50%",
-    height: "35vh",
+    width: { xs: "auto", md: "50%" },
+    height: { xs: "auto", md: "35vh" },
     border,
     borderRadius,
   };
-  const cardContentStyle = {
+  const cardContentSx = {
     display: "flex",
     flexDirection: "column",
     justifyContent: "space-between",
+    whiteSpace: "normal",
+    wordBreak: "break-word",
+    gap: margin,
   };
 
   const contactUsText = () => {
@@ -78,8 +81,8 @@ const ContactUsPage = ({ faqs }: { faqs: IFAQ[] }) => {
       };
 
       return (
-        <Card style={cardStyle}>
-          <CardContent sx={cardContentStyle}>
+        <Card sx={cardSx}>
+          <CardContent sx={cardContentSx}>
             {icon()}
             {description()}
             {email()}
@@ -120,8 +123,8 @@ const ContactUsPage = ({ faqs }: { faqs: IFAQ[] }) => {
       };
 
       return (
-        <Card style={cardStyle}>
-          <CardContent sx={cardContentStyle}>
+        <Card sx={cardSx}>
+          <CardContent sx={cardContentSx}>
             {icon()}
             {description()}
             {phone()}
@@ -131,10 +134,13 @@ const ContactUsPage = ({ faqs }: { faqs: IFAQ[] }) => {
     };
 
     return (
-      <Stack direction={"row"} spacing={margin}>
+      <Box
+        sx={{ display: "flex", flexDirection: { xs: "column", md: "row" } }}
+        gap={margin}
+      >
         {emailBlock()}
         {phoneBlock()}
-      </Stack>
+      </Box>
     );
   };
   const commonFaqsSection = () => {

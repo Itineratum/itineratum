@@ -89,7 +89,6 @@ const FooterStayConnectedColumn = () => {
   };
 
   const nameAndEmail = () => {
-    const isMobile = useMediaQuery("(max-width: 600px)");
     const spacing: number = 2;
     const style = {
       backgroundColor: "transparent",
@@ -244,7 +243,7 @@ const FooterStayConnectedColumn = () => {
     return (
       <Stack spacing={spacing}>
         <Stack
-          direction={isMobile ? "column" : "row"}
+          sx={{ display: "flex", flexDirection: { xs: "column", md: "row" } }}
           spacing={spacing}
           alignItems="center"
         >

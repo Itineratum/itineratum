@@ -30,7 +30,8 @@ const Navbar = () => {
 
   const navBarWidth: string = "90%";
   const navBarMarginBottom: string = "20px";
-  const margin = 2.5;
+  const margin = 1;
+  const currencySwitcherAccountGap = 4;
 
   const savedTrips = () => {
     return (
@@ -98,8 +99,13 @@ const Navbar = () => {
   const drawerContentForMobile = () => {
     return (
       <Box
-        sx={{ padding: 2, mr: margin, flexDirection: "column" }}
-        role="presentation"
+        display="flex"
+        sx={{
+          padding: 2,
+          mr: margin,
+          flexDirection: "column",
+          alignItems: "flex-end",
+        }}
         onClick={() => setDrawerOpen(false)}
         onKeyDown={() => setDrawerOpen(false)}
       >
@@ -107,7 +113,7 @@ const Navbar = () => {
         {savedTrips()}
         {aboutUs()}
         {contactUs()}
-        <Box ml={margin}>
+        <Box sx={{ ml: margin }}>
           <CurrencySwitcher />
         </Box>
       </Box>
@@ -132,7 +138,7 @@ const Navbar = () => {
         onClose={() => setDrawerOpen(false)}
         PaperProps={{
           sx: {
-            width: "70%",
+            width: "60%",
           },
         }}
       >
@@ -179,6 +185,7 @@ const Navbar = () => {
           </Box>
           <Box
             sx={{ display: { xs: "none", md: "flex" }, alignItems: "center" }}
+            gap={currencySwitcherAccountGap}
           >
             {/* <LanguageSwitcher locale={locale} /> */}
             <CurrencySwitcher />

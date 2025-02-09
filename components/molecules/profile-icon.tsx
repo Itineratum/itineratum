@@ -1,7 +1,7 @@
 import { TypographyVariant } from "@/constants/enums/theme";
 import { default as endpointsConst } from "@/constants/pages/endpoints.json";
 import PersonOutlineOutlinedIcon from "@mui/icons-material/PersonOutlineOutlined";
-import { Box, Button, Menu, MenuItem } from "@mui/material";
+import { Box, IconButton, Menu, MenuItem } from "@mui/material";
 import { signOut } from "next-auth/react";
 import { useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
@@ -20,6 +20,7 @@ const ProfileIcon = () => {
   const open = Boolean(anchorEl);
 
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+    event.stopPropagation();
     setAnchorEl(event.currentTarget);
   };
   const handleClose = () => {
@@ -57,16 +58,16 @@ const ProfileIcon = () => {
 
   return (
     <Box>
-      <Button
+      <IconButton
         id={button}
         aria-controls={open ? menu : undefined}
         aria-haspopup="true"
         aria-expanded={open ? "true" : undefined}
         onClick={handleClick}
-        sx={{ color: "text.primary", mx: 0.5 }}
+        sx={{ color: "text.primary", mx: { xs: 0, md: 0.5 } }}
       >
         <PersonOutlineOutlinedIcon />
-      </Button>
+      </IconButton>
       <Menu
         id={menu}
         aria-labelledby={button}

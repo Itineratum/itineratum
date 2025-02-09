@@ -8,16 +8,19 @@ import { Collapse } from "@mui/material";
 import Box from "@mui/material/Box";
 import Container from "@mui/material/Container";
 import { useTranslations } from "next-intl";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { OrDivider } from "../atoms/or-divider";
 import { GoogleButton } from "../molecules/google-button";
 
 const LoginPage = () => {
   const t = useTranslations("login");
   const [isLoginUsingOtp, setIsLoginUsingOtp] = useState<boolean>(false);
+  const [returnUrl, setReturnUrl] = useState<string | null>(null);
 
-  const searchParams = new URLSearchParams(window.location.search);
-  const returnUrl = searchParams.get("returnUrl");
+  useEffect(() => {
+    const searchParams = new URLSearchParams(window.location.search);
+    setReturnUrl(searchParams.get("returnUrl"));
+  }, []);
 
   const pageTransitionDuration: number = 500;
   const formMargin: number = 2;

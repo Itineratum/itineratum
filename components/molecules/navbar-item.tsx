@@ -17,7 +17,7 @@ const NavbarItem = ({
       <Button
         key={name}
         sx={{
-          mx: 2.5,
+          mx: { xs: 0, md: 2.5 },
           color: "text.primary",
         }}
       >
