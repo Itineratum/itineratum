@@ -22,38 +22,32 @@ const Home = () => {
   const paddingBottom: string = "20px";
 
   const textSection = () => {
-    const title = () => {
-      return (
-        <Text
-          text={t("title")}
-          variant={TypographyVariant.h4}
-          bold={false}
-          color={colorConst.palette.secondary.main}
-        />
-      );
-    };
+    const title = () => (
+      <Text
+        text={t("title")}
+        variant={TypographyVariant.h4}
+        bold={false}
+        color={colorConst.palette.secondary.main}
+      />
+    );
 
-    const tagline = () => {
-      return (
-        <Text text={t("tagline")} variant={TypographyVariant.h1} bold={true} />
-      );
-    };
+    const tagline = () => (
+      <Text text={t("tagline")} variant={TypographyVariant.h1} bold={true} />
+    );
 
-    const callToAction = () => {
-      return (
-        <Text
-          text={t("callToAction")}
-          variant={TypographyVariant.h4}
-          bold={false}
-          color={colorConst.palette.text.grey}
-        />
-      );
-    };
+    const callToAction = () => (
+      <Text
+        text={t("callToAction")}
+        variant={TypographyVariant.h4}
+        bold={false}
+        color={colorConst.palette.text.grey}
+      />
+    );
 
     return (
       <Stack
         sx={{
-          width: sectionWidth,
+          width: { xs: "100%", md: sectionWidth },
           display: "flex",
           flexDirection: "column",
           justifyContent: "center",
@@ -85,23 +79,77 @@ const Home = () => {
     };
 
     return (
-      <Stack direction="row" sx={{ width: sectionWidth }}>
+      <Stack
+        direction="row"
+        sx={{
+          width: { xs: "100%", md: sectionWidth },
+          justifyContent: "center",
+        }}
+      >
         {leftColumn()}
         {rightColumn()}
       </Stack>
     );
   };
 
-  const arrowImage = () => {
+  const arrowImage = () => (
+    <Box
+      sx={{
+        position: "absolute",
+        top: { xs: "180px", md: "420px" },
+        left: { xs: "120px", md: "160px" },
+      }}
+    >
+      <Image src={arrow} alt={"Orange arrow"} />
+    </Box>
+  );
+
+  const textImageSection = () => {
     return (
       <Box
         sx={{
-          position: "absolute",
-          top: "420px",
-          left: "160px",
+          display: { xs: "none", md: "flex" },
+          flexDirection: "row",
+          width: "100%",
+          justifyContent: "center",
+          gap: 5,
         }}
       >
-        <Image src={arrow} alt={"Orange arrow"} />
+        {textSection()}
+        {imageSection()}
+      </Box>
+    );
+  };
+
+  const textImageSectionMobile = () => {
+    return (
+      <Box
+        sx={{
+          display: { xs: "block", md: "none" },
+          position: "relative",
+          width: "100%",
+        }}
+      >
+        <Box
+          sx={{
+            position: "relative",
+            zIndex: 2,
+          }}
+        >
+          {textSection()}
+        </Box>
+        <Box
+          sx={{
+            position: "absolute",
+            top: 0,
+            left: 0,
+            width: "100%",
+            zIndex: 1,
+            opacity: 0.3,
+          }}
+        >
+          {imageSection()}
+        </Box>
       </Box>
     );
   };
@@ -117,10 +165,8 @@ const Home = () => {
         paddingBottom,
       }}
     >
-      <Stack direction="row">
-        {textSection()}
-        {imageSection()}
-      </Stack>
+      {textImageSection()}
+      {textImageSectionMobile()}
       {arrowImage()}
       <ItineraryGenerator />
       <NewsletterSignup />

@@ -405,6 +405,7 @@ const ItineraryGenerator = () => {
           border,
           borderRadius,
           padding,
+          mt: { xs: 15, md: 0 },
         }}
       >
         {formFields()}

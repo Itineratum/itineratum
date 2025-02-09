@@ -14,7 +14,6 @@ import {
   Box,
   Button,
   CircularProgress,
-  Grid,
   Skeleton,
   Stack,
   TextField,
@@ -220,7 +219,14 @@ const NewsletterSignup = () => {
         animate={inView ? { x: "-25%", opacity: 1 } : {}}
         transition={{ duration: rollInAnimationDuration, ease: "easeOut" }}
       >
-        <Box sx={{ position: "relative", top: "0%" }}>
+        <Box
+          sx={{
+            position: "relative",
+            top: { xs: "40px", md: 0 },
+            left: { xs: "-150px", md: 0 },
+            scale: { xs: 0.8, md: 1 },
+          }}
+        >
           <Image src={leaningTowerOfPisa} alt={"The Leaning Tower of Pisa"} />
         </Box>
       </motion.div>
@@ -234,7 +240,9 @@ const NewsletterSignup = () => {
         animate={inView ? { x: "0%", opacity: 1 } : {}}
         transition={{ duration: rollInAnimationDuration, ease: "easeOut" }}
       >
-        <Box sx={{ position: "relative", top: "-17%" }}>
+        <Box
+          sx={{ position: "relative", top: "-17%", scale: { xs: 0.8, md: 1 } }}
+        >
           <Image src={noodles} alt={"A bowl of noodles"} />
         </Box>
       </motion.div>
@@ -253,30 +261,56 @@ const NewsletterSignup = () => {
       color: colorsConst.palette.text.secondary,
       overflow: "hidden",
       height,
-      width: "100%",
+      width: {
+        xs: "85%",
+        md: "100%",
+      },
+      position: "relative",
     };
 
     return (
-      <Box ref={ref} sx={signUpFormSx}>
-        <Grid container spacing={gridSpacing}>
-          <Grid item xs={imageSize}>
-            {leftImage()}
-          </Grid>
-          <Grid item xs={userInputsSize}>
-            <Stack spacing={gridSpacing - 1}>
-              {userInputs()}
-              <Alert
-                showAlert={showAlert}
-                setShowAlert={setShowAlert}
-                alertType={alertType}
-                alertText={alertText}
-              />
-            </Stack>
-          </Grid>
-          <Grid item xs={imageSize}>
-            {rightImage()}
-          </Grid>
-        </Grid>
+      <Box ref={ref} sx={signUpFormSx} display="flex" justifyContent="center">
+        <Box
+          sx={{
+            position: "absolute",
+            zIndex: 1,
+            left: { xs: "150px", md: "40px" },
+          }}
+        >
+          {leftImage()}
+        </Box>
+        <Box
+          sx={{
+            position: "relative",
+            zIndex: 2,
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            justifyContent: "center",
+            px: 2,
+          }}
+        >
+          <Stack spacing={gridSpacing - 1}>
+            {userInputs()}
+            <Alert
+              showAlert={showAlert}
+              setShowAlert={setShowAlert}
+              alertType={alertType}
+              alertText={alertText}
+            />
+          </Stack>
+        </Box>
+        <Box
+          sx={{
+            position: "absolute",
+            right: "-100px",
+            top: { xs: "70%", md: "50%" },
+            transform: "translateY(-50%)",
+            zIndex: 1,
+          }}
+        >
+          {rightImage()}
+        </Box>
       </Box>
     );
   };

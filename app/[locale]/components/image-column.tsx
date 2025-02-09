@@ -20,7 +20,27 @@ const floatAnimationDown = keyframes`
 const ImageColumn = ({ images, left }: { images: string[]; left: boolean }) => {
   const largeImageSize: number = 300;
   const smallImageSize: number = 165;
+  const largeImageSizeMobile = largeImageSize / 2;
+  const smallImageSizeMobile = smallImageSize / 2;
   const imageSpacing: number = 10;
+
+  const getImageSize = (index: number, mobile: boolean) => {
+    return left
+      ? index % 2 === 0
+        ? mobile
+          ? smallImageSizeMobile
+          : smallImageSize
+        : mobile
+          ? largeImageSizeMobile
+          : largeImageSize
+      : index % 2 === 0
+        ? mobile
+          ? largeImageSizeMobile
+          : largeImageSize
+        : mobile
+          ? smallImageSizeMobile
+          : smallImageSize;
+  };
 
   const animation = (index: number, left: boolean) => {
     if (left) {
@@ -41,14 +61,7 @@ const ImageColumn = ({ images, left }: { images: string[]; left: boolean }) => {
     >
       {images.map((src, index) => {
         const fileName = src.split("/").pop();
-        const imageSize = left
-          ? index % 2 == 0
-            ? smallImageSize
-            : largeImageSize
-          : index % 2 == 0
-            ? largeImageSize
-            : smallImageSize;
-
+        const imageSize = getImageSize(index, false);
         return (
           <Box
             key={fileName}
@@ -56,8 +69,14 @@ const ImageColumn = ({ images, left }: { images: string[]; left: boolean }) => {
               position: "relative",
               overflow: "hidden",
               borderRadius: "50%",
-              width: imageSize,
-              height: imageSize,
+              width: {
+                xs: getImageSize(index, true),
+                md: getImageSize(index, false),
+              },
+              height: {
+                xs: getImageSize(index, true),
+                md: getImageSize(index, false),
+              },
               animation: `${animation(index, left)} ${animationPeriod}s ease-in-out infinite`,
             }}
           >
