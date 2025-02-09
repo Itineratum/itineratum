@@ -13,31 +13,31 @@ const SignupLoginButtons = () => {
   const locale = useLocale();
   const typographyVariant: TypographyVariant = TypographyVariant.h6;
 
-  const LoginButton = () => {
-    return (
-      <Link href={buildLocaleEndpoint(locale, endpointConst.login.endpoint)}>
-        <Button
-          sx={{
-            mx: buttonMargin,
-            color: buttonTextColor,
-          }}
-        >
-          <Text text={t("login")} variant={typographyVariant} bold={true} />
-        </Button>
-      </Link>
-    );
-  };
-
   const SignupButton = () => {
     return (
       <Link href={buildLocaleEndpoint(locale, endpointConst.signUp.endpoint)}>
         <Button
           sx={{
-            mx: buttonMargin,
+            mr: buttonMargin,
             color: buttonTextColor,
           }}
         >
           <Text text={t("signUp")} variant={typographyVariant} bold={true} />
+        </Button>
+      </Link>
+    );
+  };
+
+  const LoginButton = () => {
+    return (
+      <Link href={buildLocaleEndpoint(locale, endpointConst.login.endpoint)}>
+        <Button
+          sx={{
+            ml: buttonMargin,
+            color: buttonTextColor,
+          }}
+        >
+          <Text text={t("login")} variant={typographyVariant} bold={true} />
         </Button>
       </Link>
     );
