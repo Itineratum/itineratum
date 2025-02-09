@@ -20,6 +20,7 @@ const ButtonMenu = ({
   const menu: string = `${id}-menu`;
 
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+    event.stopPropagation();
     setAnchorEl(event.currentTarget);
   };
   const handleClose = () => {
@@ -47,7 +48,7 @@ const ButtonMenu = ({
       <MenuItem key={item} onClick={() => handleMenuItemClick(item)}>
         {menuItems[item]}
       </MenuItem>
-    ),
+    )
   );
 
   return (
