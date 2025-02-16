@@ -28,6 +28,8 @@ const AccountBase = ({
   const router = useRouter();
 
   const sectionMargin: number = 7;
+  const headerTypographyVariant = TypographyVariant.h4;
+  const buttonTypographyVariant = TypographyVariant.h6;
 
   useEffect(() => {
     if (!isLoggedIn) router.push("/protected");
@@ -47,7 +49,7 @@ const AccountBase = ({
       return (
         <Text
           text={t("settings")}
-          variant={TypographyVariant.h4}
+          variant={headerTypographyVariant}
           bold={false}
           textDecoration={TypographyTextDecoration.underline}
         />
@@ -68,7 +70,7 @@ const AccountBase = ({
         >
           <Text
             text={t("personalInformation.personalInformation")}
-            variant={TypographyVariant.h4}
+            variant={buttonTypographyVariant}
             bold={false}
           />
         </Button>
@@ -84,7 +86,7 @@ const AccountBase = ({
         >
           <Text
             text={t("accessibility")}
-            variant={TypographyVariant.h4}
+            variant={buttonTypographyVariant}
             bold={false}
           />
         </Button>
@@ -105,7 +107,7 @@ const AccountBase = ({
         >
           <Text
             text={t("notifications.notifications")}
-            variant={TypographyVariant.h4}
+            variant={buttonTypographyVariant}
             bold={false}
           />
         </Button>
@@ -131,7 +133,7 @@ const AccountBase = ({
       return (
         <Text
           text={t("legal")}
-          variant={TypographyVariant.h4}
+          variant={headerTypographyVariant}
           bold={false}
           textDecoration={TypographyTextDecoration.underline}
         />
@@ -153,7 +155,7 @@ const AccountBase = ({
         >
           <Text
             text={t("termsAndConditions")}
-            variant={TypographyVariant.h4}
+            variant={buttonTypographyVariant}
             bold={false}
           />
         </Button>
@@ -174,7 +176,7 @@ const AccountBase = ({
         >
           <Text
             text={t("privacyPolicy")}
-            variant={TypographyVariant.h4}
+            variant={buttonTypographyVariant}
             bold={false}
           />
         </Button>
