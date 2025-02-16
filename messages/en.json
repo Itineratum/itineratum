@@ -453,5 +453,8 @@
     "heading": "Unathorised Access",
     "description": "You are not authorised to view the requested page or complete the action.\n\nPlease login to continue.",
     "login": "Login"
+  },
+  "termsAndConditions": {
+    "termsAndConditions": "Terms & Conditions"
   }
 }

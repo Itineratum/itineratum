@@ -8,6 +8,8 @@ import {
   TypographyVariant,
 } from "@/constants/enums/theme";
 import colorsConst from "@/constants/pages/colors.json";
+import endpointsConst from "@/constants/pages/endpoints.json";
+import urlsConst from "@/constants/urls.json";
 import { Box, Button, Stack } from "@mui/material";
 import { useSession } from "next-auth/react";
 import { useTranslations } from "next-intl";
@@ -137,11 +139,17 @@ const AccountBase = ({
     };
 
     const termsAndConditions = () => {
+      const handleOnClick = () => {
+        router.replace(endpointsConst.termsAndConditions.endpoint);
+      };
+
       return (
         <Button
           sx={{
             color: colorsConst.palette.text.primary,
+            textDecoration: "none",
           }}
+          onClick={handleOnClick}
         >
           <Text
             text={t("termsAndConditions")}
@@ -153,11 +161,16 @@ const AccountBase = ({
     };
 
     const privacyPolicy = () => {
+      const handleOnClick = () => {
+        router.replace(urlsConst.privacyPolicy);
+      };
+
       return (
         <Button
           sx={{
             color: colorsConst.palette.text.primary,
           }}
+          onClick={handleOnClick}
         >
           <Text
             text={t("privacyPolicy")}

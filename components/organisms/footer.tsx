@@ -17,6 +17,7 @@ import Link from "next/link";
 import Text from "../atoms/text";
 import TikTokIcon from "../atoms/tiktok-icon";
 import FooterStayConnectedColumn from "../molecules/footer-stay-connected-column";
+import urlsConst from "@/constants/urls.json";
 
 const Footer = () => {
   const t = useTranslations("footer");
@@ -213,8 +214,8 @@ const Footer = () => {
   const linksRow = () => {
     // TODO: insert links here
     const links: Record<string, string> = {
-      [t("termsAndConditions")]: "",
-      [t("privacyPolicy")]: "",
+      [t("termsAndConditions")]: endpointsConst.termsAndConditions.endpoint,
+      [t("privacyPolicy")]: urlsConst.privacyPolicy,
       [t("cookiePolicy")]: "",
       [t("copyrightNotification")]: "",
       [t("cookieSettings")]: "",

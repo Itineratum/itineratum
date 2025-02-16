@@ -42,5 +42,9 @@
         "endpoint": "logout"
       }
     ]
+  },
+  "termsAndConditions": {
+    "name": "Terms & Conditions",
+    "endpoint": "terms-and-conditions"
   }
 }
