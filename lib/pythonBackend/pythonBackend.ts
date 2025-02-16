@@ -128,7 +128,6 @@ export const searchFlights = async (itineraryJson: GenerateItineraryJSON) => {
 };
 
 export const planIsValid = (validatePlanRes: any): boolean => {
-  console.log(validatePlanRes.plan_is_valid.toLowerCase() === "yes");
   return (
     validatePlanRes.plan_is_valid.toLowerCase() === "yes" ||
     validatePlanRes.plan_is_valid.toLowerCase() === "feasible"
