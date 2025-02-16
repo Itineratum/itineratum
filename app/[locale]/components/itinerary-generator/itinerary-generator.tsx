@@ -4,15 +4,12 @@ import { trpc } from "@/app/_trpc/client";
 import Alert from "@/components/molecules/alert";
 import { AlertType } from "@/constants/enums/alertType";
 import { Currency } from "@/constants/enums/currency";
+import { GenerateItineraryStep } from "@/constants/enums/generateItinerary";
 import colorsConst from "@/constants/pages/colors.json";
-import endpointsConst from "@/constants/pages/endpoints.json";
 import { GenerateItineraryFormData } from "@/constants/types/formData/generateItineraryFormData";
-import { backupRunPipelineResponseJson } from "@/lib/pythonBackend/backupRunPipelineResponseJson";
 import {
   debugRunPipelineWithGenerationSteps,
   generateItineraryJson,
-  runPipeline,
-  runPipelineWithGenerationSteps,
 } from "@/lib/pythonBackend/pythonBackend";
 import ArrowBackOutlinedIcon from "@mui/icons-material/ArrowBackOutlined";
 import ArrowForwardOutlinedIcon from "@mui/icons-material/ArrowForwardOutlined";
@@ -24,15 +21,13 @@ import { useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { FormProvider, useForm } from "react-hook-form";
+import ItineraryGenerationSteps from "../../../../components/molecules/itinerary-generation-steps";
 import Step1 from "./step-1";
 import Step2 from "./step-2";
 import Step3 from "./step-3";
 import Step4 from "./step-4";
 import Step5 from "./step-5";
 import Step6 from "./step-6";
-import ItineraryGenerationSteps from "../../../../components/molecules/itinerary-generation-steps";
-import { GenerateItineraryStep } from "@/constants/enums/generateItinerary";
-import { backupRunPipelineWithGenerationStepsJson } from "@/lib/pythonBackend/backupRunPipelineWithGenerationStepsJson";
 
 const ItineraryGenerator = () => {
   const { data: session } = useSession();
@@ -220,10 +215,6 @@ const ItineraryGenerator = () => {
       );
     };
 
-    const spacing = () => {
-      return <Box sx={{ flexGrow: 1 }} />;
-    };
-
     const nextButton = () => {
       // whenever the user adds, removes, or rearranges the destinations, the start and end dates of each destination should be update such that:
       // - the start date of the first destination is the trip start date
@@ -319,16 +310,16 @@ const ItineraryGenerator = () => {
           // backup
           // const itinerary = backupRunPipelineResponseJson;
 
-          const runPipelineRes = await runPipelineWithGenerationSteps(
+          // const runPipelineRes = await runPipelineWithGenerationSteps(
+          //   itineraryJson,
+          //   setGenerationStep,
+          // );
+
+          // debug
+          const runPipelineRes = await debugRunPipelineWithGenerationSteps(
             itineraryJson,
             setGenerationStep,
           );
-
-          // debug
-          // const runPipelineRes = await debugPipelineWithGenerationSteps(
-          //   itineraryJson,
-          //   setGenerationStep
-          // );
           // backup
           // const runPipelineRes = backupRunPipelineWithGenerationStepsJson;
 
@@ -340,10 +331,10 @@ const ItineraryGenerator = () => {
             hotels: runPipelineRes.hotels || [],
             flights: runPipelineRes.flights || [],
           };
-          const itineraryId = await saveItinerary.mutateAsync(data);
+          // const itineraryId = await saveItinerary.mutateAsync(data);
 
           // redirect to the ItineraryPage component
-          router.push(`${endpointsConst.itinerary.endpoint}/${itineraryId}`);
+          // router.push(`${endpointsConst.itinerary.endpoint}/${itineraryId}`);
         } catch (error: any) {
           console.error(error);
           setAlertText(error.message);
@@ -383,10 +374,14 @@ const ItineraryGenerator = () => {
           justifyContent: "space-between",
           width: "100%",
           marginTop,
+          flexDirection: {
+            xs: generatingItinerary ? "column" : "row",
+            md: "row",
+          },
+          gap: 3,
         }}
       >
         {previousButton()}
-        {spacing()}
         {nextButton()}
         {generateButton()}
       </Box>

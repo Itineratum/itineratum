@@ -58,7 +58,10 @@ export default function ItineraryGenerationSteps({
 
   const stepLabels = () => {
     return (
-      <Stepper activeStep={activeStep}>
+      <Stepper
+        activeStep={activeStep}
+        sx={{ display: "flex", flexDirection: { xs: "column", md: "row" } }}
+      >
         {steps.map((step, index) => (
           <Step key={step}>
             <StepLabel>
