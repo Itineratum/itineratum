@@ -12,7 +12,7 @@ import Image from "next/image";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
 
 export const eventDetailsCardHeight = 300;
-export const eventDetailsCardOverlapOffset = 250;
+export const eventDetailsCardOverlapOffset = 0.85 * eventDetailsCardHeight;
 
 const EventDetailsCard = ({
   event,
@@ -32,7 +32,7 @@ const EventDetailsCard = ({
   const t = useTranslations("itinerary.eventDetailsCard");
 
   const height = eventDetailsCardHeight;
-  const width = "575px";
+  const width = 1.9 * height;
   const borderRadius = "20px";
   const overlapOffset = eventDetailsCardOverlapOffset;
   const hoverAnimationDuration = "0.3s";
@@ -175,6 +175,7 @@ const EventDetailsCard = ({
         transition: `transform ${hoverAnimationDuration}`,
         transform,
         "&:hover": hoverSx,
+        width: { xs: "100%", md: width },
       }}
     >
       {card()}

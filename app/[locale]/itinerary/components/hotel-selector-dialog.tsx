@@ -52,6 +52,7 @@ import {
   Stack,
   Tab,
   Tabs,
+  useMediaQuery,
 } from "@mui/material";
 import {
   AdvancedMarker,
@@ -105,6 +106,7 @@ const HotelSelectorDialog = ({
 
   const ratingSpacing = 2;
   const spacing = 4;
+  const mobileSpacing = 4;
 
   const adjustItineraryHotels =
     trpc.itinerary.adjustItineraryHotels.useMutation();
@@ -175,7 +177,7 @@ const HotelSelectorDialog = ({
     };
 
     const hotelTabs = () => {
-      const width = "1100px";
+      const maxWidth = "1100px";
 
       const handleOnChange = (
         event: React.SyntheticEvent,
@@ -186,7 +188,13 @@ const HotelSelectorDialog = ({
 
       const tabLabels = () => {
         return (
-          <Tabs value={hotelTabValue} onChange={handleOnChange}>
+          <Tabs
+            value={hotelTabValue}
+            onChange={handleOnChange}
+            variant="scrollable"
+            allowScrollButtonsMobile
+            scrollButtons="auto"
+          >
             {hotels.map((hotel) => (
               <Tab
                 key={JSON.stringify(hotel)}
@@ -202,7 +210,7 @@ const HotelSelectorDialog = ({
       };
 
       return (
-        <Box sx={{ width }}>
+        <Box sx={{ width: "100%", maxWidth, mx: "auto" }}>
           <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
             {tabLabels()}
           </Box>
@@ -224,7 +232,8 @@ const HotelSelectorDialog = ({
     const spacing = 4;
 
     const imageCarousel = () => {
-      const carouselHeight = "450px";
+      const isMobile = useMediaQuery("(max-width:600px)");
+      const carouselHeight = isMobile ? "25vh" : "450px";
 
       return (
         hotel &&
@@ -299,7 +308,13 @@ const HotelSelectorDialog = ({
 
         return (
           hotel?.rate_per_night && (
-            <Grid item xs={4} display="flex" justifyContent={justifyContent}>
+            <Grid
+              item
+              xs={12}
+              md={4}
+              display="flex"
+              justifyContent={justifyContent}
+            >
               <Stack
                 direction="column"
                 spacing={spacing}
@@ -348,7 +363,13 @@ const HotelSelectorDialog = ({
 
         return (
           hotel?.hotel_class && (
-            <Grid item xs={4} display="flex" justifyContent={justifyContent}>
+            <Grid
+              item
+              xs={12}
+              md={4}
+              display="flex"
+              justifyContent={justifyContent}
+            >
               <Stack
                 direction="column"
                 spacing={spacing}
@@ -395,7 +416,13 @@ const HotelSelectorDialog = ({
 
         return (
           hotel?.type && (
-            <Grid item xs={4} display="flex" justifyContent={justifyContent}>
+            <Grid
+              item
+              xs={12}
+              md={4}
+              display="flex"
+              justifyContent={justifyContent}
+            >
               <Stack
                 direction="column"
                 spacing={spacing}
@@ -411,7 +438,7 @@ const HotelSelectorDialog = ({
       };
 
       return (
-        <Grid container>
+        <Grid container sx={{ gap: { xs: mobileSpacing, md: 0 } }}>
           {ratePerNight()}
           {hotelClass()}
           {type()}
@@ -446,7 +473,13 @@ const HotelSelectorDialog = ({
 
         return (
           hotel?.rating && (
-            <Grid item xs={4} display="flex" justifyContent={justifyContent}>
+            <Grid
+              item
+              xs={12}
+              md={4}
+              display="flex"
+              justifyContent={justifyContent}
+            >
               <Stack
                 direction="column"
                 spacing={spacing}
@@ -484,7 +517,13 @@ const HotelSelectorDialog = ({
 
         return (
           hotel?.num_reviews && (
-            <Grid item xs={4} display="flex" justifyContent={justifyContent}>
+            <Grid
+              item
+              xs={12}
+              md={4}
+              display="flex"
+              justifyContent={justifyContent}
+            >
               <Stack
                 direction="column"
                 spacing={spacing}
@@ -533,7 +572,13 @@ const HotelSelectorDialog = ({
 
         return (
           hotel?.location_rating && (
-            <Grid item xs={4} display="flex" justifyContent={justifyContent}>
+            <Grid
+              item
+              xs={12}
+              md={4}
+              display="flex"
+              justifyContent={justifyContent}
+            >
               <Stack
                 direction="column"
                 spacing={spacing}
@@ -549,7 +594,7 @@ const HotelSelectorDialog = ({
       };
 
       return (
-        <Grid container>
+        <Grid container sx={{ gap: { xs: mobileSpacing, md: 0 } }}>
           {rating()}
           {numReviews()}
           {locationRating()}
@@ -585,7 +630,13 @@ const HotelSelectorDialog = ({
 
         return (
           hotel?.check_in_time && (
-            <Grid item xs={4} display="flex" justifyContent={justifyContent}>
+            <Grid
+              item
+              xs={12}
+              md={4}
+              display="flex"
+              justifyContent={justifyContent}
+            >
               <Stack
                 direction="column"
                 spacing={spacing}
@@ -623,7 +674,13 @@ const HotelSelectorDialog = ({
 
         return (
           hotel?.check_out_time && (
-            <Grid item xs={4} display="flex" justifyContent={justifyContent}>
+            <Grid
+              item
+              xs={12}
+              md={4}
+              display="flex"
+              justifyContent={justifyContent}
+            >
               <Stack
                 direction="column"
                 spacing={spacing}
@@ -659,7 +716,13 @@ const HotelSelectorDialog = ({
 
         return (
           hotel?.url && (
-            <Grid item xs={4} display="flex" justifyContent={justifyContent}>
+            <Grid
+              item
+              xs={12}
+              md={4}
+              display="flex"
+              justifyContent={justifyContent}
+            >
               <Stack
                 direction="column"
                 spacing={spacing}
@@ -675,7 +738,7 @@ const HotelSelectorDialog = ({
       };
 
       return (
-        <Grid container>
+        <Grid container sx={{ gap: { xs: mobileSpacing, md: 0 } }}>
           {checkInTime()}
           {checkOutTime()}
           {website()}
@@ -862,7 +925,7 @@ const HotelSelectorDialog = ({
             HotelType[hotel?.type as keyof typeof HotelType];
 
           return (
-            <Stack direction="column">
+            <Stack direction="column" spacing={spacing}>
               {hotel?.amenities.map((amenity: any) => (
                 <Stack key={amenity} direction="row" spacing={spacing}>
                   {getIcon(hotelType, amenity)}
@@ -882,7 +945,8 @@ const HotelSelectorDialog = ({
           hotel.amenities.length > 0 && (
             <Grid
               item
-              xs={amenitiesGrid}
+              xs={12}
+              md={amenitiesGrid}
               display="flex"
               justifyContent={justifyContent}
             >
@@ -981,26 +1045,31 @@ const HotelSelectorDialog = ({
 
           return (
             hotel?.coordinates && (
-              <Map
-                key={JSON.stringify(hotel.coordinates)}
-                mapId={process.env.NEXT_PUBLIC_GOOGLE_MAPS_ID}
-                style={{
-                  height,
-                  width,
-                  border: "2px solid black",
-                  borderRadius,
-                  overflow: "hidden",
+              <Box
+                sx={{
+                  height: { xs: "50vh", md: height },
+                  width: { xs: "70vw", md: width },
                 }}
-                defaultCenter={hotelPosition}
-                defaultZoom={11}
-                gestureHandling={"greedy"}
-                disableDefaultUI={true}
               >
-                {mapMarkersData.map((mapMarkerData: MapMarkerData) =>
-                  eventMapMarker(mapMarkerData),
-                )}
-                {hotelMapMarker()}
-              </Map>
+                <Map
+                  key={JSON.stringify(hotel.coordinates)}
+                  mapId={process.env.NEXT_PUBLIC_GOOGLE_MAPS_ID}
+                  style={{
+                    border: "2px solid black",
+                    borderRadius,
+                    overflow: "hidden",
+                  }}
+                  defaultCenter={hotelPosition}
+                  defaultZoom={11}
+                  gestureHandling={"greedy"}
+                  disableDefaultUI={true}
+                >
+                  {mapMarkersData.map((mapMarkerData: MapMarkerData) =>
+                    eventMapMarker(mapMarkerData),
+                  )}
+                  {hotelMapMarker()}
+                </Map>
+              </Box>
             )
           );
         };
@@ -1009,7 +1078,8 @@ const HotelSelectorDialog = ({
           hotel?.coordinates && (
             <Grid
               item
-              xs={locationGrid}
+              xs={12}
+              md={locationGrid}
               display="flex"
               justifyContent={justifyContent}
             >
@@ -1028,7 +1098,7 @@ const HotelSelectorDialog = ({
       };
 
       return (
-        <Grid container>
+        <Grid container sx={{ gap: { xs: 4, md: 0 } }}>
           {amenities()}
           {location()}
         </Grid>
@@ -1037,11 +1107,13 @@ const HotelSelectorDialog = ({
 
     return (
       <Stack direction="column" spacing={spacing}>
-        <Box>
+        <Stack direction="column" spacing={spacing}>
           {imageCarousel()}
-          {name()}
-          {description()}
-        </Box>
+          <Box>
+            {name()}
+            {description()}
+          </Box>
+        </Stack>
         <Stack direction="column" spacing={spacing}>
           {rateClassType()}
           {ratingNumReviewsLocationRating()}

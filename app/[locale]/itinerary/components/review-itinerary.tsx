@@ -794,16 +794,18 @@ const ReviewItinerary = ({
 
     return (
       <Stack direction="column" spacing={spacing}>
-        <Stack
-          direction="row"
-          spacing={spacing}
-          display="flex"
-          justifyContent="flex-end"
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: "row",
+            gap: spacing,
+            justifyContent: { xs: "center", md: "flex-end" },
+          }}
         >
           {canEdit && isEditing && cancelButton()}
           {canEdit && editSaveButton()}
           {!isEditing && canSaveItinerary && saveItineraryButton()}
-        </Stack>
+        </Box>
         <Alert
           showAlert={showAlert}
           setShowAlert={setShowAlert}
@@ -839,11 +841,23 @@ const ReviewItinerary = ({
       <Box display="flex" justifyContent="flex-start">
         {selectHotelButton()}
       </Box>
-      <Stack direction="row" spacing={gap} justifyContent="center">
+      <Box
+        sx={{
+          display: "flex",
+          flexDirection: { xs: "column", md: "row" },
+          gap,
+          justifyContent: "center",
+        }}
+      >
         {itineraryGeneratedSection()}
         {detailsSection()}
-      </Stack>
-      <Box display="flex" justifyContent="flex-end">
+      </Box>
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: { xs: "center", md: "flex-end" },
+        }}
+      >
         {editItinerarySection()}
       </Box>
       <MapSection

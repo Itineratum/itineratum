@@ -78,19 +78,28 @@ const EventDetailsDialog = ({
         animation="wave"
       />
     ) : (
-      <Image
-        key={JSON.stringify(event)}
-        style={{
-          borderRadius: "20px",
-          border: "2px solid black",
-          objectFit: "cover",
+      <Box
+        sx={{
+          width: { xs: "100%", md: width },
+          height: { xs: "30vh", md: height },
+          position: "relative",
         }}
-        src={imageSrc!}
-        alt={"Event image"}
-        width={width}
-        height={height}
-        priority
-      />
+      >
+        <Image
+          key={JSON.stringify(event)}
+          style={{
+            borderRadius: "20px",
+            border: "2px solid black",
+            objectFit: "cover",
+            maxHeight: height,
+            maxWidth: width,
+          }}
+          src={imageSrc!}
+          alt={"Event image"}
+          layout="fill"
+          priority
+        />
+      </Box>
     );
   };
 
@@ -128,7 +137,13 @@ const EventDetailsDialog = ({
 
     const address = () => {
       return (
-        <Stack direction="row" spacing={spacing} maxWidth={contentMaxWidth}>
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: { xs: "column", md: "row" },
+            maxWidth: contentMaxWidth,
+          }}
+        >
           <Text
             text={t("address") + ": "}
             variant={typographyVariant}
@@ -147,13 +162,20 @@ const EventDetailsDialog = ({
             bold={false}
             color={colorsConst.palette.text.primary}
           />
-        </Stack>
+        </Box>
       );
     };
 
     const website = () => {
       return event && event.website_uri && event.website_uri !== "N/A" ? (
-        <Stack direction="row" spacing={spacing} maxWidth={contentMaxWidth}>
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: { xs: "column", md: "row" },
+            maxWidth: contentMaxWidth,
+          }}
+        >
+          {" "}
           <Text
             text={t("website") + ": "}
             variant={typographyVariant}
@@ -167,7 +189,7 @@ const EventDetailsDialog = ({
             color={colorsConst.palette.text.primary}
             link={event ? event.website_uri : ""}
           />
-        </Stack>
+        </Box>
       ) : null;
     };
 
@@ -205,7 +227,13 @@ const EventDetailsDialog = ({
         };
 
         return (
-          <Stack direction="row" spacing={spacing}>
+          <Box
+            sx={{
+              display: "flex",
+              flexDirection: { xs: "column", md: "row" },
+            }}
+          >
+            {" "}
             <Text
               text={t("openingHours") + ": "}
               variant={TypographyVariant.body1}
@@ -218,7 +246,7 @@ const EventDetailsDialog = ({
               bold={false}
               color={colorsConst.palette.text.primary}
             />
-          </Stack>
+          </Box>
         );
       };
 
@@ -226,7 +254,12 @@ const EventDetailsDialog = ({
         const ratingSpacing = 2;
 
         return (
-          <Stack direction="row" spacing={ratingSpacing}>
+          <Box
+            sx={{
+              display: "flex",
+              flexDirection: { xs: "column", md: "row" },
+            }}
+          >
             <Text
               text={t("rating") + ": "}
               variant={typographyVariant}
@@ -248,7 +281,7 @@ const EventDetailsDialog = ({
                 />
               </Stack>
             ) : null}
-          </Stack>
+          </Box>
         );
       };
 
@@ -260,11 +293,11 @@ const EventDetailsDialog = ({
         event.rating > 0
       ) {
         return (
-          <Grid container>
-            <Grid item xs={8}>
+          <Grid container sx={{ gap: { xs: spacing, md: 0 } }}>
+            <Grid item xs={12} md={8}>
               {openingHours()}
             </Grid>
-            <Grid item xs={4}>
+            <Grid item xs={12} md={4}>
               {rating()}
             </Grid>
           </Grid>
@@ -322,10 +355,10 @@ const EventDetailsDialog = ({
         event.checkInTime &&
         event.checkOutTime && (
           <Grid container>
-            <Grid item xs={6}>
+            <Grid item xs={12} md={6}>
               {checkInTime()}
             </Grid>
-            <Grid item xs={6}>
+            <Grid item xs={12} md={6}>
               {checkOutTime()}
             </Grid>
           </Grid>

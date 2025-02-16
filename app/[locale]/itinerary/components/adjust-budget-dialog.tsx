@@ -8,11 +8,7 @@ import { GenerateItineraryStep } from "@/constants/enums/generateItinerary";
 import { TypographyVariant } from "@/constants/enums/theme";
 import colorsConst from "@/constants/pages/colors.json";
 import { AdjustBudgetFormData } from "@/constants/types/formData/adjustBudgetFormData";
-import {
-  debugRunPipelineWithGenerationSteps,
-  runPipeline,
-  runPipelineWithGenerationSteps,
-} from "@/lib/pythonBackend/pythonBackend";
+import { runPipelineWithGenerationSteps } from "@/lib/pythonBackend/pythonBackend";
 import { GenerateItineraryJSON } from "@/lib/pythonBackend/types";
 import { isValidIntegerRegex } from "@/utils/itineraryGeneratorValidation";
 import {

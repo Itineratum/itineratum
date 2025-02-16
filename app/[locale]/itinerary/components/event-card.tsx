@@ -5,21 +5,23 @@ import { TypographyVariant } from "@/constants/enums/theme";
 import colorsConst from "@/constants/pages/colors.json";
 import { Event, EventTimeOfDay } from "@/lib/pythonBackend/types";
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
+import ArrowDownwardOutlinedIcon from "@mui/icons-material/ArrowDownwardOutlined";
+import ArrowUpwardOutlinedIcon from "@mui/icons-material/ArrowUpwardOutlined";
 import CalendarTodayIcon from "@mui/icons-material/CalendarToday";
 import EditIcon from "@mui/icons-material/Edit";
 import LocationOnIcon from "@mui/icons-material/LocationOn";
+import MenuIcon from "@mui/icons-material/Menu";
 import RemoveCircleIcon from "@mui/icons-material/RemoveCircle";
-import { Box, Button, IconButton, Menu, Stack } from "@mui/material";
+import { Box, Button, IconButton, Stack } from "@mui/material";
 import { Dayjs } from "dayjs";
 import { useTranslations } from "next-intl";
 import { Dispatch, SetStateAction } from "react";
 import {
+  DeleteEventFromItineraryDetails,
   ItineraryEditAction,
   ItineraryEditDetails,
-  DeleteEventFromItineraryDetails,
   ReorderEventInItineraryDetails,
 } from "./review-itinerary";
-import MenuIcon from "@mui/icons-material/Menu";
 
 export const eventCardMaxWidth = 515;
 
@@ -96,7 +98,7 @@ const EventCard = ({
         sx={{
           position: "absolute",
           top: -16,
-          left: -16,
+          left: { xs: 36, md: -16 },
           zIndex: 1,
           backgroundColor:
             colorsConst.components.eventCard.deleteButtonBackground,
@@ -185,14 +187,15 @@ const EventCard = ({
   const leftAvatar = () => {
     const size = 70;
     const circleSize = 24;
+    const mobileFactor = 0.7;
 
     return (
       <Box sx={{ position: "relative", marginRight: 2 }}>
         <Box
           sx={{
             borderRadius: "50%",
-            width: size,
-            height: size,
+            width: { xs: size * mobileFactor, md: size },
+            height: { xs: size * mobileFactor, md: size },
             backgroundColor: colorsConst.components.eventCard.background,
           }}
         />
@@ -202,8 +205,8 @@ const EventCard = ({
             top: "50%",
             left: "50%",
             transform: "translate(-50%, -50%)",
-            width: circleSize,
-            height: circleSize,
+            width: { xs: circleSize * mobileFactor, md: circleSize },
+            height: { xs: circleSize * mobileFactor, md: circleSize },
             borderRadius: "50%",
             backgroundColor: color,
           }}
@@ -304,51 +307,142 @@ const EventCard = ({
     setCurrentEdit(newEdit);
   };
 
-  return (
-    <Stack direction="column" spacing={spacing}>
-      {isEditing && index === 0 && addButton(index)}
+  const mobileRearrangeControls = () => {
+    const upButton = () => {
+      const handleOnClick = () => {
+        if (index === 0) return; // cannot move up if already first
+
+        const oldEventIndex = index;
+        const newEventIndex = index - 1;
+        const movedEvent = events[oldEventIndex];
+
+        if (movedEvent.time_of_day !== events[newEventIndex].time_of_day) {
+          setShowSnackbar(true);
+          return;
+        }
+
+        const newEdit: Partial<
+          Record<ItineraryEditAction, ReorderEventInItineraryDetails>
+        > = {
+          [ItineraryEditAction.reorder]: {
+            event: movedEvent,
+            oldEventIndex,
+            newEventIndex,
+          },
+        };
+        setCurrentEdit(newEdit);
+      };
+
+      return (
+        index > 0 && (
+          <IconButton onClick={handleOnClick}>
+            <ArrowUpwardOutlinedIcon />
+          </IconButton>
+        )
+      );
+    };
+
+    const downButton = () => {
+      const handleOnClick = () => {
+        if (index === events.length - 1) return; // cannot move down if already last
+
+        const oldEventIndex = index;
+        const newEventIndex = index + 1;
+        const movedEvent = events[oldEventIndex];
+
+        // Check time-of-day constraint
+        if (movedEvent.time_of_day !== events[newEventIndex].time_of_day) {
+          setShowSnackbar(true);
+          return;
+        }
+
+        const newEdit: Partial<
+          Record<ItineraryEditAction, ReorderEventInItineraryDetails>
+        > = {
+          [ItineraryEditAction.reorder]: {
+            event: movedEvent,
+            oldEventIndex,
+            newEventIndex,
+          },
+        };
+        setCurrentEdit(newEdit);
+      };
+
+      return (
+        index < events.length - 1 && (
+          <IconButton onClick={handleOnClick}>
+            <ArrowDownwardOutlinedIcon />
+          </IconButton>
+        )
+      );
+    };
+
+    return (
       <Box
         sx={{
-          position: "relative",
-          display: "inline-block",
-          maxWidth,
-          maxHeight,
+          display: { xs: "flex", md: "none" },
+          flexDirection: "column",
+          gap: spacing,
         }}
-        draggable={isEditing}
-        onDragStart={handleDragStart}
-        onDragOver={handleDragOver}
-        onDrop={handleDrop}
       >
-        {isEditing && deleteButton()}
-        {isEditing && !event.is_hotel && modifyButton()}
-        {isEditing && (
-          <MenuIcon
-            sx={{
-              position: "absolute",
-              top: "50%",
-              left: "-10%",
-              color: "black",
-            }}
-          />
-        )}
-        <Button
-          onClick={handleOnClick}
-          sx={{
-            display: "flex",
-            alignItems: "center",
-            padding,
-            border,
-            borderRadius,
-            maxWidth,
-            maxHeight,
-          }}
-        >
-          {leftAvatar()}
-          {eventDetails()}
-        </Button>
+        {upButton()}
+        {downButton()}
       </Box>
-      {isEditing && addButton(index + 1)}
-    </Stack>
+    );
+  };
+
+  return (
+    <Box>
+      <Stack direction="column" spacing={spacing}>
+        {isEditing && index === 0 && addButton(index)}
+        <Box
+          sx={{
+            position: "relative",
+            display: "flex",
+            flexDirection: "row",
+            alignItems: "center",
+            maxWidth,
+            maxHeight: { xs: "none", md: maxHeight },
+            gap: spacing,
+          }}
+          draggable={isEditing}
+          onDragStart={handleDragStart}
+          onDragOver={handleDragOver}
+          onDrop={handleDrop}
+        >
+          {isEditing && deleteButton()}
+          {isEditing && !event.is_hotel && modifyButton()}
+          {isEditing && (
+            <Box>
+              {mobileRearrangeControls()}
+              <MenuIcon
+                sx={{
+                  position: "absolute",
+                  top: "50%",
+                  left: "-10%",
+                  color: "black",
+                  display: { xs: "none", md: "flex" },
+                }}
+              />
+            </Box>
+          )}
+          <Button
+            onClick={handleOnClick}
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              padding,
+              border,
+              borderRadius,
+            }}
+          >
+            {leftAvatar()}
+            {eventDetails()}
+          </Button>
+        </Box>
+        {isEditing && addButton(index + 1)}
+      </Stack>
+    </Box>
   );
 };
 

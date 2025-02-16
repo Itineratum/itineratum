@@ -372,7 +372,7 @@ const ItineraryGenerator = () => {
       <Box
         sx={{
           display: "flex",
-          justifyContent: "space-between",
+          justifyContent: activeStep === 0 ? "flex-end" : "space-between",
           width: "100%",
           marginTop,
           flexDirection: {

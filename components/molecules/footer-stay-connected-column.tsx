@@ -15,7 +15,6 @@ import {
   Skeleton,
   Stack,
   TextField,
-  useMediaQuery,
 } from "@mui/material";
 import { useSession } from "next-auth/react";
 import { useTranslations } from "next-intl";

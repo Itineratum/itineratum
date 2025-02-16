@@ -1,7 +1,7 @@
 "use client";
 
 import { Event, EventTimeOfDay, Position } from "@/lib/pythonBackend/types";
-import { CircularProgress, Container } from "@mui/material";
+import { Box, CircularProgress, Container } from "@mui/material";
 import { Map } from "@vis.gl/react-google-maps";
 import { useEffect, useState } from "react";
 import MapMarker from "./map-marker";
@@ -19,7 +19,7 @@ const MapSection = ({
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
   const height = "700px";
-  const maxWidth = "60vw";
+  const maxWidth = "100%";
   const borderRadius = "20px";
 
   useEffect(() => {
@@ -53,35 +53,40 @@ const MapSection = ({
   return (
     !isLoading &&
     mapMarkersData.length > 0 && (
-      <Map
-        key={JSON.stringify(mapMarkersData)}
-        mapId={process.env.NEXT_PUBLIC_GOOGLE_MAPS_ID}
-        style={{
-          height,
+      <Box
+        sx={{
           maxWidth,
-          border: "2px solid black",
-          borderRadius,
-          overflow: "hidden",
+          height: { xs: "80vh", md: height },
         }}
-        defaultCenter={mapMarkersData[0].position}
-        defaultZoom={11}
-        gestureHandling={"greedy"}
-        disableDefaultUI={true}
       >
-        {mapMarkersData.map((mapMarkerData, index) => (
-          <MapMarker
-            key={index}
-            position={mapMarkerData.position}
-            timeOfDay={mapMarkerData.timeOfDay}
-            setSelectedEvent={setSelectedEvent}
-            event={mapMarkerData.event}
-            selected={
-              JSON.stringify(selectedEvent) ===
-              JSON.stringify(mapMarkerData.event)
-            }
-          />
-        ))}
-      </Map>
+        <Map
+          key={JSON.stringify(mapMarkersData)}
+          mapId={process.env.NEXT_PUBLIC_GOOGLE_MAPS_ID}
+          style={{
+            border: "2px solid black",
+            borderRadius,
+            overflow: "hidden",
+          }}
+          defaultCenter={mapMarkersData[0].position}
+          defaultZoom={11}
+          gestureHandling={"greedy"}
+          disableDefaultUI={true}
+        >
+          {mapMarkersData.map((mapMarkerData, index) => (
+            <MapMarker
+              key={index}
+              position={mapMarkerData.position}
+              timeOfDay={mapMarkerData.timeOfDay}
+              setSelectedEvent={setSelectedEvent}
+              event={mapMarkerData.event}
+              selected={
+                JSON.stringify(selectedEvent) ===
+                JSON.stringify(mapMarkerData.event)
+              }
+            />
+          ))}
+        </Map>
+      </Box>
     )
   );
 };

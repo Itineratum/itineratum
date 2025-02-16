@@ -21,7 +21,8 @@ const DayButton = ({
   const color = selected
     ? colorsConst.palette.secondary.main
     : colorsConst.palette.text.grey;
-  const width: string = "140px";
+  const width = 140;
+  const mobileFactor = 0.7;
 
   const handleOnClick = () => {
     setDayNum(dayNum);
@@ -35,8 +36,8 @@ const DayButton = ({
         borderRadius: "20px",
         borderColor: color,
         whiteSpace: "nowrap",
-        minWidth: width,
-        maxWidth: width,
+        minWidth: { xs: mobileFactor * width, md: width },
+        maxWidth: { xs: mobileFactor * width, md: width },
       }}
       disabled={disabled}
     >
