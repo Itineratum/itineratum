@@ -92,6 +92,7 @@ const HotelSelectorDialog = ({
   events: Event[];
 }) => {
   const t = useTranslations("itinerary.hotelSelectorDialog");
+  const isMobile = useMediaQuery("(max-width:600px)");
 
   const [hotelTabValue, setHotelTabValue] = useState<number>(0);
   const [hotel, setHotel] = useState<Hotel | null>(null);
@@ -159,7 +160,7 @@ const HotelSelectorDialog = ({
         hotel &&
         selectedHotel.name === hotel.name &&
         JSON.stringify(selectedHotel.coordinates) ===
-          JSON.stringify(hotel.coordinates),
+          JSON.stringify(hotel.coordinates)
     );
   };
 
@@ -181,7 +182,7 @@ const HotelSelectorDialog = ({
 
       const handleOnChange = (
         event: React.SyntheticEvent,
-        newValue: number,
+        newValue: number
       ) => {
         setHotelTabValue(newValue);
       };
@@ -232,7 +233,6 @@ const HotelSelectorDialog = ({
     const spacing = 4;
 
     const imageCarousel = () => {
-      const isMobile = useMediaQuery("(max-width:600px)");
       const carouselHeight = isMobile ? "25vh" : "450px";
 
       return (
@@ -756,7 +756,7 @@ const HotelSelectorDialog = ({
       const amenities = () => {
         const getIcon = (
           hotelType: HotelType,
-          amenity: HotelAmenity | VacationRentalAmenity,
+          amenity: HotelAmenity | VacationRentalAmenity
         ) => {
           let icon = null;
 
@@ -1065,7 +1065,7 @@ const HotelSelectorDialog = ({
                   disableDefaultUI={true}
                 >
                   {mapMarkersData.map((mapMarkerData: MapMarkerData) =>
-                    eventMapMarker(mapMarkerData),
+                    eventMapMarker(mapMarkerData)
                   )}
                   {hotelMapMarker()}
                 </Map>
