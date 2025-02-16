@@ -6,10 +6,11 @@ import { AlertType } from "@/constants/enums/alertType";
 import { Currency } from "@/constants/enums/currency";
 import { GenerateItineraryStep } from "@/constants/enums/generateItinerary";
 import colorsConst from "@/constants/pages/colors.json";
+import endpointsConst from "@/constants/pages/endpoints.json";
 import { GenerateItineraryFormData } from "@/constants/types/formData/generateItineraryFormData";
 import {
-  debugRunPipelineWithGenerationSteps,
   generateItineraryJson,
+  runPipelineWithGenerationSteps,
 } from "@/lib/pythonBackend/pythonBackend";
 import ArrowBackOutlinedIcon from "@mui/icons-material/ArrowBackOutlined";
 import ArrowForwardOutlinedIcon from "@mui/icons-material/ArrowForwardOutlined";
@@ -310,16 +311,16 @@ const ItineraryGenerator = () => {
           // backup
           // const itinerary = backupRunPipelineResponseJson;
 
-          // const runPipelineRes = await runPipelineWithGenerationSteps(
-          //   itineraryJson,
-          //   setGenerationStep,
-          // );
-
-          // debug
-          const runPipelineRes = await debugRunPipelineWithGenerationSteps(
+          const runPipelineRes = await runPipelineWithGenerationSteps(
             itineraryJson,
             setGenerationStep,
           );
+
+          // debug
+          // const runPipelineRes = await debugRunPipelineWithGenerationSteps(
+          //   itineraryJson,
+          //   setGenerationStep,
+          // );
           // backup
           // const runPipelineRes = backupRunPipelineWithGenerationStepsJson;
 
@@ -331,10 +332,10 @@ const ItineraryGenerator = () => {
             hotels: runPipelineRes.hotels || [],
             flights: runPipelineRes.flights || [],
           };
-          // const itineraryId = await saveItinerary.mutateAsync(data);
+          const itineraryId = await saveItinerary.mutateAsync(data);
 
           // redirect to the ItineraryPage component
-          // router.push(`${endpointsConst.itinerary.endpoint}/${itineraryId}`);
+          router.push(`${endpointsConst.itinerary.endpoint}/${itineraryId}`);
         } catch (error: any) {
           console.error(error);
           setAlertText(error.message);
