@@ -6,7 +6,6 @@ import ItineraryCalendar from "@/app/[locale]/saved-trips/components/itinerary-c
 import ItineraryCard, {
   itineraryCardHeight,
   itineraryCardOverlapOffset,
-  itineraryCardWidth,
 } from "@/app/[locale]/saved-trips/components/itinerary-card";
 import ToDoList from "@/app/[locale]/saved-trips/components/todo-list";
 import { trpc } from "@/app/_trpc/client";
@@ -105,14 +104,14 @@ const SavedTripsPage = () => {
     };
 
     return (
-      <Grid item xs={itinerariesSectionGrid}>
+      <Grid item xs={12} md={itinerariesSectionGrid} sx={{ my: spacing }}>
         <Box
           sx={{
             border,
             borderRadius,
             padding,
             paddingBottom: padding + 3,
-            width: itineraryCardWidth,
+            // width: { xs: "90vw", md: itineraryCardWidth },
             display: "flex",
             flexDirection: "column",
             alignItems: "center", // Centers the ItineraryCards within the section
@@ -204,7 +203,7 @@ const SavedTripsPage = () => {
     };
 
     return (
-      <Grid item xs={calendarToDoSectionGrid}>
+      <Grid item xs={12} md={calendarToDoSectionGrid} sx={{ my: spacing }}>
         <Stack direction="column" spacing={spacing}>
           {calendar()}
           {toDoList()}
@@ -215,19 +214,13 @@ const SavedTripsPage = () => {
 
   return (
     <Container maxWidth="lg">
-      <Stack
-        display="flex"
-        direction="column"
-        marginTop={margin}
-        marginBottom={margin}
-        spacing={spacing}
-      >
+      <Stack display="flex" direction="column" my={margin} spacing={spacing}>
         <Text
           text={`${t("welcome")}${name ? ` ${name}!` : "!"}`}
           variant={TypographyVariant.h2}
           bold={true}
         />
-        <Grid container spacing={spacing}>
+        <Grid container spacing={0}>
           {itinerariesSection()}
           {calendarTodoSection()}
         </Grid>

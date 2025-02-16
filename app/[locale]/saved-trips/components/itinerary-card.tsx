@@ -9,6 +9,7 @@ import endpointsConst from "@/constants/pages/endpoints.json";
 
 export const itineraryCardHeight = 230;
 export const itineraryCardWidth = 420;
+export const itineraryCardWidthMobile = "80vw";
 export const itineraryCardOverlapOffset = 200;
 
 const ItineraryCard = ({
@@ -133,7 +134,7 @@ const ItineraryCard = ({
           borderRadius,
           overflow: "hidden",
           height,
-          width,
+          width: { xs: itineraryCardWidthMobile, md: width },
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
