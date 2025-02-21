@@ -14,7 +14,14 @@ import colorsConst from "@/constants/pages/colors.json";
 import { CalendarEvent } from "@/constants/types/calendarEvent";
 import { IItinerary } from "@/constants/types/itinerary";
 import { getItinerarySummaryText } from "@/lib/pythonBackend/utils";
-import { Box, CircularProgress, Container, Grid, Stack } from "@mui/material";
+import {
+  Box,
+  CircularProgress,
+  Container,
+  Grid,
+  Stack,
+  useMediaQuery,
+} from "@mui/material";
 import { useSession } from "next-auth/react";
 import { useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
@@ -27,16 +34,17 @@ const SavedTripsPage = () => {
   const name = session?.user.name;
   const router = useRouter();
   const t = useTranslations("savedTrips");
+  const isMobile = useMediaQuery("(max-width:600px)");
 
   const [savedItineraries, setSavedItineraries] = useState<
     Record<string, IItinerary>[]
   >([]);
   const [userCalendarEvents, setUserCalendarEvents] = useState<CalendarEvent[]>(
-    [],
+    []
   );
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [selectedItineraryId, setSelectedItineraryId] = useState<string | null>(
-    null,
+    null
   );
   const [showAddCalendarEventDialog, setShowAddCalendarEventDialog] =
     useState<boolean>(false);
@@ -62,7 +70,7 @@ const SavedTripsPage = () => {
   useEffect(() => {
     if (getUserSavedItineraries.data) {
       setSavedItineraries(
-        getUserSavedItineraries.data as unknown as Record<string, IItinerary>[],
+        getUserSavedItineraries.data as unknown as Record<string, IItinerary>[]
       );
       setIsLoading(false);
     }
@@ -111,7 +119,6 @@ const SavedTripsPage = () => {
             borderRadius,
             padding,
             paddingBottom: padding + 3,
-            // width: { xs: "90vw", md: itineraryCardWidth },
             display: "flex",
             flexDirection: "column",
             alignItems: "center", // Centers the ItineraryCards within the section
@@ -220,7 +227,7 @@ const SavedTripsPage = () => {
           variant={TypographyVariant.h2}
           bold={true}
         />
-        <Grid container spacing={0}>
+        <Grid container spacing={isMobile ? 0 : spacing}>
           {itinerariesSection()}
           {calendarTodoSection()}
         </Grid>
