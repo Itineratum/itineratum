@@ -142,6 +142,7 @@ const EventDetailsDialog = ({
             display: "flex",
             flexDirection: { xs: "column", md: "row" },
             maxWidth: contentMaxWidth,
+            gap: spacing,
           }}
         >
           <Text
@@ -173,9 +174,9 @@ const EventDetailsDialog = ({
             display: "flex",
             flexDirection: { xs: "column", md: "row" },
             maxWidth: contentMaxWidth,
+            gap: spacing,
           }}
         >
-          {" "}
           <Text
             text={t("website") + ": "}
             variant={typographyVariant}
@@ -231,9 +232,9 @@ const EventDetailsDialog = ({
             sx={{
               display: "flex",
               flexDirection: { xs: "column", md: "row" },
+              gap: spacing,
             }}
           >
-            {" "}
             <Text
               text={t("openingHours") + ": "}
               variant={TypographyVariant.body1}
@@ -258,6 +259,7 @@ const EventDetailsDialog = ({
             sx={{
               display: "flex",
               flexDirection: { xs: "column", md: "row" },
+              gap: spacing,
             }}
           >
             <Text
