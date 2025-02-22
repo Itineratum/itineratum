@@ -76,7 +76,17 @@ export const itineraryRouter = router({
         });
       }
 
-      return retrieveItineraryRes.data;
+      if (
+        retrieveItineraryRes.data &&
+        retrieveItineraryRes.data.itinerary.length > 0
+      ) {
+        return retrieveItineraryRes.data;
+      } else {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Itinerary not found",
+        });
+      }
     }),
   adjustItineraryBudget: publicProcedure
     .input(adjustItineraryBudgetSchema.input)

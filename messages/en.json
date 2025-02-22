@@ -196,6 +196,7 @@
     "savingItinerary": "Saving Itinerary",
     "itinerarySaved": "Itinerary successfully saved to your account! You can view them under 'Saved Trips' tab!",
     "noReorder": "Shifting is not possible as the selected events are in different time periods. Please modify the time periods before proceeding.",
+    "goBackHome": "Go back to home page",
     "adjustBudgetDialog": {
       "adjustBudget": "Adjust Budget",
       "description": "Adjust the budget for your trip.",

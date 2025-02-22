@@ -24,7 +24,10 @@ import {
   TypographyVariant,
 } from "@/constants/enums/theme";
 import colorsConst from "@/constants/pages/colors.json";
-import endpointsConst from "@/constants/pages/endpoints.json";
+import {
+  default as constEndpoints,
+  default as endpointsConst,
+} from "@/constants/pages/endpoints.json";
 import { IItinerary } from "@/constants/types/itinerary";
 import { DayPlan, Event, Hotel, TravelTime } from "@/lib/pythonBackend/types";
 import {
@@ -39,6 +42,7 @@ import {
   CircularProgress,
   Container,
   IconButton,
+  Link,
   Snackbar,
   Stack,
 } from "@mui/material";
@@ -364,7 +368,14 @@ const ReviewItinerary = ({
   if (error)
     return (
       <Container>
-        <Text text={error} variant={TypographyVariant.h4} bold={true} />
+        <Stack direction="column" spacing={gap}>
+          <Text text={error} variant={TypographyVariant.h4} bold={true} />
+          <Link
+            href={buildLocaleEndpoint(locale, constEndpoints.home.endpoint)}
+          >
+            <Button variant="contained">{t("goBackHome")}</Button>
+          </Link>
+        </Stack>
       </Container>
     );
   if (!itineraryData)
