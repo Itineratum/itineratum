@@ -44,7 +44,7 @@
         "from": "From",
         "to": "To",
         "destinations": "Destinations",
-        "destinationsDescription": "Enter the name of the destination",
+        "destinationsDescription": "Enter the name of the destination city and click on add location",
         "addLocation": "Add Location",
         "dateErrorMessage": "Please ensure that the 'from' date is before the 'to' date, and the number of days is at least the number of destinations!"
       },
