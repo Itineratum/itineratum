@@ -25,7 +25,7 @@ const getPythonBackendUrl = () => {
     : process.env.NEXT_PUBLIC_PYTHON_BACKEND_URL_PROD;
 };
 
-const getRequest = (body: any) => {
+export const getRequest = (body: any) => {
   return {
     method: "POST",
     headers: {

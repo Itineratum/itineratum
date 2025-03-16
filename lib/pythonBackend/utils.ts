@@ -2,9 +2,9 @@ import { IItinerary } from "@/constants/types/itinerary";
 import dayjs from "dayjs";
 import {
   OutputFormat,
-  fromAddress,
   fromLatLng,
   setDefaults,
+  fromPlaceId,
 } from "react-geocode";
 import {
   DayPlan,
@@ -32,22 +32,22 @@ export const getEvents = async (
   const events: Event[] = [];
 
   for (const item of rawTimePeriodPlan) {
-    const { results } = await fromAddress(item.location_address);
-    const { lat, lng } = results[0].geometry.location;
-    let photo =
-      item.photos && item.photos.length > 0 ? item.photos[0].name : "";
+    // const { results } = await fromAddress(item.location_address);
+    // const { lat, lng } = results[0].geometry.location;
+    // let photo =
+    //   item.photos && item.photos.length > 0 ? item.photos[0].name : "";
 
-    if (photo.startsWith("places/")) {
-      const googlePlacePhotoEndpoint = getGooglePlacePhotoEndpoint(photo);
-      const response = await fetch(googlePlacePhotoEndpoint);
+    // if (photo.startsWith("places/")) {
+    //   const googlePlacePhotoEndpoint = getGooglePlacePhotoEndpoint(photo);
+    //   const response = await fetch(googlePlacePhotoEndpoint);
 
-      if (!response.ok) {
-        throw new Error("Network response was not ok!");
-      }
+    //   if (!response.ok) {
+    //     throw new Error("Network response was not ok!");
+    //   }
 
-      const photoJson = await response.json();
-      photo = photoJson.photoUri;
-    }
+    //   const photoJson = await response.json();
+    //   photo = photoJson.photoUri;
+    // }
 
     events.push({
       is_hotel: item.is_hotel ? item.is_hotel : false,
@@ -58,15 +58,12 @@ export const getEvents = async (
         item.display_name ||
         "",
       location_address: item.location_address,
-      coordinates: {
-        lat,
-        lng,
-      },
+      coordinates: null,
       description: item.description ?? "",
       rating: item.rating && item.rating !== "N/A" ? item.rating : 0,
       website_uri:
         item.website_uri && item.website_uri !== "N/A" ? item.website_uri : "",
-      photo,
+      photo: "",
       openingHours:
         item.opening_hours &&
         item.opening_hours !== "N/A" &&
@@ -76,6 +73,7 @@ export const getEvents = async (
           : [],
       checkInTime: null,
       checkOutTime: null,
+      place_id: item.places_id,
     });
   }
 
@@ -88,17 +86,17 @@ export const getGooglePlacePhotoEndpoint = (photoString: string): string => {
 };
 
 export const getGoogleDistanceMatrixEndpoint = (
-  origin: Position,
-  destination: Position
+  originPlaceId: string,
+  destinationPlaceId: string
 ): string => {
-  const formattedOrigin = `${origin.lat}%2C${origin.lng}`;
-  const formattedDestination = `${destination.lat}%2C${destination.lng}`;
+  const formattedOrigin = `place_id:${originPlaceId}`;
+  const formattedDestination = `place_id:${destinationPlaceId}`;
   const mode = "driving";
   return `https://maps.googleapis.com/maps/api/distancematrix/json?origins=${formattedOrigin}&destinations=${formattedDestination}&mode=${mode}&key=${process.env.NEXT_PUBLIC_GOOGLE_PLACES_API_KEY}`;
 };
 
-export const getTravelOriginDestinations = (list: Position[]): Position[][] => {
-  const result: Position[][] = [];
+export const getTravelOriginDestinations = (list: string[]): string[][] => {
+  const result: string[][] = [];
 
   for (let i = 0; i < list.length - 1; i++) {
     result.push([list[i], list[i + 1]]);
@@ -113,11 +111,10 @@ export const getTravelTimes = async (
   const itineraryTravelTimes: TravelTime[][] = [];
 
   for (const dayPlan of itinerary) {
-    const eventCoordinates: Position[] = dayPlan.events.map(
-      (event) => event.coordinates ?? { lat: 0, lng: 0 }
+    const eventPlaceIds: string[] = dayPlan.events.map(
+      (event) => event.place_id ?? ""
     );
-    const originDestinationPairs =
-      getTravelOriginDestinations(eventCoordinates);
+    const originDestinationPairs = getTravelOriginDestinations(eventPlaceIds);
     const dayPlanTravelTimes: TravelTime[] = [];
 
     for (const originDestinationPair of originDestinationPairs) {
@@ -155,6 +152,18 @@ export const getTravelTimes = async (
   }
 
   return itineraryTravelTimes;
+};
+
+export const getPosition = async (event: Event): Promise<Position> => {
+  setDefaults({
+    key: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY,
+    language: "en",
+    region: "sg",
+    outputFormat: OutputFormat.JSON,
+  });
+
+  const { results } = await fromPlaceId(event.place_id);
+  return results[0].geometry.location;
 };
 
 export const getDays = (dayRange: string): number[] => {
@@ -413,6 +422,7 @@ export const adjustItineraryWithSelectedHotels = async (
       openingHours: [],
       checkInTime: hotel.check_in_time,
       checkOutTime: hotel.check_out_time,
+      place_id: "",
     };
     const hotelCheckOutEvent: Event = {
       ...hotelCheckInEvent,

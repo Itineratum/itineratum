@@ -10,6 +10,7 @@ import {
   deleteCorrespondingHotelEvents,
   formatHotels,
   formatItinerary,
+  getPosition,
   getTravelTimes,
   getTripCheckInCheckOutDays,
   hasHotelDeletes,
@@ -48,16 +49,16 @@ export const itineraryRouter = router({
       const flights = data.input.flights;
       const itineraryRaw = data.input.itinerary;
       const itinerary: DayPlan[] = await formatItinerary(itineraryRaw);
-      const travelTimes: TravelTime[][] = await getTravelTimes(itinerary);
+      // const travelTimes: TravelTime[][] = await getTravelTimes(itinerary);
       const hotelsRaw = data.input.hotels;
       const hotels: Hotel[][] = formatHotels(hotelsRaw);
       const saveItineraryRes = await saveItinerary(
         email,
         request,
         itinerary,
-        travelTimes,
+        // travelTimes,
         hotels,
-        flights,
+        flights
       );
       const itineraryId = saveItineraryRes.itineraryId;
       return itineraryId;
@@ -80,7 +81,25 @@ export const itineraryRouter = router({
         retrieveItineraryRes.data &&
         retrieveItineraryRes.data.itinerary.length > 0
       ) {
-        return retrieveItineraryRes.data;
+        const travelTimes: TravelTime[][] = await getTravelTimes(
+          retrieveItineraryRes.data.itinerary
+        );
+
+        for (let i = 0; i < retrieveItineraryRes.data.itinerary.length; i++) {
+          const dayPlan = retrieveItineraryRes.data.itinerary[i];
+
+          for (let j = 0; j < dayPlan.events.length; j++) {
+            const event = dayPlan.events[j];
+            const position = await getPosition(event);
+            event.coordinates = position;
+            retrieveItineraryRes.data.itinerary[i].events[j] = event;
+          }
+        }
+
+        return {
+          itinerary: retrieveItineraryRes.data,
+          travelTimes,
+        };
       } else {
         throw new TRPCError({
           code: "NOT_FOUND",
@@ -97,16 +116,16 @@ export const itineraryRouter = router({
       const flights = data.input.flights;
       const itineraryRaw = data.input.itinerary;
       const itinerary: DayPlan[] = await formatItinerary(itineraryRaw);
-      const travelTimes: TravelTime[][] = await getTravelTimes(itinerary);
+      // const travelTimes: TravelTime[][] = await getTravelTimes(itinerary);
       const hotelsRaw = data.input.hotels;
       const hotels: Hotel[][] = formatHotels(hotelsRaw);
       const adjustItineraryBudgetRes = await adjustItineraryBudget(
         itineraryId,
         request,
         itinerary,
-        travelTimes,
+        // travelTimes,
         hotels,
-        flights,
+        flights
       );
 
       if (!adjustItineraryBudgetRes.success) {
@@ -126,28 +145,28 @@ export const itineraryRouter = router({
       const userRequestedDestinations =
         retrieveItineraryRes.data.request.payload.user_requested_destinations;
       const tripStartDate = dayjs(
-        retrieveItineraryRes.data.request.payload.start_date,
+        retrieveItineraryRes.data.request.payload.start_date
       ).utc(true);
       const tripEndDate = dayjs(
-        retrieveItineraryRes.data.request.payload.end_date,
+        retrieveItineraryRes.data.request.payload.end_date
       ).utc(true);
       const selectedHotels = data.input.selectedHotels;
       const tripCheckInCheckOutDays: number[][] = getTripCheckInCheckOutDays(
         userRequestedDestinations,
         tripStartDate,
-        tripEndDate,
+        tripEndDate
       );
       await adjustItineraryWithSelectedHotels(
         selectedHotels,
         tripCheckInCheckOutDays,
-        itinerary,
+        itinerary
       );
-      const travelTimes: TravelTime[][] = await getTravelTimes(itinerary);
+      // const travelTimes: TravelTime[][] = await getTravelTimes(itinerary);
       const adjustItineraryHotelsRes = await adjustItineraryHotels(
         itineraryId,
         itinerary,
-        selectedHotels,
-        travelTimes,
+        selectedHotels
+        // travelTimes,
       );
 
       if (!adjustItineraryHotelsRes.success) {
@@ -167,7 +186,7 @@ export const itineraryRouter = router({
       const dayNum = data.input.dayNum;
       const newEvents = data.input.newEvents;
       itinerary[dayNum - 1].events = newEvents;
-      const travelTimes: TravelTime[][] = await getTravelTimes(itinerary);
+      // const travelTimes: TravelTime[][] = await getTravelTimes(itinerary);
       let selectedHotels = retrieveItineraryRes.data.selected_hotels;
       const edits: Partial<
         Record<ItineraryEditAction, ItineraryEditDetails>
@@ -183,7 +202,7 @@ export const itineraryRouter = router({
             eventsToDelete,
             retrieveItineraryRes.data.request,
             selectedHotels,
-            itinerary,
+            itinerary
           );
         }
       }
@@ -191,8 +210,8 @@ export const itineraryRouter = router({
       const updateItineraryRes = await updateItinerary(
         itineraryId,
         itinerary,
-        travelTimes,
-        selectedHotels,
+        // travelTimes,
+        selectedHotels
       );
 
       if (!updateItineraryRes.success) {
@@ -219,7 +238,7 @@ export const itineraryRouter = router({
       const itineraryId = data.input.itineraryId;
       const updateItineraryGeneratedByRes = await updateItineraryGeneratedBy(
         itineraryId,
-        email,
+        email
       );
 
       if (!updateItineraryGeneratedByRes.success) {

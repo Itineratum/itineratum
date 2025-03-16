@@ -315,6 +315,8 @@ const ItineraryGenerator = () => {
             setGenerationStep
           );
 
+          console.log(runPipelineRes)
+
           // debug
           // const runPipelineRes = await debugRunPipelineWithGenerationSteps(
           //   itineraryJson,

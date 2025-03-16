@@ -33,6 +33,7 @@ import { DayPlan, Event, Hotel, TravelTime } from "@/lib/pythonBackend/types";
 import {
   getIndexToMoveModifiedEventTo,
   getItinerarySummaryText,
+  getTravelTimes,
 } from "@/lib/pythonBackend/utils";
 import { buildLocaleEndpoint } from "@/utils/buildLocaleEndpoint";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
@@ -91,7 +92,7 @@ const ReviewItinerary = ({
   >([]);
   const [isSavingEdits, setIsSavingEdits] = useState<boolean>(false);
   const [indexToAddEventTo, setIndexToAddEventTo] = useState<number | null>(
-    null,
+    null
   );
   const [addEventDialogOpen, setAddEventDialogOpen] = useState<boolean>(false);
   const [modifyEventDialogOpen, setModifyEventDialogOpen] =
@@ -122,7 +123,7 @@ const ReviewItinerary = ({
         setError(error.message);
         setIsLoading(false);
       },
-    },
+    }
   );
   const editItinerary = trpc.itinerary.editItinerary.useMutation();
   const saveItineraryToUser = trpc.user.saveItineraryToUser.useMutation();
@@ -132,19 +133,19 @@ const ReviewItinerary = ({
     },
     {
       enabled: !!email,
-    },
+    }
   );
   const utils = trpc.useUtils();
 
   const getCorrectDayPlan = (): DayPlan =>
-    getItinerary.data.itinerary.filter(
-      (dayPlan: DayPlan) => dayPlan.day === dayNum,
+    getItinerary.data?.itinerary.itinerary.filter(
+      (dayPlan: DayPlan) => dayPlan.day === dayNum
     )[0];
 
   const getDestinations = () => {
     const newDestinations: string[] = [];
 
-    getItinerary.data.itinerary.forEach((dayPlan: DayPlan) => {
+    getItinerary.data?.itinerary.itinerary.forEach((dayPlan: DayPlan) => {
       if (newDestinations.indexOf(dayPlan.destination) === -1) {
         newDestinations.push(dayPlan.destination);
       }
@@ -155,14 +156,16 @@ const ReviewItinerary = ({
 
   useEffect(() => {
     if (getItinerary.data) {
-      setItineraryData(getItinerary.data);
+      console.log(getItinerary.data.itinerary)
+
+      setItineraryData(getItinerary.data.itinerary!);
       setDayPlan(getCorrectDayPlan());
       setDestinations(getDestinations());
-      setSelectedHotels(getItinerary.data.selected_hotels ?? []);
-      setTravelTimes(getItinerary.data.travel_times[dayNum - 1]);
+      setSelectedHotels(getItinerary.data.itinerary.selected_hotels ?? []);
+      setTravelTimes(getItinerary.data.travelTimes[dayNum - 1]);
       setIsLoading(false);
 
-      if (email && email === getItinerary.data.generated_by) {
+      if (email && email === getItinerary.data.itinerary.generated_by) {
         setCanEdit(true);
       }
     }
@@ -172,8 +175,8 @@ const ReviewItinerary = ({
     if (getUserSavedItineraryIds.data) {
       setCanSaveItinerary(
         !getUserSavedItineraryIds.data.some(
-          (itineraryId: string) => itineraryId === params.id,
-        ),
+          (itineraryId: string) => itineraryId === params.id
+        )
       );
     }
   }, [getUserSavedItineraryIds.data]);
@@ -181,7 +184,7 @@ const ReviewItinerary = ({
   useEffect(() => {
     if (getItinerary.data) {
       setDayPlan(getCorrectDayPlan());
-      setTravelTimes(getItinerary.data.travel_times[dayNum - 1]);
+      setTravelTimes(getItinerary.data.itinerary.travel_times[dayNum - 1]);
       setEvents(getCorrectDayPlan().events);
       setBackupEvents(getCorrectDayPlan().events);
       setSelectedEvent(null);
@@ -287,7 +290,7 @@ const ReviewItinerary = ({
           newEvents.splice(indexToModifyEventAt, 1);
           const indexToMoveModifiedEventTo = getIndexToMoveModifiedEventTo(
             modifiedEvent,
-            newEvents,
+            newEvents
           );
           newEvents.splice(indexToMoveModifiedEventTo, 0, modifiedEvent);
         } else {
@@ -401,7 +404,7 @@ const ReviewItinerary = ({
     const button = () => {
       const handleOnClick = () => {
         router.push(
-          buildLocaleEndpoint(locale, endpointsConst.savedTrips.endpoint),
+          buildLocaleEndpoint(locale, endpointsConst.savedTrips.endpoint)
         );
       };
 

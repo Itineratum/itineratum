@@ -7,7 +7,7 @@ export const saveItinerary = async (
   email: string | null,
   request: any,
   itinerary: DayPlan[],
-  travelTimes: TravelTime[][],
+  // travelTimes: TravelTime[][],
   hotels: any,
   flights: any,
 ) => {
@@ -18,7 +18,7 @@ export const saveItinerary = async (
       generated_at: new Date(),
       request,
       itinerary,
-      travel_times: travelTimes,
+      // travel_times: travelTimes,
       selected_hotels: Array(
         request.payload.user_requested_destinations.length,
       ).fill(null),
@@ -70,7 +70,7 @@ export const adjustItineraryBudget = async (
   itineraryId: string,
   request: any,
   itinerary: DayPlan[],
-  travelTimes: TravelTime[][],
+  // travelTimes: TravelTime[][],
   hotels: any,
   flights: any,
 ) => {
@@ -81,7 +81,7 @@ export const adjustItineraryBudget = async (
         generated_at: new Date(),
         request,
         itinerary,
-        travel_times: travelTimes,
+        // travel_times: travelTimes,
         selected_hotels: [],
         hotels,
         flights,
@@ -109,7 +109,7 @@ export const adjustItineraryHotels = async (
   itineraryId: string,
   itinerary: DayPlan[],
   selectedHotels: Hotel[],
-  travelTimes: TravelTime[][],
+  // travelTimes: TravelTime[][],
 ) => {
   try {
     await connectToDatabase();
@@ -117,7 +117,7 @@ export const adjustItineraryHotels = async (
       $set: {
         itinerary,
         selected_hotels: selectedHotels,
-        travel_times: travelTimes,
+        // travel_times: travelTimes,
       },
     };
     const result = await Itinerary.updateOne(
@@ -141,7 +141,7 @@ export const adjustItineraryHotels = async (
 export const updateItinerary = async (
   itineraryId: string,
   itinerary: DayPlan[],
-  travelTimes: TravelTime[][],
+  // travelTimes: TravelTime[][],
   selectedHotels: Hotel[],
 ) => {
   try {
@@ -149,7 +149,7 @@ export const updateItinerary = async (
     const update = {
       $set: {
         itinerary,
-        travel_times: travelTimes,
+        // travel_times: travelTimes,
         selected_hotels: selectedHotels,
       },
     };

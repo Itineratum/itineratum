@@ -51,14 +51,15 @@ export interface Event {
   time_of_day: EventTimeOfDay;
   location_name: string;
   location_address: string;
-  coordinates: Position | null;
+  coordinates: Position | null; // can only cache the coordinates (lat and lng) for up to 30 days according to Google policy; only for hotel check-in/check-out events
   description: string;
   rating: number;
   website_uri: string;
-  photo: string; // to get this using Google Place Photo (New)
+  photo: string; // to get this using Google Place Photo (New) // cannot cache the photo uri according to Google policy; only for hotel check-in/check-out events
   openingHours: string[];
   checkInTime: string | null;
   checkOutTime: string | null;
+  place_id: string // we can cache this indefinitely according to Google policy
 }
 
 export enum EventTimeOfDay {
