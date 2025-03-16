@@ -18,8 +18,10 @@ import {
 
 export const getEvents = async (
   rawTimePeriodPlan: any[],
-  timeOfDay: EventTimeOfDay,
+  timeOfDay: EventTimeOfDay
 ): Promise<Event[]> => {
+  if (!rawTimePeriodPlan) return [];
+
   setDefaults({
     key: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY,
     language: "en",
@@ -87,7 +89,7 @@ export const getGooglePlacePhotoEndpoint = (photoString: string): string => {
 
 export const getGoogleDistanceMatrixEndpoint = (
   origin: Position,
-  destination: Position,
+  destination: Position
 ): string => {
   const formattedOrigin = `${origin.lat}%2C${origin.lng}`;
   const formattedDestination = `${destination.lat}%2C${destination.lng}`;
@@ -106,13 +108,13 @@ export const getTravelOriginDestinations = (list: Position[]): Position[][] => {
 };
 
 export const getTravelTimes = async (
-  itinerary: DayPlan[],
+  itinerary: DayPlan[]
 ): Promise<TravelTime[][]> => {
   const itineraryTravelTimes: TravelTime[][] = [];
 
   for (const dayPlan of itinerary) {
     const eventCoordinates: Position[] = dayPlan.events.map(
-      (event) => event.coordinates ?? { lat: 0, lng: 0 },
+      (event) => event.coordinates ?? { lat: 0, lng: 0 }
     );
     const originDestinationPairs =
       getTravelOriginDestinations(eventCoordinates);
@@ -121,7 +123,7 @@ export const getTravelTimes = async (
     for (const originDestinationPair of originDestinationPairs) {
       const googleDistanceMatrixEndpoint = getGoogleDistanceMatrixEndpoint(
         originDestinationPair[0],
-        originDestinationPair[1],
+        originDestinationPair[1]
       );
       const response = await fetch(googleDistanceMatrixEndpoint);
 
@@ -163,12 +165,12 @@ export const getDays = (dayRange: string): number[] => {
 };
 
 export const formatItinerary = async (
-  itineraryRaw: any,
+  itineraryRaw: any
 ): Promise<DayPlan[]> => {
   const itinerary: DayPlan[] = [];
   itineraryRaw = itineraryRaw.filter(
     (destinationPlan: any) =>
-      destinationPlan.plan && destinationPlan.plan.length > 0,
+      destinationPlan.plan && destinationPlan.plan.length > 0
   );
 
   for (const destinationPlan of itineraryRaw) {
@@ -179,15 +181,15 @@ export const formatItinerary = async (
       const rawDayPlan = destinationPlan.plan[index];
       const morningEvents = await getEvents(
         rawDayPlan.morning,
-        EventTimeOfDay.morning,
+        EventTimeOfDay.morning
       );
       const afternoonEvents = await getEvents(
         rawDayPlan.afternoon,
-        EventTimeOfDay.afternoon,
+        EventTimeOfDay.afternoon
       );
       const eveningEvents = await getEvents(
         rawDayPlan.evening,
-        EventTimeOfDay.evening,
+        EventTimeOfDay.evening
       );
       const dayPlan: DayPlan = {
         destination,
@@ -201,7 +203,7 @@ export const formatItinerary = async (
 };
 
 export const getTimeOfDay = (
-  time: string | null | undefined,
+  time: string | null | undefined
 ): EventTimeOfDay => {
   if (!time) return EventTimeOfDay.morning;
 
@@ -266,7 +268,7 @@ export const clearHotelEvents = (dayPlan: DayPlan) => {
 };
 
 export const getHotelLocationAddress = async (
-  coordinates: Position,
+  coordinates: Position
 ): Promise<string> => {
   setDefaults({
     key: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY,
@@ -282,17 +284,17 @@ export const getHotelLocationAddress = async (
 export const getTripCheckInCheckOutDays = (
   userRequestedDestinations: any,
   tripStartDate: dayjs.Dayjs,
-  tripEndDate: dayjs.Dayjs,
+  tripEndDate: dayjs.Dayjs
 ): number[][] => {
   const tripCheckInCheckOutDays: number[][] = [];
 
   for (const userRequestedDestination of userRequestedDestinations) {
     const destinationCheckInCheckOutDays: number[] = [];
     const destinationStartDate = dayjs(userRequestedDestination.start_date).utc(
-      true,
+      true
     );
     const destinationEndDate = dayjs(userRequestedDestination.end_date).utc(
-      true,
+      true
     );
 
     if (destinationStartDate.isSame(tripStartDate)) {
@@ -305,7 +307,7 @@ export const getTripCheckInCheckOutDays = (
 
     if (destinationEndDate.isSame(tripEndDate)) {
       destinationCheckInCheckOutDays.push(
-        tripEndDate.diff(tripStartDate, "day") + 1,
+        tripEndDate.diff(tripStartDate, "day") + 1
       );
     } else {
       const dayOfTripOfDestinationEndDate =
@@ -321,11 +323,11 @@ export const getTripCheckInCheckOutDays = (
 
 export const getIndexToInsertHotelEventAt = (
   events: Event[],
-  hotelEventTimeOfDay: EventTimeOfDay,
+  hotelEventTimeOfDay: EventTimeOfDay
 ): number => {
   let output = 0;
   const firstEventInSameTimeOfDayIndex = events.findIndex(
-    (event: Event) => event.time_of_day === hotelEventTimeOfDay,
+    (event: Event) => event.time_of_day === hotelEventTimeOfDay
   );
 
   if (firstEventInSameTimeOfDayIndex === -1) {
@@ -335,14 +337,14 @@ export const getIndexToInsertHotelEventAt = (
     } else if (hotelEventTimeOfDay === EventTimeOfDay.afternoon) {
       // if there are no afternoon events
       const hasMorningEvents: boolean = events.some(
-        (event) => event.time_of_day === EventTimeOfDay.morning,
+        (event) => event.time_of_day === EventTimeOfDay.morning
       );
 
       if (hasMorningEvents) {
         // if there are morning events, insert this afternoon hotel event after the last morning event
         output =
           events.findLastIndex(
-            (event) => event.time_of_day === EventTimeOfDay.morning,
+            (event) => event.time_of_day === EventTimeOfDay.morning
           ) + 1;
       } else {
         // if there are no morning and afternoon events, then this afternoon hotel event will be the first/only event of the day plan, before the evening events (if any)
@@ -351,14 +353,14 @@ export const getIndexToInsertHotelEventAt = (
     } else if (hotelEventTimeOfDay === EventTimeOfDay.evening) {
       // if there are no evening events
       const hasAfternoonEvents: boolean = events.some(
-        (event) => event.time_of_day === EventTimeOfDay.afternoon,
+        (event) => event.time_of_day === EventTimeOfDay.afternoon
       );
 
       if (hasAfternoonEvents) {
         // if there are afternoon events, insert this evening hotel event after the last afternoon event
         output =
           events.findLastIndex(
-            (event) => event.time_of_day === EventTimeOfDay.afternoon,
+            (event) => event.time_of_day === EventTimeOfDay.afternoon
           ) + 1;
       } else {
         // if there are no afternoon and evening events, then this evening hotel event will be the last/only event of the day plan, after the morning events (if any)
@@ -375,7 +377,7 @@ export const getIndexToInsertHotelEventAt = (
 export const adjustItineraryWithSelectedHotels = async (
   selectedHotels: Hotel[],
   tripCheckInCheckOutDays: number[][],
-  itinerary: DayPlan[],
+  itinerary: DayPlan[]
 ) => {
   for (
     let destinationIndex = 0;
@@ -427,7 +429,7 @@ export const adjustItineraryWithSelectedHotels = async (
 
         const indexToInsertHotelEventAt = getIndexToInsertHotelEventAt(
           dayPlan.events,
-          hotelCheckInTimeOfDay,
+          hotelCheckInTimeOfDay
         );
         dayPlan.events.splice(indexToInsertHotelEventAt, 0, hotelCheckInEvent);
       } else if (hotelCheckOutDay === day) {
@@ -435,7 +437,7 @@ export const adjustItineraryWithSelectedHotels = async (
 
         const indexToInsertHotelEventAt = getIndexToInsertHotelEventAt(
           dayPlan.events,
-          hotelCheckOutTimeOfDay,
+          hotelCheckOutTimeOfDay
         );
         dayPlan.events.splice(indexToInsertHotelEventAt, 0, hotelCheckOutEvent);
       }
@@ -457,7 +459,7 @@ export const isHotelCheckOutEvent = (event: Event): boolean => {
 export const getCorrespondingHotelCheckInDay = (
   itineraryRequest: GenerateItineraryJSON,
   selectedHotels: Hotel[],
-  hotelCheckOutEvent: Event,
+  hotelCheckOutEvent: Event
 ) => {
   const userRequestedDestinations =
     itineraryRequest.payload.user_requested_destinations;
@@ -466,14 +468,14 @@ export const getCorrespondingHotelCheckInDay = (
   const tripCheckInCheckOutDays = getTripCheckInCheckOutDays(
     userRequestedDestinations,
     tripStartDate,
-    tripEndDate,
+    tripEndDate
   );
   const hotelIndex = selectedHotels.findIndex(
     (hotel: Hotel) =>
       hotel &&
       hotel.name === hotelCheckOutEvent.location_name &&
       hotel.coordinates.latitude === hotelCheckOutEvent.coordinates?.lat &&
-      hotel.coordinates.longitude === hotelCheckOutEvent.coordinates.lng,
+      hotel.coordinates.longitude === hotelCheckOutEvent.coordinates.lng
   );
   const checkInDay = tripCheckInCheckOutDays[hotelIndex][0];
   return checkInDay;
@@ -482,7 +484,7 @@ export const getCorrespondingHotelCheckInDay = (
 export const getCorrespondingHotelCheckOutDay = (
   itineraryRequest: GenerateItineraryJSON,
   selectedHotels: Hotel[],
-  hotelCheckInEvent: Event,
+  hotelCheckInEvent: Event
 ) => {
   const userRequestedDestinations =
     itineraryRequest.payload.user_requested_destinations;
@@ -491,14 +493,14 @@ export const getCorrespondingHotelCheckOutDay = (
   const tripCheckInCheckOutDays = getTripCheckInCheckOutDays(
     userRequestedDestinations,
     tripStartDate,
-    tripEndDate,
+    tripEndDate
   );
   const hotelIndex = selectedHotels.findIndex(
     (hotel: Hotel) =>
       hotel &&
       hotel.name === hotelCheckInEvent.location_name &&
       hotel.coordinates.latitude === hotelCheckInEvent.coordinates?.lat &&
-      hotel.coordinates.longitude === hotelCheckInEvent.coordinates.lng,
+      hotel.coordinates.longitude === hotelCheckInEvent.coordinates.lng
   );
   const checkOutDay = tripCheckInCheckOutDays[hotelIndex][1];
   return checkOutDay;
@@ -510,10 +512,10 @@ export const deleteCorrespondingHotelEvents = (
   eventsToDelete: Event[],
   itineraryRequest: GenerateItineraryJSON,
   selectedHotels: any[],
-  itinerary: DayPlan[],
+  itinerary: DayPlan[]
 ): Hotel[] => {
   const hotelEventToDelete: Event = eventsToDelete.filter(
-    (event: Event) => event.is_hotel,
+    (event: Event) => event.is_hotel
   )[0];
 
   if (isHotelCheckInEvent(hotelEventToDelete)) {
@@ -521,7 +523,7 @@ export const deleteCorrespondingHotelEvents = (
     const correspondingCheckOutDay = getCorrespondingHotelCheckOutDay(
       itineraryRequest,
       selectedHotels,
-      hotelEventToDelete,
+      hotelEventToDelete
     );
     itinerary[correspondingCheckOutDay - 1].events = itinerary[
       correspondingCheckOutDay - 1
@@ -532,14 +534,14 @@ export const deleteCorrespondingHotelEvents = (
           event.location_name === hotelEventToDelete.location_name &&
           event.coordinates?.lat === hotelEventToDelete.coordinates?.lat &&
           event.coordinates?.lng === hotelEventToDelete.coordinates?.lng
-        ),
+        )
     );
   } else if (isHotelCheckOutEvent(hotelEventToDelete)) {
     // if this hotel event is a check out event, then delete the corresponding check in event
     const correspondingCheckInDay = getCorrespondingHotelCheckInDay(
       itineraryRequest,
       selectedHotels,
-      hotelEventToDelete,
+      hotelEventToDelete
     );
     itinerary[correspondingCheckInDay - 1].events = itinerary[
       correspondingCheckInDay - 1
@@ -550,7 +552,7 @@ export const deleteCorrespondingHotelEvents = (
           event.location_name === hotelEventToDelete.location_name &&
           event.coordinates?.lat === hotelEventToDelete.coordinates?.lat &&
           event.coordinates?.lng === hotelEventToDelete.coordinates?.lng
-        ),
+        )
     );
   }
 
@@ -569,7 +571,7 @@ export const deleteCorrespondingHotelEvents = (
 };
 
 export const getTimesOfDayBefore = (
-  input: EventTimeOfDay,
+  input: EventTimeOfDay
 ): EventTimeOfDay[] => {
   if (input === EventTimeOfDay.morning) {
     return [EventTimeOfDay.morning];
@@ -600,7 +602,7 @@ export const getTimesOfDayAfter = (input: EventTimeOfDay): EventTimeOfDay[] => {
 
 export const getTimesOfDayBetween = (
   previous: EventTimeOfDay,
-  next: EventTimeOfDay,
+  next: EventTimeOfDay
 ): EventTimeOfDay[] => {
   const timeOrder = [
     EventTimeOfDay.morning,
@@ -616,7 +618,7 @@ export const getTimesOfDayBetween = (
 
   return timeOrder.slice(
     Math.min(startIndex, endIndex),
-    Math.max(startIndex, endIndex) + 1,
+    Math.max(startIndex, endIndex) + 1
   );
 };
 
@@ -638,14 +640,14 @@ export const getItinerarySummaryText = (itinerary: IItinerary): string => {
   const numDays = itinerary.itinerary.length;
   const destinations =
     itinerary.request.payload.user_requested_destinations.map(
-      (userRequestedDestination) => userRequestedDestination.name,
+      (userRequestedDestination) => userRequestedDestination.name
     );
   return `${numDays} ${numDays > 1 ? "days" : "day"} ${numDays} ${numDays > 1 ? "nights" : "night"} to ${getDestinationsString(destinations)}`;
 };
 
 export const getPreviousEvent = (
   indexOfEvent: number,
-  events: Event[],
+  events: Event[]
 ): Event | null => {
   if (indexOfEvent === 0) return null;
 
@@ -654,7 +656,7 @@ export const getPreviousEvent = (
 
 export const getNextEvent = (
   indexOfEvent: number,
-  events: Event[],
+  events: Event[]
 ): Event | null => {
   if (indexOfEvent === events.length) return null;
 
@@ -664,7 +666,7 @@ export const getNextEvent = (
 export const getTimeOfDayOptions = (
   indexOfEvent: number,
   events: Event[],
-  isModifyEvent: boolean,
+  isModifyEvent: boolean
 ): EventTimeOfDay[] => {
   const previousEvent: Event | null = getPreviousEvent(indexOfEvent, events);
   const nextEvent: Event | null = isModifyEvent
@@ -697,11 +699,11 @@ export const getTimeOfDayOptions = (
 
 export const getIndexToMoveModifiedEventTo = (
   modifiedEvent: Event,
-  events: Event[],
+  events: Event[]
 ): number => {
   const newEventTimeOfDay = modifiedEvent.time_of_day;
   const indexToMoveModifiedEventTo = events.findIndex(
-    (event: Event) => event.time_of_day === newEventTimeOfDay,
+    (event: Event) => event.time_of_day === newEventTimeOfDay
   );
 
   if (indexToMoveModifiedEventTo === -1) {
@@ -712,14 +714,14 @@ export const getIndexToMoveModifiedEventTo = (
     } else if (newEventTimeOfDay === EventTimeOfDay.afternoon) {
       // if there are no existing afternoon events
       const hasMorningEvents = events.some(
-        (event: Event) => event.time_of_day === EventTimeOfDay.morning,
+        (event: Event) => event.time_of_day === EventTimeOfDay.morning
       );
 
       if (hasMorningEvents) {
         // if there are morning events, ensure the modified event comes after the last morning event
         return (
           events.findLastIndex(
-            (event: Event) => event.time_of_day === EventTimeOfDay.morning,
+            (event: Event) => event.time_of_day === EventTimeOfDay.morning
           ) + 1
         );
       } else {
