@@ -32,8 +32,7 @@ import { IItinerary } from "@/constants/types/itinerary";
 import { DayPlan, Event, Hotel, TravelTime } from "@/lib/pythonBackend/types";
 import {
   getIndexToMoveModifiedEventTo,
-  getItinerarySummaryText,
-  getTravelTimes,
+  getItinerarySummaryText
 } from "@/lib/pythonBackend/utils";
 import { buildLocaleEndpoint } from "@/utils/buildLocaleEndpoint";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
@@ -184,7 +183,7 @@ const ReviewItinerary = ({
   useEffect(() => {
     if (getItinerary.data) {
       setDayPlan(getCorrectDayPlan());
-      setTravelTimes(getItinerary.data.itinerary.travel_times[dayNum - 1]);
+      setTravelTimes(getItinerary.data.travelTimes[dayNum - 1]);
       setEvents(getCorrectDayPlan().events);
       setBackupEvents(getCorrectDayPlan().events);
       setSelectedEvent(null);
