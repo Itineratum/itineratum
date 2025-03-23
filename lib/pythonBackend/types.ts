@@ -59,7 +59,7 @@ export interface Event {
   openingHours: string[];
   checkInTime: string | null;
   checkOutTime: string | null;
-  place_id: string // we can cache this indefinitely according to Google policy
+  place_id: string; // we can cache this indefinitely according to Google policy
 }
 
 export enum EventTimeOfDay {
@@ -181,4 +181,9 @@ export interface SearchActivityJSON {
     location_name: string;
     location_city: string;
   };
+}
+
+export interface PositionPhotoUri {
+  position: Position;
+  photoUri: string;
 }

@@ -13,6 +13,7 @@ import {
   GenerateItineraryJSON,
   Hotel,
   Position,
+  PositionPhotoUri,
   TravelTime,
 } from "./types";
 
@@ -22,33 +23,9 @@ export const getEvents = async (
 ): Promise<Event[]> => {
   if (!rawTimePeriodPlan) return [];
 
-  setDefaults({
-    key: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY,
-    language: "en",
-    region: "sg",
-    outputFormat: OutputFormat.JSON,
-  });
-
   const events: Event[] = [];
 
   for (const item of rawTimePeriodPlan) {
-    // const { results } = await fromAddress(item.location_address);
-    // const { lat, lng } = results[0].geometry.location;
-    // let photo =
-    //   item.photos && item.photos.length > 0 ? item.photos[0].name : "";
-
-    // if (photo.startsWith("places/")) {
-    //   const googlePlacePhotoEndpoint = getGooglePlacePhotoEndpoint(photo);
-    //   const response = await fetch(googlePlacePhotoEndpoint);
-
-    //   if (!response.ok) {
-    //     throw new Error("Network response was not ok!");
-    //   }
-
-    //   const photoJson = await response.json();
-    //   photo = photoJson.photoUri;
-    // }
-
     events.push({
       is_hotel: item.is_hotel ? item.is_hotel : false,
       event_name: item.location_name,
@@ -78,6 +55,10 @@ export const getEvents = async (
   }
 
   return events;
+};
+
+export const getGooglePlaceDetailsEndpoint = (placeId: string): string => {
+  return `https://places.googleapis.com/v1/places/${placeId}?fields=photos,location&key=${process.env.NEXT_PUBLIC_GOOGLE_PLACES_API_KEY}`;
 };
 
 export const getGooglePlacePhotoEndpoint = (photoString: string): string => {
@@ -122,6 +103,9 @@ export const getTravelTimes = async (
         originDestinationPair[0],
         originDestinationPair[1]
       );
+      console.log(
+        `~ Retrieving travel time from ${originDestinationPair[0]} to ${originDestinationPair[1]} using Google Distance Matrix API. ~`
+      );
       const response = await fetch(googleDistanceMatrixEndpoint);
 
       if (!response.ok) {
@@ -154,6 +138,47 @@ export const getTravelTimes = async (
   return itineraryTravelTimes;
 };
 
+export const getPositionAndPhotoUri = async (
+  event: Event
+): Promise<PositionPhotoUri> => {
+  console.log(
+    `Retrieving position (coordinates) and photo url from PlaceId ${event.place_id} using Google Place Details (New) API. ~`
+  );
+  const googlePlaceDetailsEndpoint = getGooglePlaceDetailsEndpoint(
+    event.place_id
+  );
+  const googlePlaceDetailsResponse = await fetch(googlePlaceDetailsEndpoint);
+
+  if (!googlePlaceDetailsResponse.ok) {
+    throw new Error("Network response was not ok!");
+  }
+
+  const placeDetailsJson = await googlePlaceDetailsResponse.json();
+  const position = {
+    lat: placeDetailsJson.location.latitude,
+    lng: placeDetailsJson.location.longitude,
+  };
+  let photoUri: string = "";
+
+  if (placeDetailsJson.photos && placeDetailsJson.photos.length > 0) {
+    const photoString = placeDetailsJson.photos[0].name;
+    const googlePlacePhotoEndpoint = getGooglePlacePhotoEndpoint(photoString);
+    const googlePlacePhotoResponse = await fetch(googlePlacePhotoEndpoint);
+
+    if (!googlePlacePhotoResponse.ok) {
+      throw new Error("Network response was not ok!");
+    }
+
+    const placePhotoJson = await googlePlacePhotoResponse.json();
+    photoUri = placePhotoJson.photoUri;
+  }
+
+  return {
+    position,
+    photoUri,
+  };
+};
+
 export const getPosition = async (event: Event): Promise<Position> => {
   setDefaults({
     key: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY,
@@ -161,7 +186,9 @@ export const getPosition = async (event: Event): Promise<Position> => {
     region: "sg",
     outputFormat: OutputFormat.JSON,
   });
-
+  console.log(
+    `~ Retrieving position from PlaceID ${event.place_id} using Google Geocoding API. ~`
+  );
   const { results } = await fromPlaceId(event.place_id);
   return results[0].geometry.location;
 };

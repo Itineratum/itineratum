@@ -11,6 +11,7 @@ import {
   formatHotels,
   formatItinerary,
   getPosition,
+  getPositionAndPhotoUri,
   getTravelTimes,
   getTripCheckInCheckOutDays,
   hasHotelDeletes,
@@ -90,8 +91,10 @@ export const itineraryRouter = router({
 
           for (let j = 0; j < dayPlan.events.length; j++) {
             const event = dayPlan.events[j];
-            const position = await getPosition(event);
+            // const position = await getPosition(event);
+            const { position, photoUri } = await getPositionAndPhotoUri(event);
             event.coordinates = position;
+            event.photo = photoUri;
             retrieveItineraryRes.data.itinerary[i].events[j] = event;
           }
         }
