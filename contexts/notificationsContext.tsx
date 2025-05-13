@@ -65,7 +65,7 @@ export const NotificationsProvider = ({
         onError: (error) => {
           if (error.message === "UNAUTHORIZED") router.push("/protected");
         },
-      }
+      },
     );
 
   const updateUserNotificationsSetting =

@@ -29,11 +29,11 @@ const AccountNotifications = ({}: {}) => {
       const notificationsSettings = getUserNotificationsSettings.data;
       setNewsletterEmail(notificationsSettings.newsletter.email);
       setNewsletterPushNotifications(
-        notificationsSettings.newsletter.pushNotifications
+        notificationsSettings.newsletter.pushNotifications,
       );
       setAllOffersUpdatesEmail(notificationsSettings.allOffersUpdates.email);
       setAllOffersUpdatesPushNotifications(
-        notificationsSettings.allOffersUpdates.pushNotifications
+        notificationsSettings.allOffersUpdates.pushNotifications,
       );
     }
   }, [getUserNotificationsSettings.data]);
