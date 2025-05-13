@@ -1,7 +1,7 @@
 import Alert from "@/components/molecules/alert";
 import { usePersonalInformation } from "@/hooks/usePersonalInformation";
 import { Grid, Stack } from "@mui/material";
-import { ACCOUNT_PERFONAL_INFORMATION_STYLES } from "../styles";
+import { ACCOUNT_PERSONAL_INFORMATION_STYLES } from "../styles";
 import AddressSection from "./address-section";
 import DateOfBirthField from "./date-of-birth-field";
 import DeleteAccountButton from "./delete-account-button";
@@ -11,7 +11,7 @@ const RightColumn = () => {
   const { showAlert, setShowAlert, alertType, alertText } =
     usePersonalInformation();
 
-  const styles = ACCOUNT_PERFONAL_INFORMATION_STYLES;
+  const styles = ACCOUNT_PERSONAL_INFORMATION_STYLES;
 
   return (
     <Grid item xs={12} md={6}>

@@ -10,7 +10,7 @@ import {
 import { useTranslations } from "next-intl";
 import { useState, ChangeEvent } from "react";
 import { ControllerRenderProps, Controller } from "react-hook-form";
-import { ACCOUNT_PERFONAL_INFORMATION_STYLES } from "../../styles";
+import { ACCOUNT_PERSONAL_INFORMATION_STYLES } from "../../styles";
 import { useChangePassword } from "@/hooks/useChangePassword";
 import colorsConst from "@/constants/pages/colors.json";
 import VisibilityOffOutlinedIcon from "@mui/icons-material/VisibilityOffOutlined";
@@ -21,7 +21,7 @@ const NewPasswordField = () => {
     useChangePassword();
 
   const t = useTranslations("account.personalInformation.changePassword");
-  const styles = ACCOUNT_PERFONAL_INFORMATION_STYLES;
+  const styles = ACCOUNT_PERSONAL_INFORMATION_STYLES;
 
   const [showNewPassword, setShowNewPassword] = useState<boolean>(false);
 

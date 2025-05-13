@@ -3,7 +3,7 @@
 import Alert from "@/components/molecules/alert";
 import { useChangePassword } from "@/hooks/useChangePassword";
 import { Box, Stack } from "@mui/material";
-import { ACCOUNT_PERFONAL_INFORMATION_STYLES } from "../../styles";
+import { ACCOUNT_PERSONAL_INFORMATION_STYLES } from "../../styles";
 import CancelButton from "./cancel-button";
 import CurrentPasswordField from "./current-password-field";
 import NewPasswordField from "./new-password-field";
@@ -14,7 +14,7 @@ import UpdateButton from "./update-button";
 const ChangePasswordForm = ({}: {}) => {
   const { showAlert, setShowAlert, alertText, alertType } = useChangePassword();
 
-  const styles = ACCOUNT_PERFONAL_INFORMATION_STYLES;
+  const styles = ACCOUNT_PERSONAL_INFORMATION_STYLES;
 
   return (
     <Box component="form" noValidate>

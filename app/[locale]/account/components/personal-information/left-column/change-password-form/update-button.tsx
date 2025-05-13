@@ -6,7 +6,7 @@ import { useChangePassword } from "@/hooks/useChangePassword";
 import { Button, CircularProgress } from "@mui/material";
 import { TRPCClientError } from "@trpc/client";
 import { useTranslations } from "next-intl";
-import { ACCOUNT_PERFONAL_INFORMATION_STYLES } from "../../styles";
+import { ACCOUNT_PERSONAL_INFORMATION_STYLES } from "../../styles";
 
 const UpdateButton = () => {
   const {
@@ -23,7 +23,7 @@ const UpdateButton = () => {
   const { session } = useAccount();
 
   const t = useTranslations("account.personalInformation.changePassword");
-  const styles = ACCOUNT_PERFONAL_INFORMATION_STYLES;
+  const styles = ACCOUNT_PERSONAL_INFORMATION_STYLES;
 
   const handleOnClick = async () => {
     const isCurrentPasswordValid = await trigger("currentPassword");

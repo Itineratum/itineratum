@@ -104,7 +104,7 @@ export const userRouter = router({
       } = data.input;
       const verifyVerificationCodeRes = await verifyVerificationCode(
         email,
-        verificationCode,
+        verificationCode
       );
 
       if (!verifyVerificationCodeRes.success) {
@@ -119,7 +119,7 @@ export const userRouter = router({
         countryCode,
         number,
         email,
-        password,
+        password
       );
 
       if (!signUpRes.success) {
@@ -272,7 +272,7 @@ export const userRouter = router({
       // verify that the user has entered the correct current password
       const verifyUserPasswordRes = await verifyUserPassword(
         email,
-        currentPassword,
+        currentPassword
       );
 
       if (!verifyUserPasswordRes.success) {
@@ -352,7 +352,7 @@ export const userRouter = router({
         if (value) {
           const addEmailToNewsletterRes = await addEmailToNewsletter(
             email,
-            name,
+            name
           );
           sendNewsletterSubscribedEmail(email, name);
 
@@ -439,7 +439,7 @@ export const userRouter = router({
 
       const itineraries: Record<string, IItinerary>[] = [];
       const uniqueItineraryIds: string[] = Array.from(
-        new Set(retrieveUserSavedItineraryIdsRes.data),
+        new Set(retrieveUserSavedItineraryIdsRes.data)
       );
 
       for (const itineraryId of uniqueItineraryIds) {
@@ -457,7 +457,7 @@ export const userRouter = router({
       const calendarEvent = data.input.calendarEvent;
       const insertUserCalendarEventRes = await insertUserCalendarEvent(
         email,
-        calendarEvent,
+        calendarEvent
       );
 
       if (!insertUserCalendarEventRes.success) {
@@ -493,7 +493,7 @@ export const userRouter = router({
         data.input.modifiedCalendarEvent;
       const updateUserCalendarEventRes = await updateUserCalendarEvent(
         email,
-        modifiedCalendarEvent,
+        modifiedCalendarEvent
       );
 
       if (!updateUserCalendarEventRes.success) {
@@ -511,7 +511,7 @@ export const userRouter = router({
       const calendarEventId = data.input.calendarEventId;
       const removeUserCalendarEventRes = await removeUserCalendarEvent(
         email,
-        calendarEventId,
+        calendarEventId
       );
 
       if (!removeUserCalendarEventRes.success) {

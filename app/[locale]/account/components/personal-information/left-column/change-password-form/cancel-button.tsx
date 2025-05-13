@@ -3,13 +3,13 @@ import { TypographyVariant } from "@/constants/enums/theme";
 import { useChangePassword } from "@/hooks/useChangePassword";
 import { Button } from "@mui/material";
 import { useTranslations } from "next-intl";
-import { ACCOUNT_PERFONAL_INFORMATION_STYLES } from "../../styles";
+import { ACCOUNT_PERSONAL_INFORMATION_STYLES } from "../../styles";
 
 const CancelButton = () => {
   const { cancelChangePassword, isChangingPassword } = useChangePassword();
 
   const t = useTranslations("account.personalInformation.changePassword");
-  const styles = ACCOUNT_PERFONAL_INFORMATION_STYLES;
+  const styles = ACCOUNT_PERSONAL_INFORMATION_STYLES;
 
   const handleOnClick = () => {
     cancelChangePassword();

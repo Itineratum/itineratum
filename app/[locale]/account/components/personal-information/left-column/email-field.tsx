@@ -3,11 +3,11 @@ import { usePersonalInformation } from "@/hooks/usePersonalInformation";
 import { Box, InputLabel, TextField } from "@mui/material";
 import { useTranslations } from "next-intl";
 import { Controller } from "react-hook-form";
-import { ACCOUNT_PERFONAL_INFORMATION_STYLES } from "../styles";
+import { ACCOUNT_PERSONAL_INFORMATION_STYLES } from "../styles";
 
 const EmailField = () => {
   const t = useTranslations("account.personalInformation");
-  const styles = ACCOUNT_PERFONAL_INFORMATION_STYLES;
+  const styles = ACCOUNT_PERSONAL_INFORMATION_STYLES;
   const { control, email } = usePersonalInformation();
 
   return (

@@ -14,14 +14,14 @@ import {
 import { useTranslations } from "next-intl";
 import { ChangeEvent, useState } from "react";
 import { Controller, ControllerRenderProps } from "react-hook-form";
-import { ACCOUNT_PERFONAL_INFORMATION_STYLES } from "../../styles";
+import { ACCOUNT_PERSONAL_INFORMATION_STYLES } from "../../styles";
 
 const ReEnterNewPasswordField = () => {
   const { control, trigger, errors, newPassword, reEnterNewPassword } =
     useChangePassword();
 
   const t = useTranslations("account.personalInformation.changePassword");
-  const styles = ACCOUNT_PERFONAL_INFORMATION_STYLES;
+  const styles = ACCOUNT_PERSONAL_INFORMATION_STYLES;
 
   const [showReEnterNewPassword, setShowReEnterNewPassword] =
     useState<boolean>(false);

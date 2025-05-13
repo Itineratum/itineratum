@@ -5,7 +5,7 @@ import { usePersonalInformation } from "@/hooks/usePersonalInformation";
 import { Button, CircularProgress } from "@mui/material";
 import { TRPCClientError } from "@trpc/client";
 import { useTranslations } from "next-intl";
-import { ACCOUNT_PERFONAL_INFORMATION_STYLES } from "../styles";
+import { ACCOUNT_PERSONAL_INFORMATION_STYLES } from "../styles";
 
 const SaveButton = () => {
   const {
@@ -24,7 +24,7 @@ const SaveButton = () => {
   } = usePersonalInformation();
 
   const t = useTranslations("account.personalInformation");
-  const styles = ACCOUNT_PERFONAL_INFORMATION_STYLES.RIGHT_COLUMN;
+  const styles = ACCOUNT_PERSONAL_INFORMATION_STYLES.RIGHT_COLUMN;
 
   const handleOnClick = async () => {
     setIsUpdating(true);

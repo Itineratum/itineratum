@@ -11,7 +11,7 @@ import { useState, ChangeEvent } from "react";
 import { ControllerRenderProps, Controller } from "react-hook-form";
 import colorsConst from "@/constants/pages/colors.json";
 import { useChangePassword } from "@/hooks/useChangePassword";
-import { ACCOUNT_PERFONAL_INFORMATION_STYLES } from "../../styles";
+import { ACCOUNT_PERSONAL_INFORMATION_STYLES } from "../../styles";
 import VisibilityOffOutlinedIcon from "@mui/icons-material/VisibilityOffOutlined";
 import VisibilityOutlinedIcon from "@mui/icons-material/VisibilityOutlined";
 
@@ -22,7 +22,7 @@ const CurrentPasswordField = () => {
     useState<boolean>(false);
 
   const t = useTranslations("account.personalInformation.changePassword");
-  const styles = ACCOUNT_PERFONAL_INFORMATION_STYLES;
+  const styles = ACCOUNT_PERSONAL_INFORMATION_STYLES;
 
   const handleClickShowCurrentPassword = () =>
     setShowCurrentPassword(!showCurrentPassword);

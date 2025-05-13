@@ -13,9 +13,9 @@ const Base = () => {
 
   useEffect(() => {
     if (!isLoggedIn) router.push("/protected");
-  }, [status, router]);
+  }, [router]);
 
-  return status === "loading" || !isLoggedIn ? null : (
+  return !isLoggedIn ? null : (
     <Box
       display="flex"
       flexDirection="column"

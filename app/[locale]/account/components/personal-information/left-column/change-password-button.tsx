@@ -3,7 +3,7 @@ import { TypographyVariant } from "@/constants/enums/theme";
 import { usePersonalInformation } from "@/hooks/usePersonalInformation";
 import { Box, Button, Collapse } from "@mui/material";
 import { useTranslations } from "next-intl";
-import { ACCOUNT_PERFONAL_INFORMATION_STYLES } from "../styles";
+import { ACCOUNT_PERSONAL_INFORMATION_STYLES } from "../styles";
 import ChangePasswordForm from "./change-password-form/change-password-form";
 import { ChangePasswordProvider } from "@/contexts/changePasswordContext";
 
@@ -12,7 +12,7 @@ const ChangePasswordButton = () => {
     usePersonalInformation();
   const t = useTranslations("account.personalInformation");
 
-  const styles = ACCOUNT_PERFONAL_INFORMATION_STYLES;
+  const styles = ACCOUNT_PERSONAL_INFORMATION_STYLES;
 
   const handleOnClick = () => {
     setIsChangePassword(true);

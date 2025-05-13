@@ -7,13 +7,13 @@ import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider/L
 import dayjs, { Dayjs } from "dayjs";
 import { useTranslations } from "next-intl";
 import { Controller } from "react-hook-form";
-import { ACCOUNT_PERFONAL_INFORMATION_STYLES } from "../styles";
+import { ACCOUNT_PERSONAL_INFORMATION_STYLES } from "../styles";
 
 const DateOfBirthField = () => {
   const { control, dateOfBirth } = usePersonalInformation();
 
   const t = useTranslations("account.personalInformation");
-  const styles = ACCOUNT_PERFONAL_INFORMATION_STYLES;
+  const styles = ACCOUNT_PERSONAL_INFORMATION_STYLES;
 
   return (
     <Box>
