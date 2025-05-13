@@ -6,7 +6,7 @@ export const useChangePassword = () => {
 
   if (!context) {
     throw new Error(
-      "useChangePassword must be used within a ChangePasswordProvider"
+      "useChangePassword must be used within a ChangePasswordProvider",
     );
   }
 

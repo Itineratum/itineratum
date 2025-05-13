@@ -10,25 +10,24 @@ const Notifications = () => {
   const { setAccountSetting } = useAccount();
   const t = useTranslations("account");
   const styles = ACCOUNT_BASE_STYLES;
-  
+
   const handleOnClick = () => {
     setAccountSetting(AccountSetting.notifications);
   };
 
-
   return (
     <Button
-    sx={{
-      color: colorsConst.palette.text.primary,
-    }}
-    onClick={handleOnClick}
-  >
-    <Text
-      text={t("notifications.notifications")}
-      variant={styles.BUTTON_TYPOGRAPHY_VARIANT}
-      bold={false}
-    />
-  </Button>
+      sx={{
+        color: colorsConst.palette.text.primary,
+      }}
+      onClick={handleOnClick}
+    >
+      <Text
+        text={t("notifications.notifications")}
+        variant={styles.BUTTON_TYPOGRAPHY_VARIANT}
+        bold={false}
+      />
+    </Button>
   );
 };
 

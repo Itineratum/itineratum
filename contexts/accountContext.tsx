@@ -24,7 +24,7 @@ type AccountContextType = {
 };
 
 export const AccountContext = createContext<AccountContextType | undefined>(
-  undefined
+  undefined,
 );
 
 export const AccountProvider = ({ children }: { children: ReactNode }) => {
@@ -34,7 +34,7 @@ export const AccountProvider = ({ children }: { children: ReactNode }) => {
   const router = useRouter();
 
   const [accountSetting, setAccountSetting] = useState<AccountSetting>(
-    AccountSetting.base
+    AccountSetting.base,
   );
 
   return (

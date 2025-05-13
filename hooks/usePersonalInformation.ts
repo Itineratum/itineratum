@@ -6,7 +6,7 @@ export const usePersonalInformation = () => {
 
   if (!context) {
     throw new Error(
-      "usePersonalInformation must be used within an PersonalInformationProvider"
+      "usePersonalInformation must be used within an PersonalInformationProvider",
     );
   }
 

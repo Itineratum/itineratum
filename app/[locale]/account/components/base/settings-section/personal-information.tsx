@@ -1,4 +1,5 @@
-import { Button } from "@mui/material";Text
+import { Button } from "@mui/material";
+Text;
 import Text from "@/components/atoms/text";
 import { useTranslations } from "next-intl";
 import colorsConst from "@/constants/pages/colors.json";
@@ -29,6 +30,6 @@ const PersonalInformation = () => {
       />
     </Button>
   );
-}
+};
 
 export default PersonalInformation;

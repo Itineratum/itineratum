@@ -100,7 +100,7 @@ export const PersonalInformationProvider = ({
       onError: (error) => {
         if (error.message === "UNAUTHORIZED") router.push("/protected");
       },
-    }
+    },
   );
 
   const deleteUserAccount = trpc.user.deleteUserAccount.useMutation({

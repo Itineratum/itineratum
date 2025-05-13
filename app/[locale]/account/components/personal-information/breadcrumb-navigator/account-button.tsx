@@ -8,7 +8,7 @@ import { useTranslations } from "next-intl";
 
 const AccountButton = () => {
   const t = useTranslations("account.personalInformation");
-  const {setAccountSetting, accountSetting} = useAccount();
+  const { setAccountSetting, accountSetting } = useAccount();
 
   const handleOnClick = () => {
     // go back to account base page

@@ -29,7 +29,7 @@ const CurrentPasswordField = () => {
 
   const handleCurrentPasswordChange = async (
     event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
-    field: ControllerRenderProps<ChangePasswordFormData, "currentPassword">
+    field: ControllerRenderProps<ChangePasswordFormData, "currentPassword">,
   ) => {
     field.onChange(event.target.value);
     await trigger("currentPassword");

@@ -15,6 +15,6 @@ const Header = () => {
       textDecoration={TypographyTextDecoration.underline}
     />
   );
-}
+};
 
 export default Header;
