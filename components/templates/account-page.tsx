@@ -1,17 +1,17 @@
 "use client";
 
-import AccountBase from "@/app/[locale]/account/components/account-base";
 import AccountNotifications from "@/app/[locale]/account/components/account-notifications";
-import AccountPersonalInformation from "@/app/[locale]/account/components/account-personal-information";
+import Base from "@/app/[locale]/account/components/base/base";
+import PersonalInformation from "@/app/[locale]/account/components/personal-information/personal-information";
 import { AccountSetting } from "@/constants/enums/accountSetting";
+import { PersonalInformationProvider } from "@/contexts/personalInformationContext";
+import { useAccount } from "@/hooks/useAccount";
 import { Slide } from "@mui/material";
 import Container from "@mui/material/Container";
 import { useEffect, useRef, useState } from "react";
 
 const AccountPage = () => {
-  const [accountSetting, setAccountSetting] = useState<AccountSetting>(
-    AccountSetting.base,
-  );
+  const { accountSetting, setAccountSetting } = useAccount();
   const [containerHeight, setContainerHeight] = useState<string>("auto");
   const baseRef = useRef<HTMLDivElement>(null);
   const personalInfoRef = useRef<HTMLDivElement>(null);
@@ -55,7 +55,7 @@ const AccountPage = () => {
         style={{ position: "absolute", width: "100%" }}
       >
         <Container key={AccountSetting.base} ref={baseRef}>
-          <AccountBase setAccountSetting={setAccountSetting} />
+          <Base />
         </Container>
       </Slide>
     );
@@ -75,10 +75,7 @@ const AccountPage = () => {
           key={AccountSetting.personalInformation}
           ref={personalInfoRef}
         >
-          <AccountPersonalInformation
-            accountSetting={accountSetting}
-            setAccountSetting={setAccountSetting}
-          />
+          <PersonalInformation />
         </Container>
       </Slide>
     );
@@ -118,7 +115,9 @@ const AccountPage = () => {
       }}
     >
       {base()}
-      {personalInformation()}
+      <PersonalInformationProvider>
+        {personalInformation()}
+      </PersonalInformationProvider>
       {notifications()}
     </Container>
   );
