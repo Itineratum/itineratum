@@ -31,7 +31,7 @@ type LoginOtpContextType = {
 };
 
 export const LoginOtpContext = createContext<LoginOtpContextType | undefined>(
-  undefined
+  undefined,
 );
 
 export const LoginOtpProvider = ({ children }: { children: ReactNode }) => {

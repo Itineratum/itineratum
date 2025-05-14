@@ -23,7 +23,7 @@ type LoginContextType = {
 };
 
 export const LoginContext = createContext<LoginContextType | undefined>(
-  undefined
+  undefined,
 );
 
 export const LoginProvider = ({ children }: { children: ReactNode }) => {

@@ -7,11 +7,7 @@ import { TRPCClientError } from "@trpc/client";
 import { signIn } from "next-auth/react";
 import { useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
-import {
-  createContext,
-  ReactNode,
-  useCallback
-} from "react";
+import { createContext, ReactNode, useCallback } from "react";
 import {
   Control,
   FieldErrors,
@@ -95,7 +91,7 @@ export const LoginEmailProvider = ({ children }: { children: ReactNode }) => {
         setIsLoggingIn(false);
       }
     },
-    [loginViaEmail, t]
+    [loginViaEmail, t],
   );
 
   return (

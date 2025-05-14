@@ -19,12 +19,12 @@ const CountryCodeField = () => {
 
   const handleCountryCodeChange = async (
     event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
-    field: ControllerRenderProps<LogInFormOtpData, "countryCode">
+    field: ControllerRenderProps<LogInFormOtpData, "countryCode">,
   ) => {
     field.onChange(event);
     const inputCountryCode = event.target.value;
     const countryIso2 = Object.values(countryInfoList).find(
-      (country) => country.callingCode === inputCountryCode
+      (country) => country.callingCode === inputCountryCode,
     )?.iso2;
     setValue("country", countryIso2!);
 
