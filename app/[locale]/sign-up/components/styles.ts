@@ -10,5 +10,5 @@ export const SIGNUP_STYLES = {
     NUMBER_WIDTH: 12 - countryCodeWidth,
   },
   BUTTON_WIDTH: "30%",
-  LOADING_ANIMATION_SIZE: 24
+  LOADING_ANIMATION_SIZE: 24,
 };

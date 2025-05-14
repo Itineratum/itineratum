@@ -18,7 +18,7 @@ const VerificationCodeField = () => {
       defaultValue=""
       rules={{
         required: t(
-          "emailVerification.emailVerificationForm.verificationCodeError"
+          "emailVerification.emailVerificationForm.verificationCodeError",
         ),
       }}
       render={({ field }) => (

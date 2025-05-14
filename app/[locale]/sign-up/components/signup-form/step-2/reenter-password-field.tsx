@@ -20,7 +20,7 @@ const ReEnterPasswordField = () => {
 
   const handleReEnterPasswordChange = async (
     event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
-    field: ControllerRenderProps<SignUpFormData, "reEnterPassword">
+    field: ControllerRenderProps<SignUpFormData, "reEnterPassword">,
   ) => {
     field.onChange(event.target.value);
     await trigger("reEnterPassword");

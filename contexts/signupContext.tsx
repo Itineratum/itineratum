@@ -52,7 +52,7 @@ type SignupContextType = {
 };
 
 export const SignupContext = createContext<SignupContextType | undefined>(
-  undefined
+  undefined,
 );
 
 export const SignupProvider = ({ children }: { children: ReactNode }) => {

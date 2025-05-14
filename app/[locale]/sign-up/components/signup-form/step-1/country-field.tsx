@@ -16,7 +16,7 @@ const CountryField = () => {
 
   const handleCountryChange = async (
     event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
-    field: ControllerRenderProps<SignUpFormData, "country">
+    field: ControllerRenderProps<SignUpFormData, "country">,
   ) => {
     field.onChange(event);
     const inputCountry = event.target.value;

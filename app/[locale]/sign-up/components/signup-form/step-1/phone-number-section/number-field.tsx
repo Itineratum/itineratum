@@ -20,7 +20,7 @@ const NumberField = () => {
 
   const handleNumberChange = async (
     event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
-    field: ControllerRenderProps<SignUpFormData, "number">
+    field: ControllerRenderProps<SignUpFormData, "number">,
   ) => {
     field.onChange(event.target.value);
     await trigger("number");

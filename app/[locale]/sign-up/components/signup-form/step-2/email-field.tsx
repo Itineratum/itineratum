@@ -18,7 +18,7 @@ const EmailField = () => {
 
   const handleEmailChange = async (
     event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
-    field: ControllerRenderProps<SignUpFormData, "email">
+    field: ControllerRenderProps<SignUpFormData, "email">,
   ) => {
     field.onChange(event.target.value);
     await trigger("email");

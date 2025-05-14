@@ -18,7 +18,7 @@ const PasswordField = () => {
 
   const handlePasswordChange = async (
     event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
-    field: ControllerRenderProps<SignUpFormData, "password">
+    field: ControllerRenderProps<SignUpFormData, "password">,
   ) => {
     field.onChange(event.target.value);
     await trigger("password");
