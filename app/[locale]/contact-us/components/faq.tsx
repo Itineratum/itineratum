@@ -1,7 +1,7 @@
 import Text from "@/components/atoms/text";
 import { TypographyVariant } from "@/constants/enums/theme";
-import { Accordion, AccordionDetails, AccordionSummary } from "@mui/material";
 import ArrowDropDownOutlinedIcon from "@mui/icons-material/ArrowDropDownOutlined";
+import { Accordion, AccordionDetails, AccordionSummary } from "@mui/material";
 
 const FAQ = ({
   questionString,
@@ -10,28 +10,22 @@ const FAQ = ({
   questionString: string;
   answerString: string;
 }) => {
-  const question = () => {
-    return (
-      <Text text={questionString} variant={TypographyVariant.h5} bold={true} />
-    );
-  };
-
-  const answer = () => {
-    return (
-      <Text
-        text={answerString}
-        variant={TypographyVariant.body1}
-        bold={false}
-      />
-    );
-  };
-
   return (
     <Accordion elevation={0} square>
       <AccordionSummary expandIcon={<ArrowDropDownOutlinedIcon />}>
-        {question()}
+        <Text
+          text={questionString}
+          variant={TypographyVariant.h5}
+          bold={true}
+        />
       </AccordionSummary>
-      <AccordionDetails>{answer()}</AccordionDetails>
+      <AccordionDetails>
+        <Text
+          text={answerString}
+          variant={TypographyVariant.body1}
+          bold={false}
+        />
+      </AccordionDetails>
     </Accordion>
   );
 };
