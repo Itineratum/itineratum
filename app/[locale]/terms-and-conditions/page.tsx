@@ -9,31 +9,19 @@ const TermsAndConditions = () => {
 
   const spacing = 4;
 
-  const termsAndConditionsText = () => {
-    return (
-      <Text
-        text={t("termsAndConditions")}
-        variant={TypographyVariant.h2}
-        bold={true}
-      />
-    );
-  };
-
-  const termsAndConditionsBody = () => {
-    return (
-      <Text
-        text={termsAndConditions}
-        variant={TypographyVariant.h6}
-        bold={false}
-      />
-    );
-  };
-
   return (
     <Container maxWidth="md">
       <Stack direction="column" spacing={spacing}>
-        {termsAndConditionsText()}
-        {termsAndConditionsBody()}
+        <Text
+          text={t("termsAndConditions")}
+          variant={TypographyVariant.h2}
+          bold={true}
+        />
+        <Text
+          text={termsAndConditions}
+          variant={TypographyVariant.h6}
+          bold={false}
+        />
       </Stack>
     </Container>
   );
