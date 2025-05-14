@@ -1,45 +1,25 @@
 "use client";
 
-import { LogInFormEmail } from "@/app/[locale]/login/components/login-form-email";
-import { LogInFormOtp } from "@/app/[locale]/login/components/login-form-otp";
+import { LogInFormEmail } from "@/app/[locale]/login/components/login-form-email/login-form-email";
+import { LogInFormOtp } from "@/app/[locale]/login/components/login-form-otp/login-form-otp";
+import { LOGIN_STYLES } from "@/app/[locale]/login/components/styles";
 import Text from "@/components/atoms/text";
 import { TypographyVariant } from "@/constants/enums/theme";
+import { LoginEmailProvider } from "@/contexts/loginEmailContext";
+import { LoginOtpProvider } from "@/contexts/loginOtpContext";
+import { useLogin } from "@/hooks/useLogin";
 import { Collapse } from "@mui/material";
 import Box from "@mui/material/Box";
 import Container from "@mui/material/Container";
 import { useTranslations } from "next-intl";
-import { useEffect, useState } from "react";
 import { OrDivider } from "../atoms/or-divider";
 import { GoogleButton } from "../molecules/google-button";
 
 const LoginPage = () => {
+  const { isLoginUsingOtp, returnUrl } = useLogin();
+
   const t = useTranslations("login");
-  const [isLoginUsingOtp, setIsLoginUsingOtp] = useState<boolean>(false);
-  const [returnUrl, setReturnUrl] = useState<string | null>(null);
-
-  useEffect(() => {
-    const searchParams = new URLSearchParams(window.location.search);
-    setReturnUrl(searchParams.get("returnUrl"));
-  }, []);
-
-  const pageTransitionDuration: number = 500;
-  const formMargin: number = 2;
-
-  const loginText = () => {
-    return (
-      <Box marginBottom={5}>
-        <Text text={t("login")} variant={TypographyVariant.h5} bold={true} />
-      </Box>
-    );
-  };
-
-  const welcomeTravellerText = () => {
-    return (
-      <Box sx={{ textAlign: "left", width: "100%" }}>
-        <Text text={t("welcome")} variant={TypographyVariant.h5} bold={true} />
-      </Box>
-    );
-  };
+  const styles = LOGIN_STYLES;
 
   return (
     <Container maxWidth="sm">
@@ -51,23 +31,35 @@ const LoginPage = () => {
           alignItems: "center",
         }}
       >
-        {loginText()}
-        {welcomeTravellerText()}
+        <Box marginBottom={5}>
+          <Text text={t("login")} variant={TypographyVariant.h5} bold={true} />
+        </Box>
+        <Box sx={{ textAlign: "left", width: "100%" }}>
+          <Text
+            text={t("welcome")}
+            variant={TypographyVariant.h5}
+            bold={true}
+          />
+        </Box>
       </Box>
-      <Collapse in={isLoginUsingOtp} timeout={pageTransitionDuration}>
-        <LogInFormOtp setIsLoginUsingOtp={setIsLoginUsingOtp} />
+      <Collapse in={isLoginUsingOtp} timeout={styles.PAGE_TRANSITION_DURATION}>
+        <LoginOtpProvider>
+          <LogInFormOtp />
+        </LoginOtpProvider>
       </Collapse>
-      <Collapse in={!isLoginUsingOtp} timeout={pageTransitionDuration}>
-        <LogInFormEmail setIsLoginUsingOtp={setIsLoginUsingOtp} />
+      <Collapse in={!isLoginUsingOtp} timeout={styles.PAGE_TRANSITION_DURATION}>
+        <LoginEmailProvider>
+          <LogInFormEmail />
+        </LoginEmailProvider>
       </Collapse>
-      <OrDivider formMargin={formMargin} />
+      <OrDivider formMargin={styles.FORM_MARGIN} />
       <Box
         sx={{
           display: "flex",
           justifyContent: "center",
         }}
       >
-        <GoogleButton formMargin={formMargin} returnUrl={returnUrl} />
+        <GoogleButton formMargin={styles.FORM_MARGIN} returnUrl={returnUrl} />
       </Box>
     </Container>
   );
