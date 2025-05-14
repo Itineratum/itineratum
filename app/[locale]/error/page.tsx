@@ -19,20 +19,6 @@ const Error = () => {
 
   const heightBetweenErrorTextAndButton: number = 30;
 
-  const homeButton = () => {
-    return (
-      <Link href={buildLocaleEndpoint(locale, constEndpoints.home.endpoint)}>
-        <Button variant="contained">
-          <Text
-            text={t("home")}
-            variant={TypographyVariant.button}
-            bold={false}
-          />
-        </Button>
-      </Link>
-    );
-  };
-
   return (
     <Box
       display="flex"
@@ -44,7 +30,16 @@ const Error = () => {
     >
       <Text text={errorMessage} variant={TypographyVariant.h2} bold={false} />
       <Box sx={{ height: heightBetweenErrorTextAndButton }} />
-      {homeButton()}
+      {/* home button */}
+      <Link href={buildLocaleEndpoint(locale, constEndpoints.home.endpoint)}>
+        <Button variant="contained">
+          <Text
+            text={t("home")}
+            variant={TypographyVariant.button}
+            bold={false}
+          />
+        </Button>
+      </Link>
     </Box>
   );
 };
