@@ -6,7 +6,7 @@ export const useFeedbackForm = () => {
 
   if (!context) {
     throw new Error(
-      "useFeedbackForm must be used within an FeedbackFormProvider"
+      "useFeedbackForm must be used within an FeedbackFormProvider",
     );
   }
 

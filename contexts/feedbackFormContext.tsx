@@ -114,7 +114,7 @@ export const FeedbackFormProvider = ({ children }: { children: ReactNode }) => {
       };
 
       await feedbackNotificationEmail.mutateAsync(
-        feedbackNotificationEmailData
+        feedbackNotificationEmailData,
       );
 
       if (email) {

@@ -1,8 +1,6 @@
 import Text from "@/components/atoms/text";
 import { TypographyVariant } from "@/constants/enums/theme";
-import {
-  FeedbackCategory
-} from "@/constants/types/formData/feedbackFormData";
+import { FeedbackCategory } from "@/constants/types/formData/feedbackFormData";
 import { useFeedbackForm } from "@/hooks/useFeedbackForm";
 import { MenuItem, Select, Stack } from "@mui/material";
 import { useTranslations } from "next-intl";
