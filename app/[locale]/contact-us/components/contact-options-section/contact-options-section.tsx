@@ -1,8 +1,8 @@
 import { Box } from "@mui/material";
 import { useTranslations } from "next-intl";
-import EmailBlock from "./contact-options-section/email-block";
-import PhoneBlock from "./contact-options-section/phone-block";
-import { CONTACT_US_STYLES } from "./styles";
+import EmailBlock from "./email-block";
+import PhoneBlock from "./phone-block";
+import { CONTACT_US_STYLES } from "../styles";
 
 const ContactOptionsSection = () => {
   const t = useTranslations("contactUs");

@@ -1,5 +1,5 @@
 import CommonFaqsSection from "@/app/[locale]/contact-us/components/common-faqs-section";
-import ContactOptionsSection from "@/app/[locale]/contact-us/components/contact-options-section";
+import ContactOptionsSection from "@/app/[locale]/contact-us/components/contact-options-section/contact-options-section";
 import FeedbackForm from "@/app/[locale]/contact-us/components/feedback-form/feedback-form";
 import { CONTACT_US_STYLES } from "@/app/[locale]/contact-us/components/styles";
 import { TypographyVariant } from "@/constants/enums/theme";
