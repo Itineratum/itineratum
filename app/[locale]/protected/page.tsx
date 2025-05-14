@@ -9,37 +9,24 @@ const ProtectedRoute = () => {
   const t = useTranslations("protected");
 
   const spacing: number = 7;
-
-  const heading = () => {
-    const margin: number = 5;
-
-    return (
-      <Box marginY={margin}>
-        <Text
-          text={t("heading").toUpperCase()}
-          variant={TypographyVariant.h1}
-          bold={true}
-        />
-      </Box>
-    );
-  };
-
-  const description = () => {
-    return (
-      <Text
-        text={t("description")}
-        variant={TypographyVariant.h5}
-        bold={false}
-      />
-    );
-  };
+  const margin: number = 5;
 
   return (
     <ThreeGuysBackground>
       <Container maxWidth="md" sx={{ textAlign: "center", zIndex: 1 }}>
-        {heading()}
+        <Box marginY={margin}>
+          <Text
+            text={t("heading").toUpperCase()}
+            variant={TypographyVariant.h1}
+            bold={true}
+          />
+        </Box>
         <Stack spacing={spacing} sx={{ display: "flex", alignItems: "center" }}>
-          {description()}
+          <Text
+            text={t("description")}
+            variant={TypographyVariant.h5}
+            bold={false}
+          />
           <LoginButton />
         </Stack>
       </Container>
