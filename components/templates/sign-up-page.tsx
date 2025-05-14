@@ -5,25 +5,10 @@ import { TypographyVariant } from "@/constants/enums/theme";
 import Box from "@mui/material/Box";
 import Container from "@mui/material/Container";
 import { useTranslations } from "next-intl";
-import SignUpForm from "../../app/[locale]/sign-up/components/signup-form";
+import SignUpForm from "../../app/[locale]/sign-up/components/signup-form/signup-form";
 
 const SignUpPage = () => {
   const t = useTranslations("signUp");
-
-  const signUpText = () => {
-    return (
-      <Box marginBottom={5}>
-        <Text text={t("signUp")} variant={TypographyVariant.h5} bold={true} />
-      </Box>
-    );
-  };
-  const welcomeTravellerText = () => {
-    return (
-      <Box sx={{ textAlign: "left", width: "100%" }}>
-        <Text text={t("welcome")} variant={TypographyVariant.h5} bold={true} />
-      </Box>
-    );
-  };
 
   return (
     <Container maxWidth="sm">
@@ -35,8 +20,16 @@ const SignUpPage = () => {
           alignItems: "center",
         }}
       >
-        {signUpText()}
-        {welcomeTravellerText()}
+        <Box marginBottom={5}>
+          <Text text={t("signUp")} variant={TypographyVariant.h5} bold={true} />
+        </Box>
+        <Box sx={{ textAlign: "left", width: "100%" }}>
+          <Text
+            text={t("welcome")}
+            variant={TypographyVariant.h5}
+            bold={true}
+          />
+        </Box>
       </Box>
       <SignUpForm />
     </Container>
