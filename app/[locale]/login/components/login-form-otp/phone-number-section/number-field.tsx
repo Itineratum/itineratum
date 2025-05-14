@@ -7,7 +7,7 @@ import { ChangeEvent } from "react";
 import { Controller, ControllerRenderProps } from "react-hook-form";
 import { number } from "zod";
 import { LOGIN_STYLES } from "../../styles";
-import GetOtpButton from "./getOtpButton";
+import GetOtpButton from "./get-otp-button";
 
 const NumberField = () => {
   const { country, trigger, control, errors } = useLoginOtp();
