@@ -55,7 +55,7 @@ const StartDateField = () => {
         // value display
         <Text
           text={dayjs(previousCalendarEvent.start).format(
-            "dddd, D MMMM YYYY, h:mm A"
+            "dddd, D MMMM YYYY, h:mm A",
           )}
           variant={TypographyVariant.h6}
           bold={false}

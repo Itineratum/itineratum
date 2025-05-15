@@ -71,7 +71,7 @@ export const UserCalendarEventProvider = ({
     useState<CalendarEvent>(
       selectedUserCalendarEvent
         ? selectedUserCalendarEvent
-        : defaultCalendarEvent
+        : defaultCalendarEvent,
     );
   const [hasModifications, setHasModifications] = useState<boolean>(false);
 
@@ -102,7 +102,7 @@ export const UserCalendarEventProvider = ({
       setHasModifications(
         name !== previousCalendarEvent.title ||
           !startDate.isSame(dayjs(previousCalendarEvent.start)) ||
-          !endDate.isSame(dayjs(previousCalendarEvent.end))
+          !endDate.isSame(dayjs(previousCalendarEvent.end)),
       );
     }
   }, [name, startDate, endDate, previousCalendarEvent]);

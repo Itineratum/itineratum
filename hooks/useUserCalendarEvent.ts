@@ -6,7 +6,7 @@ export const useUserCalendarEvent = () => {
 
   if (!context) {
     throw new Error(
-      "useUserCalendarEvent must be used within an UserCalendarEventProvider"
+      "useUserCalendarEvent must be used within an UserCalendarEventProvider",
     );
   }
 

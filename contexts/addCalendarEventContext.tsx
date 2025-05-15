@@ -56,8 +56,7 @@ export const AddCalendarEventProvider = ({
     trigger,
     reset,
   } = useForm<AddCalendarEventFormData>();
-  const { setShowAddCalendarEventDialog } =
-    useSavedTrips();
+  const { setShowAddCalendarEventDialog } = useSavedTrips();
 
   const [isAddingCalendarEvent, setIsAddingCalendarEvent] =
     useState<boolean>(false);

@@ -62,7 +62,7 @@ const ItineraryCard = ({
 
   const handleOnClick = () => {
     router.push(
-      `${endpointsConst.itinerary.endpoint}/${itineraryId}?from=savedtrips`
+      `${endpointsConst.itinerary.endpoint}/${itineraryId}?from=savedtrips`,
     );
   };
 

@@ -68,7 +68,7 @@ const EndDateField = () => {
         // value display
         <Text
           text={dayjs(previousCalendarEvent.end).format(
-            "dddd, D MMMM YYYY, h:mm A"
+            "dddd, D MMMM YYYY, h:mm A",
           )}
           variant={TypographyVariant.h6}
           bold={false}

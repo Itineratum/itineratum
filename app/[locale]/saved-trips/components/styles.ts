@@ -51,8 +51,8 @@ export const SAVED_TRIPS_STYLES = {
       HEIGHT: "600px",
       USER_CALENDAR_EVENT_DIALOG: {
         SPACING: 2,
-        LOADING_ANIMATION_SIZE: 24
-      }
+        LOADING_ANIMATION_SIZE: 24,
+      },
     },
   },
 };

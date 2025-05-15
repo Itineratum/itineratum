@@ -29,7 +29,7 @@ const ItineraryCalendar = ({}: {}) => {
 
   const onNavigate = useCallback(
     (newDate: Date) => setDate(dayjs(newDate)),
-    [setDate]
+    [setDate],
   );
   const onView = useCallback((newView: string) => setView(newView), [setView]);
 

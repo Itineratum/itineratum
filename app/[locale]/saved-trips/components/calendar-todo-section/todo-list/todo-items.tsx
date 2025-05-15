@@ -25,7 +25,7 @@ const ToDoItems = () => {
     {
       email: session?.user.email!,
     },
-    { enabled: isLoggedIn }
+    { enabled: isLoggedIn },
   );
 
   useEffect(() => {
@@ -34,7 +34,7 @@ const ToDoItems = () => {
       setCheckedToDoIds(
         getUserToDoList.data
           .filter((toDo: ToDo) => toDo.isComplete)
-          .map((toDo: ToDo) => toDo._id)
+          .map((toDo: ToDo) => toDo._id),
       );
     }
   }, [getUserToDoList.data]);

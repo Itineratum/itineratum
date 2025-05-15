@@ -30,7 +30,7 @@ type AddToDoContextType = {
 };
 
 export const AddToDoContext = createContext<AddToDoContextType | undefined>(
-  undefined
+  undefined,
 );
 
 export const AddToDoProvider = ({ children }: { children: ReactNode }) => {
