@@ -1,8 +1,12 @@
 import SavedTripsPage from "@/components/templates/saved-trips-page";
-import React from "react";
+import { SavedTripsProvider } from "@/contexts/savedTripsContext";
 
 const SavedTrips = () => {
-  return <SavedTripsPage />;
+  return (
+    <SavedTripsProvider>
+      <SavedTripsPage />
+    </SavedTripsProvider>
+  );
 };
 
 export default SavedTrips;

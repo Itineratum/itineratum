@@ -1,50 +1,39 @@
-import colorsConst from "@/constants/pages/colors.json";
 import { CalendarEvent } from "@/constants/types/calendarEvent";
-import { IItinerary } from "@/constants/types/itinerary";
+import { UserCalendarEventProvider } from "@/contexts/userCalendarEventContext";
+import { useSavedTrips } from "@/hooks/useSavedTrips";
 import { getItinerarySummaryText } from "@/lib/pythonBackend/utils";
-import AddIcon from "@mui/icons-material/Add";
-import { Box, IconButton, Stack } from "@mui/material";
+import { Box, Stack } from "@mui/material";
 import dayjs, { Dayjs } from "dayjs";
-import {
-  Dispatch,
-  SetStateAction,
-  useCallback,
-  useEffect,
-  useState,
-} from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Calendar, dayjsLocalizer, View, Views } from "react-big-calendar";
 import "react-big-calendar/lib/css/react-big-calendar.css";
-import UserCalendarEventDialog from "./user-calendar-event-dialog";
+import { SAVED_TRIPS_STYLES } from "../../styles";
+import AddCalendarEventButton from "./add-calendar-event-button";
+import UserCalendarEventDialog from "./user-calendar-event-dialog/user-calendar-event-dialog";
 
-const ItineraryCalendar = ({
-  savedItineraries,
-  setSelectedItineraryId,
-  setShowAddCalendarEventDialog,
-  userCalendarEvents,
-}: {
-  savedItineraries: Record<string, IItinerary>[];
-  setSelectedItineraryId: Dispatch<SetStateAction<string | null>>;
-  setShowAddCalendarEventDialog: Dispatch<SetStateAction<boolean>>;
-  userCalendarEvents: CalendarEvent[];
-}) => {
+const ItineraryCalendar = ({}: {}) => {
+  const {
+    savedItineraries,
+    setSelectedItineraryId,
+    userCalendarEvents,
+    setSelectedUserCalendarEvent,
+    setUserCalendarEventDialogOpen,
+    selectedUserCalendarEvent,
+  } = useSavedTrips();
+
   const localizer = dayjsLocalizer(dayjs);
   const [date, setDate] = useState<Dayjs>(dayjs());
   const [view, setView] = useState<string>(Views.MONTH);
 
-  const spacing = 2;
-  const calendarHeight = "600px";
+  const styles = SAVED_TRIPS_STYLES.CALENDAR_TODO_SECTION.ITINERARY_CALENDAR;
 
   const onNavigate = useCallback(
     (newDate: Date) => setDate(dayjs(newDate)),
-    [setDate],
+    [setDate]
   );
   const onView = useCallback((newView: string) => setView(newView), [setView]);
 
   const [calendarEvents, setCalendarEvents] = useState<CalendarEvent[]>([]);
-  const [userCalendarEventDialogOpen, setUserCalendarEventDialogOpen] =
-    useState<boolean>(false);
-  const [selectedUserCalendarEvent, setSelectedUserCalendarEvent] =
-    useState<CalendarEvent | null>(null);
 
   useEffect(() => {
     if (savedItineraries && savedItineraries.length > 0) {
@@ -90,27 +79,12 @@ const ItineraryCalendar = ({
     }
   };
 
-  const addCalendarEventButton = () => {
-    const handleOnClick = () => {
-      setShowAddCalendarEventDialog(true);
-    };
-
-    return (
-      <IconButton
-        onClick={handleOnClick}
-        sx={{ color: colorsConst.palette.text.primary }}
-      >
-        <AddIcon />
-      </IconButton>
-    );
-  };
-
   return (
-    <Stack direction="column" spacing={spacing}>
+    <Stack direction="column" spacing={styles.SPACING}>
       <Box display="flex" justifyContent="flex-end">
-        {addCalendarEventButton()}
+        <AddCalendarEventButton />
       </Box>
-      <Box sx={{ height: calendarHeight }}>
+      <Box sx={{ height: styles.HEIGHT }}>
         <Calendar
           date={date.toDate()}
           events={calendarEvents}
@@ -121,14 +95,13 @@ const ItineraryCalendar = ({
           view={view as View}
         />
       </Box>
-      {selectedUserCalendarEvent && (
-        <UserCalendarEventDialog
-          key={JSON.stringify(selectedUserCalendarEvent)}
-          open={userCalendarEventDialogOpen}
-          setOpen={setUserCalendarEventDialogOpen}
-          calendarEvent={selectedUserCalendarEvent!}
-        />
-      )}
+      <UserCalendarEventProvider>
+        {selectedUserCalendarEvent && (
+          <UserCalendarEventDialog
+            key={JSON.stringify(selectedUserCalendarEvent)}
+          />
+        )}
+      </UserCalendarEventProvider>
     </Stack>
   );
 };

@@ -1,16 +1,12 @@
 import Text from "@/components/atoms/text";
 import { TypographyVariant } from "@/constants/enums/theme";
 import { defaultEventImageSrc } from "@/constants/pages/components/itineraryGenerator";
+import endpointsConst from "@/constants/pages/endpoints.json";
 import { Box, Button, Skeleton } from "@mui/material";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import endpointsConst from "@/constants/pages/endpoints.json";
-
-export const itineraryCardHeight = 230;
-export const itineraryCardWidth = 420;
-export const itineraryCardWidthMobile = "80vw";
-export const itineraryCardOverlapOffset = 200;
+import { SAVED_TRIPS_STYLES } from "../styles";
 
 const ItineraryCard = ({
   title,
@@ -29,11 +25,8 @@ const ItineraryCard = ({
 }) => {
   const router = useRouter();
 
-  const height = itineraryCardHeight;
-  const width = itineraryCardWidth;
-  const borderRadius = "20px";
-  const overlapOffset = itineraryCardOverlapOffset;
-  const hoverAnimationDuration = "0.3s";
+  const styles = SAVED_TRIPS_STYLES.ITINERARIES_SECTION.ITINERARY_CARD;
+
   const hoverSx = {
     transform: "scale(1.1)",
     zIndex: numOfCards, // Bring the hovered card to the front
@@ -59,59 +52,17 @@ const ItineraryCard = ({
   if (isLoading) {
     return (
       <Skeleton
-        height={height}
-        width={width}
+        height={styles.HEIGHT}
+        width={styles.WIDTH}
         variant="rounded"
         animation="wave"
       />
     );
   }
 
-  const overlay = () => {
-    const width = "85%";
-
-    const eventLabel = () => {
-      return (
-        <Box
-          sx={{
-            display: "-webkit-box", // Ensures multi-line ellipsis
-            WebkitBoxOrient: "vertical",
-            overflow: "hidden",
-            WebkitLineClamp: 2, // Limits text to 2 lines
-            textOverflow: "ellipsis",
-          }}
-        >
-          <Text
-            text={title.toUpperCase()}
-            variant={TypographyVariant.h6}
-            bold={false}
-          />
-        </Box>
-      );
-    };
-
-    return (
-      <Box
-        sx={{
-          position: "relative",
-          zIndex: 1,
-          backgroundColor: "rgba(255, 255, 255, 0.8)",
-          borderRadius,
-          border: "2px solid black",
-          padding: "8px 16px",
-          textAlign: "center",
-          minWidth: width,
-          maxWidth: width,
-        }}
-      >
-        {eventLabel()}
-      </Box>
-    );
-  };
-
   const handleOnClick = () => {
     router.push(
-      `${endpointsConst.itinerary.endpoint}/${itineraryId}?from=savedtrips`,
+      `${endpointsConst.itinerary.endpoint}/${itineraryId}?from=savedtrips`
     );
   };
 
@@ -121,9 +72,9 @@ const ItineraryCard = ({
       onClick={handleOnClick}
       sx={{
         position: "absolute",
-        top: `${index * overlapOffset}px`,
+        top: `${index * styles.OVERLAP_OFFSET}px`,
         zIndex,
-        transition: `transform ${hoverAnimationDuration}`,
+        transition: `transform ${styles.HOVER_ANIMATION_DURATION}`,
         transform,
         "&:hover": hoverSx,
       }}
@@ -131,10 +82,10 @@ const ItineraryCard = ({
       <Box
         sx={{
           position: "relative",
-          borderRadius,
+          borderRadius: styles.BORRDER_RADIUS,
           overflow: "hidden",
-          height,
-          width: { xs: itineraryCardWidthMobile, md: width },
+          height: styles.HEIGHT,
+          width: { xs: styles.WIDTH_MOBILE, md: styles.WIDTH },
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
@@ -151,7 +102,36 @@ const ItineraryCard = ({
             priority
           />
         )}
-        {overlay()}
+        {/* overlay */}
+        <Box
+          sx={{
+            position: "relative",
+            zIndex: 1,
+            backgroundColor: "rgba(255, 255, 255, 0.8)",
+            borderRadius: styles.BORRDER_RADIUS,
+            border: "2px solid black",
+            padding: "8px 16px",
+            textAlign: "center",
+            minWidth: styles.OVERLAY_WIDTH,
+            maxWidth: styles.OVERLAY_WIDTH,
+          }}
+        >
+          <Box
+            sx={{
+              display: "-webkit-box", // Ensures multi-line ellipsis
+              WebkitBoxOrient: "vertical",
+              overflow: "hidden",
+              WebkitLineClamp: 2, // Limits text to 2 lines
+              textOverflow: "ellipsis",
+            }}
+          >
+            <Text
+              text={title.toUpperCase()}
+              variant={TypographyVariant.h6}
+              bold={false}
+            />
+          </Box>
+        </Box>
       </Box>
     </Button>
   );
