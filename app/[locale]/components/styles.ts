@@ -60,10 +60,10 @@ export const HOME_STYLES = {
     },
     FORM_FIELDS: {
       TRANSITION_DURATION: 0.3,
-      MARGIN_TOP: "10px"
+      MARGIN_TOP: "10px",
     },
     NAVIGATION_BUTTONS: {
-      LOADING_ANIMATION_SIZE: 24
+      LOADING_ANIMATION_SIZE: 24,
     },
     STEP_1: {
       SPACING: 4,
@@ -116,7 +116,7 @@ export const HOME_STYLES = {
     GENERATION_STEPS: {
       VERTICAL_MARGIN: 2,
       SPACING: 4,
-      INTERVAL_DURATION: 3000
-    }
+      INTERVAL_DURATION: 3000,
+    },
   },
 };

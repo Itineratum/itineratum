@@ -17,7 +17,7 @@ type Step2ContextType = {
 };
 
 export const Step2Context = createContext<Step2ContextType | undefined>(
-  undefined
+  undefined,
 );
 
 export const Step2Provider = ({ children }: { children: ReactNode }) => {

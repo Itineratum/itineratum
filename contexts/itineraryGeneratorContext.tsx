@@ -70,7 +70,7 @@ export const ItineraryGeneratorProvider = ({
   const [showAlert, setShowAlert] = useState<boolean>(false);
   const [alertText, setAlertText] = useState<string>("");
   const [generationStep, setGenerationStep] = useState<GenerateItineraryStep>(
-    GenerateItineraryStep.inputting
+    GenerateItineraryStep.inputting,
   );
 
   const saveItinerary = trpc.itinerary.saveItinerary.useMutation();
@@ -99,17 +99,17 @@ export const ItineraryGeneratorProvider = ({
   const watchedFields = fields.watch();
   const checkFieldsValidForActiveStep = () => {
     const hasErrorsAtActiveStep = Object.keys(fields.formState.errors).some(
-      (errorField) => fieldsAtEachStep[activeStep].includes(errorField)
+      (errorField) => fieldsAtEachStep[activeStep].includes(errorField),
     );
     const requiredFieldsFilled = fieldsAtEachStep[activeStep].every(
-      (field: any) => !!fields.getValues(field)
+      (field: any) => !!fields.getValues(field),
     );
 
     // checks whether the start date of the first destination is the same as the trip start date, and the end date of the last destination is the same as the trip end date
     const step5Check =
       activeStep === 4
         ? watchedFields.userRequestedDestinations[0].startDate.isSame(
-            watchedFields.startDate
+            watchedFields.startDate,
           ) &&
           watchedFields.userRequestedDestinations[
             watchedFields.userRequestedDestinations.length - 1
@@ -120,7 +120,7 @@ export const ItineraryGeneratorProvider = ({
       !hasErrorsAtActiveStep &&
         requiredFieldsFilled &&
         watchedFields.userRequestedDestinations.length > 0 &&
-        step5Check
+        step5Check,
     );
   };
 

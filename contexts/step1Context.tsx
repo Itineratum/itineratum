@@ -20,7 +20,7 @@ type Step1ContextType = {
 };
 
 export const Step1Context = createContext<Step1ContextType | undefined>(
-  undefined
+  undefined,
 );
 
 export const Step1Provider = ({ children }: { children: ReactNode }) => {

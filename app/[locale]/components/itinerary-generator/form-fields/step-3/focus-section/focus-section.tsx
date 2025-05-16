@@ -29,7 +29,7 @@ const FocusSection = () => {
   const getAvailableRanks = (currentFocus: GenerateItineraryFocus) => {
     const selectedRanks = Object.values(focusRankings).filter(
       (focusRanking) =>
-        focusRanking !== null && focusRanking !== focusRankings[currentFocus]
+        focusRanking !== null && focusRanking !== focusRankings[currentFocus],
     );
     return rankValues.filter((rankValue) => !selectedRanks.includes(rankValue));
   };

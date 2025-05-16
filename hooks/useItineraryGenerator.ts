@@ -6,7 +6,7 @@ export const useItineraryGenerator = () => {
 
   if (!context) {
     throw new Error(
-      "useItineraryGenerator must be used within an ItineraryGeneratorProvider"
+      "useItineraryGenerator must be used within an ItineraryGeneratorProvider",
     );
   }
 

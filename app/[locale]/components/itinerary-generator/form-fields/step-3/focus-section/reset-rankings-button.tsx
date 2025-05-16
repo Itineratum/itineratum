@@ -35,7 +35,7 @@ const ResetRankingsButton = () => {
           Object.keys(focusRankings).every(
             (key) =>
               focusRankings[key as GenerateItineraryFocus] ===
-              defaultFocusRankings[key as GenerateItineraryFocus]
+              defaultFocusRankings[key as GenerateItineraryFocus],
           ) ||
           JSON.stringify(focusRankings) === JSON.stringify(defaultFocusRankings)
         }

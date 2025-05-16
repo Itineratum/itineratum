@@ -27,7 +27,7 @@ type Step3ContextType = {
 };
 
 export const Step3Context = createContext<Step3ContextType | undefined>(
-  undefined
+  undefined,
 );
 
 export const Step3Provider = ({ children }: { children: ReactNode }) => {
@@ -39,7 +39,7 @@ export const Step3Provider = ({ children }: { children: ReactNode }) => {
 
   const getFocusKey = (focus: GenerateItineraryFocus) => {
     return Object.entries(GenerateItineraryFocus).filter(
-      (entry) => entry[1] === focus
+      (entry) => entry[1] === focus,
     )[0][0];
   };
 

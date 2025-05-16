@@ -90,7 +90,7 @@ export const NewsletterSignupProvider = ({
   const checkEmailInNewsletter =
     trpc.newsletterEmail.checkEmailInNewsletter.useQuery(
       { email: session?.user.email! },
-      { retry: false, enabled: isLoggedIn }
+      { retry: false, enabled: isLoggedIn },
     );
 
   useEffect(() => {
@@ -121,7 +121,7 @@ export const NewsletterSignupProvider = ({
         checkEmailInNewsletter,
         ref,
         inView,
-        isLoggedIn
+        isLoggedIn,
       }}
     >
       {children}

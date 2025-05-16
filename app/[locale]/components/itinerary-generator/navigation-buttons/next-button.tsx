@@ -25,7 +25,7 @@ const NextButton = () => {
       fields.setValue(
         //@ts-ignore
         `userRequestedDestinations[0].startDate`,
-        tripStartDate
+        tripStartDate,
       );
       //@ts-ignore
       fields.setValue(`userRequestedDestinations[0].endDate`, tripEndDate);
@@ -44,13 +44,13 @@ const NextButton = () => {
         fields.setValue(
           //@ts-ignore
           `userRequestedDestinations[${index}].startDate`,
-          currentDate
+          currentDate,
         );
         const endDate = currentDate.add(daysToAllocate - 1, "day");
         fields.setValue(
           //@ts-ignore
           `userRequestedDestinations[${index}].endDate`,
-          endDate
+          endDate,
         );
 
         currentDate = endDate.add(1, "day");

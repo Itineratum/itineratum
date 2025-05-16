@@ -51,7 +51,7 @@ const GenerateButton = () => {
 
       const runPipelineRes = await runPipelineWithGenerationSteps(
         itineraryJson,
-        setGenerationStep
+        setGenerationStep,
       );
 
       // debug

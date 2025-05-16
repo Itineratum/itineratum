@@ -19,7 +19,7 @@ const DaysAllocationItem = ({
 
   const handleDaysAllocationChange = (
     destination: UserRequestedDestination,
-    numOfDaysToAllocate: number
+    numOfDaysToAllocate: number,
   ) => {
     setDaysAllocated((prevDaysAllocated) => {
       const updatedDaysAllocated = {
@@ -42,12 +42,12 @@ const DaysAllocationItem = ({
         fields.setValue(
           // @ts-ignore
           `${"userRequestedDestinations"}[${index}].startDate`,
-          startDate
+          startDate,
         );
         fields.setValue(
           // @ts-ignore
           `${"userRequestedDestinations"}[${index}].endDate`,
-          endDate
+          endDate,
         );
 
         cumulativeDays += allocatedDays;
@@ -87,7 +87,7 @@ const DaysAllocationItem = ({
         </MenuItem>
         {Array.from(
           Array(getAvailableDays(destination.name)),
-          (_, i) => i + 1
+          (_, i) => i + 1,
         ).map((daysToAllocate) => (
           <MenuItem key={daysToAllocate} value={daysToAllocate}>
             {daysToAllocate}

@@ -22,7 +22,7 @@ const FromDateField = () => {
     const isValid = validateDates(
       value,
       fields.getValues("endDate"),
-      fields.getValues("userRequestedDestinations").length
+      fields.getValues("userRequestedDestinations").length,
     );
 
     if (!isValid) {
@@ -48,7 +48,7 @@ const FromDateField = () => {
         ...destination,
         startDate: value?.startOf("day")!,
         endDate: value?.startOf("day")!,
-      }))
+      })),
     );
 
     fields.trigger("startDate");

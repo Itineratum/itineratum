@@ -15,7 +15,7 @@ const OtherRequirementCheckbox = ({
 
   const handleOnChange = (
     event: React.ChangeEvent<HTMLInputElement>,
-    requirement: keyof typeof GenerateItineraryOtherRequirement
+    requirement: keyof typeof GenerateItineraryOtherRequirement,
   ) => {
     const currentValues = fields.getValues("otherRequirements") || {};
     fields.setValue("otherRequirements", {

@@ -18,7 +18,7 @@ const EmailTextInput = () => {
 
   const handleEmailChange = async (
     event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
-    field: ControllerRenderProps<NewsletterFormData, "email">
+    field: ControllerRenderProps<NewsletterFormData, "email">,
   ) => {
     field.onChange(event.target.value);
     await trigger("email");

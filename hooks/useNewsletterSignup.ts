@@ -6,7 +6,7 @@ export const useNewsletterSignup = () => {
 
   if (!context) {
     throw new Error(
-      "useNewsletterSignup must be used within an NewsletterSignupProvider"
+      "useNewsletterSignup must be used within an NewsletterSignupProvider",
     );
   }
 

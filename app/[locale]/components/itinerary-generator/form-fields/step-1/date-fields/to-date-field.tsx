@@ -22,7 +22,7 @@ const ToDateField = () => {
     const isValid = validateDates(
       fields.getValues("startDate"),
       value,
-      fields.getValues("userRequestedDestinations").length
+      fields.getValues("userRequestedDestinations").length,
     );
 
     if (!isValid) {
