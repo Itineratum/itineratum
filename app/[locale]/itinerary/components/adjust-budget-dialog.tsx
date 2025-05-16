@@ -1,7 +1,7 @@
 import { trpc } from "@/app/_trpc/client";
 import Text from "@/components/atoms/text";
 import Alert from "@/components/molecules/alert";
-import ItineraryGenerationSteps from "@/components/molecules/itinerary-generation-steps";
+import ItineraryGenerationSteps from "@/app/[locale]/components/itinerary-generator/itinerary-generation-steps/itinerary-generation-steps";
 import { AlertType } from "@/constants/enums/alertType";
 import { Currency } from "@/constants/enums/currency";
 import { GenerateItineraryStep } from "@/constants/enums/generateItinerary";

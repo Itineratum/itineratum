@@ -1,27 +1,14 @@
 import Text from "@/components/atoms/text";
 import { TypographyVariant } from "@/constants/enums/theme";
-import colorsConst from "@/constants/pages/colors.json";
-import { GenerateItineraryFormData } from "@/constants/types/formData/generateItineraryFormData";
+import { useItineraryGenerator } from "@/hooks/useItineraryGenerator";
+import { useStep1 } from "@/hooks/useStep1";
 import SearchIcon from "@mui/icons-material/Search";
 import { Box, IconButton, TextField } from "@mui/material";
 import { useTranslations } from "next-intl";
-import { Dispatch, SetStateAction } from "react";
-import { Controller, UseFormReturn } from "react-hook-form";
+import { Controller } from "react-hook-form";
+import { HOME_STYLES } from "../../../styles";
 
-const textLabelMarginRight: number = 2;
-const inputLabelWidth: string = "75%";
-const inputLabelProps = {
-  style: {
-    color: colorsConst.palette.text.grey,
-    fontSize: "12px",
-    width: inputLabelWidth,
-    overflow: "hidden",
-    textOverflow: "ellipsis",
-    whiteSpace: "nowrap",
-  },
-  shrink: undefined,
-};
-const mobileSpacing = 1;
+const styles = HOME_STYLES.ITINERARY_GENERATOR.STEP_1;
 
 const handleOnFocus = (e: any) => {
   e.target.labels[0].style.overflow = "visible";
@@ -29,20 +16,19 @@ const handleOnFocus = (e: any) => {
   e.target.labels[0].style.width = "100%";
 };
 const handleOnBlur = (e: any) => {
-  e.target.labels[0].style.overflow = inputLabelProps.style.overflow;
-  e.target.labels[0].style.textOverflow = inputLabelProps.style.textOverflow;
-  e.target.labels[0].style.whiteSpace = inputLabelProps.style.whiteSpace;
-  e.target.labels[0].style.width = inputLabelWidth;
+  e.target.labels[0].style.overflow =
+    styles.LOCATION_FIELDS.INPUT_LABEL_PROPS.style.overflow;
+  e.target.labels[0].style.textOverflow =
+    styles.LOCATION_FIELDS.INPUT_LABEL_PROPS.style.textOverflow;
+  e.target.labels[0].style.whiteSpace =
+    styles.LOCATION_FIELDS.INPUT_LABEL_PROPS.style.whiteSpace;
+  e.target.labels[0].style.width = styles.LOCATION_FIELDS.INPUT_LABEL_WIDTH;
 };
 
-const OriginField = ({
-  fields,
-}: {
-  fields: UseFormReturn<GenerateItineraryFormData, any, undefined>;
-}) => {
-  const t = useTranslations("home.itineraryGenerator.step1");
+const OriginField = ({}: {}) => {
+  const { fields } = useItineraryGenerator();
 
-  const fieldId = "originCountry";
+  const t = useTranslations("home.itineraryGenerator.step1");
 
   return (
     <Box
@@ -54,10 +40,10 @@ const OriginField = ({
           md: "row",
         },
         alignItems: { xs: "flex-start", md: "center" },
-        gap: { xs: mobileSpacing, md: 0 },
+        gap: { xs: styles.MOBILE_SPACING, md: 0 },
       }}
     >
-      <Box mr={textLabelMarginRight}>
+      <Box mr={styles.TEXT_LABEL_MARGIN_RIGHT}>
         <Text
           text={t("origin") + ":"}
           variant={TypographyVariant.h4}
@@ -65,15 +51,15 @@ const OriginField = ({
         />
       </Box>
       <Controller
-        name={fieldId}
+        name={"originCountry"}
         control={fields.control}
         render={({ field }) => (
           <TextField
-            {...fields.register(fieldId)}
+            {...fields.register("originCountry")}
             variant="outlined"
             label={t("originDescription")}
             fullWidth
-            InputLabelProps={inputLabelProps}
+            InputLabelProps={styles.LOCATION_FIELDS.INPUT_LABEL_PROPS}
             onFocus={handleOnFocus}
             onBlur={handleOnBlur}
             onChange={(newValue) => {
@@ -93,16 +79,10 @@ const OriginField = ({
   );
 };
 
-const DestinationField = ({
-  destination: currentDestination,
-  setDestination,
-}: {
-  destination: string;
-  setDestination: Dispatch<SetStateAction<string>>;
-}) => {
-  const t = useTranslations("home.itineraryGenerator.step1");
+const DestinationField = ({}: {}) => {
+  const { currentDestination, setCurrentDestination } = useStep1();
 
-  const textLabelMarginRight: number = 2;
+  const t = useTranslations("home.itineraryGenerator.step1");
 
   return (
     <Box
@@ -115,10 +95,10 @@ const DestinationField = ({
           md: "row",
         },
         alignItems: { xs: "flex-start", md: "center" },
-        gap: { xs: mobileSpacing, md: 0 },
+        gap: { xs: styles.MOBILE_SPACING, md: 0 },
       }}
     >
-      <Box mr={textLabelMarginRight}>
+      <Box mr={styles.TEXT_LABEL_MARGIN_RIGHT}>
         <Text
           text={t("destinations") + ":"}
           variant={TypographyVariant.h4}
@@ -130,11 +110,11 @@ const DestinationField = ({
         label={t("destinationsDescription")}
         fullWidth
         value={currentDestination}
-        InputLabelProps={inputLabelProps}
+        InputLabelProps={styles.LOCATION_FIELDS.INPUT_LABEL_PROPS}
         onFocus={handleOnFocus}
         onBlur={handleOnBlur}
         onChange={(e) => {
-          setDestination(e.target.value);
+          setCurrentDestination(e.target.value);
         }}
         InputProps={{
           endAdornment: (

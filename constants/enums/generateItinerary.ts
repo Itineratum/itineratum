@@ -27,3 +27,10 @@ export enum GenerateItineraryStep {
   generatingItinerary = "generatingItinerary",
   generationComplete = "generationComplete",
 }
+
+export const defaultFocusRankings = {
+  [GenerateItineraryFocus.attraction]: 0,
+  [GenerateItineraryFocus.localCuisine]: 0,
+  [GenerateItineraryFocus.nature]: 0,
+  [GenerateItineraryFocus.shopping]: 0,
+};
