@@ -2,14 +2,15 @@ import { GenerateItineraryStep } from "@/constants/enums/generateItinerary";
 import { Box, Stack } from "@mui/material";
 import { useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
-import { HOME_STYLES } from "../../styles";
+import { HOME_STYLES } from "../../../app/[locale]/components/styles";
 import StepDescription from "./step-description";
 import StepLabels from "./step-labels";
-import { useItineraryGenerator } from "@/hooks/useItineraryGenerator";
 
-const ItineraryGenerationSteps = ({}: {}) => {
-  const { generationStep } = useItineraryGenerator();
-
+const ItineraryGenerationSteps = ({
+  generationStep,
+}: {
+  generationStep: GenerateItineraryStep;
+}) => {
   const [
     generatingItineraryStepDescriptionIndex,
     setGeneratingitineraryStepDescriptionIndex,
@@ -33,7 +34,7 @@ const ItineraryGenerationSteps = ({}: {}) => {
       const interval = setInterval(() => {
         setGeneratingitineraryStepDescriptionIndex(
           (prevIndex) =>
-            (prevIndex + 1) % generatingItineraryStepDescriptions.length,
+            (prevIndex + 1) % generatingItineraryStepDescriptions.length
         );
       }, styles.INTERVAL_DURATION);
       return () => clearInterval(interval);

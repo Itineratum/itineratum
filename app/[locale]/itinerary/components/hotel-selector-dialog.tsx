@@ -65,8 +65,8 @@ import { useTranslations } from "next-intl";
 import Image from "next/image";
 import React, { Dispatch, SetStateAction, useEffect, useState } from "react";
 import Carousel from "react-material-ui-carousel";
-import MapMarker from "./map-marker";
-import { MapMarkerData } from "./map-section";
+import MapMarker from "./review-itinerary/map-section/map-marker";
+import { MapMarkerData } from "./review-itinerary/map-section/map-section";
 
 const HotelSelectorDialog = ({
   open,

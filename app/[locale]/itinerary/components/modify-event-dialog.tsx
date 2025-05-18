@@ -40,7 +40,7 @@ import {
   ItineraryEditAction,
   ItineraryEditDetails,
   ModifyEventInItineraryDetails,
-} from "./review-itinerary";
+} from "./review-itinerary/review-itinerary";
 
 const ModifyEventDialog = ({
   open,

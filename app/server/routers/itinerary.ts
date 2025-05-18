@@ -2,7 +2,7 @@ import {
   DeleteEventFromItineraryDetails,
   ItineraryEditAction,
   ItineraryEditDetails,
-} from "@/app/[locale]/itinerary/components/review-itinerary";
+} from "@/app/[locale]/itinerary/components/review-itinerary/review-itinerary";
 import { sendItinerary } from "@/lib/nodeMailer";
 import { DayPlan, Event, Hotel, TravelTime } from "@/lib/pythonBackend/types";
 import {

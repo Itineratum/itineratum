@@ -1,26 +1,20 @@
 "use client";
 
+import { useReviewItinerary } from "@/hooks/useReviewItinerary";
 import { Event, EventTimeOfDay, Position } from "@/lib/pythonBackend/types";
 import { Box, CircularProgress, Container } from "@mui/material";
 import { Map } from "@vis.gl/react-google-maps";
 import { useEffect, useState } from "react";
+import { ITINERARY_STYLES } from "../../styles";
 import MapMarker from "./map-marker";
 
-const MapSection = ({
-  events,
-  setSelectedEvent,
-  selectedEvent,
-}: {
-  events: Event[];
-  setSelectedEvent: any;
-  selectedEvent: Event | null;
-}) => {
+const MapSection = ({}: {}) => {
+  const { events, setSelectedEvent, selectedEvent } = useReviewItinerary();
+
   const [mapMarkersData, setMapMarkersData] = useState<MapMarkerData[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
-  const height = "700px";
-  const maxWidth = "100%";
-  const borderRadius = "20px";
+  const styles = ITINERARY_STYLES.REVIEW_ITINERARY.MAP_SECTION;
 
   useEffect(() => {
     if (!events) return;
@@ -55,8 +49,8 @@ const MapSection = ({
     mapMarkersData.length > 0 && (
       <Box
         sx={{
-          maxWidth,
-          height: { xs: "80vh", md: height },
+          maxWidth: styles.MAX_WIDTH,
+          height: { xs: "80vh", md: styles.HEIGHT },
         }}
       >
         <Map
@@ -64,7 +58,7 @@ const MapSection = ({
           mapId={process.env.NEXT_PUBLIC_GOOGLE_MAPS_ID}
           style={{
             border: "2px solid black",
-            borderRadius,
+            borderRadius: styles.BORDER_RADIUS,
             overflow: "hidden",
           }}
           defaultCenter={mapMarkersData[0].position}
@@ -77,7 +71,6 @@ const MapSection = ({
               key={index}
               position={mapMarkerData.position}
               timeOfDay={mapMarkerData.timeOfDay}
-              setSelectedEvent={setSelectedEvent}
               event={mapMarkerData.event}
               selected={
                 JSON.stringify(selectedEvent) ===

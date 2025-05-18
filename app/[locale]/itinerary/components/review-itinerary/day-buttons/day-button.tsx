@@ -1,21 +1,19 @@
 import Text from "@/components/atoms/text";
 import { TypographyVariant } from "@/constants/enums/theme";
 import colorsConst from "@/constants/pages/colors.json";
+import { useReviewItinerary } from "@/hooks/useReviewItinerary";
 import { Button } from "@mui/material";
 import { useTranslations } from "next-intl";
-import { Dispatch, SetStateAction } from "react";
 
 const DayButton = ({
-  dayNum,
-  setDayNum,
   selected,
-  disabled,
+  dayNum,
 }: {
-  dayNum: number;
-  setDayNum: Dispatch<SetStateAction<number>>;
   selected: boolean;
-  disabled: boolean;
+  dayNum: number;
 }) => {
+  const { setDayNum, isEditing } = useReviewItinerary();
+
   const t = useTranslations("itinerary");
 
   const color = selected
@@ -39,7 +37,7 @@ const DayButton = ({
         minWidth: { xs: mobileFactor * width, md: width },
         maxWidth: { xs: mobileFactor * width, md: width },
       }}
-      disabled={disabled}
+      disabled={isEditing}
     >
       <Text
         text={`${t("dayCap")} ${dayNum}`}

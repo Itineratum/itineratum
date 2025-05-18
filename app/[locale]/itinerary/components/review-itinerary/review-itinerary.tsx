@@ -1,0 +1,249 @@
+"use client";
+
+import AddEventDialog from "@/app/[locale]/itinerary/components/add-event-dialog";
+import AdjustBudgetDialog from "@/app/[locale]/itinerary/components/adjust-budget-dialog";
+import EventDetailsDialog from "@/app/[locale]/itinerary/components/event-details-dialog";
+import HotelSelectorDialog from "@/app/[locale]/itinerary/components/hotel-selector-dialog";
+import ModifyEventDialog from "@/app/[locale]/itinerary/components/modify-event-dialog";
+import MapSection from "@/app/[locale]/itinerary/components/review-itinerary/map-section/map-section";
+import Text from "@/components/atoms/text";
+import { Currency } from "@/constants/enums/currency";
+import {
+  TypographyTextDecoration,
+  TypographyVariant,
+} from "@/constants/enums/theme";
+import { default as constEndpoints } from "@/constants/pages/endpoints.json";
+import { useItinerary } from "@/hooks/useItinerary";
+import { useReviewItinerary } from "@/hooks/useReviewItinerary";
+import { Event } from "@/lib/pythonBackend/types";
+import { getItinerarySummaryText } from "@/lib/pythonBackend/utils";
+import { buildLocaleEndpoint } from "@/utils/buildLocaleEndpoint";
+import {
+  Box,
+  Button,
+  CircularProgress,
+  Container,
+  Link,
+  Snackbar,
+  Stack,
+} from "@mui/material";
+import { useLocale, useTranslations } from "next-intl";
+import { ITINERARY_STYLES } from "../styles";
+import BackButton from "./back-button";
+import BudgetSection from "./budget-section/budget-section";
+import DayButtons from "./day-buttons/day-buttons";
+import DetailsSection from "./details-section/details-section";
+import EditItinerarySection from "./edit-itinerary-section/edit-itinerary-section";
+import ItineraryGeneratedSection from "./itinerary-generated-section/itinerary-generated-section";
+import SelectHotelButton from "./select-hotel-button";
+
+const ReviewItinerary = ({}: {}) => {
+  const { params } = useItinerary();
+  const {
+    isLoading,
+    error,
+    itineraryData,
+    setShowSnackbar,
+    events,
+    setSelectedEvent,
+    selectedEvent,
+    adjustBudgetDialogOpen,
+    setAdjustBudgetDialogOpen,
+    hotelSelectorDialogOpen,
+    setHotelSelectorDialogOpen,
+    destinations,
+    dayPlan,
+    selectedHotels,
+    setSelectedHotels,
+    eventDetailsDialogOpen,
+    setEventDetailsDialogOpen,
+    addEventDialogOpen,
+    setAddEventDialogOpen,
+    indexToAddEventTo,
+    setCurrentEdit,
+    indexToModifyEventAt,
+    modifyEventDialogOpen,
+    setModifyEventDialogOpen,
+    showSnackbar,
+  } = useReviewItinerary();
+  const locale = useLocale();
+
+  const t = useTranslations("itinerary");
+  const styles = ITINERARY_STYLES;
+
+  if (isLoading)
+    return (
+      <Container sx={{ display: "flex", justifyContent: "center" }}>
+        <CircularProgress />
+      </Container>
+    );
+
+  if (error)
+    return (
+      <Container>
+        <Stack direction="column" spacing={styles.REVIEW_ITINERARY.GAP}>
+          <Text text={error} variant={TypographyVariant.h4} bold={true} />
+          <Link
+            href={buildLocaleEndpoint(locale, constEndpoints.home.endpoint)}
+          >
+            <Button variant="contained">{t("goBackHome")}</Button>
+          </Link>
+        </Stack>
+      </Container>
+    );
+
+  if (!itineraryData)
+    return (
+      <Container>
+        <Text
+          text={t("noItinerary")}
+          variant={TypographyVariant.h4}
+          bold={true}
+        />
+      </Container>
+    );
+
+  const snackbarHandleOnClose = (event?: any, reason?: any) => {
+    if (reason === "clickaway") {
+      return;
+    }
+
+    setShowSnackbar(false);
+  };
+
+  return (
+    <Container
+      sx={{
+        display: "flex",
+        flexDirection: "column",
+        gap: styles.REVIEW_ITINERARY.GAP,
+        paddingBottom: styles.REVIEW_ITINERARY.PADDING_BOTTOM,
+      }}
+    >
+      <BackButton />
+      <BudgetSection />
+      {/* itinerary summary text */}
+      <Text
+        text={getItinerarySummaryText(itineraryData)}
+        variant={TypographyVariant.h4}
+        bold={true}
+        textDecoration={TypographyTextDecoration.underline}
+      />
+      <DayButtons />
+      <Box display="flex" justifyContent="flex-start">
+        <SelectHotelButton />
+      </Box>
+      <Box
+        sx={{
+          display: "flex",
+          flexDirection: { xs: "column", md: "row" },
+          gap: styles.REVIEW_ITINERARY.GAP,
+          justifyContent: "center",
+        }}
+      >
+        <ItineraryGeneratedSection />
+        <DetailsSection />
+      </Box>
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: { xs: "center", md: "flex-end" },
+        }}
+      >
+        <EditItinerarySection />
+      </Box>
+      <MapSection />
+      <AdjustBudgetDialog
+        open={adjustBudgetDialogOpen}
+        setOpen={setAdjustBudgetDialogOpen}
+        itineraryRequest={itineraryData.request}
+        itineraryId={params.id}
+      />
+      <HotelSelectorDialog
+        open={hotelSelectorDialogOpen}
+        setOpen={setHotelSelectorDialogOpen}
+        hotels={
+          itineraryData.hotels[destinations.indexOf(dayPlan!.destination) ?? []]
+        }
+        selectedHotels={selectedHotels}
+        setSelectedHotels={setSelectedHotels}
+        destinationIndex={destinations.indexOf(dayPlan!.destination)}
+        destination={dayPlan!.destination}
+        currency={
+          itineraryData.request.payload.localisation.currency as Currency
+        }
+        itineraryId={params.id}
+        events={events}
+      />
+      <EventDetailsDialog
+        open={eventDetailsDialogOpen}
+        setOpen={setEventDetailsDialogOpen}
+        event={selectedEvent}
+      />
+      <AddEventDialog
+        open={addEventDialogOpen}
+        setOpen={setAddEventDialogOpen}
+        indexToAddEventTo={indexToAddEventTo ?? 0}
+        itineraryRequest={itineraryData.request}
+        events={events}
+        dayPlan={dayPlan!}
+        setCurrentEdit={setCurrentEdit}
+      />
+      <ModifyEventDialog
+        key={JSON.stringify(events[indexToModifyEventAt!])}
+        open={modifyEventDialogOpen}
+        setOpen={setModifyEventDialogOpen}
+        itineraryRequest={itineraryData.request}
+        events={events}
+        indexToModifyEventAt={indexToModifyEventAt ?? 0}
+        dayPlan={dayPlan!}
+        setCurrentEdit={setCurrentEdit}
+        event={events[indexToModifyEventAt!]}
+      />
+      <Snackbar
+        open={showSnackbar}
+        onClose={snackbarHandleOnClose}
+        autoHideDuration={styles.SNACKBAR_AUTO_HIDE_DURATIOON}
+        message={t("noReorder")}
+        anchorOrigin={{ vertical: "top", horizontal: "center" }}
+      />
+    </Container>
+  );
+};
+
+export default ReviewItinerary;
+
+export enum ItineraryEditAction {
+  delete = "delete",
+  add = "add",
+  modify = "modify",
+  reorder = "reorder",
+}
+
+export interface DeleteEventFromItineraryDetails {
+  indexToDeleteEventFrom: number;
+  event: Event;
+}
+
+export interface AddEventToItineraryDetails {
+  indexToAddEventTo: number;
+  newEvent: Event;
+}
+
+export interface ModifyEventInItineraryDetails {
+  indexToModifyEventAt: number;
+  modifiedEvent: Event;
+  timeOfDayChange: boolean;
+}
+
+export interface ReorderEventInItineraryDetails {
+  event: Event;
+  oldEventIndex: number;
+  newEventIndex: number;
+}
+
+export type ItineraryEditDetails =
+  | DeleteEventFromItineraryDetails
+  | AddEventToItineraryDetails
+  | ModifyEventInItineraryDetails
+  | ReorderEventInItineraryDetails;

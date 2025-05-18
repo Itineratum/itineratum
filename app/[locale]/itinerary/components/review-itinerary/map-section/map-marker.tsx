@@ -1,6 +1,7 @@
 import Text from "@/components/atoms/text";
 import { TypographyVariant } from "@/constants/enums/theme";
 import colorsConst from "@/constants/pages/colors.json";
+import { useReviewItinerary } from "@/hooks/useReviewItinerary";
 import { Event, EventTimeOfDay, Position } from "@/lib/pythonBackend/types";
 import {
   AdvancedMarker,
@@ -10,19 +11,18 @@ import {
 } from "@vis.gl/react-google-maps";
 import { useEffect, useState } from "react";
 import { OutputFormat, setDefaults } from "react-geocode";
+import { ITINERARY_STYLES } from "../../styles";
 
 const MapMarker = ({
   key,
   position,
   timeOfDay,
-  setSelectedEvent,
   event,
   selected,
 }: {
   key: number;
   position: Position;
   timeOfDay: EventTimeOfDay;
-  setSelectedEvent: any;
   event: Event;
   selected: boolean | null;
 }) => {
@@ -32,6 +32,8 @@ const MapMarker = ({
     region: "sg",
     outputFormat: OutputFormat.JSON,
   });
+
+  const { setSelectedEvent } = useReviewItinerary();
 
   const [scale, setScale] = useState<number>(1);
   const [markerRef, marker] = useAdvancedMarkerRef();
@@ -44,13 +46,10 @@ const MapMarker = ({
       : timeOfDay === EventTimeOfDay.afternoon
         ? colorsConst.components.mapSection.afternoon
         : colorsConst.components.mapSection.evening;
-  const defaultScale = 1;
-  const selectedScale = 2;
-  const hoveredScale = 1.5;
-  const hoveredSelectedScale = 2.5;
+  const styles = ITINERARY_STYLES.REVIEW_ITINERARY.MAP_SECTION.MAP_MARKER;
 
   useEffect(() => {
-    setScale(selected ? selectedScale : defaultScale);
+    setScale(selected ? styles.SELECTED_SCALE : styles.DEFAULT_SCALE);
   }, [selected]);
 
   const handleOnClick = () => {
@@ -61,41 +60,22 @@ const MapMarker = ({
 
   const handleOnMouseEnter = () => {
     if (!selected) {
-      setScale(hoveredScale);
+      setScale(styles.HOVERED_SCALE);
     } else {
-      setScale(hoveredSelectedScale);
+      setScale(styles.HOVERED_SELECTED_SCALE);
     }
   };
 
   const handleOnMouseLeave = () => {
     if (!selected) {
-      setScale(defaultScale);
+      setScale(styles.DEFAULT_SCALE);
     } else {
-      setScale(selectedScale);
+      setScale(styles.SELECTED_SCALE);
     }
   };
 
-  const popUp = () => {
-    const handleOnClose = () => {
-      setPopUpShown(false);
-    };
-
-    return (
-      popUpShown && (
-        <InfoWindow anchor={marker} onClose={handleOnClose}>
-          <Text
-            text={event.event_name}
-            variant={TypographyVariant.body1}
-            bold={false}
-          />
-          <Text
-            text={event.location_name}
-            variant={TypographyVariant.body2}
-            bold={false}
-          />
-        </InfoWindow>
-      )
-    );
+  const handleOnClose = () => {
+    setPopUpShown(false);
   };
 
   return (
@@ -108,7 +88,21 @@ const MapMarker = ({
       onMouseEnter={handleOnMouseEnter}
       onMouseLeave={handleOnMouseLeave}
     >
-      {popUp()}
+      {/* popup */}
+      {popUpShown && (
+        <InfoWindow anchor={marker} onClose={handleOnClose}>
+          <Text
+            text={event.event_name}
+            variant={TypographyVariant.body1}
+            bold={false}
+          />
+          <Text
+            text={event.location_name}
+            variant={TypographyVariant.body2}
+            bold={false}
+          />
+        </InfoWindow>
+      )}
       <Pin
         background={color}
         borderColor={color}

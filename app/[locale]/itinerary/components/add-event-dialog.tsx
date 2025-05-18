@@ -47,7 +47,7 @@ import {
   AddEventToItineraryDetails,
   ItineraryEditAction,
   ItineraryEditDetails,
-} from "./review-itinerary";
+} from "./review-itinerary/review-itinerary";
 
 const AddEventDialog = ({
   open,

@@ -7,12 +7,18 @@ import { Box, Stack } from "@mui/material";
 import { FormProvider } from "react-hook-form";
 import { HOME_STYLES } from "../styles";
 import { FormFields } from "./form-fields/form-fields";
-import ItineraryGenerationSteps from "./itinerary-generation-steps/itinerary-generation-steps";
+import ItineraryGenerationSteps from "../../../../components/molecules/itinerary-generation-steps/itinerary-generation-steps";
 import NavigationButtons from "./navigation-buttons/navigation-buttons";
 
 const ItineraryGenerator = () => {
-  const { fields, showAlert, setShowAlert, alertText, generatingItinerary } =
-    useItineraryGenerator();
+  const {
+    fields,
+    showAlert,
+    setShowAlert,
+    alertText,
+    generatingItinerary,
+    generationStep,
+  } = useItineraryGenerator();
 
   const styles = HOME_STYLES.ITINERARY_GENERATOR;
 
@@ -40,7 +46,11 @@ const ItineraryGenerator = () => {
           alertType={AlertType.error}
         />
         <NavigationButtons />
-        <Box>{generatingItinerary && <ItineraryGenerationSteps />}</Box>
+        <Box>
+          {generatingItinerary && (
+            <ItineraryGenerationSteps generationStep={generationStep} />
+          )}
+        </Box>
       </Stack>
     </FormProvider>
   );
