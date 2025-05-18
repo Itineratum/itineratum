@@ -48,8 +48,8 @@ export const ITINERARY_STYLES = {
         DEFAULT_SCALE: 1,
         SELECTED_SCALE: 2,
         HOVERED_SCALE: 1.5,
-        HOVERED_SELECTED_SCALE: 2.5
-      }
-    }
+        HOVERED_SELECTED_SCALE: 2.5,
+      },
+    },
   },
 };

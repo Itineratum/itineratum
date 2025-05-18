@@ -6,7 +6,7 @@ export const useSaveItinerary = () => {
 
   if (!context) {
     throw new Error(
-      "useSaveItinerary must be used within an SaveItineraryProvider"
+      "useSaveItinerary must be used within an SaveItineraryProvider",
     );
   }
 

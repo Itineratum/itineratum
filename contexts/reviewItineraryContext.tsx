@@ -135,7 +135,7 @@ export const ReviewItineraryProvider = ({
   >([]);
   const [isSavingEdits, setIsSavingEdits] = useState<boolean>(false);
   const [indexToAddEventTo, setIndexToAddEventTo] = useState<number | null>(
-    null
+    null,
   );
   const [addEventDialogOpen, setAddEventDialogOpen] = useState<boolean>(false);
   const [modifyEventDialogOpen, setModifyEventDialogOpen] =
@@ -162,7 +162,7 @@ export const ReviewItineraryProvider = ({
         setError(error.message);
         setIsLoading(false);
       },
-    }
+    },
   );
   const editItinerary = trpc.itinerary.editItinerary.useMutation();
   const saveItineraryToUser = trpc.user.saveItineraryToUser.useMutation();
@@ -172,13 +172,13 @@ export const ReviewItineraryProvider = ({
     },
     {
       enabled: !!email,
-    }
+    },
   );
   const utils = trpc.useUtils();
 
   const getCorrectDayPlan = (): DayPlan =>
     getItinerary.data.itinerary.filter(
-      (dayPlan: DayPlan) => dayPlan.day === dayNum
+      (dayPlan: DayPlan) => dayPlan.day === dayNum,
     )[0];
 
   const getDestinations = () => {
@@ -212,8 +212,8 @@ export const ReviewItineraryProvider = ({
     if (getUserSavedItineraryIds.data) {
       setCanSaveItinerary(
         !getUserSavedItineraryIds.data.some(
-          (itineraryId: string) => itineraryId === params.id
-        )
+          (itineraryId: string) => itineraryId === params.id,
+        ),
       );
     }
   }, [getUserSavedItineraryIds.data]);
@@ -327,7 +327,7 @@ export const ReviewItineraryProvider = ({
           newEvents.splice(indexToModifyEventAt, 1);
           const indexToMoveModifiedEventTo = getIndexToMoveModifiedEventTo(
             modifiedEvent,
-            newEvents
+            newEvents,
           );
           newEvents.splice(indexToMoveModifiedEventTo, 0, modifiedEvent);
         } else {

@@ -6,7 +6,7 @@ export const useReviewItinerary = () => {
 
   if (!context) {
     throw new Error(
-      "useReviewItinerary must be used within an ReviewitineraryProvider"
+      "useReviewItinerary must be used within an ReviewitineraryProvider",
     );
   }
 

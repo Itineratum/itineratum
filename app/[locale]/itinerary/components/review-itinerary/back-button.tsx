@@ -19,7 +19,7 @@ const BackButton = () => {
 
   const handleOnClick = () => {
     router.push(
-      buildLocaleEndpoint(locale, endpointsConst.savedTrips.endpoint)
+      buildLocaleEndpoint(locale, endpointsConst.savedTrips.endpoint),
     );
   };
   return (

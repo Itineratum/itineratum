@@ -9,7 +9,7 @@ import dayjs from "dayjs";
 import { ITINERARY_STYLES } from "../../../styles";
 import {
   ItineraryEditAction,
-  ReorderEventInItineraryDetails
+  ReorderEventInItineraryDetails,
 } from "../../review-itinerary";
 import AddButton from "./add-button";
 import DeleteButton from "./delete-button";
@@ -64,7 +64,7 @@ const EventCard = ({ event, index }: { event: Event; index: number }) => {
   const handleDrop = (dragEvent: React.DragEvent<HTMLDivElement>) => {
     dragEvent.preventDefault();
     const oldEventIndex = parseInt(
-      dragEvent.dataTransfer.getData("text/plain")
+      dragEvent.dataTransfer.getData("text/plain"),
     );
     const newEventIndex = index;
     const movedEvent = events[oldEventIndex];
