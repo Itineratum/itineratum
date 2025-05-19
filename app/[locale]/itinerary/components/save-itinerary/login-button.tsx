@@ -17,7 +17,7 @@ const LoginButton = () => {
     const returnUrl = `/${endpointsConst.itinerary.endpoint}/${itineraryId}?from=login`;
     const loginPath = buildLocaleEndpoint(
       locale,
-      `${endpointsConst.login.endpoint}?returnUrl=${encodeURIComponent(returnUrl)}`
+      `${endpointsConst.login.endpoint}?returnUrl=${encodeURIComponent(returnUrl)}`,
     );
     router.push(loginPath);
   };

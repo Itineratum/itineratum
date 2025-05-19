@@ -38,12 +38,12 @@ type ItineraryContextType = {
 };
 
 export const ItineraryContext = createContext<ItineraryContextType | undefined>(
-  undefined
+  undefined,
 );
 
 export const ItineraryProvider = ({ children }: { children: ReactNode }) => {
   const [itineraryPageStep, setItineraryPageStep] = useState<ItineraryPageStep>(
-    ItineraryPageStep.reviewItinerary
+    ItineraryPageStep.reviewItinerary,
   );
   const [containerHeight, setContainerHeight] = useState<string>("auto");
   const [showSnackbar, setShowSnackbar] = useState<boolean>(false);

@@ -17,7 +17,7 @@ const SignupButton = () => {
     const returnUrl = `/${endpointsConst.itinerary.endpoint}/${itineraryId}?from=signup`;
     const signupPath = buildLocaleEndpoint(
       locale,
-      `${endpointsConst.signUp.endpoint}?returnUrl=${encodeURIComponent(returnUrl)}`
+      `${endpointsConst.signUp.endpoint}?returnUrl=${encodeURIComponent(returnUrl)}`,
     );
     router.push(signupPath);
   };
