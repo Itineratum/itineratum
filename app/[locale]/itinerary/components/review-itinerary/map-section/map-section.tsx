@@ -9,7 +9,7 @@ import { ITINERARY_STYLES } from "../../styles";
 import MapMarker from "./map-marker";
 
 const MapSection = ({}: {}) => {
-  const { events, setSelectedEvent, selectedEvent } = useReviewItinerary();
+  const { events, selectedEvent } = useReviewItinerary();
 
   const [mapMarkersData, setMapMarkersData] = useState<MapMarkerData[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);

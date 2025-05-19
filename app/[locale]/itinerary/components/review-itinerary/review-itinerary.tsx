@@ -1,19 +1,20 @@
 "use client";
 
-import AddEventDialog from "@/app/[locale]/itinerary/components/add-event-dialog";
-import AdjustBudgetDialog from "@/app/[locale]/itinerary/components/adjust-budget-dialog";
-import EventDetailsDialog from "@/app/[locale]/itinerary/components/event-details-dialog";
-import HotelSelectorDialog from "@/app/[locale]/itinerary/components/hotel-selector-dialog";
-import ModifyEventDialog from "@/app/[locale]/itinerary/components/modify-event-dialog";
+import AddEventDialog from "@/app/[locale]/itinerary/components/review-itinerary/add-event-dialog/add-event-dialog";
+import AdjustBudgetDialog from "@/app/[locale]/itinerary/components/review-itinerary/adjust-budget-dialog/adjust-budget-dialog";
+import EventDetailsDialog from "@/app/[locale]/itinerary/components/review-itinerary/event-details-dialog/event-details-dialog";
 import MapSection from "@/app/[locale]/itinerary/components/review-itinerary/map-section/map-section";
+import ModifyEventDialog from "@/app/[locale]/itinerary/components/review-itinerary/modify-event-dialog/modify-event-dialog";
 import Text from "@/components/atoms/text";
-import { Currency } from "@/constants/enums/currency";
 import {
   TypographyTextDecoration,
   TypographyVariant,
 } from "@/constants/enums/theme";
 import { default as constEndpoints } from "@/constants/pages/endpoints.json";
-import { useItinerary } from "@/hooks/useItinerary";
+import { AddEventProvider } from "@/contexts/addEventContext";
+import { AdjustBudgetDialogProvider } from "@/contexts/adjustBudgetDialogContext";
+import { HotelSelectorProvider } from "@/contexts/hotelSelectorContext";
+import { ModifyEventProvider } from "@/contexts/modifyEventContext";
 import { useReviewItinerary } from "@/hooks/useReviewItinerary";
 import { Event } from "@/lib/pythonBackend/types";
 import { getItinerarySummaryText } from "@/lib/pythonBackend/utils";
@@ -34,36 +35,18 @@ import BudgetSection from "./budget-section/budget-section";
 import DayButtons from "./day-buttons/day-buttons";
 import DetailsSection from "./details-section/details-section";
 import EditItinerarySection from "./edit-itinerary-section/edit-itinerary-section";
+import HotelSelectorDialog from "./hotel-selector-dialog/hotel-selector-dialog";
 import ItineraryGeneratedSection from "./itinerary-generated-section/itinerary-generated-section";
 import SelectHotelButton from "./select-hotel-button";
 
 const ReviewItinerary = ({}: {}) => {
-  const { params } = useItinerary();
   const {
     isLoading,
     error,
     itineraryData,
     setShowSnackbar,
     events,
-    setSelectedEvent,
-    selectedEvent,
-    adjustBudgetDialogOpen,
-    setAdjustBudgetDialogOpen,
-    hotelSelectorDialogOpen,
-    setHotelSelectorDialogOpen,
-    destinations,
-    dayPlan,
-    selectedHotels,
-    setSelectedHotels,
-    eventDetailsDialogOpen,
-    setEventDetailsDialogOpen,
-    addEventDialogOpen,
-    setAddEventDialogOpen,
-    indexToAddEventTo,
-    setCurrentEdit,
     indexToModifyEventAt,
-    modifyEventDialogOpen,
-    setModifyEventDialogOpen,
     showSnackbar,
   } = useReviewItinerary();
   const locale = useLocale();
@@ -153,53 +136,21 @@ const ReviewItinerary = ({}: {}) => {
         <EditItinerarySection />
       </Box>
       <MapSection />
-      <AdjustBudgetDialog
-        open={adjustBudgetDialogOpen}
-        setOpen={setAdjustBudgetDialogOpen}
-        itineraryRequest={itineraryData.request}
-        itineraryId={params.id}
-      />
-      <HotelSelectorDialog
-        open={hotelSelectorDialogOpen}
-        setOpen={setHotelSelectorDialogOpen}
-        hotels={
-          itineraryData.hotels[destinations.indexOf(dayPlan!.destination) ?? []]
-        }
-        selectedHotels={selectedHotels}
-        setSelectedHotels={setSelectedHotels}
-        destinationIndex={destinations.indexOf(dayPlan!.destination)}
-        destination={dayPlan!.destination}
-        currency={
-          itineraryData.request.payload.localisation.currency as Currency
-        }
-        itineraryId={params.id}
-        events={events}
-      />
-      <EventDetailsDialog
-        open={eventDetailsDialogOpen}
-        setOpen={setEventDetailsDialogOpen}
-        event={selectedEvent}
-      />
-      <AddEventDialog
-        open={addEventDialogOpen}
-        setOpen={setAddEventDialogOpen}
-        indexToAddEventTo={indexToAddEventTo ?? 0}
-        itineraryRequest={itineraryData.request}
-        events={events}
-        dayPlan={dayPlan!}
-        setCurrentEdit={setCurrentEdit}
-      />
-      <ModifyEventDialog
-        key={JSON.stringify(events[indexToModifyEventAt!])}
-        open={modifyEventDialogOpen}
-        setOpen={setModifyEventDialogOpen}
-        itineraryRequest={itineraryData.request}
-        events={events}
-        indexToModifyEventAt={indexToModifyEventAt ?? 0}
-        dayPlan={dayPlan!}
-        setCurrentEdit={setCurrentEdit}
-        event={events[indexToModifyEventAt!]}
-      />
+      <AdjustBudgetDialogProvider>
+        <AdjustBudgetDialog />
+      </AdjustBudgetDialogProvider>
+      <HotelSelectorProvider>
+        <HotelSelectorDialog />
+      </HotelSelectorProvider>
+      <EventDetailsDialog />
+      <AddEventProvider>
+        <AddEventDialog />
+      </AddEventProvider>
+      <ModifyEventProvider>
+        <ModifyEventDialog
+          key={JSON.stringify(events[indexToModifyEventAt!])}
+        />
+      </ModifyEventProvider>
       <Snackbar
         open={showSnackbar}
         onClose={snackbarHandleOnClose}

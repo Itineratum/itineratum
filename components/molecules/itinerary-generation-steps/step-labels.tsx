@@ -2,13 +2,14 @@ import Text from "@/components/atoms/text";
 import { GenerateItineraryStep } from "@/constants/enums/generateItinerary";
 import { TypographyVariant } from "@/constants/enums/theme";
 import colorsConst from "@/constants/pages/colors.json";
-import { useItineraryGenerator } from "@/hooks/useItineraryGenerator";
 import { Step, StepLabel, Stepper } from "@mui/material";
 import { useTranslations } from "next-intl";
 
-const StepLabels = () => {
-  const { generationStep } = useItineraryGenerator();
-
+const StepLabels = ({
+  generationStep,
+}: {
+  generationStep: GenerateItineraryStep;
+}) => {
   const t = useTranslations("home.itineraryGenerator.generationSteps");
 
   const steps = [

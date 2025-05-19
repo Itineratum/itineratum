@@ -1,7 +1,7 @@
 import { useReviewItinerary } from "@/hooks/useReviewItinerary";
 import { Stack } from "@mui/material";
 import { ITINERARY_STYLES } from "../../styles";
-import TravelCard from "../../travel-card";
+import TravelCard from "./travel-card";
 import EventCard from "./event-card/event-card";
 import noTravelTimes from "./no-travel-times";
 

@@ -1,12 +1,15 @@
 import Text from "@/components/atoms/text";
 import { GenerateItineraryStep } from "@/constants/enums/generateItinerary";
 import { TypographyVariant } from "@/constants/enums/theme";
-import { useItineraryGenerator } from "@/hooks/useItineraryGenerator";
 import { Box } from "@mui/material";
 
-const StepDescription = ({ text }: { text: string }) => {
-  const { generationStep } = useItineraryGenerator();
-
+const StepDescription = ({
+  text,
+  generationStep,
+}: {
+  text: string;
+  generationStep: GenerateItineraryStep;
+}) => {
   return (
     (generationStep === GenerateItineraryStep.generatingItinerary ||
       generationStep === GenerateItineraryStep.generationComplete) && (

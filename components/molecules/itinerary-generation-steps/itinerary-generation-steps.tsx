@@ -34,7 +34,7 @@ const ItineraryGenerationSteps = ({
       const interval = setInterval(() => {
         setGeneratingitineraryStepDescriptionIndex(
           (prevIndex) =>
-            (prevIndex + 1) % generatingItineraryStepDescriptions.length,
+            (prevIndex + 1) % generatingItineraryStepDescriptions.length
         );
       }, styles.INTERVAL_DURATION);
       return () => clearInterval(interval);
@@ -45,13 +45,14 @@ const ItineraryGenerationSteps = ({
     generationStep !== GenerateItineraryStep.inputting && (
       <Box mt={styles.VERTICAL_MARGIN} mb={styles.VERTICAL_MARGIN}>
         <Stack direction="column" spacing={styles.SPACING}>
-          <StepLabels />
+          <StepLabels generationStep={generationStep} />
           <StepDescription
             text={
               generatingItineraryStepDescriptions[
                 generatingItineraryStepDescriptionIndex
               ]
             }
+            generationStep={generationStep}
           />
         </Stack>
       </Box>

@@ -1,5 +1,6 @@
 import Text from "@/components/atoms/text";
 import { TypographyVariant } from "@/constants/enums/theme";
+import { useItinerary } from "@/hooks/useItinerary";
 import { useReviewItinerary } from "@/hooks/useReviewItinerary";
 import { Button, CircularProgress, Stack } from "@mui/material";
 import { useTranslations } from "next-intl";
@@ -7,6 +8,7 @@ import { useRouter } from "next/navigation";
 import { ITINERARY_STYLES } from "../../styles";
 
 const EditSaveButton = () => {
+  const { params } = useItinerary();
   const {
     isEditing,
     setIsEditing,
@@ -16,7 +18,6 @@ const EditSaveButton = () => {
     currentEdit,
     isSavingEdits,
     editItinerary,
-    params,
     edits,
     dayNum,
     events,
