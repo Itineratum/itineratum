@@ -33,18 +33,17 @@ type ItineraryContextType = {
       id: string;
     }>
   >;
+  updateItineraryGeneratedBy: any;
+  saveItineraryToUser: any;
 };
 
 export const ItineraryContext = createContext<ItineraryContextType | undefined>(
-  undefined,
+  undefined
 );
 
 export const ItineraryProvider = ({ children }: { children: ReactNode }) => {
-  const { data: session } = useSession();
-  const email = session?.user.email;
-
   const [itineraryPageStep, setItineraryPageStep] = useState<ItineraryPageStep>(
-    ItineraryPageStep.reviewItinerary,
+    ItineraryPageStep.reviewItinerary
   );
   const [containerHeight, setContainerHeight] = useState<string>("auto");
   const [showSnackbar, setShowSnackbar] = useState<boolean>(false);
@@ -81,37 +80,6 @@ export const ItineraryProvider = ({ children }: { children: ReactNode }) => {
     return () => resizeObserver.disconnect();
   }, [itineraryPageStep]);
 
-  useEffect(() => {
-    const handleRedirectFromLoginSignup = async () => {
-      setIsHandlingRedirect(true);
-
-      // update the itinerary document's generated_by field to their email address
-      const data = {
-        email: email!,
-        itineraryId: params.id,
-      };
-      await updateItineraryGeneratedBy.mutateAsync(data);
-
-      // add the itinerary to the user's document in MongoDB
-      await saveItineraryToUser.mutateAsync(data);
-
-      // clean up URL
-      const newUrl = window.location.pathname;
-      window.history.replaceState({}, "", newUrl);
-
-      setShowSnackbar(true);
-      setIsHandlingRedirect(false);
-    };
-
-    const searchParams = new URLSearchParams(window.location.search);
-    const from = searchParams.get("from");
-
-    if (email && (from === "login" || from === "signup")) {
-      // if the user was redirected back here from login/signup, then it means that they were previous viewing this itinerary but was not logged in and were instructed to do so
-      handleRedirectFromLoginSignup();
-    }
-  }, [email]);
-
   return (
     <ItineraryContext.Provider
       value={{
@@ -127,6 +95,8 @@ export const ItineraryProvider = ({ children }: { children: ReactNode }) => {
         saveItineraryRef,
         params,
         setParams,
+        updateItineraryGeneratedBy,
+        saveItineraryToUser,
       }}
     >
       {children}

@@ -128,4 +128,9 @@ export const ITINERARY_STYLES = {
       LOADING_ANIMATION_SIZE: 24,
     },
   },
+  SAVE_ITINERARY: {
+    SPACING: 8,
+    FIELD_SPACING: 2,
+    LOADING_ANIMATION_SIZE: 24
+  }
 };

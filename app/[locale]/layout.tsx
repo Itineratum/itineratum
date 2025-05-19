@@ -12,6 +12,7 @@ import { notFound } from "next/navigation";
 import { use } from "react";
 import TRPCProvider from "../_trpc/Provider";
 import { APIProvider } from "@vis.gl/react-google-maps";
+import { ItineraryProvider } from "@/contexts/itineraryContext";
 
 const HomeLayout = ({
   children,
@@ -36,7 +37,9 @@ const HomeLayout = ({
               <ThemeProvider theme={theme}>
                 <TRPCProvider>
                   <Navbar />
-                  <main>{children}</main>
+                  <main>
+                    <ItineraryProvider>{children}</ItineraryProvider>
+                  </main>
                   <Footer />
                 </TRPCProvider>
               </ThemeProvider>
