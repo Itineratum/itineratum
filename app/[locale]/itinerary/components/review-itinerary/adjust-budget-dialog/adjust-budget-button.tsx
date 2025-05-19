@@ -42,7 +42,7 @@ const AdjustBudgetButton = () => {
       // );
       const newItinerary = await runPipelineWithGenerationSteps(
         itineraryRequest,
-        setGenerationStep
+        setGenerationStep,
       );
       const data = {
         itineraryId,

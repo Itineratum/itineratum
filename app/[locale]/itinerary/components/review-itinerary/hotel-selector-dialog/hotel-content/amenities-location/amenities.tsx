@@ -43,7 +43,7 @@ const Amenities = () => {
 
   const getIcon = (
     hotelType: HotelType,
-    amenity: HotelAmenity | VacationRentalAmenity
+    amenity: HotelAmenity | VacationRentalAmenity,
   ) => {
     let icon = null;
 

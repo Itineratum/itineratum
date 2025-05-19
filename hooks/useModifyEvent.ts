@@ -6,7 +6,7 @@ export const useModifyEvent = () => {
 
   if (!context) {
     throw new Error(
-      "useModifyEvent must be used within an ModifyEventProvider"
+      "useModifyEvent must be used within an ModifyEventProvider",
     );
   }
 

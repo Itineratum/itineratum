@@ -34,7 +34,7 @@ const TimeOfDayField = () => {
   const timeOfDayOptions = getTimeOfDayOptions(
     indexToAddEventTo ?? 0,
     events,
-    false
+    false,
   );
 
   return (

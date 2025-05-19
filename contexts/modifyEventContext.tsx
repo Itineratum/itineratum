@@ -85,7 +85,7 @@ export const ModifyEventProvider = ({ children }: { children: ReactNode }) => {
       setHasModifications(
         locationName !== event.event_name ||
           locationCity !== dayPlan.destination ||
-          timeOfDay !== event.time_of_day
+          timeOfDay !== event.time_of_day,
       );
     }
   }, [locationName, locationCity, timeOfDay, event, dayPlan]);

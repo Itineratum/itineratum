@@ -6,7 +6,7 @@ export const useAdjustBudgetDialog = () => {
 
   if (!context) {
     throw new Error(
-      "useAdjustBudgetDialog must be used within an AdjustBudgetDialogProvider"
+      "useAdjustBudgetDialog must be used within an AdjustBudgetDialogProvider",
     );
   }
 

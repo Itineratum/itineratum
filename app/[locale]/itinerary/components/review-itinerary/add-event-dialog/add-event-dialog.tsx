@@ -4,9 +4,7 @@ import { TypographyVariant } from "@/constants/enums/theme";
 import colorsConst from "@/constants/pages/colors.json";
 import { useAddEvent } from "@/hooks/useAddEvent";
 import { useReviewItinerary } from "@/hooks/useReviewItinerary";
-import {
-  EventTimeOfDay
-} from "@/lib/pythonBackend/types";
+import { EventTimeOfDay } from "@/lib/pythonBackend/types";
 import {
   Dialog,
   DialogContent,

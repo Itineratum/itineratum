@@ -11,12 +11,7 @@ import {
 } from "@/lib/pythonBackend/pythonBackend";
 import { EventTimeOfDay } from "@/lib/pythonBackend/types";
 import { getEvents } from "@/lib/pythonBackend/utils";
-import {
-  Box,
-  Button,
-  CircularProgress,
-  Stack
-} from "@mui/material";
+import { Box, Button, CircularProgress, Stack } from "@mui/material";
 import { useTranslations } from "next-intl";
 import { ITINERARY_STYLES } from "../../styles";
 import {
@@ -82,7 +77,7 @@ const AddEventButton = () => {
           dayPlan,
           timeOfDay,
           locationName,
-          locationCity
+          locationCity,
         );
         const validateNewRes = await validateNew(validateNewJson);
 
@@ -95,7 +90,7 @@ const AddEventButton = () => {
 
         const searchActivityJson = generateSearchActivityJson(
           locationName,
-          locationCity
+          locationCity,
         );
         const searchActivityRes = await searchActivity(searchActivityJson);
         const newEvents = await getEvents([searchActivityRes], timeOfDay);

@@ -10,12 +10,7 @@ import {
   validateEdit,
 } from "@/lib/pythonBackend/pythonBackend";
 import { getEvents } from "@/lib/pythonBackend/utils";
-import {
-  Box,
-  Button,
-  CircularProgress,
-  Stack
-} from "@mui/material";
+import { Box, Button, CircularProgress, Stack } from "@mui/material";
 import { useTranslations } from "next-intl";
 import { ITINERARY_STYLES } from "../../styles";
 import {
@@ -76,7 +71,7 @@ const ModifyEventButton = () => {
         const validateEditJson = generateValidateEditJson(
           itineraryRequest,
           updatedEvents,
-          dayPlan
+          dayPlan,
         );
         const validateEditRes = await validateEdit(validateEditJson);
 
@@ -89,7 +84,7 @@ const ModifyEventButton = () => {
 
         const searchActivityJson = generateSearchActivityJson(
           locationName,
-          locationCity
+          locationCity,
         );
         const searchActivityRes = await searchActivity(searchActivityJson);
         const modifiedEvents = await getEvents([searchActivityRes], timeOfDay);

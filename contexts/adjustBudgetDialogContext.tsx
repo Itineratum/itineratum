@@ -67,7 +67,7 @@ export const AdjustBudgetDialogProvider = ({
   const [showAlert, setShowAlert] = useState<boolean>(false);
   const [alertText, setAlertText] = useState<string>("");
   const [generationStep, setGenerationStep] = useState<GenerateItineraryStep>(
-    GenerateItineraryStep.inputting
+    GenerateItineraryStep.inputting,
   );
 
   const budgetId = "budget";

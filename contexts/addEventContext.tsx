@@ -45,7 +45,7 @@ type AddEventContextType = {
 };
 
 export const AddEventContext = createContext<AddEventContextType | undefined>(
-  undefined
+  undefined,
 );
 
 export const AddEventProvider = ({ children }: { children: ReactNode }) => {

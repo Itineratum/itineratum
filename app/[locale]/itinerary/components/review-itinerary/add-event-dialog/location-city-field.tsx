@@ -35,7 +35,9 @@ const LocationCityField = () => {
         }
         control={control}
         errorMessage={
-          isHotelEvent ? t("hotelCityErrorMessage") : t("locationCityErrorMessage")
+          isHotelEvent
+            ? t("hotelCityErrorMessage")
+            : t("locationCityErrorMessage")
         }
         errors={errors}
         value={locationCity}

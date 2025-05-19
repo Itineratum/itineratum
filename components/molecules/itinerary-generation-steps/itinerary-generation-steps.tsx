@@ -34,7 +34,7 @@ const ItineraryGenerationSteps = ({
       const interval = setInterval(() => {
         setGeneratingitineraryStepDescriptionIndex(
           (prevIndex) =>
-            (prevIndex + 1) % generatingItineraryStepDescriptions.length
+            (prevIndex + 1) % generatingItineraryStepDescriptions.length,
         );
       }, styles.INTERVAL_DURATION);
       return () => clearInterval(interval);

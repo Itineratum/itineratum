@@ -141,7 +141,7 @@ export const HotelSelectorProvider = ({
         hotel &&
         selectedHotel.name === hotel.name &&
         JSON.stringify(selectedHotel.coordinates) ===
-          JSON.stringify(hotel.coordinates)
+          JSON.stringify(hotel.coordinates),
     );
   };
 
