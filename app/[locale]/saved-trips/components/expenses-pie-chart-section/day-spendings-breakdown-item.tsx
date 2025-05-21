@@ -58,7 +58,7 @@ const DaySpendingsBreakdownItem = ({
                 bold={false}
               />
             </Box>
-          )
+          ),
         )}
     </Box>
   );

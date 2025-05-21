@@ -55,14 +55,14 @@ export const SavedTripsProvider = ({ children }: { children: ReactNode }) => {
     Record<string, IItinerary>[]
   >([]);
   const [userCalendarEvents, setUserCalendarEvents] = useState<CalendarEvent[]>(
-    []
+    [],
   );
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [selectedItineraryId, setSelectedItineraryId] = useState<string | null>(
-    null
+    null,
   );
   const [selectedItinerary, setSelectedItinerary] = useState<IItinerary | null>(
-    null
+    null,
   );
   const [showAddCalendarEventDialog, setShowAddCalendarEventDialog] =
     useState<boolean>(false);
@@ -87,7 +87,7 @@ export const SavedTripsProvider = ({ children }: { children: ReactNode }) => {
   useEffect(() => {
     if (getUserSavedItineraries.data) {
       setSavedItineraries(
-        getUserSavedItineraries.data as unknown as Record<string, IItinerary>[]
+        getUserSavedItineraries.data as unknown as Record<string, IItinerary>[],
       );
       setIsLoading(false);
     }
@@ -105,7 +105,7 @@ export const SavedTripsProvider = ({ children }: { children: ReactNode }) => {
         savedItineraries.filter((record, _) => {
           const itineraryId = Object.keys(record)[0];
           return itineraryId == selectedItineraryId;
-        })[0][selectedItineraryId]
+        })[0][selectedItineraryId],
       );
     }
   }, [selectedItineraryId]);

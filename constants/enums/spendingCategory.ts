@@ -3,5 +3,5 @@ export enum SpendingCategory {
   attraction = "Attraction",
   food = "Food",
   accommodation = "Accommodation",
-  general = "General"
+  general = "General",
 }

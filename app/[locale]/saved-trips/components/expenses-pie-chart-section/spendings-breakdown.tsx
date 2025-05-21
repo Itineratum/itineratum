@@ -19,14 +19,14 @@ export const SpendingsBreakdown = () => {
   useEffect(() => {
     if (selectedItinerary)
       setSelectedItinerarySpendingsBreakdown(
-        getItinerarySpendingsBreakdown(selectedItinerary)
+        getItinerarySpendingsBreakdown(selectedItinerary),
       );
   }, [selectedItinerary]);
 
   const t = useTranslations("savedTrips.expensesPieChart");
 
   return (
-    <Container sx={{my: 4}}>
+    <Container sx={{ my: 4 }}>
       <Text
         text={t("spendingsBreakdown")}
         variant={TypographyVariant.h5}
@@ -38,7 +38,7 @@ export const SpendingsBreakdown = () => {
             <DaySpendingsBreakdownItem
               daySpendingsBreakdown={daySpendingsBreakdown}
             />
-          )
+          ),
         )}
     </Container>
   );
