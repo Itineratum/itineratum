@@ -3,6 +3,7 @@
 import AddCalendarEventDialog from "@/app/[locale]/saved-trips/components/add-calendar-event-dialog/add-calendar-event-dialog";
 import AddToDoDialog from "@/app/[locale]/saved-trips/components/add-to-do-dialog/add-to-do-dialog";
 import CalendarToDoSection from "@/app/[locale]/saved-trips/components/calendar-todo-section/calendar-todo-section";
+import ExpensesPieChartSection from "@/app/[locale]/saved-trips/components/expenses-pie-chart-section/expense-pie-chart-section";
 import ItinerariesSection from "@/app/[locale]/saved-trips/components/itineraries-section/itineraries-section";
 import { SAVED_TRIPS_STYLES } from "@/app/[locale]/saved-trips/components/styles";
 import { TypographyVariant } from "@/constants/enums/theme";
@@ -43,6 +44,7 @@ const SavedTripsPage = () => {
       <AddToDoProvider>
         <AddToDoDialog />
       </AddToDoProvider>
+      <ExpensesPieChartSection />
     </Container>
   );
 };

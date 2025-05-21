@@ -15,26 +15,6 @@ const ItinerariesSection = () => {
 
   const numOfItineraryCards = savedItineraries.length;
 
-  const label = () => {
-    return (
-      <Text
-        text={t("plannedTripsDescription") + ":"}
-        variant={TypographyVariant.h6}
-        bold={false}
-      />
-    );
-  };
-
-  const noItineraries = () => {
-    return (
-      <Text
-        text={t("noItineraries")}
-        variant={TypographyVariant.h6}
-        bold={false}
-      />
-    );
-  };
-
   return (
     <Grid
       item
@@ -60,14 +40,24 @@ const ItinerariesSection = () => {
             />
           </Box>
         ) : savedItineraries.length === 0 ? (
-          noItineraries()
+          // no itineraries
+          <Text
+            text={t("noItineraries")}
+            variant={TypographyVariant.h6}
+            bold={false}
+          />
         ) : (
           <Stack
             direction="column"
             spacing={styles.SPACING}
             alignItems="center"
           >
-            {label()}
+            {/* label */}
+            <Text
+              text={t("plannedTripsDescription") + ":"}
+              variant={TypographyVariant.h6}
+              bold={false}
+            />
             <Box
               sx={{
                 position: "relative",

@@ -158,6 +158,9 @@
     "toDoItem": {
       "nameDescription": "Enter the task you need to do",
       "nameError": "To do is required!"
+    },
+    "expensesPieChart": {
+      "spendingsBreakdown": "Spendings Breakdown"
     }
   },
   "itinerary": {

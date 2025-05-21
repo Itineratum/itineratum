@@ -1,6 +1,7 @@
 import { Currency } from "@/constants/enums/currency";
 import { GenerateItineraryPreferredTransport } from "@/constants/enums/generateItinerary";
 import { Language } from "@/constants/enums/language";
+import { SpendingCategory } from "@/constants/enums/spendingCategory";
 
 export interface GenerateItineraryJSON {
   use_dummy_data: boolean;
@@ -59,6 +60,8 @@ export interface Event {
   openingHours: string[];
   checkInTime: string | null;
   checkOutTime: string | null;
+  price: number | null;
+  spending_category: SpendingCategory;
 }
 
 export enum EventTimeOfDay {

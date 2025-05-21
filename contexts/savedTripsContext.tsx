@@ -27,6 +27,8 @@ type SavedTripsContextType = {
   setIsLoading: Dispatch<SetStateAction<boolean>>;
   selectedItineraryId: string | null;
   setSelectedItineraryId: Dispatch<SetStateAction<string | null>>;
+  selectedItinerary: IItinerary | null;
+  setSelectedItinerary: Dispatch<SetStateAction<IItinerary | null>>;
   showAddCalendarEventDialog: boolean;
   setShowAddCalendarEventDialog: Dispatch<SetStateAction<boolean>>;
   showAddToDoDialog: boolean;
@@ -53,11 +55,14 @@ export const SavedTripsProvider = ({ children }: { children: ReactNode }) => {
     Record<string, IItinerary>[]
   >([]);
   const [userCalendarEvents, setUserCalendarEvents] = useState<CalendarEvent[]>(
-    [],
+    []
   );
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [selectedItineraryId, setSelectedItineraryId] = useState<string | null>(
-    null,
+    null
+  );
+  const [selectedItinerary, setSelectedItinerary] = useState<IItinerary | null>(
+    null
   );
   const [showAddCalendarEventDialog, setShowAddCalendarEventDialog] =
     useState<boolean>(false);
@@ -82,7 +87,7 @@ export const SavedTripsProvider = ({ children }: { children: ReactNode }) => {
   useEffect(() => {
     if (getUserSavedItineraries.data) {
       setSavedItineraries(
-        getUserSavedItineraries.data as unknown as Record<string, IItinerary>[],
+        getUserSavedItineraries.data as unknown as Record<string, IItinerary>[]
       );
       setIsLoading(false);
     }
@@ -93,6 +98,17 @@ export const SavedTripsProvider = ({ children }: { children: ReactNode }) => {
       setUserCalendarEvents(getUserCalendarEvents.data);
     }
   }, [getUserCalendarEvents.data]);
+
+  useEffect(() => {
+    if (selectedItineraryId) {
+      setSelectedItinerary(
+        savedItineraries.filter((record, _) => {
+          const itineraryId = Object.keys(record)[0];
+          return itineraryId == selectedItineraryId;
+        })[0][selectedItineraryId]
+      );
+    }
+  }, [selectedItineraryId]);
 
   return (
     <SavedTripsContext.Provider
@@ -108,6 +124,8 @@ export const SavedTripsProvider = ({ children }: { children: ReactNode }) => {
         setIsLoading,
         selectedItineraryId,
         setSelectedItineraryId,
+        selectedItinerary,
+        setSelectedItinerary,
         showAddCalendarEventDialog,
         setShowAddCalendarEventDialog,
         showAddToDoDialog,

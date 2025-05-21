@@ -55,4 +55,8 @@ export const SAVED_TRIPS_STYLES = {
       },
     },
   },
+  EXPENSES_PIE_CHART_SECTION: {
+    PIE_CHART_SIZE: 300,
+    PIE_CHART_PADDING: 200
+  }
 };

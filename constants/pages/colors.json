@@ -48,5 +48,11 @@
   "breadcrumbNavigator": {
     "unselected": "#C9C9C9",
     "selected": "#000000"
+  },
+  "expensesPieChart": {
+    "backgroundColor": "#e6dbff",
+    "foodColor": "#fc8a71",
+    "transportColor": "#6ded69",
+    "attractionColor": "#909644"
   }
 }
