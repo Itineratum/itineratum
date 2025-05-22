@@ -285,6 +285,9 @@
       "timeOfDay": "Time of Day",
       "timeOfDayDescription": "Select time of day for activity",
       "timeOfDayErrorMessage": "Please select a time of day!",
+      "dayNum": "Day Number",
+      "dayNumDescription": "Select the day of this activity!",
+      "dayNumErrorMessage": "Please select a day of the trip!",
       "modifyActivity": "Modify Activity",
       "modifyingActivity": "Modifying Activity"
     }

@@ -17,6 +17,7 @@ import LocationCityField from "./location-city-field";
 import LocationNameField from "./location-name-field";
 import ModifyEventButton from "./modify-event-button";
 import TimeOfDayField from "./time-of-day-field";
+import DayNumberField from "./day-number-field";
 
 const ModifyEventDialog = ({}: {}) => {
   const { modifyEventDialogOpen } = useReviewItinerary();
@@ -55,6 +56,7 @@ const ModifyEventDialog = ({}: {}) => {
           <LocationNameField />
           <LocationCityField />
           <TimeOfDayField />
+          <DayNumberField />
           <ModifyEventButton />
           <Alert
             showAlert={showAlert}

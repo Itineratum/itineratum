@@ -38,6 +38,7 @@ type ModifyEventContextType = {
   locationName: string;
   locationCity: string;
   timeOfDay: EventTimeOfDay;
+  dayNum: number;
   handleOnClose: () => void;
 };
 
@@ -50,6 +51,7 @@ export const ModifyEventProvider = ({ children }: { children: ReactNode }) => {
     useReviewItinerary();
 
   const event = events[indexToModifyEventAt ?? 0];
+  const currentDayNum = dayPlan?.day;
 
   const {
     control,
@@ -57,6 +59,7 @@ export const ModifyEventProvider = ({ children }: { children: ReactNode }) => {
     watch,
     trigger,
     setValue,
+    reset
   } = useForm<ModifyEventFormData>();
 
   const [modifyingActivity, setModifyingActivity] = useState<boolean>(false);
@@ -68,15 +71,20 @@ export const ModifyEventProvider = ({ children }: { children: ReactNode }) => {
   const locationNameId = "locationName";
   const locationCityId = "locationCity";
   const timeOfDayId = "timeOfDay";
+  const dayNumId = "dayNum";
   const locationName = watch(locationNameId);
   const locationCity = watch(locationCityId);
   const timeOfDay = watch(timeOfDayId);
+  const dayNum = watch(dayNumId);
 
   useEffect(() => {
     if (event && dayPlan) {
-      setValue(locationNameId, event.event_name);
-      setValue(locationCityId, dayPlan.destination);
-      setValue(timeOfDayId, event.time_of_day);
+      reset({
+        locationName: event.event_name,
+        locationCity: dayPlan.destination,
+        timeOfDay: event.time_of_day,
+        dayNum: dayPlan.day 
+      })
     }
   }, [event, dayPlan]);
 
@@ -85,10 +93,11 @@ export const ModifyEventProvider = ({ children }: { children: ReactNode }) => {
       setHasModifications(
         locationName !== event.event_name ||
           locationCity !== dayPlan.destination ||
-          timeOfDay !== event.time_of_day,
+          timeOfDay !== event.time_of_day ||
+          dayNum !== currentDayNum
       );
     }
-  }, [locationName, locationCity, timeOfDay, event, dayPlan]);
+  }, [locationName, locationCity, timeOfDay, event, dayPlan, dayNum]);
 
   const handleOnClose = () => {
     if (!modifyingActivity) {
@@ -117,6 +126,7 @@ export const ModifyEventProvider = ({ children }: { children: ReactNode }) => {
         locationName,
         locationCity,
         timeOfDay,
+        dayNum,
         handleOnClose,
       }}
     >

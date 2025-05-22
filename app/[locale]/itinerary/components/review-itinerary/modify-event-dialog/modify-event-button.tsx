@@ -53,13 +53,17 @@ const ModifyEventButton = () => {
       const locationNameValid = await trigger("locationName");
       const locationCityValid = await trigger("locationCity");
       const timeOfDayValid = await trigger("timeOfDay");
+      const dayNumValid = await trigger("dayNum");
 
       if (
         locationNameValid &&
         locationCityValid &&
         timeOfDayValid &&
+        dayNumValid &&
         hasModifications
       ) {
+        // TODO: to confirm how to handle the validation of events/activities being shifted across days in the itinerary
+
         setModifyingActivity(true);
         setShowAlert(false);
         const updatedEvents = [...events];
@@ -71,7 +75,7 @@ const ModifyEventButton = () => {
         const validateEditJson = generateValidateEditJson(
           itineraryRequest,
           updatedEvents,
-          dayPlan,
+          dayPlan
         );
         const validateEditRes = await validateEdit(validateEditJson);
 
@@ -84,7 +88,7 @@ const ModifyEventButton = () => {
 
         const searchActivityJson = generateSearchActivityJson(
           locationName,
-          locationCity,
+          locationCity
         );
         const searchActivityRes = await searchActivity(searchActivityJson);
         const modifiedEvents = await getEvents([searchActivityRes], timeOfDay);
