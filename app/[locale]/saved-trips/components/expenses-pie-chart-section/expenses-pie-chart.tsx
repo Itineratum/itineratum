@@ -69,7 +69,7 @@ const ExpensesPieChart = () => {
     itinerary.itinerary.forEach((dayPlan: DayPlan) => {
       dayPlan.events.forEach((event: Event) => {
         const dataItemIndex = data.findIndex(
-          (item) => item.label === event.spending_category
+          (item) => item.label === event.spending_category,
         );
         data[dataItemIndex].value += event.price ?? 0;
       });
@@ -80,7 +80,7 @@ const ExpensesPieChart = () => {
 
   const getNumOfEventsForSpendingCategory = (
     itinerary: IItinerary,
-    category: SpendingCategory
+    category: SpendingCategory,
   ): number => {
     let count = 0;
 
@@ -99,13 +99,13 @@ const ExpensesPieChart = () => {
       console.log(itineraryWithMockSpending);
 
       const newSpendingsBreakdown = getSpendingsBreakdownData(
-        itineraryWithMockSpending
+        itineraryWithMockSpending,
       );
       console.log(newSpendingsBreakdown);
       setSpendingsBreakdown(newSpendingsBreakdown);
 
       setTotalSpendings(
-        newSpendingsBreakdown.reduce((sum, item) => sum + item.value, 0)
+        newSpendingsBreakdown.reduce((sum, item) => sum + item.value, 0),
       );
     }
   }, [selectedItinerary]);
@@ -113,7 +113,7 @@ const ExpensesPieChart = () => {
   const arcLabel = (
     item: Omit<DefaultizedPieValueType, "label"> & {
       label?: string;
-    }
+    },
   ) => {
     const percentage = (item.value / totalSpendings) * 100;
     return percentage > 0

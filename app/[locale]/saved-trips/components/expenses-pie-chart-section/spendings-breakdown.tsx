@@ -19,7 +19,7 @@ export const SpendingsBreakdown = () => {
   useEffect(() => {
     if (selectedItinerary)
       setSelectedItinerarySpendingsBreakdown(
-        getItinerarySpendingsBreakdown(selectedItinerary)
+        getItinerarySpendingsBreakdown(selectedItinerary),
       );
   }, [selectedItinerary]);
 
@@ -44,7 +44,7 @@ export const SpendingsBreakdown = () => {
                 key={JSON.stringify(daySpendingsBreakdown)}
                 daySpendingsBreakdown={daySpendingsBreakdown}
               />
-            )
+            ),
           )}
       </Container>
     )
