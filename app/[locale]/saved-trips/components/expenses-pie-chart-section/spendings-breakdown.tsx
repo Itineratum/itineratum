@@ -1,6 +1,6 @@
 import Text from "@/components/atoms/text";
+import { SpendingCategory } from "@/constants/enums/spendingCategory";
 import { TypographyVariant } from "@/constants/enums/theme";
-import { IItinerary } from "@/constants/types/itinerary";
 import { useSavedTrips } from "@/hooks/useSavedTrips";
 import { getItinerarySpendingsBreakdown } from "@/lib/pythonBackend/utils";
 import { Container } from "@mui/material";
@@ -19,34 +19,42 @@ export const SpendingsBreakdown = () => {
   useEffect(() => {
     if (selectedItinerary)
       setSelectedItinerarySpendingsBreakdown(
-        getItinerarySpendingsBreakdown(selectedItinerary),
+        getItinerarySpendingsBreakdown(selectedItinerary)
       );
   }, [selectedItinerary]);
 
   const t = useTranslations("savedTrips.expensesPieChart");
 
   return (
-    <Container sx={{ my: 4 }}>
-      <Text
-        text={t("spendingsBreakdown")}
-        variant={TypographyVariant.h5}
-        bold={false}
-      />
-      {selectedItinerarySpendingsBreakdown &&
-        selectedItinerarySpendingsBreakdown.map(
-          (daySpendingsBreakdown: DaySpendingsBreakdown) => (
-            <DaySpendingsBreakdownItem
-              daySpendingsBreakdown={daySpendingsBreakdown}
-            />
-          ),
-        )}
-    </Container>
+    selectedItinerary && (
+      <Container
+        sx={{
+          my: 4,
+        }}
+      >
+        <Text
+          text={t("spendingsBreakdown")}
+          variant={TypographyVariant.h5}
+          bold={false}
+        />
+        {selectedItinerarySpendingsBreakdown &&
+          selectedItinerarySpendingsBreakdown.map(
+            (daySpendingsBreakdown: DaySpendingsBreakdown) => (
+              <DaySpendingsBreakdownItem
+                key={JSON.stringify(daySpendingsBreakdown)}
+                daySpendingsBreakdown={daySpendingsBreakdown}
+              />
+            )
+          )}
+      </Container>
+    )
   );
 };
 
 export interface EventSpending {
   name: string;
   price: number;
+  spendingCategory: SpendingCategory;
 }
 
 export interface DaySpendingsBreakdown {

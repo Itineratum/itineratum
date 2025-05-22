@@ -19,14 +19,13 @@ const ItinerarySelectorDropdown = () => {
           display: "flex",
           flexDirection: "row",
           justifyContent: "center",
-          marginTop: 2,
         }}
       >
         <Select
           displayEmpty
           value={selectedItineraryId || ""}
           onChange={handleOnChange}
-          sx={{ backgroundColor: "white", width: "80%" }}
+          sx={{ backgroundColor: "white", width: "90%" }}
         >
           {savedItineraries.map((record, _) => {
             const itineraryId = Object.keys(record)[0];

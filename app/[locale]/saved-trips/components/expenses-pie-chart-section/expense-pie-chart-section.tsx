@@ -11,10 +11,18 @@ const ExpensesPieChartSection = () => {
         borderRadius: 5,
         backgroundColor: colorsConst.expensesPieChart.backgroundColor,
         border: "2px black solid",
+        py: 5,
       }}
     >
       <ItinerarySelectorDropdown />
-      <Container sx={{ display: "flex", flexDirection: "row", gap: 2 }}>
+      <Container
+        sx={{
+          display: "flex",
+          flexDirection: "row",
+          gap: 2,
+          alignItems: "start",
+        }}
+      >
         <ExpensesPieChart />
         <SpendingsBreakdown />
       </Container>

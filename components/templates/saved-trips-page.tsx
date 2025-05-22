@@ -27,6 +27,7 @@ const SavedTripsPage = () => {
         direction="column"
         my={styles.MARGIN}
         spacing={styles.SPACING}
+        alignItems="center"
       >
         <Text
           text={`${t("welcome")}${name ? ` ${name}!` : "!"}`}
@@ -37,6 +38,7 @@ const SavedTripsPage = () => {
           <ItinerariesSection />
           <CalendarToDoSection />
         </Grid>
+        <ExpensesPieChartSection />
       </Stack>
       <AddCalendarEventProvider>
         <AddCalendarEventDialog />
@@ -44,7 +46,6 @@ const SavedTripsPage = () => {
       <AddToDoProvider>
         <AddToDoDialog />
       </AddToDoProvider>
-      <ExpensesPieChartSection />
     </Container>
   );
 };

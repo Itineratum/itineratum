@@ -8,6 +8,9 @@ import { Box, Button } from "@mui/material";
 import dayjs from "dayjs";
 import { useState } from "react";
 import { DaySpendingsBreakdown, EventSpending } from "./spendings-breakdown";
+import CircleIcon from "@mui/icons-material/Circle";
+import { SpendingCategory } from "@/constants/enums/spendingCategory";
+import colorsConst from "@/constants/pages/colors.json";
 
 const DaySpendingsBreakdownItem = ({
   daySpendingsBreakdown,
@@ -19,6 +22,8 @@ const DaySpendingsBreakdownItem = ({
     selectedItinerary?.request.payload.localisation.currency ?? "sgd";
 
   const [isVisible, setIsVisible] = useState<boolean>(false);
+
+  const colors = colorsConst.expensesPieChart;
 
   const handleOnClick = () => {
     setIsVisible((prev) => !prev);
@@ -36,10 +41,11 @@ const DaySpendingsBreakdownItem = ({
           border: "1px black solid",
           display: "flex",
           flexDirection: "row",
+          alignItems: "center",
         }}
         onClick={handleOnClick}
       >
-        <Box marginRight={2}>
+        <Box marginRight={2} display={"flex"} justifyContent={"cneter"}>
           {isVisible ? <ArrowDropDownIcon /> : <ArrowRightIcon />}
         </Box>
         <Text
@@ -51,14 +57,43 @@ const DaySpendingsBreakdownItem = ({
       {isVisible &&
         daySpendingsBreakdown.spendingsBreakdown.map(
           (eventSpending: EventSpending, index) => (
-            <Box sx={{ margin: 1 }}>
+            <Box
+              sx={{
+                margin: 1,
+                display: "flex",
+                flexDirection: "row",
+                alignItems: "center",
+                gap: 2,
+              }}
+            >
+              <CircleIcon
+                sx={{
+                  color:
+                    eventSpending.spendingCategory ===
+                    SpendingCategory.accommodation
+                      ? colors.accommodationColor
+                      : eventSpending.spendingCategory ===
+                          SpendingCategory.attraction
+                        ? colors.attractionColor
+                        : eventSpending.spendingCategory ===
+                            SpendingCategory.food
+                          ? colors.foodColor
+                          : eventSpending.spendingCategory ===
+                              SpendingCategory.general
+                            ? colors.generalColor
+                            : eventSpending.spendingCategory ===
+                                SpendingCategory.transport
+                              ? colors.transportColor
+                              : "white",
+                }}
+              />
               <Text
-                text={`${index + 1}) ${eventSpending.name}: ${Currency[currency]}${eventSpending.price}`}
+                text={`${index + 1}) ${eventSpending.name}: ${Currency[currency]}${eventSpending.price} [${eventSpending.spendingCategory}]`}
                 variant={TypographyVariant.body1}
                 bold={false}
               />
             </Box>
-          ),
+          )
         )}
     </Box>
   );

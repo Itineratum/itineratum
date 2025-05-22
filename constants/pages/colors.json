@@ -53,6 +53,8 @@
     "backgroundColor": "#e6dbff",
     "foodColor": "#fc8a71",
     "transportColor": "#6ded69",
-    "attractionColor": "#909644"
+    "attractionColor": "#909644",
+    "accommodationColor": "#5b7dff",
+    "generalColor": "#c4a24a"
   }
 }
