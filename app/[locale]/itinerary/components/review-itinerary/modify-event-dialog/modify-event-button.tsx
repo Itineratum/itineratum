@@ -37,6 +37,7 @@ const ModifyEventButton = () => {
     locationName,
     locationCity,
     timeOfDay,
+    dayNum,
     modifyingActivity,
   } = useModifyEvent();
 
@@ -62,7 +63,7 @@ const ModifyEventButton = () => {
         dayNumValid &&
         hasModifications
       ) {
-        // TODO: to confirm how to handle the validation of events/activities being shifted across days in the itinerary
+        // TODO: to confirm with Oscar how to handle the validation of events/activities being shifted across days in the itinerary
 
         setModifyingActivity(true);
         setShowAlert(false);
@@ -77,14 +78,16 @@ const ModifyEventButton = () => {
           updatedEvents,
           dayPlan
         );
-        const validateEditRes = await validateEdit(validateEditJson);
 
-        if (!validateEditRes.success) {
-          setAlertText(validateEditRes.reason);
-          setAlertType(AlertType.error);
-          setShowAlert(true);
-          return;
-        }
+        // TODO: temporarily disable for development purposes
+        // const validateEditRes = await validateEdit(validateEditJson);
+
+        // if (!validateEditRes.success) {
+        //   setAlertText(validateEditRes.reason);
+        //   setAlertType(AlertType.error);
+        //   setShowAlert(true);
+        //   return;
+        // }
 
         const searchActivityJson = generateSearchActivityJson(
           locationName,
@@ -99,6 +102,8 @@ const ModifyEventButton = () => {
             indexToModifyEventAt: indexToModifyEventAt ?? 0,
             modifiedEvent: modifiedEvents[0],
             timeOfDayChange: timeOfDay !== event.time_of_day,
+            dayNumChange: dayNum !== dayPlan.day,
+            dayNum,
           },
         };
         setCurrentEdit(newEdit);

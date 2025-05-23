@@ -21,6 +21,7 @@ const EditSaveButton = () => {
     edits,
     dayNum,
     events,
+    itineraryData,
   } = useReviewItinerary();
   const router = useRouter();
 
@@ -35,8 +36,9 @@ const EditSaveButton = () => {
       setIsSavingEdits(true);
       const data = {
         itineraryId: params.id,
-        dayNum,
-        newEvents: events,
+        // dayNum,
+        // newEvents: events,
+        newItinerary: itineraryData?.itinerary,
         edits,
       };
       await editItinerary.mutateAsync(data);

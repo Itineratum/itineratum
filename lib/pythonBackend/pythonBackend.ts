@@ -40,7 +40,7 @@ export const runPipeline = async (itineraryJson: GenerateItineraryJSON) => {
   try {
     const response = await fetch(
       `${getPythonBackendUrl()}${PythonBackendEndpoints.runPipeline}`,
-      getRequest(itineraryJson),
+      getRequest(itineraryJson)
     );
 
     if (!response.ok) {
@@ -58,12 +58,12 @@ export const runPipeline = async (itineraryJson: GenerateItineraryJSON) => {
 };
 
 export const generateItinerary = async (
-  itineraryJson: GenerateItineraryJSON,
+  itineraryJson: GenerateItineraryJSON
 ) => {
   try {
     const response = await fetch(
       `${getPythonBackendUrl()}${PythonBackendEndpoints.generateItinerary}`,
-      getRequest(itineraryJson),
+      getRequest(itineraryJson)
     );
 
     if (!response.ok) {
@@ -80,7 +80,7 @@ export const validatePlan = async (itineraryJson: GenerateItineraryJSON) => {
   try {
     const response = await fetch(
       `${getPythonBackendUrl()}${PythonBackendEndpoints.validatePlan}`,
-      getRequest(itineraryJson),
+      getRequest(itineraryJson)
     );
 
     if (!response.ok) {
@@ -97,7 +97,7 @@ export const searchHotels = async (itineraryJson: GenerateItineraryJSON) => {
   try {
     const response = await fetch(
       `${getPythonBackendUrl()}${PythonBackendEndpoints.searchHotels}`,
-      getRequest(itineraryJson),
+      getRequest(itineraryJson)
     );
 
     if (!response.ok) {
@@ -114,7 +114,7 @@ export const searchFlights = async (itineraryJson: GenerateItineraryJSON) => {
   try {
     const response = await fetch(
       `${getPythonBackendUrl()}${PythonBackendEndpoints.searchFlights}`,
-      getRequest(itineraryJson),
+      getRequest(itineraryJson)
     );
 
     if (!response.ok) {
@@ -136,7 +136,7 @@ export const planIsValid = (validatePlanRes: any): boolean => {
 
 export const runPipelineWithGenerationSteps = async (
   itineraryJson: GenerateItineraryJSON,
-  setGenerationStep: Dispatch<SetStateAction<GenerateItineraryStep>>,
+  setGenerationStep: Dispatch<SetStateAction<GenerateItineraryStep>>
 ) => {
   try {
     // validate the plan
@@ -187,7 +187,7 @@ export const runPipelineWithGenerationSteps = async (
 
 export const debugRunPipelineWithGenerationSteps = async (
   itineraryJson: GenerateItineraryJSON,
-  setGenerationStep: Dispatch<SetStateAction<GenerateItineraryStep>>,
+  setGenerationStep: Dispatch<SetStateAction<GenerateItineraryStep>>
 ) => {
   const timeoutDurations = [
     3000, // validate plan
@@ -254,7 +254,7 @@ export const validateNew = async (validateNewJson: ValidateNewJSON) => {
   try {
     const response = await fetch(
       `${getPythonBackendUrl()}${PythonBackendEndpoints.validateNew}`,
-      getRequest(validateNewJson),
+      getRequest(validateNewJson)
     );
 
     if (!response.ok) {
@@ -283,7 +283,7 @@ export const validateEdit = async (validateEditJson: ValidateEditJSON) => {
   try {
     const response = await fetch(
       `${getPythonBackendUrl()}${PythonBackendEndpoints.validateEdit}`,
-      getRequest(validateEditJson),
+      getRequest(validateEditJson)
     );
 
     if (!response.ok) {
@@ -309,12 +309,12 @@ export const validateEdit = async (validateEditJson: ValidateEditJSON) => {
 };
 
 export const searchActivity = async (
-  searchActivityJson: SearchActivityJSON,
+  searchActivityJson: SearchActivityJSON
 ) => {
   try {
     const response = await fetch(
       `${getPythonBackendUrl()}${PythonBackendEndpoints.searchActivity}`,
-      getRequest(searchActivityJson),
+      getRequest(searchActivityJson)
     );
 
     if (!response.ok) {
@@ -328,14 +328,14 @@ export const searchActivity = async (
 };
 
 export const generateItineraryJson = (
-  itineraryForm: GenerateItineraryFormData,
+  itineraryForm: GenerateItineraryFormData
 ): GenerateItineraryJSON => {
   const userRequestedDestinations = itineraryForm.userRequestedDestinations.map(
     (destination: UserRequestedDestination) => ({
       name: destination.name,
       start_date: destination.startDate.format("YYYY-MM-DD"),
       end_date: destination.endDate.format("YYYY-MM-DD"),
-    }),
+    })
   );
   const otherRequirements = {
     pet_friendly: itineraryForm.otherRequirements.petFriendly,
@@ -373,7 +373,7 @@ export const generateValidateNewJson = (
   dayPlan: DayPlan,
   timeOfDay: EventTimeOfDay,
   locationName: string,
-  locationCity: string,
+  locationCity: string
 ): ValidateNewJSON => {
   const destination = dayPlan.destination;
   const destinationDayNum = dayPlan.day;
@@ -410,7 +410,7 @@ export const generateValidateNewJson = (
 export const generateValidateEditJson = (
   itineraryRequest: GenerateItineraryJSON,
   events: Event[],
-  dayPlan: DayPlan,
+  dayPlan: DayPlan
 ): ValidateEditJSON => {
   const destination = dayPlan.destination;
   const destinationDayNum = dayPlan.day;
@@ -441,7 +441,7 @@ export const generateValidateEditJson = (
 
 export const generateSearchActivityJson = (
   locationName: string,
-  locationCity: string,
+  locationCity: string
 ): SearchActivityJSON => {
   return {
     use_dummy_data: false,

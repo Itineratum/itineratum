@@ -10,7 +10,7 @@ import ArrowForwardOutlinedIcon from "@mui/icons-material/ArrowForwardOutlined";
 import { Box, Button, CircularProgress, Stack } from "@mui/material";
 import { getCookie } from "cookies-next";
 import { useTranslations } from "next-intl";
-import router from "next/router";
+import { useRouter } from "next/navigation";
 import { HOME_STYLES } from "../../styles";
 import { steps } from "../form-fields/form-fields";
 
@@ -26,6 +26,7 @@ const GenerateButton = () => {
     session,
     setGenerationStep,
   } = useItineraryGenerator();
+  const router = useRouter();
 
   const t = useTranslations("home.itineraryGenerator");
   const styles = HOME_STYLES.ITINERARY_GENERATOR.NAVIGATION_BUTTONS;

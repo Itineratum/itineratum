@@ -185,6 +185,8 @@ export interface ModifyEventInItineraryDetails {
   indexToModifyEventAt: number;
   modifiedEvent: Event;
   timeOfDayChange: boolean;
+  dayNumChange: boolean;
+  dayNum: number;
 }
 
 export interface ReorderEventInItineraryDetails {

@@ -38,8 +38,9 @@ export const adjustItineraryHotelsSchema = {
 export const editItinerarySchema = {
   input: z.object({
     itineraryId: z.string(),
-    dayNum: z.number(),
-    newEvents: z.any(),
+    // dayNum: z.number(),
+    // newEvents: z.any(),
+    newItinerary: z.any(),
     edits: z.any(),
   }),
   output: z.void(),

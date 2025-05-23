@@ -26,6 +26,8 @@ import {
 type ReviewItineraryContextType = {
   itineraryData: IItinerary | null;
   setItineraryData: Dispatch<SetStateAction<IItinerary | null>>;
+  backupItineraryData: IItinerary | null;
+  setBackupItineraryData: Dispatch<SetStateAction<IItinerary | null>>;
   isLoading: boolean;
   setIsLoading: Dispatch<SetStateAction<boolean>>;
   error: string | null;
@@ -110,6 +112,8 @@ export const ReviewItineraryProvider = ({
   const { params } = useItinerary();
 
   const [itineraryData, setItineraryData] = useState<IItinerary | null>(null);
+  const [backupItineraryData, setBackupItineraryData] =
+    useState<IItinerary | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const [dayNum, setDayNum] = useState<number>(1);
@@ -135,7 +139,7 @@ export const ReviewItineraryProvider = ({
   >([]);
   const [isSavingEdits, setIsSavingEdits] = useState<boolean>(false);
   const [indexToAddEventTo, setIndexToAddEventTo] = useState<number | null>(
-    null,
+    null
   );
   const [addEventDialogOpen, setAddEventDialogOpen] = useState<boolean>(false);
   const [modifyEventDialogOpen, setModifyEventDialogOpen] =
@@ -162,7 +166,7 @@ export const ReviewItineraryProvider = ({
         setError(error.message);
         setIsLoading(false);
       },
-    },
+    }
   );
   const editItinerary = trpc.itinerary.editItinerary.useMutation();
   const saveItineraryToUser = trpc.user.saveItineraryToUser.useMutation();
@@ -172,13 +176,13 @@ export const ReviewItineraryProvider = ({
     },
     {
       enabled: !!email,
-    },
+    }
   );
   const utils = trpc.useUtils();
 
   const getCorrectDayPlan = (): DayPlan =>
     getItinerary.data.itinerary.filter(
-      (dayPlan: DayPlan) => dayPlan.day === dayNum,
+      (dayPlan: DayPlan) => dayPlan.day === dayNum
     )[0];
 
   const getDestinations = () => {
@@ -196,6 +200,7 @@ export const ReviewItineraryProvider = ({
   useEffect(() => {
     if (getItinerary.data) {
       setItineraryData(getItinerary.data);
+      setBackupItineraryData(getItinerary.data);
       setDayPlan(getCorrectDayPlan());
       setDestinations(getDestinations());
       setSelectedHotels(getItinerary.data.selected_hotels ?? []);
@@ -212,8 +217,8 @@ export const ReviewItineraryProvider = ({
     if (getUserSavedItineraryIds.data) {
       setCanSaveItinerary(
         !getUserSavedItineraryIds.data.some(
-          (itineraryId: string) => itineraryId === params.id,
-        ),
+          (itineraryId: string) => itineraryId === params.id
+        )
       );
     }
   }, [getUserSavedItineraryIds.data]);
@@ -245,12 +250,28 @@ export const ReviewItineraryProvider = ({
 
       if (currentEdit.delete || currentEdit.delete === 0) {
         // handle event deletions
-        const newEvents: Event[] = [...events];
+        const updatedItinerary = [...itineraryData!.itinerary];
+        const currentDayPlanIndex = updatedItinerary.findIndex(
+          (dayPlan: DayPlan) => dayPlan.day === dayNum
+        );
+        const currentDayEvents = [
+          ...updatedItinerary[currentDayPlanIndex].events,
+        ];
+
         const indexOfEventToDelete: number = (
           currentEdit.delete as DeleteEventFromItineraryDetails
         ).indexToDeleteEventFrom;
-        newEvents.splice(indexOfEventToDelete, 1);
-        setEvents(newEvents);
+        currentDayEvents.splice(indexOfEventToDelete, 1);
+        updatedItinerary[currentDayPlanIndex] = {
+          ...updatedItinerary[currentDayPlanIndex],
+          events: currentDayEvents,
+        };
+
+        setItineraryData((prev) =>
+          prev ? { ...prev, itinerary: updatedItinerary } : null
+        );
+
+        setEvents(currentDayEvents);
         const eventToDelete = events[indexOfEventToDelete];
         const deleteEventFromItineraryDetails: DeleteEventFromItineraryDetails =
           {
@@ -281,14 +302,30 @@ export const ReviewItineraryProvider = ({
         setEdits(newEdits);
       } else if (currentEdit.add || currentEdit.add === 0) {
         // handle event additions
-        const newEvents: Event[] = [...events];
+        const updatedItinerary = [...itineraryData!.itinerary];
+        const currentDayPlanIndex = updatedItinerary.findIndex(
+          (dayPlan: DayPlan) => dayPlan.day === dayNum
+        );
+        const currentDayEvents = [
+          ...updatedItinerary[currentDayPlanIndex].events,
+        ];
+
         const addEventToItineraryDetails: AddEventToItineraryDetails =
           currentEdit.add as AddEventToItineraryDetails;
         const indexToAddEventTo: number =
           addEventToItineraryDetails.indexToAddEventTo;
         const newEventToAdd = addEventToItineraryDetails.newEvent;
-        newEvents.splice(indexToAddEventTo, 0, newEventToAdd);
-        setEvents(newEvents);
+        currentDayEvents.splice(indexToAddEventTo, 0, newEventToAdd);
+        updatedItinerary[currentDayPlanIndex] = {
+          ...updatedItinerary[currentDayPlanIndex],
+          events: currentDayEvents,
+        };
+
+        setItineraryData((prev) =>
+          prev ? { ...prev, itinerary: updatedItinerary } : null
+        );
+
+        setEvents(currentDayEvents);
 
         if (edits) {
           newEdits = [...edits];
@@ -313,28 +350,90 @@ export const ReviewItineraryProvider = ({
         setEdits(newEdits);
       } else if (currentEdit.modify || currentEdit.modify === 0) {
         // handle event modifications
-        const newEvents: Event[] = [...events];
         const modifyEventInItineraryDetails: ModifyEventInItineraryDetails =
           currentEdit.modify as ModifyEventInItineraryDetails;
         const hasTimeOfDayChange =
           modifyEventInItineraryDetails.timeOfDayChange;
+        const hasDayNumChange = modifyEventInItineraryDetails.dayNumChange;
         const modifiedEvent = modifyEventInItineraryDetails.modifiedEvent;
         const indexToModifyEventAt: number =
           modifyEventInItineraryDetails.indexToModifyEventAt;
 
-        if (hasTimeOfDayChange) {
-          // if the user modified the event's time of day, shift it to the first index where the time of day is at, regardless of whether there are any existing events during that time of day
-          newEvents.splice(indexToModifyEventAt, 1);
+        const updatedItinerary = [...itineraryData!.itinerary];
+        const currentDayPlanIndex = updatedItinerary.findIndex(
+          (dayPlan: DayPlan) => dayPlan.day === dayNum
+        );
+        const currentDayEvents = [
+          ...updatedItinerary[currentDayPlanIndex].events,
+        ];
+
+        if (hasDayNumChange) {
+          // remove event from the current day and update the itinerary
+          const newDayNum = modifyEventInItineraryDetails.dayNum;
+          currentDayEvents.splice(indexToModifyEventAt, 1);
+          updatedItinerary[currentDayPlanIndex] = {
+            ...updatedItinerary[currentDayPlanIndex],
+            events: currentDayEvents,
+          };
+
+          // insert the event into the target day at the correct time of day position
+          const targetDayPlanIndex = updatedItinerary.findIndex(
+            (dayPlan: DayPlan) => dayPlan.day === newDayNum
+          );
+          const targetDayEvents = [
+            ...updatedItinerary[targetDayPlanIndex].events,
+          ];
           const indexToMoveModifiedEventTo = getIndexToMoveModifiedEventTo(
             modifiedEvent,
-            newEvents,
+            targetDayEvents
           );
-          newEvents.splice(indexToMoveModifiedEventTo, 0, modifiedEvent);
-        } else {
-          newEvents[indexToModifyEventAt] = modifiedEvent;
-        }
+          targetDayEvents.splice(indexToMoveModifiedEventTo, 0, modifiedEvent);
+          updatedItinerary[targetDayPlanIndex] = {
+            ...updatedItinerary[targetDayPlanIndex],
+            events: targetDayEvents,
+          };
 
-        setEvents(newEvents);
+          setItineraryData((prev) =>
+            prev ? { ...prev, itinerary: updatedItinerary } : null
+          );
+
+          // if the user is viewing the new/target day, update the events
+          if (dayNum === newDayNum) {
+            setEvents(targetDayEvents);
+          } else if (dayNum === updatedItinerary[currentDayPlanIndex].day) {
+            setEvents(currentDayEvents);
+          }
+        } else if (hasTimeOfDayChange) {
+          // if the user modified the event's time of day, shift it to the first index where the time of day is at, regardless of whether there are any existing events during that time of day
+          currentDayEvents.splice(indexToModifyEventAt, 1);
+          const indexToMoveModifiedEventTo = getIndexToMoveModifiedEventTo(
+            modifiedEvent,
+            currentDayEvents
+          );
+          currentDayEvents.splice(indexToMoveModifiedEventTo, 0, modifiedEvent);
+          updatedItinerary[currentDayPlanIndex] = {
+            ...updatedItinerary[currentDayPlanIndex],
+            events: currentDayEvents,
+          };
+
+          setItineraryData((prev) =>
+            prev ? { ...prev, itinerary: updatedItinerary } : null
+          );
+
+          setEvents(currentDayEvents);
+        } else {
+          currentDayEvents[indexToModifyEventAt] = modifiedEvent;
+          updatedItinerary[currentDayPlanIndex] = {
+            ...updatedItinerary[currentDayPlanIndex],
+            events: currentDayEvents,
+          };
+
+          setItineraryData((prev) =>
+            prev ? { ...prev, itinerary: updatedItinerary } : null
+          );
+
+          setEvents(currentDayEvents);
+        }
 
         if (edits) {
           newEdits = [...edits];
@@ -357,7 +456,14 @@ export const ReviewItineraryProvider = ({
         setEdits(newEdits);
       } else if (currentEdit.reorder || currentEdit.reorder === 0) {
         // handle event reorders
-        const newEvents: Event[] = [...events];
+        const updatedItinerary = [...itineraryData!.itinerary];
+        const currentDayPlanIndex = updatedItinerary.findIndex(
+          (dayPlan: DayPlan) => dayPlan.day === dayNum
+        );
+        const currentDayEvents = [
+          ...updatedItinerary[currentDayPlanIndex].events,
+        ];
+
         const reorderEventInItineraryDetails: ReorderEventInItineraryDetails =
           currentEdit.reorder as ReorderEventInItineraryDetails;
         const reorderedEvent: Event = reorderEventInItineraryDetails.event;
@@ -365,9 +471,18 @@ export const ReviewItineraryProvider = ({
           reorderEventInItineraryDetails.oldEventIndex;
         const newEventIndex: number =
           reorderEventInItineraryDetails.newEventIndex;
-        newEvents.splice(oldEventIndex, 1);
-        newEvents.splice(newEventIndex, 0, reorderedEvent);
-        setEvents(newEvents);
+        currentDayEvents.splice(oldEventIndex, 1);
+        currentDayEvents.splice(newEventIndex, 0, reorderedEvent);
+        updatedItinerary[currentDayPlanIndex] = {
+          ...updatedItinerary[currentDayPlanIndex],
+          events: currentDayEvents,
+        };
+
+        setItineraryData((prev) =>
+          prev ? { ...prev, itinerary: updatedItinerary } : null
+        );
+
+        setEvents(currentDayEvents);
 
         if (edits) {
           newEdits = [...edits];
@@ -404,6 +519,8 @@ export const ReviewItineraryProvider = ({
       value={{
         itineraryData,
         setItineraryData,
+        backupItineraryData,
+        setBackupItineraryData,
         isLoading,
         setIsLoading,
         error,

@@ -14,6 +14,8 @@ const CancelButton = () => {
     isEditing,
     backupEvents,
     isSavingEdits,
+    backupItineraryData,
+    setItineraryData,
   } = useReviewItinerary();
 
   const t = useTranslations("itinerary");
@@ -23,6 +25,7 @@ const CancelButton = () => {
     setEdits([]);
     setIsEditing(!isEditing);
     setEvents(backupEvents);
+    setItineraryData(backupItineraryData);
   };
 
   return (
