@@ -76,7 +76,7 @@ const ModifyEventButton = () => {
         const validateEditJson = generateValidateEditJson(
           itineraryRequest,
           updatedEvents,
-          dayPlan
+          dayPlan,
         );
 
         // TODO: temporarily disable for development purposes
@@ -91,7 +91,7 @@ const ModifyEventButton = () => {
 
         const searchActivityJson = generateSearchActivityJson(
           locationName,
-          locationCity
+          locationCity,
         );
         const searchActivityRes = await searchActivity(searchActivityJson);
         const modifiedEvents = await getEvents([searchActivityRes], timeOfDay);

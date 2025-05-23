@@ -59,7 +59,7 @@ export const ModifyEventProvider = ({ children }: { children: ReactNode }) => {
     watch,
     trigger,
     setValue,
-    reset
+    reset,
   } = useForm<ModifyEventFormData>();
 
   const [modifyingActivity, setModifyingActivity] = useState<boolean>(false);
@@ -83,8 +83,8 @@ export const ModifyEventProvider = ({ children }: { children: ReactNode }) => {
         locationName: event.event_name,
         locationCity: dayPlan.destination,
         timeOfDay: event.time_of_day,
-        dayNum: dayPlan.day 
-      })
+        dayNum: dayPlan.day,
+      });
     }
   }, [event, dayPlan]);
 
@@ -94,7 +94,7 @@ export const ModifyEventProvider = ({ children }: { children: ReactNode }) => {
         locationName !== event.event_name ||
           locationCity !== dayPlan.destination ||
           timeOfDay !== event.time_of_day ||
-          dayNum !== currentDayNum
+          dayNum !== currentDayNum,
       );
     }
   }, [locationName, locationCity, timeOfDay, event, dayPlan, dayNum]);

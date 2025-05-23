@@ -31,7 +31,7 @@ const DayNumberField = () => {
   };
 
   const dayNumberOptions = Array.from(Array(numOfDays).keys()).map(
-    (dayNum) => dayNum + 1
+    (dayNum) => dayNum + 1,
   );
 
   return (
