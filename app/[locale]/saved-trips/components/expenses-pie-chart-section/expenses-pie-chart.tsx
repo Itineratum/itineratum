@@ -96,12 +96,10 @@ const ExpensesPieChart = () => {
   useEffect(() => {
     if (selectedItinerary) {
       const itineraryWithMockSpending = addMockSpendingsData(selectedItinerary);
-      console.log(itineraryWithMockSpending);
 
       const newSpendingsBreakdown = getSpendingsBreakdownData(
         itineraryWithMockSpending,
       );
-      console.log(newSpendingsBreakdown);
       setSpendingsBreakdown(newSpendingsBreakdown);
 
       setTotalSpendings(
